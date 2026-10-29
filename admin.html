@@ -723,17 +723,36 @@
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
     var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb"];
-    // 🔔 Cài / thử thông báo Telegram (mã bot lưu ở máy chủ, không lưu trên trình duyệt)
+    // 🔔 Khung cài / thử thông báo Telegram (khung trên trang, không dùng hộp prompt vì vài trình duyệt chặn)
     function caiTelegram() {
-      var token = prompt("🔔 Thông báo Telegram\n\n1. Thêm bot vào nhóm Telegram và nhắn 1 tin trong nhóm.\n2. Dán MÃ BOT (lấy ở @BotFather) rồi bấm OK.\n\nĐể trống + OK = chỉ gửi tin thử. Gõ TAT = tắt thông báo.");
-      if (token === null) return;
-      token = token.trim();
+      var k = document.getElementById("tgKhung");
+      if (k) { k.remove(); return; }
+      k = document.createElement("div"); k.id = "tgKhung";
+      k.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:3000;width:min(460px,94vw);background:#fff;border:1px solid #e3d3c6;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.2);padding:14px;font-size:14px";
+      k.innerHTML = '<div class="d-flex justify-content-between align-items-center mb-2"><b>🔔 Thông báo Telegram</b><button type="button" class="btn-close" onclick="caiTelegram()"></button></div>' +
+        '<div class="small text-muted mb-2">Thêm bot vào nhóm Telegram, nhắn 1 tin trong nhóm, rồi dán MÃ BOT (lấy ở @BotFather).</div>' +
+        '<input id="tgMa" type="password" class="form-control form-control-sm mb-2" placeholder="Dán mã bot, dạng 123456:ABC..." autocomplete="off">' +
+        '<div class="d-flex gap-2 flex-wrap"><button type="button" class="btn btn-sm text-white fw-bold" style="background:#864c2a" onclick="tgChay(\'luu\')">💾 Lưu & gửi thử</button>' +
+        '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="tgChay(\'thu\')">🧪 Chỉ gửi thử</button>' +
+        '<button type="button" class="btn btn-sm btn-outline-danger ms-auto" onclick="tgChay(\'tat\')">Tắt</button></div>' +
+        '<div id="tgKq" class="small mt-2"></div>';
+      document.body.appendChild(k);
+      document.getElementById("tgMa").focus();
+    }
+    function tgChay(viec) {
+      var kqEl = document.getElementById("tgKq"), ma = document.getElementById("tgMa").value.trim();
+      if (viec === "luu" && !ma) { kqEl.innerHTML = '<span class="text-danger">Chưa dán mã bot.</span>'; return; }
+      kqEl.textContent = "⏳ Đang kiểm tra...";
       var xong = function(kq) {
-        if (!kq.coMaBot) return alert("Chưa cài Telegram. Bấm 🔔 Telegram và dán mã bot.");
-        alert((kq.daGui ? "✅ Đã gửi tin thử tới: " : "❌ Chưa gửi được tới: ") + (kq.noiNhan || "?") + (kq.loiGui ? "\nLỗi: " + kq.loiGui : "") + (kq.loiChat ? "\nLỗi: " + kq.loiChat : ""));
+        if (kq.tat) return kqEl.innerHTML = "Đã tắt thông báo Telegram.";
+        if (!kq.coMaBot) return kqEl.innerHTML = '<span class="text-danger">Chưa cài Telegram: dán mã bot rồi bấm 💾.</span>';
+        kqEl.innerHTML = (kq.daGui ? '<span class="text-success fw-bold">✅ Đã gửi tin thử tới: ' : '<span class="text-danger fw-bold">❌ Chưa gửi được tới: ') + escapeHtml(kq.noiNhan || "?") + '</span>' +
+          (kq.loiGui || kq.loiChat ? '<br><span class="text-danger">Lỗi: ' + escapeHtml(kq.loiGui || kq.loiChat) + '</span>' : '');
+        document.getElementById("tgMa").value = "";
       };
-      if (!token) return adminRun().withSuccessHandler(xong).thuTelegramWeb();
-      adminRun().withSuccessHandler(function(kq) { if (kq.tat) return alert("Đã tắt thông báo Telegram."); xong(kq); }).caiTelegramWeb(token);
+      var loi = function(e) { kqEl.innerHTML = '<span class="text-danger">❌ ' + escapeHtml(e && e.message ? e.message : String(e)) + '</span>'; };
+      var r = adminRun().withSuccessHandler(xong).withFailureHandler(loi);
+      if (viec === "thu") r.thuTelegramWeb(); else r.caiTelegramWeb(viec === "tat" ? "TAT" : ma);
     }
     function adminRun() {
       var ok = null, fail = null, o = {
