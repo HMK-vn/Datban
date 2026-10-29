@@ -1110,6 +1110,8 @@
         if (d.decor) nut.push(["CHỜ HOÀN CỌC", "⏳<span class=\"t\"> Chờ hoàn</span>"], ["ĐÃ HOÀN CỌC", "💸<span class=\"t\"> Đã hoàn</span>"]);
         h += '<div class="btn-group btn-group-sm dtt-nut">' + nut.map(function(n) {
           var on = d.tt === n[0];
+          // Đơn đã XÁC NHẬN (kể cả bàn thường tự xác nhận): bấm ✅ là chuyển sang DATA_TONG, không bỏ chọn
+          if (on && n[0] === "XÁC NHẬN") return '<button class="btn on" onclick="datTrangThaiDtt(' + i + ',\'XÁC NHẬN\', this)" title="Chuyển đơn sang DATA_TONG">✅<span class="t"> Chuyển DATA_TONG</span></button>';
           return '<button class="btn' + (on ? " on" : "") + '" onclick="datTrangThaiDtt(' + i + ',\'' + (on ? "" : n[0]) + '\', this)" title="' + (on ? "Bấm để bỏ chọn" : "Chọn " + n[0]) + '">' + n[1] + '</button>';
         }).join("") + '</div>';
       } else if (d.ttHoan !== "Đã hoàn cọc") {
