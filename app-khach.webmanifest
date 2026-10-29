@@ -1,0 +1,25 @@
+{
+  "name": "Túi Nướng Lavender - Đặt bàn",
+  "short_name": "Túi Nướng",
+  "lang": "vi",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5b2a86",
+  "icons": [
+    {
+      "src": "app_icon/icon_khach_192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "app_icon/icon_khach_512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "id": "./",
+  "start_url": "./",
+  "scope": "./"
+}

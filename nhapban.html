@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+
+  <link rel="manifest" href="app-quantri.webmanifest">
+  <link rel="apple-touch-icon" href="app_icon/icon_admin_180.png">
+  <link rel="icon" type="image/png" href="app_icon/icon_admin_192.png">
+  <meta name="theme-color" content="#5b2a86">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="TN Quản trị"><script>
+/* Cầu nối thay cho google.script.run: gọi Apps Script qua API (không kèm cookie Google)
+   -> không bị lỗi "không thể mở tệp" khi trình duyệt đăng nhập nhiều tài khoản Google */
+(function () {
+  if (window.google && window.google.script) return;
+  var API = "https://script.google.com/macros/s/AKfycbxzF35ugPCL5jDZrmZzOSx4-ZsoEZimxM6lDKn4zYcajHimG_K1250pip16IEqsDHqQQg/exec";
+  function goi(ten, args, ok, fail) {
+    fetch(API, { method: "POST", redirect: "follow", credentials: "omit",
+      headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: ten, args: args }) })
+      .then(function (r) { if (!r.ok) throw new Error("Máy chủ trả lỗi " + r.status); return r.json(); })
+      .then(function (res) {
+        if (res.ok) { if (ok) ok(res.result); }
+        else { var e = new Error(res.error); if (fail) fail(e); else alert("Lỗi: " + res.error); }
+      })
+      .catch(function (err) {
+        var e = new Error("Không kết nối được máy chủ, vui lòng thử lại. (" + err.message + ")");
+        if (fail) fail(e); else alert(e.message);
+      });
+  }
+  function taoRun() {
+    var ok = null, fail = null, base = {
+      withSuccessHandler: function (f) { ok = f; return p; },
+      withFailureHandler: function (f) { fail = f; return p; },
+      withUserObject: function () { return p; }
+    };
+    var p = new Proxy(base, { get: function (t, ten) {
+      if (ten in t) return t[ten];
+      return function () { goi(String(ten), Array.prototype.slice.call(arguments), ok, fail); };
+    } });
+    return p;
+  }
+  window.google = { script: { host: { close: function () { throw new Error("Không chạy trong Google Sheet"); } } } };
+  Object.defineProperty(window.google.script, "run", { get: taoRun });
+})();
+</script>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; font-family: 'Google Sans', sans-serif; }
+    html, body {
+      margin: 0; padding: 6px;
+      background-color: #090e17; color: #e2e8f0;
+      font-size: 12px; width: 100vw; height: 100vh; overflow: hidden;
+    }
+    .viewport-grid {
+      display: grid; grid-template-columns: 3fr 1fr;
+      gap: 8px; width: 100%; height: 100%;
+    }
+    .panel-left, .panel-right {
+      background: #111827; border-radius: 8px; border: 1px solid #1f293d;
+      display: flex; flex-direction: column; padding: 10px; min-height: 0; min-width: 0;
+    }
+    .paste-box-wrap { margin-bottom: 8px; flex-shrink: 0; }
+    .multi-paste-box {
+      width: 100%; height: 54px; background: #0b1120; border: 1px solid #334155;
+      color: #f8fafc; border-radius: 6px; padding: 6px 8px; font-size: 11px;
+      outline: none; resize: none; line-height: 1.4;
+    }
+    .multi-paste-box:focus { border-color: #38bdf8; }
+    .tag-header-label {
+      font-weight: 700; color: #94a3b8; font-size: 11px; text-transform: uppercase;
+      margin-bottom: 6px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;
+    }
+    /* Thẻ khách dạng thumbnail 3 cột */
+    /* Thẻ khách dạng thumbnail: tự chia cột theo bề ngang (~7 thẻ/dòng trên popup 1400px) */
+    .tags-container {
+      flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+      align-content: start; gap: 6px; padding-right: 4px;
+    }
+    .folder-tag-card {
+      background: #0b1120; border: 1.5px solid #1f293d; border-radius: 6px;
+      padding: 5px; cursor: pointer; transition: 0.15s; min-width: 0;
+    }
+    .folder-tag-card.active {
+      border-color: #38bdf8; background: #0e1b2e; box-shadow: 0 0 0 1px #38bdf8;
+    }
+    .folder-tag-card.has-error { border-color: #ef4444; box-shadow: 0 0 0 1px #ef4444; }
+    .folder-tag-header {
+      display: flex; justify-content: space-between; align-items: center; gap: 4px;
+      margin-bottom: 4px; padding-bottom: 3px; border-bottom: 1px solid #1e293b;
+    }
+    .folder-tag-title {
+      font-weight: 700; color: #38bdf8; font-size: 11.5px; min-width: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .btn-del-tag {
+      background: transparent; color: #ef4444; border: none; font-size: 13px; cursor: pointer; padding: 0 4px; flex-shrink: 0;
+    }
+    .tag-actions { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+    .btn-bill {
+      position: relative; font-size: 13px; cursor: pointer; padding: 1px 5px; border-radius: 4px;
+      border: 1px solid #334155; background: #111827; line-height: 1.2;
+    }
+    .btn-bill:hover { border-color: #38bdf8; }
+    .btn-bill.has-bill { border-color: #34d399; background: #064e3b; }
+    .btn-bill.has-bill::after {
+      content: "✓"; position: absolute; top: -6px; right: -6px; background: #34d399; color: #0b1120;
+      font-size: 9px; font-weight: 700; border-radius: 50%; width: 12px; height: 12px; line-height: 12px; text-align: center;
+    }
+    .btn-bill input { display: none; }
+    .tag-thumb {
+      position: relative; height: 54px; border-radius: 4px; overflow: hidden; margin-bottom: 4px; background: #1e293b;
+    }
+    .tag-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .tag-thumb span {
+      position: absolute; left: 0; right: 0; bottom: 0; padding: 2px 5px; font-size: 10px; font-weight: 700;
+      color: #fff; background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .tag-lock-reason {
+      background: #7f1d1d; color: #fecaca; border-radius: 4px; padding: 3px 5px;
+      font-size: 10px; font-weight: 700; margin-bottom: 4px;
+    }
+    .card-edit-grid {
+      display: grid; grid-template-columns: 1fr; gap: 2px;
+    }
+    .card-edit-col-full { grid-column: auto; }
+    .card-field-row {
+      display: flex; align-items: center; gap: 3px; background: #111827; min-width: 0;
+      border: 1px solid #334155; border-radius: 4px; padding: 1px 4px;
+    }
+    .card-field-label { font-size: 11px; flex-shrink: 0; cursor: default; }
+    .card-input, .card-select, .card-textarea {
+      width: 100%; min-width: 0; background: transparent; border: none; color: #f8fafc;
+      font-size: 10.5px; outline: none; padding: 1px 0;
+    }
+    /* Điện thoại / màn hình nhỏ: xếp chồng 2 khung, cho phép cuộn trang */
+    @media (max-width: 900px) {
+      html, body { height: auto; overflow: auto; width: 100%; }
+      .viewport-grid { grid-template-columns: 1fr; height: auto; }
+      .panel-left, .panel-right { max-height: none; }
+      .tags-container { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); overflow: visible; }
+      .decor-viewport { max-height: 55vh; }
+      .card-input, .card-select, .card-textarea { font-size: 14px; padding: 4px 0; } /* tránh iPhone tự phóng to khi gõ */
+      .bottom-save-wrap { flex-direction: column; position: sticky; bottom: 0; background: #111827; padding-top: 6px; }
+    }
+    /* Điện thoại dọc: thẻ khách chiếm trọn bề ngang */
+    @media (max-width: 576px) {
+      .tags-container { grid-template-columns: 1fr; }
+      .card-field-row { padding: 3px 6px; }
+      .card-field-label { font-size: 14px; }
+    }
+    .card-select { cursor: pointer; color: #38bdf8; font-weight: 600; }
+    .card-select option { background: #0f172a; color: #f8fafc; }
+    .card-textarea { resize: vertical; min-height: 18px; height: 18px; line-height: 1.3; font-family: inherit; }
+    .bottom-save-wrap { margin-top: 8px; flex-shrink: 0; display: flex; gap: 6px; align-items: stretch; }
+    .badge-target-row-bottom {
+      background: #0f172a; border: 1px solid #0284c7; color: #38bdf8; flex: 1;
+      font-weight: 700; padding: 5px 10px; border-radius: 6px; font-size: 11px;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+    }
+    .btn-save-all {
+      flex: 1; background: #0284c7; color: #ffffff; border: none;
+      border-radius: 6px; padding: 9px; font-weight: 700; font-size: 13px;
+      cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px;
+    }
+    .btn-save-all:hover { background: #0369a1; }
+    .btn-save-all:disabled { background: #334155; cursor: wait; }
+    /* Cột phải 1/4: ngày + mẫu decor còn lại dạng danh sách */
+    .date-control { display: flex; align-items: center; gap: 6px; font-weight: 600; margin-bottom: 6px; flex-shrink: 0; }
+    .date-control input[type="date"] {
+      flex: 1; min-width: 0; background: #0b1120; border: 1.5px solid #38bdf8; color: #ffffff;
+      padding: 4px 6px; border-radius: 5px; font-size: 12px; outline: none; cursor: pointer;
+    }
+    .stat-ribbon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 6px; flex-shrink: 0; }
+    .stat-pill {
+      background: #0b1120; border: 1px solid #1f293d; border-radius: 5px;
+      padding: 3px 2px; text-align: center; font-size: 10px; font-weight: 600; white-space: nowrap;
+    }
+    .stat-pill b { color: #38bdf8; font-size: 12px; display: block; }
+    .lock-warning {
+      background: #7f1d1d; border: 1px solid #ef4444; color: #fecaca;
+      padding: 6px 8px; border-radius: 5px; font-weight: 700; text-align: center;
+      margin-bottom: 6px; font-size: 11px; display: none; flex-shrink: 0;
+    }
+    .decor-list-head {
+      font-weight: 700; color: #94a3b8; font-size: 11px; margin-bottom: 5px; text-transform: uppercase; flex-shrink: 0;
+    }
+    .decor-list-head small { display: block; text-transform: none; font-weight: 500; color: #64748b; }
+    .decor-viewport { flex: 1; overflow-y: auto; padding-right: 2px; min-height: 0; }
+    .decor-list-layout { display: flex; flex-direction: column; gap: 4px; }
+    .decor-list-row {
+      display: flex; align-items: center; gap: 6px;
+      background: #0b1120; border: 1px solid #1f293d; border-radius: 5px;
+      padding: 4px 6px; cursor: pointer; min-width: 0;
+    }
+    .decor-list-row:hover { border-color: #38bdf8; background: #0e1b2e; }
+    .decor-list-row.selected { border-color: #f472b6; background: #2a1328; }
+    .decor-list-row.booked { opacity: 0.45; cursor: not-allowed; }
+    .decor-list-row.booked:hover { border-color: #1f293d; background: #0b1120; }
+    .decor-list-thumb { width: 34px; height: 34px; border-radius: 4px; object-fit: cover; flex-shrink: 0; background: #1e293b; }
+    .decor-list-text { min-width: 0; flex: 1; }
+    .decor-list-name { font-weight: 700; color: #f8fafc; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .decor-list-sub { font-size: 10px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .decor-section-label { font-size: 10px; font-weight: 700; color: #64748b; margin: 6px 0 2px; text-transform: uppercase; }
+  </style>
+  <style>
+    /* Canh chữ chung mọi nền tảng: tiêu đề cân dòng, đoạn văn không để chữ lẻ, nút nhỏ / nhãn / SĐT không tách dòng */
+    h1, h2, h3, h4, h5, h6, .modal-title, .card-title { text-wrap: balance; }
+    p, li, label, small, .small, .alert, .form-text, .note, td { text-wrap: pretty; }
+    .btn-sm, .badge, .nav-link, a[href^="tel:"], .text-nowrap { white-space: nowrap; }
+    .btn:not(.btn-sm) { text-wrap: balance; }
+    input, select, textarea { min-width: 0; }
+    a[href^="mailto:"], .email, [class*="email"] { overflow-wrap: anywhere; }
+    @media (max-width: 576px) { h4 { font-size: clamp(1.05rem, 5vw, 1.4rem); } h5 { font-size: clamp(1rem, 4.4vw, 1.2rem); } }
+  </style>
+</head>
+<body>
+  <datalist id="timeSuggestions">
+    <option value="11h00"></option><option value="11h30"></option><option value="14h00"></option>
+    <option value="15h30"></option><option value="16h00"></option><option value="16h30"></option>
+    <option value="17h00"></option><option value="17h30"></option><option value="18h00"></option>
+    <option value="18h15"></option><option value="18h30"></option><option value="18h45"></option>
+    <option value="19h00"></option><option value="19h15"></option><option value="19h30"></option>
+    <option value="20h00"></option><option value="20h30"></option>
+  </datalist>
+  <datalist id="depositSuggestions">
+    <option value="0"></option><option value="100.000"></option><option value="200.000"></option>
+    <option value="300.000"></option><option value="500.000"></option><option value="600.000"></option><option value="1.000.000"></option>
+  </datalist>
+  <datalist id="channelSuggestions">
+    <option value="FB">Facebook</option><option value="Zal">Zalo</option><option value="Web">Web đặt bàn</option>
+    <option value="GSh">Nhập trên Google Sheet</option><option value="Tik">TikTok</option><option value="IG">Instagram</option>
+    <option value="Thread">Threads</option><option value="Call">Gọi điện / Hotline</option><option value="Khác">Khác</option>
+  </datalist>
+
+  <div class="viewport-grid">
+    <div class="panel-left">
+      <div class="paste-box-wrap">
+        <textarea class="multi-paste-box" id="multiPasteArea" placeholder="Dán nội dung 1 hoặc nhiều đơn tại đây (ngăn cách bằng --- hoặc Tên: ...) Hệ thống tự nhận diện Ngày, Tên, SĐT, Số khách, Kênh, Decor, Mẫu Decor, Đặt món, Cọc, ID, Email..." onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0); }" onpaste="var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0);" onblur="handleMultiPaste(this.value)"></textarea>
+      </div>
+      <div class="tag-header-label">
+        <span>📁 CÁC THẺ TAG ĐƠN (<span id="tagCountLabel">0</span>)</span>
+        <button type="button" style="background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; border-radius:4px; padding:2px 8px; font-size:10px; cursor:pointer; font-weight:700;" onclick="createTagFromText('')">+ Thêm thẻ trống</button>
+      </div>
+      <div class="tags-container" id="tagsContainer"></div>
+      <div class="bottom-save-wrap">
+        <div class="badge-target-row-bottom" id="badgeTargetRow">Vị trí lưu DATA_TONG dòng ...</div>
+        <button class="btn-save-all" id="btnSave" onclick="saveAllTagsToSheet()">💾 Lưu Đơn Vào DATA_TONG</button>
+      </div>
+    </div>
+
+    <div class="panel-right">
+      <div class="date-control">
+        <span>📅 Ngày:</span>
+        <input type="date" id="dateSelector" onchange="onDateChanged()">
+      </div>
+      <div class="stat-ribbon">
+        <div class="stat-pill" title="Bàn decor dưới 6 khách">🎀 &lt; 6<b id="cntNho">0</b></div>
+        <div class="stat-pill" title="Bàn decor từ 6 khách">🎉 ≥ 6<b id="cntLon">0</b></div>
+        <div class="stat-pill" title="Bàn thường">🍽️ Thường<b id="cntThuong">0</b></div>
+      </div>
+      <div class="lock-warning" id="lockWarning"></div>
+      <div class="decor-list-head">
+        ✨ MẪU DECOR CÒN LẠI (<span id="decorRemainLabel">0</span>)
+        <small id="decorHint">Nhấp để gán vào thẻ đang chọn</small>
+      </div>
+      <div class="decor-viewport" id="decorViewport"></div>
+    </div>
+  </div>
+
+  <script>
+    // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
+    var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
+    var ADMIN_FNS = ["getDateContextFast","getQuickDecorCatalog","luuDanhSachDatBan"];
+    function adminRun() {
+      var ok = null, fail = null, o = {
+        withSuccessHandler: function(h) { ok = h; return o; },
+        withFailureHandler: function(h) { fail = h; return o; }
+      };
+      ADMIN_FNS.forEach(function(ten) {
+        o[ten] = function() {
+          var r = google.script.run;
+          if (ok) r = r.withSuccessHandler(ok);
+          r = r.withFailureHandler(fail || function(err) { alert("Lỗi: " + (err && err.message ? err.message : err)); });
+          r.adminApi(ADMIN_KEY, ten, Array.prototype.slice.call(arguments));
+        };
+      });
+      return o;
+    }
+
+    var tagList = [];
+    var activeTagIndex = 0;
+    var cachedDecorList = [];
+    var currentBookedMap = {};
+    var isDecorLocked = false;
+    var lockMessage = "";
+    var currentContextDate = "";
+    var currentBaseRow = 433;
+
+    function localDateKey(d) {
+      var pad = function(n) { return (n < 10 ? "0" : "") + n; };
+      return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+    }
+
+    function esc(str) {
+      return String(str === null || str === undefined ? "" : str)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    // Mức cọc decor lấy từ tab ⚙️ CÀI ĐẶT CỌC; chưa tải xong thì dùng mức mặc định
+    var COC = { nguong: 24, cocThap: 300000, cocCao: 500000 };
+    function cocTheoSoKhach(soKhach) {
+      var n = parseInt(soKhach, 10) || 2;
+      return (n <= COC.nguong ? COC.cocThap : COC.cocCao).toLocaleString('vi-VN');
+    }
+
+    window.onload = function() {
+      google.script.run.withSuccessHandler(function(cd) {
+        if (cd && cd.nguong && cd.cocThap && cd.cocCao) COC = cd;
+      }).withFailureHandler(function() {}).layCaiDatCoc();
+      document.getElementById('dateSelector').value = localDateKey(new Date());
+      createTagFromText("");
+
+      adminRun().withSuccessHandler(function(list) {
+        cachedDecorList = list || [];
+        onDateChanged();
+      }).getQuickDecorCatalog();
+    };
+
+    // Gõ ngày bắn change theo từng phần (ngày/tháng/năm) -> gom lại, chỉ gọi máy chủ 1 lần
+    var _dateTimer = null;
+    function onDateChanged() {
+      var d = document.getElementById('dateSelector').value;
+      document.getElementById('decorViewport').innerHTML = "<div style='text-align:center; padding:30px; color:#64748b;'>Đang tải ngày " + esc(d) + "...</div>";
+      clearTimeout(_dateTimer);
+      _dateTimer = setTimeout(taiDuLieuNgay_, 400);
+    }
+
+    function taiDuLieuNgay_() {
+      var d = document.getElementById('dateSelector').value;
+      if (!d) return;
+      adminRun().withSuccessHandler(function(res) {
+        if (!res) return;
+        if (document.getElementById('dateSelector').value !== d) return; // đã đổi sang ngày khác trong lúc chờ
+        currentContextDate = d;
+        currentBaseRow = res.targetRow || 433;
+        currentBookedMap = res.bookedSamples || {};
+        updateBadgeRow();
+
+        document.getElementById('cntNho').innerText = res.counts ? res.counts.nho : 0;
+        document.getElementById('cntLon').innerText = res.counts ? res.counts.lon : 0;
+        document.getElementById('cntThuong').innerText = res.counts ? res.counts.thuong : 0;
+
+        if (res.isGlobalLocked) {
+          isDecorLocked = true;
+          lockMessage = "🔒 HỆ THỐNG ĐÃ KHÓA TOÀN BỘ DECOR (DATA_TONG!H1)";
+        } else if (res.isDateLocked) {
+          isDecorLocked = true;
+          lockMessage = "🔒 NGÀY NÀY ĐÃ KHÓA NHẬN DECOR TRÊN CALENDER-BOOKING (FULL DECOR)";
+        } else {
+          isDecorLocked = false;
+          lockMessage = "";
+        }
+        renderDecorView();
+      }).getDateContextFast(d);
+    }
+
+    function updateBadgeRow() {
+      var targetLine = currentBaseRow + activeTagIndex;
+      document.getElementById('badgeTargetRow').innerText = "Vị trí lưu DATA_TONG dòng " + targetLine + " (Tổng " + tagList.length + " đơn)";
+    }
+
+    // Luật giống web đặt bàn: Thứ 6 & Thứ 7 khóa decor từ 18h31 (giờ đón hoặc thời điểm nhập)
+    function khoaGioDecor(dateStr, gioStr) {
+      if (!dateStr) return "";
+      var parts = dateStr.split("-").map(Number);
+      if (parts.length < 3) return "";
+      var day = new Date(parts[0], parts[1] - 1, parts[2]).getDay();
+      if (day !== 5 && day !== 6) return "";
+      var LOCK = 18 * 60 + 31;
+      var m = String(gioStr || "").match(/(\d{1,2})\s*[h:g]\s*(\d{0,2})/i);
+      if (m && (parseInt(m[1], 10) * 60 + (parseInt(m[2], 10) || 0)) >= LOCK) {
+        return "🔒 Thứ 6 & Thứ 7 khóa decor cho giờ đón từ 18h31 trở đi";
+      }
+      var now = new Date();
+      var today = localDateKey(now);
+      if (dateStr < today || (dateStr === today && now.getHours() * 60 + now.getMinutes() >= LOCK)) {
+        return "🔒 Đã quá 18h31 Thứ 6 / Thứ 7 - đã khóa nhận decor cho ngày này";
+      }
+      return "";
+    }
+
+    // Số lần mẫu đã được dùng trong ngày: trên sheet + ở các thẻ khác đang nhập
+    function demMauDaDung(tenMau, dateStr, exceptIdx) {
+      var n = (dateStr === currentContextDate) ? (currentBookedMap[tenMau] || 0) : 0;
+      tagList.forEach(function(t, i) {
+        if (i !== exceptIdx && t.ngay === dateStr && (t.mauDecor || t.parsed.mauDecor) === tenMau) n++;
+      });
+      return n;
+    }
+
+    function renderDecorView() {
+      var box = document.getElementById('decorViewport');
+      var warn = document.getElementById('lockWarning');
+      var cur = tagList[activeTagIndex];
+      var timeLock = cur ? khoaGioDecor(cur.ngay, cur.parsed.gioVao) : "";
+      var msg = lockMessage || timeLock;
+      warn.style.display = msg ? "block" : "none";
+      warn.innerText = msg;
+      document.getElementById('decorHint').innerText = cur
+        ? ("Ngày " + currentContextDate.split("-").reverse().join("/") + " • gán vào thẻ #" + (activeTagIndex + 1))
+        : "Nhấp để gán vào thẻ đang chọn";
+
+      box.innerHTML = "";
+      if (isDecorLocked || timeLock) {
+        document.getElementById('decorRemainLabel').innerText = 0;
+        box.innerHTML = "<div style='text-align:center; padding:30px 10px; color:#ef4444; font-weight:700;'>Đã ẩn danh mục decor do thẻ đang chọn bị KHÓA NHẬN DECOR.</div>";
+        return;
+      }
+      if (!cachedDecorList || cachedDecorList.length === 0) {
+        box.innerHTML = "<div style='text-align:center; padding:30px; color:#64748b;'>Đang tải danh mục decor...</div>";
+        return;
+      }
+
+      var mauDangChon = cur ? (cur.mauDecor || cur.parsed.mauDecor || "") : "";
+      var conLai = [], daDat = [];
+      cachedDecorList.forEach(function(item) {
+        var used = demMauDaDung(item.tenMau, currentContextDate, activeTagIndex);
+        (used > 0 ? daDat : conLai).push({ item: item, used: used });
+      });
+      document.getElementById('decorRemainLabel').innerText = conLai.length + "/" + cachedDecorList.length;
+
+      var list = document.createElement('div');
+      list.className = "decor-list-layout";
+      function addRow(entry, booked) {
+        var item = entry.item;
+        var row = document.createElement('div');
+        row.className = "decor-list-row" + (booked ? " booked" : "") + (item.tenMau === mauDangChon ? " selected" : "");
+        row.title = item.tenMau + (item.chiTiet ? "\n" + item.chiTiet : "");
+        var img = item.hinhAnh || "https://via.placeholder.com/34/1e293b/64748b?text=D";
+        row.innerHTML = '<img src="' + esc(img) + '" class="decor-list-thumb" alt="">' +
+          '<div class="decor-list-text">' +
+            '<div class="decor-list-name">' + esc(item.tenMau) + '</div>' +
+            '<div class="decor-list-sub">' + (booked ? ('🔴 Đã đặt (' + entry.used + ')') : ('🟢 ' + esc(item.toneMau || 'Còn trống'))) + '</div>' +
+          '</div>';
+        if (!booked) row.onclick = function() { applyDecorToActiveTag(item); };
+        list.appendChild(row);
+      }
+      conLai.forEach(function(e) { addRow(e, false); });
+      if (daDat.length) {
+        var label = document.createElement('div');
+        label.className = "decor-section-label";
+        label.innerText = "Đã có khách đặt (" + daDat.length + ")";
+        list.appendChild(label);
+        daDat.forEach(function(e) { addRow(e, true); });
+      }
+      box.appendChild(list);
+    }
+
+    // Tách nhiều đơn: mỗi dòng tên khách mới ("Tên:", "Họ tên:", "Khách hàng:", "Khách: Lan"...) hoặc dòng "---" mở 1 thẻ mới
+    var RE_DONG_TEN = /^[\s•\-*+]*(?:Họ\s*(?:&|và)?\s*tên|Tên\s*(?:khách(?:\s*hàng)?|KH)?|Khách\s*hàng|Khách)\s*[:\-–]\s*(?!\d)\S/i;
+    function tachKhoiDon(rawText) {
+      var blocks = [], cur = [];
+      function dong() { var t = cur.join('\n').trim(); if (t.length > 3 && /[a-zA-Z0-9À-ỹ]/.test(t)) blocks.push(t); cur = []; }
+      rawText.split(/\r?\n/).forEach(function(line) {
+        if (/^\s*-{3,}\s*$/.test(line)) { dong(); return; }
+        if (RE_DONG_TEN.test(line) && cur.some(function(l) { return RE_DONG_TEN.test(l); })) dong();
+        cur.push(line);
+      });
+      dong();
+      return blocks;
+    }
+
+    // Gọi khi bấm Enter / dán / rời ô dán: giữ nguyên thẻ không đổi, thẻ đổi nội dung thì nhận diện lại
+    // nhưng vẫn giữ mẫu decor, ảnh, bill đã gán tay
+    function handleMultiPaste(rawText) {
+      if (!rawText || !rawText.trim()) return;
+      var blocks = tachKhoiDon(rawText);
+      if (!blocks.length) return;
+      var cu = tagList.filter(function(t) { return t.raw; });
+      var thayDoi = -1;
+      tagList = blocks.map(function(block, i) {
+        var old = cu[i];
+        if (old && old.raw === block) return old;
+        if (thayDoi < 0) thayDoi = i;
+        var t = createTagObject(block);
+        if (old) {
+          if (!t.mauDecor && old.mauDecor) { t.mauDecor = old.mauDecor; t.parsed.mauDecor = old.mauDecor; }
+          if (old.anhDecor) t.anhDecor = old.anhDecor;
+          if (old.billBase64) t.billBase64 = old.billBase64;
+        }
+        return t;
+      });
+      activeTagIndex = thayDoi >= 0 ? Math.max(thayDoi, blocks.length - 1) : Math.min(activeTagIndex, tagList.length - 1);
+      renderAllTags();
+      dongBoNgayTheoThe();
+    }
+
+    function createTagFromText(txt) {
+      tagList.push(createTagObject(txt));
+      activeTagIndex = tagList.length - 1;
+      renderAllTags();
+      dongBoNgayTheoThe();
+    }
+
+    // Danh sách mẫu decor bên phải luôn theo ngày của thẻ đang chọn
+    function dongBoNgayTheoThe() {
+      var tag = tagList[activeTagIndex];
+      var sel = document.getElementById('dateSelector');
+      if (tag && tag.ngay && tag.ngay !== sel.value) {
+        sel.value = tag.ngay;
+        onDateChanged();
+      } else {
+        renderDecorView();
+      }
+    }
+
+    function createTagObject(blockText) {
+      var parsed = parseSmartBlock(blockText);
+      var defaultDate = document.getElementById('dateSelector').value;
+      var finalDate = parsed.ngay || defaultDate;
+      return {
+        raw: blockText,
+        ngay: finalDate,
+        mauDecor: parsed.mauDecor || '',
+        anhDecor: '',
+        parsed: parsed
+      };
+    }
+
+    // Nhận diện 1 đơn: nhãn chỉ tính ở ĐẦU DÒNG ("Nhãn: giá trị") để không bắt nhầm chữ nằm giữa câu
+    // (VD "Nhóm bàn:" không còn bị hiểu là Bàn số, "Mẫu decor:" không còn bị hiểu là nội dung Decor)
+    function parseSmartBlock(txt) {
+      var p = {
+        ngay: '', ten: '', sdt: '', soKhach: '2', gioVao: '18h30', banSo: '',
+        decor: '', mauDecor: '', datMon: '', coc: '0', vat: 'Không', be: 'Không', ghiChu: '', id: '', kenh: 'GSh', email: '',
+        tinhThanh: '', doTuoi: '', gioiTinh: ''
+      };
+      if (!txt || !txt.trim()) return p;
+      var lines = txt.split(/\r?\n/).map(function(l) { return l.trim(); }).filter(function(l) { return l; });
+
+      function nhan(label) {
+        var re = new RegExp('^[\\s•\\-*+]*(?:' + label + ')\\s*[:\\-–]\\s*(.+)$', 'i');
+        for (var i = 0; i < lines.length; i++) {
+          var m = lines[i].match(re);
+          if (m) return m[1].trim();
+        }
+        return '';
+      }
+      var RE_SDT = /(?:^|[^\d])((?:\+?84|0)(?:[\s.\-]?\d){8,10})(?!\d)/;
+      function laySdt(s) {
+        var m = String(s || '').match(RE_SDT);
+        if (!m) return '';
+        var d = m[1].replace(/[^\d]/g, '');
+        return d.indexOf('84') === 0 && d.length > 10 ? '0' + d.slice(2) : d;
+      }
+      var RE_NGAY = /(?:^|[^\d])(\d{1,2})[\/\-.](\d{1,2})(?:[\/\-.](\d{2,4}))?(?!\d)/;
+      function layNgay(s) {
+        var m = String(s || '').match(RE_NGAY);
+        if (!m || +m[1] > 31 || +m[2] > 12 || +m[1] < 1 || +m[2] < 1) return '';
+        return normalizeDateString(m[1] + '/' + m[2] + (m[3] ? '/' + m[3] : ''));
+      }
+      var RE_GIO = /(?:^|[^\d\/.])([01]?\d|2[0-3])\s*(?:h|g|giờ|:)\s*([0-5]\d)?(?![\d\/])/i;
+      function layGio(s) {
+        var m = String(s || '').match(RE_GIO);
+        return m ? (m[1] + 'h' + (m[2] || '')) : '';
+      }
+
+      // 1. Ngày: dòng có nhãn trước, sau đó tìm ngày ở dòng thời gian / bất kỳ dòng nào
+      p.ngay = layNgay(nhan('Ngày(?:\\s*(?:đặt|đến|dùng))?(?:\\s*bàn)?|Date')) || layNgay(nhan('Thời\\s*gian|Giờ(?:\\s*(?:đến|đón|vào))?')) || layNgay(txt);
+
+      // 2. SĐT: từng dòng riêng (không nối số của dòng dưới)
+      p.sdt = laySdt(nhan('SĐT|SDT|Số\\s*điện\\s*thoại|Điện\\s*thoại|Phone|Tel|ĐT|Đt'));
+      if (!p.sdt) { for (var i = 0; i < lines.length && !p.sdt; i++) p.sdt = laySdt(lines[i]); }
+
+      // 3. Tên: bỏ phần số điện thoại dính kèm
+      var ten = nhan('Họ\\s*(?:&|và)?\\s*tên|Tên\\s*(?:khách(?:\\s*hàng)?|KH)?|Khách\\s*hàng|Khách');
+      if (ten && !/^\d/.test(ten)) p.ten = ten.replace(RE_SDT, '').replace(/[\s\-–,|]+$/, '').trim();
+
+      // 4. Số khách (+ ghế em bé)
+      var khach = nhan('Số\\s*khách|Số\\s*lượng(?:\\s*khách)?|Lượng\\s*khách|Số\\s*người|Pax') || (/^\d/.test(nhan('Khách')) ? nhan('Khách') : '');
+      if (!khach) { var mk = txt.match(/(\d{1,2})\s*(?:người|khách|pax|lớn|ng\b)[^\n]*/i); if (mk) khach = mk[0]; }
+      if (khach) {
+        var mCombo = khach.match(/(\d{1,2})\s*lớn.*?(\d{1,2})\s*(?:bé|trẻ)/i);
+        if (mCombo) { p.soKhach = mCombo[1]; p.be = parseInt(mCombo[2], 10) + ' ghế em bé'; }
+        else { var mNum = khach.match(/(\d{1,2}(?:\s*[\-+]\s*\d{1,2})?)/); if (mNum) p.soKhach = mNum[1].replace(/\s+/g, ''); }
+      }
+
+      // 5. Giờ: dòng có nhãn trước, rồi tìm giờ bất kỳ (không nhầm với ngày)
+      p.gioVao = layGio(nhan('Giờ(?:\\s*(?:đến|đón|vào))?|Thời\\s*gian|Lúc')) || layGio(txt) || '18h30';
+
+      // 6. Bàn số: bỏ qua giá trị là nhóm bàn ("Bàn decor < 6 khách", "Bàn thường"...)
+      var ban = nhan('Bàn\\s*số|Số\\s*bàn|Bàn|Table');
+      if (ban && !/decor|thường|khách|nhóm/i.test(ban)) p.banSo = ban;
+      if (!p.banSo) { var mb = txt.match(/bàn\s*số\s*([A-Za-z]?\d+[A-Za-z]?)/i); if (mb) p.banSo = mb[1]; }
+
+      // 7. Kênh / nguồn: theo nhãn, sau đó theo từ khóa nguyên từ (không bắt "ig" trong "Light")
+      p.kenh = chuanKenh(nhan('Kênh|Nguồn|Channel')) || chuanKenh(txt, true) || 'GSh';
+
+      // 8. Các trường còn lại
+      var mEmail = txt.match(/([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/);
+      if (mEmail) p.email = mEmail[1].trim();
+      p.id = nhan('ID|Mã\\s*(?:đơn|đặt\\s*bàn|KH)');
+      p.mauDecor = nhan('Mẫu(?:\\s*decor[e]?)?');
+      var decor = nhan('Decor|Nội\\s*dung(?:\\s*(?:bảng|decor))?|Bảng(?:\\s*tên)?|Ghi\\s*bảng');
+      if (decor && decor.toLowerCase() !== 'không') p.decor = decor;
+      var coc = nhan('Tiền\\s*cọc|Đã\\s*cọc|Đặt\\s*cọc|Cọc');
+      if (coc) {
+        var num = parseInt(coc.replace(/[^0-9]/g, ''), 10) || 0;
+        if (/k\b|k$|nghìn|ngàn/i.test(coc) && num < 1000) num *= 1000;
+        if (/tr|triệu/i.test(coc) && num < 100) num *= 1000000;
+        p.coc = num > 0 ? num.toLocaleString('vi-VN') : '0';
+      }
+      if ((p.decor || p.mauDecor) && (p.coc === '0' || !p.coc)) p.coc = cocTheoSoKhach(p.soKhach);
+      var mon = nhan('Đặt\\s*món|Món(?:\\s*ăn)?|Menu|Ord(?:\\s*món)?');
+      if (mon && !/^(chưa ord|không|chưa)$/i.test(mon)) p.datMon = mon;
+      var low = txt.toLowerCase();
+      if (/vat\s*[:\-]?\s*có|xuất\s*vat|có\s*vat/.test(low) && !/không\s*xuất\s*vat|vat\s*[:\-]?\s*không/.test(low)) p.vat = 'Có xuất VAT';
+      if (p.be === 'Không') {
+        var mBe = txt.match(/(\d+)\s*(?:bé|trẻ em)/i) || txt.match(/(?:Em bé|Trẻ em|Ghế bé)\s*[:\-]\s*(\d+)/i);
+        if (mBe && parseInt(mBe[1], 10) > 0) p.be = parseInt(mBe[1], 10) + ' ghế em bé';
+      }
+      p.ghiChu = nhan('Ghi\\s*chú|Note|Lưu\\s*ý');
+      p.tinhThanh = nhan('Tỉnh(?:\\s*/\\s*thành(?:\\s*phố)?)?|Tỉnh\\s*thành|Thành\\s*phố|Quê|Đến\\s*từ');
+      p.doTuoi = nhan('Độ\\s*tuổi|Tuổi');
+      p.gioiTinh = nhan('Giới\\s*tính');
+      return p;
+    }
+
+    // Chuẩn hóa kênh về: FB, Zal, Web, GSh, Tik, IG, Thread, Call (khác giữ nguyên chữ người dùng gõ)
+    function chuanKenh(s, chiTuKhoa) {
+      var t = String(s || '').toLowerCase();
+      if (!t.trim()) return '';
+      var bo = t.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+      if (/\b(zalo|zal|zl|za)\b/.test(bo)) return 'Zal';
+      if (/\b(tiktok|tik\s*tok|tik|tt)\b/.test(bo)) return 'Tik';
+      if (/\b(threads?|thread)\b/.test(bo)) return 'Thread';
+      if (/\b(instagram|insta|ig)\b/.test(bo)) return 'IG';
+      if (/\b(facebook|fb|messenger|mess|face)\b/.test(bo)) return 'FB';
+      if (/\b(gsh|google\s*sheet|sheet)\b/.test(bo)) return 'GSh';
+      if (/\b(web|website)\b/.test(bo)) return 'Web';
+      if (/\b(hotline|call|goi dien)\b/.test(bo)) return 'Call';
+      return chiTuKhoa ? '' : String(s).trim();
+    }
+
+    function normalizeDateString(dateStr) {
+      if (!dateStr) return '';
+      var clean = dateStr.replace(/[\.\s]/g, '-').replace(/\//g, '-');
+      var parts = clean.split('-');
+      var currentYear = new Date().getFullYear();
+      if (parts.length === 2) {
+        return currentYear + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
+      } else if (parts.length === 3) {
+        if (parts[0].length === 4) return parts[0] + '-' + parts[1].padStart(2, '0') + '-' + parts[2].padStart(2, '0');
+        var year = parts[2].length === 2 ? ('20' + parts[2]) : parts[2];
+        return year + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
+      }
+      return '';
+    }
+
+    function updateCardField(idx, field, value) {
+      if (!tagList[idx]) return;
+      tagList[idx].lockReason = "";
+      if (field === 'ngay') {
+        tagList[idx].ngay = value;
+      } else if (field === 'mauDecor') {
+        tagList[idx].mauDecor = value;
+        tagList[idx].parsed.mauDecor = value;
+        if (!value) tagList[idx].anhDecor = "";
+      } else {
+        tagList[idx].parsed[field] = value;
+      }
+      if (idx !== activeTagIndex) return;
+      if (field === 'ngay' && value && value !== document.getElementById('dateSelector').value) {
+        document.getElementById('dateSelector').value = value;
+        onDateChanged();
+      } else if (field === 'ngay' || field === 'gioVao' || field === 'mauDecor') {
+        renderDecorView();
+      }
+    }
+
+    function applyDecorToActiveTag(decorItem) {
+      var cur = tagList[activeTagIndex];
+      if (!cur) return;
+      if (cur.ngay !== currentContextDate) {
+        document.getElementById('dateSelector').value = cur.ngay;
+        onDateChanged();
+        alert("Thẻ #" + (activeTagIndex + 1) + " là ngày " + cur.ngay + ". Danh sách đã chuyển sang ngày này, vui lòng chọn lại mẫu.");
+        return;
+      }
+      if (isDecorLocked) { alert(lockMessage); return; }
+      var timeLock = khoaGioDecor(cur.ngay, cur.parsed.gioVao);
+      if (timeLock) { alert(timeLock); return; }
+      if (demMauDaDung(decorItem.tenMau, cur.ngay, activeTagIndex) > 0) {
+        alert("Mẫu \"" + decorItem.tenMau + "\" ngày " + cur.ngay + " đã có khách đặt.");
+        return;
+      }
+
+      cur.lockReason = "";
+      cur.mauDecor = decorItem.tenMau;
+      cur.anhDecor = decorItem.hinhAnh;
+      cur.parsed.mauDecor = decorItem.tenMau;
+      if (!cur.parsed.decor) cur.parsed.decor = "Có";
+
+      var kNum = parseInt(cur.parsed.soKhach, 10) || 2;
+      if (cur.parsed.coc === '0' || !cur.parsed.coc) {
+        cur.parsed.coc = cocTheoSoKhach(kNum);
+      }
+      renderAllTags();
+      renderDecorView();
+    }
+
+    function selectTagAt(index) {
+      if (index === activeTagIndex) return;
+      activeTagIndex = index;
+      renderAllTags();
+      dongBoNgayTheoThe();
+    }
+
+    // Ảnh bill chuyển khoản của từng thẻ: thu nhỏ (tối đa 1400px) rồi gửi kèm khi lưu -> lưu Drive, link vào cột Bill Bank
+    function chonBillThe(idx, input) {
+      var file = input.files && input.files[0];
+      if (!file || !tagList[idx]) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var img = new Image();
+        img.onload = function() {
+          var scale = Math.min(1, 1400 / Math.max(img.width, img.height));
+          var c = document.createElement('canvas');
+          c.width = Math.round(img.width * scale);
+          c.height = Math.round(img.height * scale);
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          tagList[idx].billBase64 = c.toDataURL('image/jpeg', 0.82);
+          renderAllTags();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Cùng quy tắc với máy chủ (taoMaDatBan_): KÊNH.5 số cuối SĐT.ddmm
+    function taoMaDatBan(kenh, sdt, ngay) {
+      var k = String(kenh || "").toLowerCase(), code = "KHAC";
+      var chu = k.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z]/g, "");
+      if (/web/.test(k)) code = "WEB";
+      else if (/^(zalo|zl|za)/.test(chu)) code = "ZA";
+      else if (/^(tiktok|tik|tt)/.test(chu)) code = "TIK";
+      else if (/^(instagram|insta|ig)/.test(chu)) code = "IG";
+      else if (/^(facebook|face|fb)/.test(chu)) code = "FB";
+      else if (/^(gsh|googlesheet|sheet)/.test(chu)) code = "GSH";
+      else if (/^thread/.test(chu)) code = "THR";
+      else if (/^(call|hotline|goi|dien)/.test(chu)) code = "CALL";
+      var last5 = ("00000" + String(sdt || "").replace(/\D/g, "")).slice(-5);
+      var m = String(ngay || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      return code + "." + last5 + (m ? "." + m[3] + m[2] : "");
+    }
+
+    function deleteTagAt(index, e) {
+      e.stopPropagation();
+      if (tagList.length <= 1) {
+        tagList[0] = createTagObject("");
+      } else {
+        tagList.splice(index, 1);
+        if (activeTagIndex >= tagList.length) activeTagIndex = tagList.length - 1;
+      }
+      renderAllTags();
+      renderDecorView();
+    }
+
+    // Ô nhập trong thẻ: nhãn là icon (tooltip ghi tên trường) để thẻ gọn, hiển thị 3 cột
+    function fieldHtml(idx, icon, label, field, value, opts) {
+      opts = opts || {};
+      var evt = opts.live ? 'oninput' : 'onchange';
+      var input = opts.textarea
+        ? '<textarea class="card-textarea" placeholder="' + label + '..." ' + evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">' + esc(value) + '</textarea>'
+        : '<input type="' + (opts.type || 'text') + '" class="card-input"' + (opts.list ? ' list="' + opts.list + '"' : '') +
+          (opts.style ? ' style="' + opts.style + '"' : '') + ' placeholder="' + label + '" value="' + esc(value) + '" ' +
+          evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">';
+      return '<div class="card-field-row' + (opts.full ? ' card-edit-col-full' : '') + '"><span class="card-field-label" title="' + label + '">' + icon + '</span>' + input + '</div>';
+    }
+
+    function renderAllTags() {
+      var container = document.getElementById('tagsContainer');
+      container.innerHTML = "";
+      document.getElementById('tagCountLabel').innerText = tagList.length;
+      updateBadgeRow();
+
+      tagList.forEach(function(tag, idx) {
+        var card = document.createElement('div');
+        card.className = "folder-tag-card" + (idx === activeTagIndex ? " active" : "") + (tag.lockReason ? " has-error" : "");
+        card.onclick = function() { selectTagAt(idx); };
+
+        var p = tag.parsed;
+        var tagTitle = p.ten || p.sdt || ("Thẻ khách " + (idx + 1)); // ngắn gọn để vừa 7 thẻ/dòng (SĐT xem ở ô bên dưới)
+        var mauVal = tag.mauDecor || p.mauDecor || '';
+
+        card.innerHTML =
+          '<div class="folder-tag-header">' +
+            '<div class="folder-tag-title" title="' + esc(tagTitle) + '">' + esc(tagTitle) + '</div>' +
+            '<div class="tag-actions">' +
+              '<label class="btn-bill' + (tag.billBase64 ? ' has-bill' : '') + '" title="' + (tag.billBase64 ? 'Đã có ảnh bill - bấm để đổi ảnh' : 'Tải ảnh bill chuyển khoản') + '" onclick="event.stopPropagation()">🧾' +
+                '<input type="file" accept="image/*" onchange="chonBillThe(' + idx + ', this)"></label>' +
+              '<button class="btn-del-tag" title="Xóa thẻ" onclick="deleteTagAt(' + idx + ', event)">✕</button>' +
+            '</div>' +
+          '</div>' +
+          (tag.lockReason ? '<div class="tag-lock-reason">' + esc(tag.lockReason) + '</div>' : '') +
+          (tag.anhDecor ? '<div class="tag-thumb"><img src="' + esc(tag.anhDecor) + '" alt=""><span>✨ ' + esc(mauVal) + '</span></div>' : '') +
+          '<div class="card-edit-grid">' +
+            fieldHtml(idx, '📅', 'Ngày', 'ngay', tag.ngay, { type: 'date' }) +
+            fieldHtml(idx, '⏰', 'Giờ vào', 'gioVao', p.gioVao || '18h30', { list: 'timeSuggestions' }) +
+            fieldHtml(idx, '👤', 'Họ tên KH', 'ten', p.ten, { live: true }) +
+            fieldHtml(idx, '📞', 'SĐT', 'sdt', p.sdt, { live: true }) +
+            fieldHtml(idx, '👥', 'Số khách', 'soKhach', p.soKhach || '2', { style: 'color:#38bdf8; font-weight:700;' }) +
+            fieldHtml(idx, '🪑', 'Bàn số', 'banSo', p.banSo) +
+            fieldHtml(idx, '💰', 'Tiền cọc', 'coc', p.coc || '0', { list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
+            fieldHtml(idx, '🌐', 'Kênh', 'kenh', p.kenh || 'GSh', { list: 'channelSuggestions', style: 'color:#38bdf8; font-weight:600;' }) +
+            fieldHtml(idx, '🆔', 'Mã ID (để trống: ' + taoMaDatBan(p.kenh, p.sdt, tag.ngay) + ')', 'id', p.id) +
+            '<div class="card-field-row"><span class="card-field-label" title="Xuất VAT">🧾</span>' +
+              '<select class="card-select" onchange="updateCardField(' + idx + ', \'vat\', this.value)" onclick="event.stopPropagation()">' +
+                '<option value="Không" ' + (p.vat !== 'Có xuất VAT' ? 'selected' : '') + '>Không VAT</option>' +
+                '<option value="Có xuất VAT" ' + (p.vat === 'Có xuất VAT' ? 'selected' : '') + '>Có VAT</option>' +
+              '</select>' +
+            '</div>' +
+            fieldHtml(idx, '👶', 'Ghế em bé', 'be', p.be || 'Không') +
+            fieldHtml(idx, '✉️', 'Email khách', 'email', p.email) +
+            fieldHtml(idx, '✨', 'Mẫu decor (chọn ở cột phải)', 'mauDecor', mauVal, { full: true, style: 'color:#f472b6; font-weight:700;' }) +
+            fieldHtml(idx, '🎀', 'Nội dung bảng tiệc / Decor', 'decor', p.decor, { full: true, style: 'color:#38bdf8; font-weight:600;' }) +
+            fieldHtml(idx, '🍲', 'Đặt món', 'datMon', p.datMon, { full: true, textarea: true }) +
+            fieldHtml(idx, '📝', 'Ghi chú', 'ghiChu', p.ghiChu, { full: true, textarea: true }) +
+          '</div>';
+        container.appendChild(card);
+      });
+    }
+
+    function saveAllTagsToSheet() {
+      var btn = document.getElementById('btnSave');
+      btn.disabled = true;
+      btn.innerText = "⏳ Đang đẩy dữ liệu vào DATA_TONG...";
+
+      var orders = tagList.map(function(t) {
+        var p = t.parsed;
+        var cleanDeposit = 0;
+        if (p.coc) {
+          var num = parseInt(String(p.coc).replace(/[^0-9]/g, ''), 10);
+          if (String(p.coc).toLowerCase().indexOf('k') !== -1 && num < 1000) {
+            cleanDeposit = num * 1000;
+          } else {
+            cleanDeposit = num || 0;
+          }
+        }
+        var noteArr = [];
+        if (p.vat && p.vat !== "Không") noteArr.push(p.vat);
+        if (p.be && p.be !== "Không") noteArr.push(p.be);
+        if (p.ghiChu && p.ghiChu.trim()) noteArr.push(p.ghiChu.trim());
+
+        return {
+          ngay: t.ngay,
+          hoTen: p.ten,
+          sdt: p.sdt,
+          soKhach: p.soKhach,
+          banSo: p.banSo,
+          gioVao: p.gioVao,
+          id: p.id || "",
+          tienCoc: cleanDeposit,
+          datMon: p.datMon,
+          decor: p.decor,
+          mauDecor: t.mauDecor || p.mauDecor || "",
+          anhDecor: t.anhDecor || "",
+          billBase64: t.billBase64 || "",
+          kenhNguon: p.kenh || "GSh",
+          tinhThanh: p.tinhThanh || "",
+          doTuoi: p.doTuoi || "",
+          gioiTinh: p.gioiTinh || "",
+          ghiChu: noteArr.join(" - "),
+          email: p.email || ""
+        };
+      });
+
+      adminRun()
+        .withSuccessHandler(function(res) {
+          if (!res || !res.success) {
+            (res && res.invalid || []).forEach(function(x) {
+              if (tagList[x.index]) tagList[x.index].lockReason = x.reason;
+            });
+            if (res && res.invalid) renderAllTags();
+            alert("❌ " + (res ? res.message : "Lỗi không xác định"));
+            btn.disabled = false;
+            btn.innerText = "💾 Lưu Đơn Vào DATA_TONG";
+            return;
+          }
+          alert("✅ Lưu thành công " + res.count + " đơn vào DATA_TONG!\n(Từ dòng " + res.fromRow + " đến dòng " + res.toRow + ").");
+          try {
+            google.script.host.close(); // popup trên Google Sheet
+          } catch (e) {
+            // Đang chạy trong web admin (tab 5): làm mới form để nhập tiếp
+            tagList = []; activeTagIndex = 0;
+            document.getElementById('multiPasteArea').value = "";
+            btn.disabled = false;
+            btn.innerText = "💾 Lưu Đơn Vào DATA_TONG";
+            createTagFromText("");
+            onDateChanged();
+          }
+        })
+        .withFailureHandler(function(err) {
+          alert("❌ Lỗi khi lưu: " + err);
+          btn.disabled = false;
+          btn.innerText = "💾 Lưu Đơn Vào DATA_TONG";
+        })
+        .luuDanhSachDatBan(orders);
+    }
+  </script>
+</body>
+</html>

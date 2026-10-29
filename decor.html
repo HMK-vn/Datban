@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+
+  <link rel="manifest" href="app-khach.webmanifest">
+  <link rel="apple-touch-icon" href="app_icon/icon_khach_180.png">
+  <link rel="icon" type="image/png" href="app_icon/icon_khach_192.png">
+  <meta name="theme-color" content="#5b2a86">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Túi Nướng"><script>
+/* Cầu nối thay cho google.script.run: gọi Apps Script qua API (không kèm cookie Google)
+   -> không bị lỗi "không thể mở tệp" khi trình duyệt đăng nhập nhiều tài khoản Google */
+(function () {
+  if (window.google && window.google.script) return;
+  var API = "https://script.google.com/macros/s/AKfycbxzF35ugPCL5jDZrmZzOSx4-ZsoEZimxM6lDKn4zYcajHimG_K1250pip16IEqsDHqQQg/exec";
+  function goi(ten, args, ok, fail) {
+    fetch(API, { method: "POST", redirect: "follow", credentials: "omit",
+      headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: ten, args: args }) })
+      .then(function (r) { if (!r.ok) throw new Error("Máy chủ trả lỗi " + r.status); return r.json(); })
+      .then(function (res) {
+        if (res.ok) { if (ok) ok(res.result); }
+        else { var e = new Error(res.error); if (fail) fail(e); else alert("Lỗi: " + res.error); }
+      })
+      .catch(function (err) {
+        var e = new Error("Không kết nối được máy chủ, vui lòng thử lại. (" + err.message + ")");
+        if (fail) fail(e); else alert(e.message);
+      });
+  }
+  function taoRun() {
+    var ok = null, fail = null, base = {
+      withSuccessHandler: function (f) { ok = f; return p; },
+      withFailureHandler: function (f) { fail = f; return p; },
+      withUserObject: function () { return p; }
+    };
+    var p = new Proxy(base, { get: function (t, ten) {
+      if (ten in t) return t[ten];
+      return function () { goi(String(ten), Array.prototype.slice.call(arguments), ok, fail); };
+    } });
+    return p;
+  }
+  window.google = { script: { host: { close: function () { throw new Error("Không chạy trong Google Sheet"); } } } };
+  Object.defineProperty(window.google.script, "run", { get: taoRun });
+})();
+</script>
+  <base target="_top">
+  <meta charset="utf-8">
+  <title>Ứng Dụng Đặt Bàn Ăn Decor - Túi Nướng Lavender</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #faf5ff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .card { border-radius: 14px; box-shadow: 0 4px 18px rgba(106, 27, 154, 0.1); border: none; }
+    .header-bar { background: linear-gradient(135deg, #4a148c, #7b1fa2); color: white; border-radius: 14px 14px 0 0; padding: 22px; }
+    .btn-submit { background-color: #6a1b9a; color: white; border-radius: 8px; font-weight: 700; padding: 13px; font-size: 16px; border: none; }
+    .btn-submit:hover { background-color: #4a148c; color: white; }
+    .btn-submit:disabled { background-color: #b39ddb; cursor: not-allowed; }
+    .decor-box { background-color: #fcf6fd; border-radius: 10px; padding: 16px; border: 1px dashed #ba68c8; }
+    .child-box { background-color: #fbf5fc; border: 1px dashed #ce93d8; border-radius: 8px; padding: 12px 16px; }
+    .vat-box { background-color: #f3e5f5; border: 1px solid #ce93d8; border-radius: 8px; padding: 12px 16px; }
+    .step-box { background: white; border: 1.5px solid #e1bee7; border-radius: 10px; padding: 14px; }
+    .step-circle { width: 30px; height: 30px; border-radius: 50%; background: #6a1b9a; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; }
+    .deposit-badge { background-color: #f3e5f5; border: 1.5px solid #ab47bc; border-radius: 8px; padding: 12px; }
+    .rule-banner-decor { background-color: #fff3cd; border: 2px solid #f59e0b; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 13.5px; color: #78350f; line-height: 1.5; text-align: center; }
+   /* Co gọn Nam/Nữ nhường chỗ cho Tỉnh/Thành */
+  .gender-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex: 0 0 130px !important;
+  }
+  .gender-group label {
+    margin: 0;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .city-group {
+    flex: 1 !important;
+  }
+  .row-gender-city {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+  }
+  /* Gợi ý email */
+  .email-suggest-box {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+  }
+  .email-suggest-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .email-suggest-item:hover {
+    background: #f0f7ff;
+    color: #1a73e8;
+  }
+    .hc-box { background: #fff; border: 1px dashed #b39ddb; border-radius: 10px; padding: 8px; }
+    .hc-qr { width: 86px; flex: 0 0 86px; border: 1.5px dashed #9575cd; border-radius: 9px; background: #f6effb; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; text-align: center; font-size: 20px; color: #6a1b9a; overflow: hidden; }
+    .hc-qr span { font-size: 11px; font-weight: 700; }
+    .hc-qr img { width: 100%; height: 100%; object-fit: cover; }
+    .hc-bank-list { position: absolute; z-index: 20; left: 0; right: 0; background: #fff; border: 1px solid #ddd2e6; border-radius: 8px;
+      margin-top: 2px; max-height: 180px; overflow-y: auto; display: none; box-shadow: 0 6px 16px rgba(74,20,140,.12); }
+    .hc-bank-item { padding: 6px 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f1eaf6; }
+    .hc-bank-item:hover { background: #f6effb; }
+  </style>
+  <style>
+    .tc-ok { text-align: center; }
+    .tc-buoc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; position: relative; }
+    .tc-buoc div { font-size: 11.5px; color: #6b6780; background: #f6f4f9; border-radius: 10px; padding: 8px 4px; line-height: 1.25; }
+    .tc-buoc div span { display: block; font-size: 20px; margin-bottom: 3px; }
+    .tc-buoc div.xong { background: #efe8f8; color: #4a2b6b; font-weight: 700; }
+    @media (max-width: 380px) { .tc-buoc { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+  <style>
+    /* Canh chữ chung mọi nền tảng: tiêu đề cân dòng, đoạn văn không để chữ lẻ, nút nhỏ / nhãn / SĐT không tách dòng */
+    h1, h2, h3, h4, h5, h6, .modal-title, .card-title { text-wrap: balance; }
+    p, li, label, small, .small, .alert, .form-text, .note, td { text-wrap: pretty; }
+    .btn-sm, .badge, .nav-link, a[href^="tel:"], .text-nowrap { white-space: nowrap; }
+    .btn:not(.btn-sm) { text-wrap: balance; }
+    input, select, textarea { min-width: 0; }
+    a[href^="mailto:"], .email, [class*="email"] { overflow-wrap: anywhere; }
+    @media (max-width: 576px) { h4 { font-size: clamp(1.05rem, 5vw, 1.4rem); } h5 { font-size: clamp(1rem, 4.4vw, 1.2rem); } }
+  </style>
+</head>
+<body class="py-4">
+  <div class="container" style="max-width: 680px;">
+    <div class="card">
+      <div class="header-bar text-center">
+        <h4 class="mb-1 fw-bold">🎉 ỨNG DỤNG WEB ĐẶT BÀN ĂN DECOR</h4>
+        <p class="mb-0 small opacity-75">Túi Nướng Lavender • Lưu giữ những khoảnh khắc trọn vẹn</p>
+      </div>
+
+      <div class="card-body p-4">
+        <!-- SƠ ĐỒ QUY TRÌNH 4 BƯỚC -->
+        <div class="step-box mb-4">
+          <div class="text-center fw-bold mb-3" style="color:#6a1b9a; font-size:13px; text-transform:uppercase;">
+            📋 Sơ Đồ Quy Trình Đặt Bàn Tiệc Decor
+          </div>
+          <div class="row g-2 text-center small">
+            <div class="col-3">
+              <div class="step-circle mb-1">1</div>
+              <div class="fw-bold">Điền Form</div>
+              <div class="text-muted" style="font-size:11px;">Thông tin tiệc</div>
+            </div>
+            <div class="col-3">
+              <div class="step-circle mb-1">2</div>
+              <div class="fw-bold">Chuyển Cọc</div>
+              <div class="text-muted" style="font-size:11px;">Upload ảnh bill</div>
+            </div>
+            <div class="col-3">
+              <div class="step-circle mb-1">3</div>
+              <div class="fw-bold">Gửi Yêu Cầu</div>
+              <div class="text-muted" style="font-size:11px;">Hệ thống nhận đơn</div>
+            </div>
+            <div class="col-3">
+              <div class="step-circle mb-1" style="background:#2e7d32;">4</div>
+              <div class="fw-bold">Xác Nhận</div>
+              <div class="text-muted" style="font-size:11px;">Email / Hotline</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CẢNH BÁO KHÓA NGÀY TỪ SHEET (FULL DECOR) -->
+        <div id="lockWarning" class="alert alert-danger p-3 mb-3 text-center" style="display: none;">
+          <h6 class="fw-bold mb-1">🔒 NGÀY NÀY ĐÃ ĐẦY (FULL DECOR)</h6>
+          <span id="lockWarningText">Rất tiếc, ngày bạn chọn đã khóa nhận đơn decor. Vui lòng chọn ngày khác!</span>
+        </div>
+
+        <!-- ĐỒNG HỒ ĐẾM NGƯỢC (HIỂN THỊ KHI CHỌN THỨ 6 & THỨ 7) -->
+        <div id="boxDemGioDecor" style="display:none; margin-bottom: 16px; padding: 14px; border-radius: 8px; background-color: #fff3cd; border: 2px solid #ffeeba; text-align: center;">
+          <div style="font-size: 13.5px; font-weight: bold; color: #856404; margin-bottom: 4px;">
+            ⏳ THỜI GIAN CÒN LẠI ĐÉN NHẬN BÀN DECOR SẼ ĐẶT TRƯỚC 18:30 [Thứ 6/ Thứ 7]
+          </div>
+          <div id="dongHoTextDecor" style="font-size: 26px; font-weight: 800; color: #d9534f; letter-spacing: 2px;">
+            00:00:00
+          </div>
+          <div style="font-size: 11.5px; color: #6c757d; margin-top: 4px;">
+            (Thứ 6 & Thứ 7 chỉ nhận đơn đón trước 18:30 — Sau 18:31 tự động khóa nhận tiệc)
+          </div>
+        </div>
+
+        <!-- CẢNH BÁO KHÓA DECOR SAU 18H31 THỨ 6 & THỨ 7 -->
+        <div id="boxKhoaDecorSau18h31" style="display:none; margin-bottom: 16px; padding: 14px; border-radius: 8px; background-color: #ffebee; border: 1.5px solid #ef5350; color: #c62828; font-weight: bold; text-align: center;">
+          🔒 ĐÃ QUÁ 18H31 (THỨ 6 & THỨ 7):<br>
+          <span id="txtLyDoKhoa18h31" style="font-weight: 600; font-size: 13.5px;">
+            Rất tiếc, hệ thống khóa nhận đặt tiệc Decor từ sau 18h31 vào Thứ 6 và Thứ 7 hàng tuần. Anh/chị vui lòng chọn giờ đón từ 18h30 trở về trước hoặc chọn ngày khác giúp Túi nhé ạ! 💜
+          </span>
+        </div>
+
+        <form id="bookingForm" onsubmit="handleFormSubmit(event)">
+          <!-- KHÁCH HÀNG & SĐT -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">Khách hàng *</label>
+              <input type="text" name="hoTen" class="form-control" required placeholder="Nguyễn Văn A">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">Số Điện Thoại *</label>
+              <input type="tel" name="sdt" class="form-control" required placeholder="09xxx">
+            </div>
+          </div>
+
+          <!-- ĐỘ TUỔI, GIỚI TÍNH, TỈNH THÀNH -->
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label fw-bold">Độ tuổi *</label>
+              <select name="doTuoi" class="form-select" required>
+                <option value="" disabled selected>Chọn độ tuổi</option>
+                <option value="Dưới 18">Dưới 18</option>
+                <option value="18 - 25">18 - 25</option>
+                <option value="26 - 35">26 - 35</option>
+                <option value="36 - 50">36 - 50</option>
+                <option value="Trên 50">Trên 50</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label fw-bold">Giới tính *</label>
+              <div class="btn-group w-100">
+                <input type="radio" class="btn-check" name="gioiTinh" id="genderMaleD" value="Nam">
+                <label class="btn btn-outline-secondary" for="genderMaleD">Nam</label>
+                <input type="radio" class="btn-check" name="gioiTinh" id="genderFemaleD" value="Nữ" checked>
+                <label class="btn btn-outline-secondary" for="genderFemaleD">Nữ</label>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label fw-bold">Tỉnh / Thành phố đang Sinh Sống *</label>
+              <select name="tinhThanh" class="form-select" required>
+                <option value="Lâm Đồng (Đà Lạt)">Lâm Đồng (Đà Lạt)</option>
+                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                <option value="Hà Nội">Hà Nội</option>
+                <option value="Đà Nẵng">Đà Nẵng</option>
+                <option value="Khánh Hòa">Khánh Hòa</option>
+                <option value="Đồng Nai">Đồng Nai</option>
+                <option value="Bình Dương">Bình Dương</option>
+                <option value="Cần Thơ">Cần Thơ</option>
+                <option value="Khác">Tỉnh khác...</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- EMAIL CÓ GỢI Ý THÔNG MINH SAU KHI GÕ @ -->
+          <div class="mb-3 position-relative">
+            <label class="form-label fw-bold">Email gửi xác nhận *</label>
+            <input type="email" id="emailInputDecor" name="email" class="form-control" required autocomplete="off" placeholder="Tuinuong@gmail.com" oninput="handleEmailInput(this, 'emailSuggestDecor')">
+            <div id="emailSuggestDecor" class="email-suggest-box" style="display:none;"></div>
+          </div>
+
+          <!-- NGÀY TIỆC, GIỜ ĐÓN (CHỐNG NHẬP PHÚT TRƯỚC GIỜ SAU), SỐ KHÁCH -->
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label fw-bold">Ngày đặt bàn *</label>
+              <input type="date" id="inputNgay" name="ngay" class="form-control" required onchange="onDateChanged(this.value)">
+              <small id="dateCheckNotice" style="font-size:11px;"></small>
+            </div>
+            <div class="col-md-5 mb-3">
+              <label class="form-label fw-bold">Giờ đến (hh:mm) *</label>
+              <input type="hidden" name="gioVao" id="selectGioDecor" value="18:00">
+              <div class="input-group">
+                <select id="selectHourDecor" class="form-select fw-bold" required onchange="onHourMinDecorChange('hour')"></select>
+                <span class="input-group-text fw-bold">:</span>
+                <select id="selectMinDecor" class="form-select fw-bold" required onchange="onHourMinDecorChange('min')"></select>
+              </div>
+              <small id="weekendTimeHint" class="text-danger fw-bold" style="font-size:10.5px; display:none;">* T6 & T7: Chỉ nhận từ 14:00 đến 18:30</small>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="form-label fw-bold">Số khách *</label>
+              <input type="number" id="txtSoKhach" name="soKhach" min="1" class="form-control" required placeholder="2" value="4" oninput="updateDepositCalculation()">
+            </div>
+          </div>
+
+          <!-- STICKER CÓ TRẺ EM -->
+          <div class="p-3 mb-3 bg-light rounded border d-flex justify-content-between align-items-center">
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" id="coTreEmCheckDecor" onchange="document.getElementById('kidsBox').style.display=this.checked?'block':'none'">
+              <label class="form-check-label fw-bold" for="coTreEmCheckDecor" style="color:#6a1b9a;">👶 Có trẻ em</label>
+            </div>
+            <div id="kidsBox" style="display:none; width:140px;">
+              <select class="form-select form-select-sm" id="childQuantitySelectDecor">
+                <option value="1 bé">1 bé</option>
+                <option value="2 bé">2 bé</option>
+                <option value="3+ bé">3+ bé</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- MỤC CHỌN MẪU DECOR -->
+          <div class="p-3 mb-3 bg-white rounded border" id="decorSectionBox">
+            <label class="form-label fw-bold" style="color:#4a148c;">🎀 Mẫu Decor (Chọn mẫu còn trống trong ngày):</label>
+            <select name="mauDecor" id="selectMauDecor" class="form-select mb-2">
+              <option value="">-- Đang nạp danh sách mẫu... --</option>
+            </select>
+            <input type="text" name="noiDungBang" class="form-control form-control-sm" placeholder="Nội dung ghi bảng tiệc (Ví dụ: Happy Birthday Vy iu ❤️, tone hồng nơ...)">
+          </div>
+
+          <!-- SỐ TIỀN CỌC TỰ ĐỘNG -->
+          <div class="deposit-badge mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-bold" style="color:#4a148c;">Số tiền cọc tự động nhận diện:</span>
+              <span id="depositDisplay" class="fs-5 fw-bold text-danger">300.000 VNĐ</span>
+            </div>
+            <div id="depositRuleText" class="small fw-bold mt-1" style="font-size:12px;color:#6a1b9a;"></div>
+            <div class="small text-muted mt-1" style="font-size:11.5px;">
+              (Số tiền này sẽ được hoàn lại/ trừ vào số tiền thanh toán khi dùng bữa tại quán)
+            </div>
+            <div class="small mt-1 px-2 py-1 rounded" style="font-size:11.5px;background:#fff7e6;color:#9a3412;border-left:3px solid #f59e0b;">
+              🧾 Bàn decor có <b>xuất VAT</b>, Túi sẽ <b>hoàn lại tiền cọc riêng</b>, không trừ trực tiếp vào bill. Quý khách vui lòng chọn phương thức hoàn tiền.
+            </div>
+          </div>
+
+          <!-- NÚT GẠT XUẤT VAT + PHƯƠNG THỨC HOÀN CỌC (chỉ hiện khi chọn xuất VAT) -->
+          <div class="p-3 mb-3 bg-light rounded border">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+              <div class="d-flex align-items-center gap-2">
+                <label class="form-label fw-bold mb-0" style="color:#6a1b9a;">🧾 XUẤT VAT</label>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" type="checkbox" id="vatSwitch" onchange="doiXuatVat()">
+                  <label class="form-check-label fw-bold ms-1" id="vatText" for="vatSwitch">Không</label>
+                </div>
+              </div>
+              <div id="hoanCocChon" class="align-items-center gap-2" style="display:none;">
+                <span class="fw-bold small text-nowrap" style="color:#6a1b9a;" title="Phương thức hoàn cọc">💸 Hoàn cọc:</span>
+                <div class="btn-group btn-group-sm text-nowrap" role="group">
+                  <input type="radio" class="btn-check" name="hoanCocPT" id="hcTienMat" value="Tiền mặt" checked onchange="doiHoanCoc()">
+                  <label class="btn btn-outline-success fw-bold" for="hcTienMat">💵 Tiền mặt</label>
+                  <input type="radio" class="btn-check" name="hoanCocPT" id="hcChuyenKhoan" value="Chuyển khoản" onchange="doiHoanCoc()">
+                  <label class="btn btn-outline-primary fw-bold" for="hcChuyenKhoan">🏦 Chuyển khoản</label>
+                </div>
+              </div>
+            </div>
+            <div id="hoanCocTK" class="hc-box mt-2" style="display:none;">
+              <div class="d-flex gap-2 align-items-stretch">
+                <div class="hc-qr" onclick="document.getElementById('hcQrFile').click()" title="Tải ảnh mã QR tài khoản">
+                  <img id="hcQrPreview" alt="QR" style="display:none;">
+                  <div id="hcQrText">📷<br><span>Ảnh QR</span></div>
+                </div>
+                <input type="file" id="hcQrFile" accept="image/*" style="display:none" onchange="chonAnhQrHoanCoc(this)">
+                <div class="flex-grow-1 d-flex flex-column gap-1" style="min-width:0;">
+                  <div class="position-relative">
+                    <input type="text" id="hcNganHang" class="form-control form-control-sm" placeholder="🏦 Ngân hàng (gõ vcb, mb...)" autocomplete="off" oninput="goiYNganHangHC()" onfocus="goiYNganHangHC()">
+                    <div id="hcBankList" class="hc-bank-list"></div>
+                  </div>
+                  <input type="text" id="hcChuTK" class="form-control form-control-sm" placeholder="👤 Chủ tài khoản" style="text-transform:uppercase;">
+                  <input type="text" id="hcSoTK" class="form-control form-control-sm" placeholder="🔢 Số tài khoản" inputmode="numeric">
+                </div>
+              </div>
+              <div class="small text-muted mt-1" style="font-size:11px;">Chỉ cần <b>ảnh QR</b> hoặc điền đủ <b>ngân hàng, chủ tài khoản, số tài khoản</b>.</div>
+            </div>
+          </div>
+          <!-- GHI CHÚ THÊM -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Ghi chú thêm (nếu có):</label>
+            <textarea name="ghiChu" class="form-control" rows="2" placeholder="Ghi chú thêm về chỗ ngồi, không gian..."></textarea>
+          </div>
+
+          <!-- UPLOAD BILL KÈM MÃ QR VIETQR -->
+          <div class="card p-3 mb-3 bg-light border">
+            <div class="row align-items-center g-3">
+              <div class="col-sm-5 text-center">
+                <span class="small fw-bold text-muted d-block mb-1">Mã QR VietQR Chuyển Cọc:</span>
+                <img id="qrBankImage" src="https://api.vietqr.io/image/970436-0561000604253-compact.jpg?amount=300000&addInfo=COC%20BAN%20LAVENDER" class="img-fluid rounded border shadow-sm" style="max-height:160px;">
+              </div>
+              <div class="col-sm-7">
+                <label class="form-label fw-bold small text-danger">Upload ảnh chuyển khoản ngân hàng *</label>
+                <input type="file" id="billFileInput" accept="image/*" class="form-control form-control-sm" required>
+                <div class="small text-muted mt-2" style="font-size:11px;">
+                  Quý khách vui lòng chuyển khoản và upload ảnh chuyển khoản thành công. Sau đó nhấn nút <b>"GỬI YÊU CẦU ĐẶT TIỆC DECOR"</b>.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LƯU Ý CAO ĐIỂM -->
+          <div class="alert alert-warning py-2 px-3 small mb-3">
+            ⚠️ <b>Lưu ý:</b> Đặt bàn chỉ thành công khi Túi gửi email "Xác nhận đặt bàn thành công". <b>Vào thời gian cao điểm, số bàn decor hoặc mẫu Quý khách chọn có thể đã đủ</b> - trường hợp này Túi sẽ hoàn lại đầy đủ tiền cọc cho Quý khách.
+          </div>
+
+          <button type="submit" id="btnSubmit" class="btn btn-submit w-100">GỬI YÊU CẦU ĐẶT TIỆC DECOR</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP THÀNH CÔNG -->
+  <div class="modal fade" id="modalConfirmSuccess" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h6 class="modal-title fw-bold">🎉 TIẾP NHẬN YÊU CẦU THÀNH CÔNG</h6>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <div class="tc-ok">
+            <p class="fs-6 fw-bold mb-2">Túi Nướng Lavender đã nhận được yêu cầu đặt bàn của Quý khách.</p>
+            <a href="https://hmk-vn.github.io/Datban/tracuu.html" class="btn fw-bold px-4 mb-2 text-white" style="background:#5b2a86" onclick="try{sessionStorage.setItem('tracuu_q', window._sdtVuaDat || '')}catch(e){}">🔎 Tra cứu đơn đặt bàn</a>
+            <p class="small text-muted mb-3">Quý khách vui lòng kiểm tra trạng thái bằng số điện thoại hoặc email.</p>
+            <div class="tc-buoc">
+              <div class="xong"><span>📝</span>Gửi yêu cầu</div>
+              <div><span>🔎</span>Túi kiểm tra & xác nhận</div>
+              <div><span>📱</span>Tra cứu bằng SĐT / email</div>
+              <div><span>🍽️</span>Đến quán dùng bữa</div>
+            </div>
+            <div class="small mt-3">Cần hỗ trợ, Quý khách vui lòng gọi hotline: <a href="tel:0911588138" class="fw-bold text-danger text-decoration-none text-nowrap">0911 588 138</a></div>
+          </div>
+          <hr>
+          <button type="button" class="btn btn-light border fw-bold px-4" onclick="window.location.reload()">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let isCurrentDateLocked = false;
+    let isTimeRuleLocked = false;
+    let decorIntervalTimer = null;
+
+    // 1. GỢI Ý EMAIL THÔNG MINH SAU KHI GÕ @ (ƯU TIÊN GMAIL)
+    const emailDomains = ['gmail.com', 'icloud.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'yahoo.com.vn'];
+
+    function handleEmailInput(inputElem, containerId) {
+      const val = inputElem.value.trim();
+      const suggestBox = document.getElementById(containerId);
+      if (!suggestBox) return;
+
+      const atIndex = val.indexOf('@');
+      if (atIndex !== -1) {
+        const userPart = val.substring(0, atIndex);
+        const domainPart = val.substring(atIndex + 1).toLowerCase();
+        const matched = emailDomains.filter(d => d.startsWith(domainPart));
+
+        if (matched.length > 0 && userPart.length > 0) {
+          suggestBox.innerHTML = matched.map(d =>
+            `<div class="email-suggest-item" onclick="selectEmail('${userPart}@${d}', '${inputElem.id}', '${containerId}')">${userPart}@<b>${d}</b></div>`
+          ).join('');
+          suggestBox.style.display = 'block';
+          return;
+        }
+      }
+      suggestBox.style.display = 'none';
+    }
+
+    function selectEmail(fullEmail, inputId, containerId) {
+      const input = document.getElementById(inputId);
+      if (input) {
+        input.value = fullEmail;
+        input.focus(); // Vẫn cho phép khách sửa lại thoải mái
+      }
+      const box = document.getElementById(containerId);
+      if (box) box.style.display = 'none';
+    }
+
+    document.addEventListener('click', function(e) {
+      const box = document.getElementById('emailSuggestDecor');
+      if (box && e.target.id !== 'emailInputDecor') box.style.display = 'none';
+    });
+
+    // 2. KỊCH BẢN KHÓA CHẶT GIỜ THỨ 6 & THỨ 7 (14:00 - 18:30) CHỐNG NHẬP PHÚT TRƯỚC GIỜ SAU
+    function isWeekendFriSat() {
+      const val = document.getElementById("inputNgay").value;
+      if (!val) return false;
+      const parts = val.split("-").map(Number);
+      const day = new Date(parts[0], parts[1] - 1, parts[2]).getDay();
+      return (day === 5 || day === 6);
+    }
+
+    function rebuildHourMinSelectors() {
+      const hourSel = document.getElementById("selectHourDecor");
+      const minSel = document.getElementById("selectMinDecor");
+      const hint = document.getElementById("weekendTimeHint");
+      const weekend = isWeekendFriSat();
+      if (hint) hint.style.display = weekend ? "block" : "none";
+
+      const prevH = hourSel.value || (weekend ? "17" : "18");
+      const prevM = minSel.value || "00";
+
+      // Thứ 6 & Thứ 7 chỉ từ 14h (2h chiều) đến 18h; Ngày thường từ 11h đến 20h
+      const allowedHours = weekend ? ["14", "15", "16", "17", "18"] : ["11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
+      hourSel.innerHTML = allowedHours.map(h => `<option value="${h}">${h} giờ</option>`).join("");
+      hourSel.value = allowedHours.includes(prevH) ? prevH : (weekend ? "18" : "18");
+
+      syncMinutesForSelectedHour(prevM);
+    }
+
+    function syncMinutesForSelectedHour(preferredMin) {
+      const hourSel = document.getElementById("selectHourDecor");
+      const minSel = document.getElementById("selectMinDecor");
+      const h = parseInt(hourSel.value, 10);
+      const weekend = isWeekendFriSat();
+
+      let allowedMins = ["00", "15", "30", "45"];
+      // Nếu là Thứ 6/Thứ 7 và đang ở giờ 18 -> CHỈ CHO PHÉP ĐẾN 30 PHÚT (18:30)
+      if (weekend && h === 18) {
+        allowedMins = ["00", "15", "30"];
+      } else if (!weekend && h === 20) {
+        allowedMins = ["00", "15", "30"];
+      }
+
+      const curM = preferredMin || minSel.value || "00";
+      minSel.innerHTML = allowedMins.map(m => `<option value="${m}">${m} phút</option>`).join("");
+      // Nếu khách chọn phút 45 trước rồi mới đổi sang 18h -> Tự động ép về 30p!
+      minSel.value = allowedMins.includes(curM) ? curM : allowedMins[allowedMins.length - 1];
+
+      document.getElementById("selectGioDecor").value = `${hourSel.value}:${minSel.value}`;
+    }
+
+    function onHourMinDecorChange(source) {
+      const minSel = document.getElementById("selectMinDecor");
+      syncMinutesForSelectedHour(minSel.value);
+      checkDecorTimeLimit();
+    }
+
+    // Mức cọc lấy từ tab ⚙️ CÀI ĐẶT CỌC trên Google Sheet; chưa tải xong thì dùng mức mặc định
+    var COC = { nguong: 24, cocThap: 300000, cocCao: 500000 };
+    function hienQuyDinhCoc() {
+      var vnd = function(n) { return Number(n).toLocaleString("vi-VN") + "đ"; };
+      document.getElementById("depositRuleText").innerText = "Đoàn từ " + COC.nguong + " khách trở xuống: " + vnd(COC.cocThap) +
+        " · từ " + (COC.nguong + 1) + " khách trở lên: " + vnd(COC.cocCao);
+    }
+    function taiCaiDatCoc() {
+      hienQuyDinhCoc();
+      google.script.run.withSuccessHandler(function(cd) {
+        if (cd && cd.nguong && cd.cocThap && cd.cocCao) { COC = cd; hienQuyDinhCoc(); updateDepositCalculation(); }
+      }).withFailureHandler(function() {}).layCaiDatCoc();
+    }
+
+    // ====== XUẤT VAT -> PHƯƠNG THỨC HOÀN CỌC ======
+    var anhQrHoanCoc = "";
+    var NGAN_HANG_HC = [["VietinBank", "ICB CTG - Công thương Việt Nam"], ["Vietcombank", "VCB - Ngoại Thương Việt Nam"], ["BIDV", "BIDV - Đầu tư và Phát triển Việt Nam"], ["Agribank", "VBA - Nông nghiệp và Phát triển Nông thôn Việt Nam"], ["OCB", "OCB - Phương Đông"], ["MBBank", "MB - Quân đội"], ["Techcombank", "TCB - Kỹ thương Việt Nam"], ["ACB", "ACB - Á Châu"], ["VPBank", "VPB - Việt Nam Thịnh Vượng"], ["TPBank", "TPB - Tiên Phong"], ["Sacombank", "STB - Sài Gòn Tài Lộc"], ["HDBank", "HDB - Phát triển Thành phố Hồ Chí Minh"], ["VietCapitalBank", "VCCB - Bản Việt"], ["SCB", "SCB - Sài Gòn"], ["VIB", "VIB - Quốc tế Việt Nam"], ["SHB", "SHB - Sài Gòn - Hà Nội"], ["Eximbank", "EIB - Xuất Nhập khẩu Việt Nam"], ["MSB", "MSB - Hàng Hải"], ["CAKE", "CAKE - TMCP Việt Nam Thịnh Vượng - Ngân hàng số CAKE by VPBank"], ["Ubank", "Ubank - TMCP Việt Nam Thịnh Vượng - Ngân hàng số Ubank by VPBank"], ["Timo", "TIMO - số Timo by Ban Viet Bank (Timo by Ban Viet Bank)"], ["ViettelMoney", "VTLMONEY - Tổng Công ty Dịch vụ số Viettel - Chi nhánh tập đoàn công nghiệp viễn thông Quân Đội"], ["VNPTMoney", "VNPTMONEY - Trung tâm dịch vụ tài chính số VNPT- Chi nhánh Tổng công ty truyền thông (VNPT Fintech)"], ["SaigonBank", "SGICB - Sài Gòn Công Thương"], ["BacABank", "BAB - Bắc Á"], ["PVcomBank Pay", "PVDB - số PVcomBank"], ["MoMo", "momo - CTCP Dịch Vụ Di Động Trực Tuyến"], ["PVcomBank", "PVCB - Đại Chúng Việt Nam"], ["MBV", "MBV - Việt Nam Hiện Đại"], ["NCB", "NCB - Quốc Dân"], ["ShinhanBank", "SHBVN - Shinhan Việt Nam"], ["ABBANK", "ABB - An Bình"], ["VietABank", "VAB - Việt Á"], ["NamABank", "NAB - Nam Á"], ["PGBank", "PGB - Thịnh vượng và Phát triển"], ["VietBank", "VIETBANK - Việt Nam Thương Tín"], ["BaoVietBank", "BVB - Bảo Việt"], ["SeABank", "SEAB - Đông Nam Á"], ["COOPBANK", "COOPBANK - Việt Nam"], ["LPBank", "LPB - Lộc Phát Việt Nam"], ["KienLongBank", "KLB - Kiên Long"], ["KBank", "KBank - Đại chúng TNHH Kasikornbank"], ["KEBHanaHCM", "KEBHANAHCM - KEB Hana – Chi nhánh Thành phố Hồ Chí Minh"], ["KEBHANAHN", "KEBHANAHN - KEB Hana – Chi nhánh Hà Nội"], ["MAFC", "MAFC - Công ty Tài chính TNHH MTV Mirae Asset (Việt Nam)"], ["VBSP", "VBSP - Chính sách Xã hội"], ["BNP HN", "BNP HN - BNP Paribas – Chi nhánh Hà Nội"], ["BIDC", "BIDC - Đầu Tư Và Phát Triển Campuchia - Chi nhánh Hà Nội"], ["BNP HCM", "BNP HCM - BNP Paribas – Chi nhánh Thành phố Hồ Chí Minh"], ["ZaloPay", "ZALOPAY - Ví điện tử ZaloPay"], ["BOCHK", "BOCHK - Bank of China (Hong Kong) Limited – Chi nhánh Hồ Chí Minh"], ["BSP", "BSP - SinoPac - Chi nhánh Thành phố Hồ Chí Minh"], ["CUBHCM", "CUBHCM - Cathay United Bank – Chi nhánh Hồ Chí Minh"], ["ESUN", "ESUN - Thương mại TNHH E.SUN – Chi nhánh Đồng Nai (ESUNBANK)"], ["ICBC", "ICBC - Công thương Trung Quốc – Chi nhánh thành phố Hà Nội"], ["MVAS", "MVAS - Trung tâm Dịch vụ số Mobifone – Chi nhánh Tổng Công ty viễn thông Mobifone"], ["TNEX", "TNEX - TNEX by MSB"], ["HSBC", "HSBC - HSBC (Việt Nam)"], ["HongLeong", "HLBVN - Hong Leong Việt Nam"], ["IBKHN", "IBK - HN - Ngân hàng Công nghiệp Hàn Quốc - Chi nhánh Hà Nội"], ["IBKHCM", "IBK - HCM - Ngân hàng Công nghiệp Hàn Quốc - Chi nhánh TP. Hồ Chí Minh"], ["IndovinaBank", "IVB - Indovina"], ["Vikki", "Vikki - Một thành viên số Vikki"], ["Nonghyup", "NHB HN - Nonghyup - Chi nhánh Hà Nội"], ["DBSBank", "DBS - DBS Bank Ltd - Chi nhánh Thành phố Hồ Chí Minh"], ["PublicBank", "PBVN - Public Việt Nam"], ["StandardChartered", "SCVN - Standard Chartered Bank Việt Nam"], ["Citibank", "CITIBANK - Citibank, N.A. - Chi nhánh Hà Nội"], ["CIMB", "CIMB - CIMB Việt Nam"], ["UnitedOverseas", "UOB - United Overseas - Chi nhánh TP. Hồ Chí Minh"], ["CBBank", "CBB - Thương mại trách nhiệm hữu hạn một thành viên Ngoại thương Công nghệ số (Vietcombank Neo Limited)"], ["GPBank", "GPB - Dầu Khí Toàn Cầu"], ["VRB", "VRB - Liên doanh Việt - Nga"], ["Woori", "WVN - Woori Việt Nam"], ["KookminHN", "KBHN - Kookmin - Chi nhánh Hà Nội"], ["KookminHCM", "KBHCM - Kookmin - Chi nhánh Thành phố Hồ Chí Minh"]]; // 76 ngân hàng (danh sách VietQR) + ví điện tử
+    function doiXuatVat() {
+      var co = document.getElementById("vatSwitch").checked;
+      document.getElementById("vatText").innerText = co ? "Có" : "Không";
+      document.getElementById("hoanCocChon").style.display = co ? "flex" : "none";
+      doiHoanCoc();
+    }
+    function doiHoanCoc() {
+      var ck = document.getElementById("vatSwitch").checked && document.getElementById("hcChuyenKhoan").checked;
+      document.getElementById("hoanCocTK").style.display = ck ? "block" : "none";
+    }
+    function khongDauHC(s) {
+      return String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+    }
+    function goiYNganHangHC() {
+      var q = khongDauHC(document.getElementById("hcNganHang").value).toLowerCase().replace(/\s+/g, "");
+      var box = document.getElementById("hcBankList");
+      var hits = NGAN_HANG_HC.filter(function(b) {
+        return !q || khongDauHC(b[0] + b[1]).toLowerCase().replace(/\s+/g, "").indexOf(q) !== -1;
+      }); // hiện đủ danh sách, khung tự cuộn
+      box.innerHTML = hits.map(function(b) {
+        return '<div class="hc-bank-item" onclick="chonNganHangHC(\'' + b[0] + '\')"><b>' + b[0] + '</b> <small>' + b[1] + '</small></div>';
+      }).join("");
+      box.style.display = hits.length ? "block" : "none";
+    }
+    function chonNganHangHC(ten) {
+      document.getElementById("hcNganHang").value = ten;
+      document.getElementById("hcBankList").style.display = "none";
+      document.getElementById("hcChuTK").focus();
+    }
+    document.addEventListener("click", function(e) {
+      if (e.target.id !== "hcNganHang" && !e.target.closest(".hc-bank-list")) document.getElementById("hcBankList").style.display = "none";
+    });
+    // Thu nhỏ ảnh QR (tối đa 1000px) để gửi nhanh
+    function chonAnhQrHoanCoc(input) {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var img = new Image();
+        img.onload = function() {
+          var scale = Math.min(1, 1000 / Math.max(img.width, img.height));
+          var c = document.createElement("canvas");
+          c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          anhQrHoanCoc = c.toDataURL("image/jpeg", 0.85);
+          var pv = document.getElementById("hcQrPreview");
+          pv.src = anhQrHoanCoc; pv.style.display = "block";
+          document.getElementById("hcQrText").style.display = "none";
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    // Trả về thông tin hoàn cọc, hoặc chuỗi lỗi nếu chọn chuyển khoản mà thiếu thông tin
+    function layHoanCoc() {
+      if (!document.getElementById("vatSwitch").checked) return null;
+      if (!document.getElementById("hcChuyenKhoan").checked) return { phuongThuc: "Tiền mặt" };
+      var hc = {
+        phuongThuc: "Chuyển khoản",
+        nganHang: document.getElementById("hcNganHang").value.trim(),
+        chuTaiKhoan: document.getElementById("hcChuTK").value.trim().toUpperCase(),
+        soTaiKhoan: document.getElementById("hcSoTK").value.replace(/[\s.\-]/g, ""),
+        anhQrBase64: anhQrHoanCoc
+      };
+      if (!hc.anhQrBase64 && !(hc.nganHang && hc.chuTaiKhoan && hc.soTaiKhoan))
+        return "Quý khách chọn hoàn cọc bằng chuyển khoản: vui lòng tải ảnh mã QR, hoặc điền đủ ngân hàng, chủ tài khoản và số tài khoản.";
+      if (hc.soTaiKhoan && !/^\d{6,19}$/.test(hc.soTaiKhoan)) return "Số tài khoản hoàn cọc chỉ gồm chữ số (6-19 số).";
+      return hc;
+    }
+
+    function updateDepositCalculation() {
+      const guests = parseInt(document.getElementById("txtSoKhach").value, 10) || 2;
+      const deposit = (guests <= COC.nguong) ? COC.cocThap : COC.cocCao;
+      document.getElementById("depositDisplay").innerText = deposit.toLocaleString("vi-VN") + " VNĐ";
+      document.getElementById("qrBankImage").src = 'https://api.vietqr.io/image/970436-0561000604253-compact.jpg?amount=' + deposit + '&addInfo=COC%20BAN%20LAVENDER';
+    }
+
+    function updateSubmitButtonState() {
+      const btn = document.getElementById("btnSubmit");
+      if (!btn) return;
+      if (isCurrentDateLocked) {
+        btn.disabled = true;
+        btn.innerText = "NGÀY NÀY ĐÃ ĐẦY - VUI LÒNG CHỌN NGÀY KHÁC";
+      } else if (isTimeRuleLocked) {
+        btn.disabled = true;
+        btn.innerText = "ĐÃ KHÓA ĐẶT DECOR (SAU 18H31 THỨ 6 & THỨ 7)";
+      } else {
+        btn.disabled = false;
+        btn.innerText = "GỬI YÊU CẦU ĐẶT TIỆC DECOR";
+      }
+    }
+
+    function checkDecorTimeLimit() {
+      const inputNgay = document.getElementById("inputNgay");
+      const selectGio = document.getElementById("selectGioDecor");
+      const boxDem = document.getElementById("boxDemGioDecor");
+      const boxKhoa = document.getElementById("boxKhoaDecorSau18h31");
+      const txtDongHo = document.getElementById("dongHoTextDecor");
+      const txtLyDo = document.getElementById("txtLyDoKhoa18h31");
+
+      if (decorIntervalTimer) {
+        clearInterval(decorIntervalTimer);
+        decorIntervalTimer = null;
+      }
+
+      if (boxDem) boxDem.style.display = "none";
+      if (boxKhoa) boxKhoa.style.display = "none";
+      isTimeRuleLocked = false;
+
+      if (!inputNgay || !inputNgay.value) {
+        updateSubmitButtonState();
+        return;
+      }
+
+      const parts = inputNgay.value.split("-").map(Number);
+      const selectedDate = new Date(parts[0], parts[1] - 1, parts[2]);
+      const dayOfWeek = selectedDate.getDay();
+
+      if (dayOfWeek === 5 || dayOfWeek === 6) {
+        let selectedMinutes = 0;
+        if (selectGio && selectGio.value) {
+          const tParts = selectGio.value.split(":").map(Number);
+          selectedMinutes = tParts[0] * 60 + tParts[1];
+        }
+
+        const MIN_START = 14 * 60;       // 14h00
+        const LOCK_MINUTES = 18 * 60 + 31; // 18h31
+        const isInvalidTimeRange = (selectedMinutes < MIN_START || selectedMinutes >= LOCK_MINUTES);
+        const cutoffSelectedDate = new Date(parts[0], parts[1] - 1, parts[2], 18, 31, 0);
+
+        function updateCountdown() {
+          const now = new Date();
+          const diff = cutoffSelectedDate - now;
+
+          if (diff <= 0 || isInvalidTimeRange) {
+            isTimeRuleLocked = true;
+            if (boxDem) boxDem.style.display = "none";
+            if (boxKhoa) boxKhoa.style.display = "block";
+            if (isInvalidTimeRange && diff > 0) {
+              if (txtLyDo) txtLyDo.innerText = "Thứ 6 & Thứ 7 quán chỉ nhận đặt bàn Decor trong khung giờ từ 14h00 đến 18h30. Anh/chị vui lòng chọn lại giờ nhé ạ! 💜";
+            } else {
+              if (txtLyDo) txtLyDo.innerText = "Rất tiếc, đã quá 18h31 nên hệ thống đã khóa nhận đặt tiệc Decor cho ngày Thứ 6 / Thứ 7. Anh/chị vui lòng chọn một ngày khác giúp Túi nhé ạ! 💜";
+            }
+            updateSubmitButtonState();
+            if (diff <= 0 && decorIntervalTimer) {
+              clearInterval(decorIntervalTimer);
+              decorIntervalTimer = null;
+            }
+            return;
+          }
+
+          isTimeRuleLocked = false;
+          if (boxDem) boxDem.style.display = "block";
+          if (boxKhoa) boxKhoa.style.display = "none";
+          updateSubmitButtonState();
+
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+          if (txtDongHo) {
+            const timeStr = (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+            txtDongHo.innerText = days > 0 ? (days + ' ngày ' + timeStr) : timeStr;
+          }
+        }
+
+        updateCountdown();
+        decorIntervalTimer = setInterval(updateCountdown, 1000);
+      } else {
+        updateSubmitButtonState();
+      }
+    }
+
+    function onDateChanged(d) {
+      rebuildHourMinSelectors();
+      checkDecorTimeLimit();
+      if (!d) return;
+      const notice = document.getElementById("dateCheckNotice");
+      notice.innerHTML = "⏳ Đang kiểm tra...";
+
+      google.script.run.withSuccessHandler(function(res) {
+        document.getElementById("decorSectionBox").style.display = res.hideDecor ? "none" : "block";
+        isCurrentDateLocked = res.isDecorLocked;
+        document.getElementById("lockWarning").style.display = res.isDecorLocked ? "block" : "none";
+        notice.innerHTML = res.isDecorLocked ? "<span class='text-danger fw-bold'>❌ Đã khóa ngày</span>" : "<span class='text-success fw-bold'>🟢 Mở nhận đơn</span>";
+        updateSubmitButtonState();
+
+        // CHỈ HIỂN THỊ NHỮNG MẪU DECOR CÒN LẠI CHƯA ĐƯỢC ĐẶT TRONG DATA_TONG
+        const sel = document.getElementById("selectMauDecor");
+        sel.innerHTML = "<option value=''>-- Chọn mẫu Decor còn trống --</option>";
+        if (res.decorList) {
+          const availableSamples = res.decorList.filter(function(m) { return m.isAvailable; });
+          if (availableSamples.length === 0) {
+            sel.innerHTML = "<option value=''>-- Đã hết mẫu Decor trống trong ngày này --</option>";
+          } else {
+            availableSamples.forEach(function(m) {
+              const opt = document.createElement("option");
+              opt.value = m.name;
+              opt.innerText = m.name;
+              sel.appendChild(opt);
+            });
+          }
+        }
+      }).getDayBookingSummaryAndDecorStatus(d);
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      onHourMinDecorChange();
+      if (isCurrentDateLocked) { alert("Ngày đã khóa nhận bàn decor!"); return; }
+      if (isTimeRuleLocked) { alert("Thứ 6 & Thứ 7 chỉ nhận đặt bàn Decor từ 14h00 đến 18h30. Vui lòng chọn lại giờ hoặc chọn ngày khác nhé ạ!"); return; }
+
+      const fileInput = document.getElementById("billFileInput");
+      if (!fileInput.files || !fileInput.files[0]) { alert("Vui lòng đính kèm ảnh bill chuyển khoản ngân hàng!"); return; }
+      const hcKiemTra = layHoanCoc();
+      if (typeof hcKiemTra === "string") { alert(hcKiemTra); document.getElementById("hoanCocTK").scrollIntoView({ block: "center" }); return; }
+
+      const btn = document.getElementById("btnSubmit");
+      btn.disabled = true;
+      btn.innerText = "Đang tải ảnh & gửi dữ liệu...";
+
+      const reader = new FileReader();
+      reader.onload = function(evt) { submitWithBill(evt.target.result); };
+      reader.readAsDataURL(fileInput.files[0]);
+    }
+
+    function submitWithBill(billBase64) {
+      const form = document.getElementById("bookingForm");
+      const data = {
+        hoTen: form.hoTen.value,
+        sdt: form.sdt.value,
+        doTuoi: form.doTuoi.value,
+        gioiTinh: form.gioiTinh.value,
+        tinhThanh: form.tinhThanh.value,
+        email: form.email.value,
+        ngay: form.ngay.value,
+        gioVao: document.getElementById("selectGioDecor").value,
+        soKhach: form.soKhach.value,
+        coTreEm: document.getElementById("coTreEmCheckDecor").checked,
+        soTreEm: document.getElementById("childQuantitySelectDecor").value,
+        mauDecor: form.mauDecor ? form.mauDecor.value : "",
+        decorNoiDung: form.noiDungBang ? form.noiDungBang.value : "",
+        xuatVat: document.getElementById("vatSwitch").checked ? "Có" : "Không",
+        hoanCoc: layHoanCoc(),
+        datMon: "",
+        ghiChu: form.ghiChu.value,
+        nhomBan: "", // Không lấy thông tin nhóm bàn
+        decor: "Có",
+        kenhNguon: "Web Đặt Decor",
+        billBase64: billBase64
+      };
+
+      google.script.run.withSuccessHandler(function(res) {
+        const btn = document.getElementById("btnSubmit");
+        btn.disabled = false;
+        btn.innerText = "GỬI YÊU CẦU ĐẶT TIỆC DECOR";
+        if (res.success) {
+          window._sdtVuaDat = data.sdt;
+          new bootstrap.Modal(document.getElementById("modalConfirmSuccess")).show();
+        } else {
+          alert("Lỗi: " + res.message);
+        }
+      }).submitBooking(data);
+    }
+
+    window.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("inputNgay").value = new Date().toISOString().split("T")[0];
+      updateDepositCalculation();
+      taiCaiDatCoc();
+      rebuildHourMinSelectors();
+      onDateChanged(document.getElementById("inputNgay").value);
+    });
+  </script>
+</body>
+</html>

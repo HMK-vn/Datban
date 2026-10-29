@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+
+  <link rel="manifest" href="app-khach.webmanifest">
+  <link rel="apple-touch-icon" href="app_icon/icon_khach_180.png">
+  <link rel="icon" type="image/png" href="app_icon/icon_khach_192.png">
+  <meta name="theme-color" content="#5b2a86">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Túi Nướng"><script>
+/* Cầu nối thay cho google.script.run: gọi Apps Script qua API (không kèm cookie Google)
+   -> không bị lỗi "không thể mở tệp" khi trình duyệt đăng nhập nhiều tài khoản Google */
+(function () {
+  if (window.google && window.google.script) return;
+  var API = "https://script.google.com/macros/s/AKfycbxzF35ugPCL5jDZrmZzOSx4-ZsoEZimxM6lDKn4zYcajHimG_K1250pip16IEqsDHqQQg/exec";
+  function goi(ten, args, ok, fail) {
+    fetch(API, { method: "POST", redirect: "follow", credentials: "omit",
+      headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: ten, args: args }) })
+      .then(function (r) { if (!r.ok) throw new Error("Máy chủ trả lỗi " + r.status); return r.json(); })
+      .then(function (res) {
+        if (res.ok) { if (ok) ok(res.result); }
+        else { var e = new Error(res.error); if (fail) fail(e); else alert("Lỗi: " + res.error); }
+      })
+      .catch(function (err) {
+        var e = new Error("Không kết nối được máy chủ, vui lòng thử lại. (" + err.message + ")");
+        if (fail) fail(e); else alert(e.message);
+      });
+  }
+  function taoRun() {
+    var ok = null, fail = null, base = {
+      withSuccessHandler: function (f) { ok = f; return p; },
+      withFailureHandler: function (f) { fail = f; return p; },
+      withUserObject: function () { return p; }
+    };
+    var p = new Proxy(base, { get: function (t, ten) {
+      if (ten in t) return t[ten];
+      return function () { goi(String(ten), Array.prototype.slice.call(arguments), ok, fail); };
+    } });
+    return p;
+  }
+  window.google = { script: { host: { close: function () { throw new Error("Không chạy trong Google Sheet"); } } } };
+  Object.defineProperty(window.google.script, "run", { get: taoRun });
+})();
+</script>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thông Tin Nhận Hoàn Cọc - Túi Nướng Lavender</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f4f1f8; font-family: Arial, Helvetica, sans-serif; color: #222; }
+    .wrap { max-width: 520px; margin: 24px auto; padding: 0 14px; }
+    .card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(74,29,110,.1); }
+    .head { background: linear-gradient(135deg,#4a1d6e,#8e44ad); color: #fff; padding: 20px 22px; }
+    .head h1 { margin: 0; font-size: 20px; }
+    .head p { margin: 6px 0 0; color: #e8d9f3; font-size: 13px; line-height: 1.5; }
+    .body { padding: 20px 22px 24px; }
+    .ma { background: #f3eaf9; border-radius: 10px; padding: 10px 14px; font-size: 14px; margin-bottom: 16px; }
+    .ma b { color: #6a1b9a; font-size: 16px; letter-spacing: .5px; }
+    label { display: block; font-weight: bold; font-size: 14px; margin: 14px 0 6px; }
+    .hint { font-weight: normal; color: #777; font-size: 12px; }
+    input[type=text], textarea { width: 100%; padding: 11px 12px; border: 1.5px solid #ddd2e6; border-radius: 9px; font-size: 15px; outline: none; }
+    input[type=text]:focus, textarea:focus { border-color: #8e44ad; }
+    .upload { border: 2px dashed #c9b3da; border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; background: #fcfaff; }
+    .upload img { max-width: 100%; max-height: 220px; border-radius: 8px; display: none; margin: 0 auto; }
+    .or { text-align: center; color: #999; font-size: 13px; margin: 16px 0 2px; }
+    .bank-list { border: 1px solid #ddd2e6; border-radius: 9px; margin-top: 4px; max-height: 190px; overflow-y: auto; display: none; }
+    .bank-item { padding: 9px 12px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f1eaf6; }
+    .bank-item:hover { background: #f6effb; }
+    .bank-item small { color: #888; }
+    button { width: 100%; margin-top: 20px; background: #6a1b9a; color: #fff; border: none; border-radius: 30px; padding: 14px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    button:disabled { background: #b9a3c9; cursor: wait; }
+    .msg { margin-top: 14px; padding: 12px 14px; border-radius: 9px; font-size: 14px; display: none; line-height: 1.5; }
+    .ok { background: #eaf7ef; color: #1e5631; } .err { background: #fdecea; color: #8a1f11; }
+  </style>
+  <style>
+    /* Canh chữ chung mọi nền tảng: tiêu đề cân dòng, đoạn văn không để chữ lẻ, nút nhỏ / nhãn / SĐT không tách dòng */
+    h1, h2, h3, h4, h5, h6, .modal-title, .card-title { text-wrap: balance; }
+    p, li, label, small, .small, .alert, .form-text, .note, td { text-wrap: pretty; }
+    .btn-sm, .badge, .nav-link, a[href^="tel:"], .text-nowrap { white-space: nowrap; }
+    .btn:not(.btn-sm) { text-wrap: balance; }
+    input, select, textarea { min-width: 0; }
+    a[href^="mailto:"], .email, [class*="email"] { overflow-wrap: anywhere; }
+    @media (max-width: 576px) { h4 { font-size: clamp(1.05rem, 5vw, 1.4rem); } h5 { font-size: clamp(1rem, 4.4vw, 1.2rem); } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="head">
+        <h1>💜 Thông tin nhận hoàn cọc</h1>
+        <p>Túi chỉ dùng thông tin này để hoàn lại tiền cọc trong trường hợp ngày Quý khách chọn đã đủ bàn decor.</p>
+      </div>
+      <div class="body">
+        <div class="ma">Mã đặt bàn: <b id="maText"></b><div id="donInfo" style="font-size:13px;color:#666;margin-top:4px;"></div></div>
+
+        <label>Ảnh mã QR tài khoản ngân hàng <span class="hint">(nhanh nhất)</span></label>
+        <div class="upload" onclick="document.getElementById('qrFile').click()">
+          <div id="uploadText">📷 Bấm để chọn ảnh mã QR</div>
+          <img id="qrPreview" alt="QR">
+        </div>
+        <input type="file" id="qrFile" accept="image/*" style="display:none" onchange="chonAnh(this)">
+
+        <div class="or">— hoặc điền thông tin tài khoản —</div>
+
+        <label>Ngân hàng</label>
+        <input type="text" id="nganHang" placeholder="Gõ tên hoặc viết tắt, VD: vcb, mb, techcombank..." autocomplete="off" oninput="goiYNganHang()" onfocus="goiYNganHang()">
+        <div class="bank-list" id="bankList"></div>
+
+        <label>Số tài khoản</label>
+        <input type="text" id="soTaiKhoan" inputmode="numeric" placeholder="Chỉ gồm chữ số" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+
+        <label>Tên chủ tài khoản <span class="hint">(tự chuyển thành chữ in hoa không dấu)</span></label>
+        <input type="text" id="chuTaiKhoan" placeholder="VD: NGUYEN VAN A" oninput="this.value=khongDau(this.value).toUpperCase()">
+
+        <label>Ghi chú <span class="hint">(không bắt buộc)</span></label>
+        <textarea id="ghiChu" rows="2"></textarea>
+
+        <button id="btnGui" onclick="guiThongTin()">Gửi thông tin cho Túi</button>
+        <div class="msg" id="msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var MA_DAT_BAN = (new URLSearchParams(location.search).get("id") || "").replace(/[^A-Za-z0-9.\-]/g, "").slice(0, 30);
+    var anhQr = "";
+    var NGAN_HANG = [["VietinBank", "ICB CTG - Công thương Việt Nam"], ["Vietcombank", "VCB - Ngoại Thương Việt Nam"], ["BIDV", "BIDV - Đầu tư và Phát triển Việt Nam"], ["Agribank", "VBA - Nông nghiệp và Phát triển Nông thôn Việt Nam"], ["OCB", "OCB - Phương Đông"], ["MBBank", "MB - Quân đội"], ["Techcombank", "TCB - Kỹ thương Việt Nam"], ["ACB", "ACB - Á Châu"], ["VPBank", "VPB - Việt Nam Thịnh Vượng"], ["TPBank", "TPB - Tiên Phong"], ["Sacombank", "STB - Sài Gòn Tài Lộc"], ["HDBank", "HDB - Phát triển Thành phố Hồ Chí Minh"], ["VietCapitalBank", "VCCB - Bản Việt"], ["SCB", "SCB - Sài Gòn"], ["VIB", "VIB - Quốc tế Việt Nam"], ["SHB", "SHB - Sài Gòn - Hà Nội"], ["Eximbank", "EIB - Xuất Nhập khẩu Việt Nam"], ["MSB", "MSB - Hàng Hải"], ["CAKE", "CAKE - TMCP Việt Nam Thịnh Vượng - Ngân hàng số CAKE by VPBank"], ["Ubank", "Ubank - TMCP Việt Nam Thịnh Vượng - Ngân hàng số Ubank by VPBank"], ["Timo", "TIMO - số Timo by Ban Viet Bank (Timo by Ban Viet Bank)"], ["ViettelMoney", "VTLMONEY - Tổng Công ty Dịch vụ số Viettel - Chi nhánh tập đoàn công nghiệp viễn thông Quân Đội"], ["VNPTMoney", "VNPTMONEY - Trung tâm dịch vụ tài chính số VNPT- Chi nhánh Tổng công ty truyền thông (VNPT Fintech)"], ["SaigonBank", "SGICB - Sài Gòn Công Thương"], ["BacABank", "BAB - Bắc Á"], ["PVcomBank Pay", "PVDB - số PVcomBank"], ["MoMo", "momo - CTCP Dịch Vụ Di Động Trực Tuyến"], ["PVcomBank", "PVCB - Đại Chúng Việt Nam"], ["MBV", "MBV - Việt Nam Hiện Đại"], ["NCB", "NCB - Quốc Dân"], ["ShinhanBank", "SHBVN - Shinhan Việt Nam"], ["ABBANK", "ABB - An Bình"], ["VietABank", "VAB - Việt Á"], ["NamABank", "NAB - Nam Á"], ["PGBank", "PGB - Thịnh vượng và Phát triển"], ["VietBank", "VIETBANK - Việt Nam Thương Tín"], ["BaoVietBank", "BVB - Bảo Việt"], ["SeABank", "SEAB - Đông Nam Á"], ["COOPBANK", "COOPBANK - Việt Nam"], ["LPBank", "LPB - Lộc Phát Việt Nam"], ["KienLongBank", "KLB - Kiên Long"], ["KBank", "KBank - Đại chúng TNHH Kasikornbank"], ["KEBHanaHCM", "KEBHANAHCM - KEB Hana – Chi nhánh Thành phố Hồ Chí Minh"], ["KEBHANAHN", "KEBHANAHN - KEB Hana – Chi nhánh Hà Nội"], ["MAFC", "MAFC - Công ty Tài chính TNHH MTV Mirae Asset (Việt Nam)"], ["VBSP", "VBSP - Chính sách Xã hội"], ["BNP HN", "BNP HN - BNP Paribas – Chi nhánh Hà Nội"], ["BIDC", "BIDC - Đầu Tư Và Phát Triển Campuchia - Chi nhánh Hà Nội"], ["BNP HCM", "BNP HCM - BNP Paribas – Chi nhánh Thành phố Hồ Chí Minh"], ["ZaloPay", "ZALOPAY - Ví điện tử ZaloPay"], ["BOCHK", "BOCHK - Bank of China (Hong Kong) Limited – Chi nhánh Hồ Chí Minh"], ["BSP", "BSP - SinoPac - Chi nhánh Thành phố Hồ Chí Minh"], ["CUBHCM", "CUBHCM - Cathay United Bank – Chi nhánh Hồ Chí Minh"], ["ESUN", "ESUN - Thương mại TNHH E.SUN – Chi nhánh Đồng Nai (ESUNBANK)"], ["ICBC", "ICBC - Công thương Trung Quốc – Chi nhánh thành phố Hà Nội"], ["MVAS", "MVAS - Trung tâm Dịch vụ số Mobifone – Chi nhánh Tổng Công ty viễn thông Mobifone"], ["TNEX", "TNEX - TNEX by MSB"], ["HSBC", "HSBC - HSBC (Việt Nam)"], ["HongLeong", "HLBVN - Hong Leong Việt Nam"], ["IBKHN", "IBK - HN - Ngân hàng Công nghiệp Hàn Quốc - Chi nhánh Hà Nội"], ["IBKHCM", "IBK - HCM - Ngân hàng Công nghiệp Hàn Quốc - Chi nhánh TP. Hồ Chí Minh"], ["IndovinaBank", "IVB - Indovina"], ["Vikki", "Vikki - Một thành viên số Vikki"], ["Nonghyup", "NHB HN - Nonghyup - Chi nhánh Hà Nội"], ["DBSBank", "DBS - DBS Bank Ltd - Chi nhánh Thành phố Hồ Chí Minh"], ["PublicBank", "PBVN - Public Việt Nam"], ["StandardChartered", "SCVN - Standard Chartered Bank Việt Nam"], ["Citibank", "CITIBANK - Citibank, N.A. - Chi nhánh Hà Nội"], ["CIMB", "CIMB - CIMB Việt Nam"], ["UnitedOverseas", "UOB - United Overseas - Chi nhánh TP. Hồ Chí Minh"], ["CBBank", "CBB - Thương mại trách nhiệm hữu hạn một thành viên Ngoại thương Công nghệ số (Vietcombank Neo Limited)"], ["GPBank", "GPB - Dầu Khí Toàn Cầu"], ["VRB", "VRB - Liên doanh Việt - Nga"], ["Woori", "WVN - Woori Việt Nam"], ["KookminHN", "KBHN - Kookmin - Chi nhánh Hà Nội"], ["KookminHCM", "KBHCM - Kookmin - Chi nhánh Thành phố Hồ Chí Minh"]]; // 76 ngân hàng (danh sách VietQR) + ví điện tử
+
+    document.getElementById("maText").innerText = MA_DAT_BAN || "(không có)";
+    if (MA_DAT_BAN) {
+      google.script.run.withSuccessHandler(function(res) {
+        document.getElementById("donInfo").innerText = res && res.found
+          ? ("Khách hàng: " + res.tenKH + " • Ngày đặt: " + res.ngay)
+          : "Chưa tìm thấy đơn với mã này - Quý khách vẫn có thể gửi, Túi sẽ đối chiếu lại.";
+      }).layThongTinDonHoanCoc(MA_DAT_BAN);
+    }
+
+    function khongDau(s) {
+      return String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+    }
+
+    function goiYNganHang() {
+      var q = khongDau(document.getElementById("nganHang").value).toLowerCase().replace(/\s+/g, "");
+      var box = document.getElementById("bankList");
+      var hits = NGAN_HANG.filter(function(b) {
+        return !q || khongDau(b[0] + b[1]).toLowerCase().replace(/\s+/g, "").indexOf(q) !== -1;
+      }); // hiện đủ danh sách, khung tự cuộn
+      box.innerHTML = hits.map(function(b) {
+        return '<div class="bank-item" onclick="chonNganHang(\'' + b[0] + '\')"><b>' + b[0] + '</b> <small>' + b[1] + '</small></div>';
+      }).join("");
+      box.style.display = hits.length ? "block" : "none";
+    }
+
+    function chonNganHang(ten) {
+      document.getElementById("nganHang").value = ten;
+      document.getElementById("bankList").style.display = "none";
+      document.getElementById("soTaiKhoan").focus();
+    }
+
+    document.addEventListener("click", function(e) {
+      if (e.target.id !== "nganHang" && !e.target.closest(".bank-list")) document.getElementById("bankList").style.display = "none";
+    });
+
+    // Thu nhỏ ảnh trước khi gửi (tối đa 1400px) để tải nhanh trên 4G
+    function chonAnh(input) {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var img = new Image();
+        img.onload = function() {
+          var scale = Math.min(1, 1400 / Math.max(img.width, img.height));
+          var c = document.createElement("canvas");
+          c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          anhQr = c.toDataURL("image/jpeg", 0.85);
+          var pv = document.getElementById("qrPreview");
+          pv.src = anhQr; pv.style.display = "block";
+          document.getElementById("uploadText").innerText = "✅ Đã chọn ảnh - bấm để đổi ảnh khác";
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function hienMsg(ok, text) {
+      var m = document.getElementById("msg");
+      m.className = "msg " + (ok ? "ok" : "err");
+      m.innerText = text; m.style.display = "block";
+    }
+
+    function guiThongTin() {
+      var data = {
+        maDatBan: MA_DAT_BAN,
+        nganHang: document.getElementById("nganHang").value.trim(),
+        soTaiKhoan: document.getElementById("soTaiKhoan").value.trim(),
+        chuTaiKhoan: document.getElementById("chuTaiKhoan").value.trim(),
+        ghiChu: document.getElementById("ghiChu").value.trim(),
+        anhQrBase64: anhQr
+      };
+      if (!data.anhQrBase64 && !(data.nganHang && data.soTaiKhoan && data.chuTaiKhoan)) {
+        hienMsg(false, "Quý khách vui lòng tải ảnh mã QR, hoặc điền đủ ngân hàng, số tài khoản và tên chủ tài khoản.");
+        return;
+      }
+      var btn = document.getElementById("btnGui");
+      btn.disabled = true; btn.innerText = "Đang gửi...";
+      google.script.run
+        .withSuccessHandler(function(res) {
+          btn.disabled = false; btn.innerText = "Gửi thông tin cho Túi";
+          hienMsg(res.success, res.message);
+          if (res.success) btn.style.display = "none";
+        })
+        .withFailureHandler(function(err) {
+          btn.disabled = false; btn.innerText = "Gửi thông tin cho Túi";
+          hienMsg(false, "Có lỗi khi gửi: " + err.message + ". Quý khách vui lòng thử lại hoặc gọi hotline 0911.588.138.");
+        })
+        .luuThongTinHoanCoc(data);
+    }
+  </script>
+</body>
+</html>
