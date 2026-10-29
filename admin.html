@@ -732,6 +732,7 @@
       k.innerHTML = '<div class="d-flex justify-content-between align-items-center mb-2"><b>🔔 Thông báo Telegram</b><button type="button" class="btn-close" onclick="caiTelegram()"></button></div>' +
         '<div class="small text-muted mb-2">Thêm bot vào nhóm Telegram, nhắn 1 tin trong nhóm, rồi dán MÃ BOT (lấy ở @BotFather).</div>' +
         '<input id="tgMa" type="password" class="form-control form-control-sm mb-2" placeholder="Dán mã bot, dạng 123456:ABC..." autocomplete="off">' +
+        '<div class="input-group input-group-sm mb-2"><span class="input-group-text">ID nhóm</span><input id="tgChat" class="form-control" value="-5368746170" title="Nhóm Đặt Bàn - Túi Nướng. Để trống = tự tìm nhóm vừa nhắn cho bot"></div>' +
         '<div class="d-flex gap-2 flex-wrap"><button type="button" class="btn btn-sm text-white fw-bold" style="background:#864c2a" onclick="tgChay(\'luu\')">💾 Lưu & gửi thử</button>' +
         '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="tgChay(\'thu\')">🧪 Chỉ gửi thử</button>' +
         '<button type="button" class="btn btn-sm btn-outline-danger ms-auto" onclick="tgChay(\'tat\')">Tắt</button></div>' +
@@ -752,7 +753,7 @@
       };
       var loi = function(e) { kqEl.innerHTML = '<span class="text-danger">❌ ' + escapeHtml(e && e.message ? e.message : String(e)) + '</span>'; };
       var r = adminRun().withSuccessHandler(xong).withFailureHandler(loi);
-      if (viec === "thu") r.thuTelegramWeb(); else r.caiTelegramWeb(viec === "tat" ? "TAT" : ma);
+      if (viec === "thu") r.thuTelegramWeb(); else r.caiTelegramWeb(viec === "tat" ? "TAT" : ma, document.getElementById("tgChat").value.trim());
     }
     function adminRun() {
       var ok = null, fail = null, o = {
@@ -1211,6 +1212,13 @@
         if (tt && dttTuLuuAnh()) taiAnhTrangThai(dttLoaiAnh(d), d);
         (tt === "XÁC NHẬN" ? _dtt.xacNhan : tt === "CHỜ HOÀN CỌC" ? _dtt.choHoan : tt === "ĐÃ HOÀN CỌC" ? _dtt.daHoan : _dtt.choDuyet).unshift(d);
         veDuyetTrangThai();
+        // Bấm ✅ Xác nhận: tự chạy luồng "XÁC NHẬN THÔNG TIN" (chuyển sang DATA_TONG) như nút trên Sheet
+        if (tt === "XÁC NHẬN") {
+          var cn = document.getElementById("dttCapNhat"); if (cn) cn.textContent = "⏳ Đang chuyển sang DATA_TONG...";
+          adminRun().withSuccessHandler(function() { taiDuyetTrangThai(); })
+            .withFailureHandler(function(e) { alert("Đã chọn XÁC NHẬN nhưng chưa chuyển được sang DATA_TONG: " + (e && e.message || e) + "\nBấm ✅ Xử lý để thử lại."); taiDuyetTrangThai(); })
+            .xuLyTrangThaiWeb();
+        }
       }).withFailureHandler(function(e) { btn.disabled = false; alert("❌ " + (e && e.message || e)); })
         .datTrangThaiFormWeb(d.dong, d.ma, d.ten, tt);
     }
