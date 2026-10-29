@@ -8,7 +8,7 @@
   <link rel="manifest" href="app-khach.webmanifest">
   <link rel="apple-touch-icon" href="app_icon/icon_khach_180.png">
   <link rel="icon" type="image/png" href="app_icon/icon_khach_192.png">
-  <meta name="theme-color" content="#5b2a86">
+  <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Túi Nướng"><script>
@@ -53,18 +53,18 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { background-color: #faf5ff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    .card { border-radius: 14px; box-shadow: 0 4px 18px rgba(106, 27, 154, 0.1); border: none; }
-    .header-bar { background: linear-gradient(135deg, #4a148c, #7b1fa2); color: white; border-radius: 14px 14px 0 0; padding: 22px; }
-    .btn-submit { background-color: #6a1b9a; color: white; border-radius: 8px; font-weight: 700; padding: 13px; font-size: 16px; border: none; }
-    .btn-submit:hover { background-color: #4a148c; color: white; }
-    .btn-submit:disabled { background-color: #b39ddb; cursor: not-allowed; }
-    .decor-box { background-color: #fcf6fd; border-radius: 10px; padding: 16px; border: 1px dashed #ba68c8; }
-    .child-box { background-color: #fbf5fc; border: 1px dashed #ce93d8; border-radius: 8px; padding: 12px 16px; }
-    .vat-box { background-color: #f3e5f5; border: 1px solid #ce93d8; border-radius: 8px; padding: 12px 16px; }
-    .step-box { background: white; border: 1.5px solid #e1bee7; border-radius: 10px; padding: 14px; }
-    .step-circle { width: 30px; height: 30px; border-radius: 50%; background: #6a1b9a; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; }
-    .deposit-badge { background-color: #f3e5f5; border: 1.5px solid #ab47bc; border-radius: 8px; padding: 12px; }
+    body { background-color: #fdf9f7; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .card { border-radius: 14px; box-shadow: 0 4px 18px rgba(147, 76, 34, 0.1); border: none; }
+    .header-bar { background: linear-gradient(135deg, #82431e, #9c5125); color: white; border-radius: 14px 14px 0 0; padding: 22px; }
+    .btn-submit { background-color: #934c22; color: white; border-radius: 8px; font-weight: 700; padding: 13px; font-size: 16px; border: none; }
+    .btn-submit:hover { background-color: #82431e; color: white; }
+    .btn-submit:disabled { background-color: #dbb49d; cursor: not-allowed; }
+    .decor-box { background-color: #fdf9f6; border-radius: 10px; padding: 16px; border: 1px dashed #c88b68; }
+    .child-box { background-color: #fcf8f5; border: 1px dashed #d8ac93; border-radius: 8px; padding: 12px 16px; }
+    .vat-box { background-color: #f5ebe5; border: 1px solid #d8ac93; border-radius: 8px; padding: 12px 16px; }
+    .step-box { background: white; border: 1.5px solid #e7cdbe; border-radius: 10px; padding: 14px; }
+    .step-circle { width: 30px; height: 30px; border-radius: 50%; background: #934c22; color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; }
+    .deposit-badge { background-color: #f5ebe5; border: 1.5px solid #bc7247; border-radius: 8px; padding: 12px; }
     .rule-banner-decor { background-color: #fff3cd; border: 2px solid #f59e0b; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 13.5px; color: #78350f; line-height: 1.5; text-align: center; }
    /* Co gọn Nam/Nữ nhường chỗ cho Tỉnh/Thành */
   .gender-group {
@@ -110,22 +110,22 @@
     background: #f0f7ff;
     color: #1a73e8;
   }
-    .hc-box { background: #fff; border: 1px dashed #b39ddb; border-radius: 10px; padding: 8px; }
-    .hc-qr { width: 86px; flex: 0 0 86px; border: 1.5px dashed #9575cd; border-radius: 9px; background: #f6effb; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; text-align: center; font-size: 20px; color: #6a1b9a; overflow: hidden; }
+    .hc-box { background: #fff; border: 1px dashed #dbb49d; border-radius: 10px; padding: 8px; }
+    .hc-qr { width: 86px; flex: 0 0 86px; border: 1.5px dashed #cd9575; border-radius: 9px; background: #fbf3ef; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; text-align: center; font-size: 20px; color: #934c22; overflow: hidden; }
     .hc-qr span { font-size: 11px; font-weight: 700; }
     .hc-qr img { width: 100%; height: 100%; object-fit: cover; }
-    .hc-bank-list { position: absolute; z-index: 20; left: 0; right: 0; background: #fff; border: 1px solid #ddd2e6; border-radius: 8px;
-      margin-top: 2px; max-height: 180px; overflow-y: auto; display: none; box-shadow: 0 6px 16px rgba(74,20,140,.12); }
-    .hc-bank-item { padding: 6px 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f1eaf6; }
-    .hc-bank-item:hover { background: #f6effb; }
+    .hc-bank-list { position: absolute; z-index: 20; left: 0; right: 0; background: #fff; border: 1px solid #ecd8cc; border-radius: 8px;
+      margin-top: 2px; max-height: 180px; overflow-y: auto; display: none; box-shadow: 0 6px 16px rgba(130, 67, 30,.12); }
+    .hc-bank-item { padding: 6px 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f7eee9; }
+    .hc-bank-item:hover { background: #fbf3ef; }
   </style>
   <style>
     .tc-ok { text-align: center; }
     .tc-buoc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; position: relative; }
-    .tc-buoc div { font-size: 11.5px; color: #6b6780; background: #f6f4f9; border-radius: 10px; padding: 8px 4px; line-height: 1.25; }
+    .tc-buoc div { font-size: 11.5px; color: #807067; background: #faf5f3; border-radius: 10px; padding: 8px 4px; line-height: 1.25; }
     .tc-buoc div span { display: block; font-size: 20px; margin-bottom: 3px; }
-    .tc-buoc div.xong { background: #efe8f8; color: #4a2b6b; font-weight: 700; }
+    .tc-buoc div.xong { background: #f8eee8; color: #6f432a; font-weight: 700; }
     @media (max-width: 380px) { .tc-buoc { grid-template-columns: repeat(2, 1fr); } }
   </style>
   <style>
@@ -150,7 +150,7 @@
       <div class="card-body p-4">
         <!-- SƠ ĐỒ QUY TRÌNH 4 BƯỚC -->
         <div class="step-box mb-4">
-          <div class="text-center fw-bold mb-3" style="color:#6a1b9a; font-size:13px; text-transform:uppercase;">
+          <div class="text-center fw-bold mb-3" style="color:#934c22; font-size:13px; text-transform:uppercase;">
             📋 Sơ Đồ Quy Trình Đặt Bàn Tiệc Decor
           </div>
           <div class="row g-2 text-center small">
@@ -200,7 +200,7 @@
         <div id="boxKhoaDecorSau18h31" style="display:none; margin-bottom: 16px; padding: 14px; border-radius: 8px; background-color: #ffebee; border: 1.5px solid #ef5350; color: #c62828; font-weight: bold; text-align: center;">
           🔒 ĐÃ QUÁ 18H31 (THỨ 6 & THỨ 7):<br>
           <span id="txtLyDoKhoa18h31" style="font-weight: 600; font-size: 13.5px;">
-            Rất tiếc, hệ thống khóa nhận đặt tiệc Decor từ sau 18h31 vào Thứ 6 và Thứ 7 hàng tuần. Anh/chị vui lòng chọn giờ đón từ 18h30 trở về trước hoặc chọn ngày khác giúp Túi nhé ạ! 💜
+            Rất tiếc, hệ thống khóa nhận đặt tiệc Decor từ sau 18h31 vào Thứ 6 và Thứ 7 hàng tuần. Anh/chị vui lòng chọn giờ đón từ 18h30 trở về trước hoặc chọn ngày khác giúp Túi nhé ạ! 🧡
           </span>
         </div>
 
@@ -289,7 +289,7 @@
           <div class="p-3 mb-3 bg-light rounded border d-flex justify-content-between align-items-center">
             <div class="form-check form-switch mb-0">
               <input class="form-check-input" type="checkbox" id="coTreEmCheckDecor" onchange="document.getElementById('kidsBox').style.display=this.checked?'block':'none'">
-              <label class="form-check-label fw-bold" for="coTreEmCheckDecor" style="color:#6a1b9a;">👶 Có trẻ em</label>
+              <label class="form-check-label fw-bold" for="coTreEmCheckDecor" style="color:#934c22;">👶 Có trẻ em</label>
             </div>
             <div id="kidsBox" style="display:none; width:140px;">
               <select class="form-select form-select-sm" id="childQuantitySelectDecor">
@@ -302,7 +302,7 @@
 
           <!-- MỤC CHỌN MẪU DECOR -->
           <div class="p-3 mb-3 bg-white rounded border" id="decorSectionBox">
-            <label class="form-label fw-bold" style="color:#4a148c;">🎀 Mẫu Decor (Chọn mẫu còn trống trong ngày):</label>
+            <label class="form-label fw-bold" style="color:#82431e;">🎀 Mẫu Decor (Chọn mẫu còn trống trong ngày):</label>
             <select name="mauDecor" id="selectMauDecor" class="form-select mb-2">
               <option value="">-- Đang nạp danh sách mẫu... --</option>
             </select>
@@ -312,10 +312,10 @@
           <!-- SỐ TIỀN CỌC TỰ ĐỘNG -->
           <div class="deposit-badge mb-3">
             <div class="d-flex justify-content-between align-items-center">
-              <span class="fw-bold" style="color:#4a148c;">Số tiền cọc tự động nhận diện:</span>
+              <span class="fw-bold" style="color:#82431e;">Số tiền cọc tự động nhận diện:</span>
               <span id="depositDisplay" class="fs-5 fw-bold text-danger">300.000 VNĐ</span>
             </div>
-            <div id="depositRuleText" class="small fw-bold mt-1" style="font-size:12px;color:#6a1b9a;"></div>
+            <div id="depositRuleText" class="small fw-bold mt-1" style="font-size:12px;color:#934c22;"></div>
             <div class="small text-muted mt-1" style="font-size:11.5px;">
               (Số tiền này sẽ được hoàn lại/ trừ vào số tiền thanh toán khi dùng bữa tại quán)
             </div>
@@ -328,14 +328,14 @@
           <div class="p-3 mb-3 bg-light rounded border">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
               <div class="d-flex align-items-center gap-2">
-                <label class="form-label fw-bold mb-0" style="color:#6a1b9a;">🧾 XUẤT VAT</label>
+                <label class="form-label fw-bold mb-0" style="color:#934c22;">🧾 XUẤT VAT</label>
                 <div class="form-check form-switch mb-0">
                   <input class="form-check-input" type="checkbox" id="vatSwitch" onchange="doiXuatVat()">
                   <label class="form-check-label fw-bold ms-1" id="vatText" for="vatSwitch">Không</label>
                 </div>
               </div>
               <div id="hoanCocChon" class="align-items-center gap-2" style="display:none;">
-                <span class="fw-bold small text-nowrap" style="color:#6a1b9a;" title="Phương thức hoàn cọc">💸 Hoàn cọc:</span>
+                <span class="fw-bold small text-nowrap" style="color:#934c22;" title="Phương thức hoàn cọc">💸 Hoàn cọc:</span>
                 <div class="btn-group btn-group-sm text-nowrap" role="group">
                   <input type="radio" class="btn-check" name="hoanCocPT" id="hcTienMat" value="Tiền mặt" checked onchange="doiHoanCoc()">
                   <label class="btn btn-outline-success fw-bold" for="hcTienMat">💵 Tiền mặt</label>
@@ -407,7 +407,7 @@
         <div class="modal-body p-4 text-center">
           <div class="tc-ok">
             <p class="fs-6 fw-bold mb-2">Túi Nướng Lavender đã nhận được yêu cầu đặt bàn của Quý khách.</p>
-            <a href="https://hmk-vn.github.io/Datban/tracuu.html" class="btn fw-bold px-4 mb-2 text-white" style="background:#5b2a86" onclick="try{sessionStorage.setItem('tracuu_q', window._sdtVuaDat || '')}catch(e){}">🔎 Tra cứu đơn đặt bàn</a>
+            <a href="https://hmk-vn.github.io/Datban/tracuu.html" class="btn fw-bold px-4 mb-2 text-white" style="background:#864c2a" onclick="try{sessionStorage.setItem('tracuu_q', window._sdtVuaDat || '')}catch(e){}">🔎 Tra cứu đơn đặt bàn</a>
             <p class="small text-muted mb-3">Quý khách vui lòng kiểm tra trạng thái bằng số điện thoại hoặc email.</p>
             <div class="tc-buoc">
               <div class="xong"><span>📝</span>Gửi yêu cầu</div>
@@ -681,9 +681,9 @@
             if (boxDem) boxDem.style.display = "none";
             if (boxKhoa) boxKhoa.style.display = "block";
             if (isInvalidTimeRange && diff > 0) {
-              if (txtLyDo) txtLyDo.innerText = "Thứ 6 & Thứ 7 quán chỉ nhận đặt bàn Decor trong khung giờ từ 14h00 đến 18h30. Anh/chị vui lòng chọn lại giờ nhé ạ! 💜";
+              if (txtLyDo) txtLyDo.innerText = "Thứ 6 & Thứ 7 quán chỉ nhận đặt bàn Decor trong khung giờ từ 14h00 đến 18h30. Anh/chị vui lòng chọn lại giờ nhé ạ! 🧡";
             } else {
-              if (txtLyDo) txtLyDo.innerText = "Rất tiếc, đã quá 18h31 nên hệ thống đã khóa nhận đặt tiệc Decor cho ngày Thứ 6 / Thứ 7. Anh/chị vui lòng chọn một ngày khác giúp Túi nhé ạ! 💜";
+              if (txtLyDo) txtLyDo.innerText = "Rất tiếc, đã quá 18h31 nên hệ thống đã khóa nhận đặt tiệc Decor cho ngày Thứ 6 / Thứ 7. Anh/chị vui lòng chọn một ngày khác giúp Túi nhé ạ! 🧡";
             }
             updateSubmitButtonState();
             if (diff <= 0 && decorIntervalTimer) {

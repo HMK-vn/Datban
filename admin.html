@@ -8,7 +8,7 @@
   <link rel="manifest" href="app-quantri.webmanifest">
   <link rel="apple-touch-icon" href="app_icon/icon_admin_180.png">
   <link rel="icon" type="image/png" href="app_icon/icon_admin_192.png">
-  <meta name="theme-color" content="#5b2a86">
+  <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="TN Quản trị"><script>
@@ -61,8 +61,8 @@
     try { if (localStorage.getItem("anCaiApp") === "1") return; } catch (e) {}
     function hien(html, bam) {
       var d = document.createElement("div");
-      d.style.cssText = "position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;background:#5b2a86;color:#fff;border-radius:12px;padding:10px 12px;font:600 14px/1.35 system-ui,sans-serif;display:flex;gap:10px;align-items:center;box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:460px;margin:0 auto";
-      d.innerHTML = '<span style="flex:1">' + html + '</span>' + (bam ? '<button style="border:0;border-radius:8px;padding:6px 12px;font-weight:700;color:#5b2a86;background:#fff">Cài</button>' : '') + '<button aria-label="Đóng" style="border:0;background:none;color:#fff;font-size:20px;line-height:1">×</button>';
+      d.style.cssText = "position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;background:#864c2a;color:#fff;border-radius:12px;padding:10px 12px;font:600 14px/1.35 system-ui,sans-serif;display:flex;gap:10px;align-items:center;box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:460px;margin:0 auto";
+      d.innerHTML = '<span style="flex:1">' + html + '</span>' + (bam ? '<button style="border:0;border-radius:8px;padding:6px 12px;font-weight:700;color:#864c2a;background:#fff">Cài</button>' : '') + '<button aria-label="Đóng" style="border:0;background:none;color:#fff;font-size:20px;line-height:1">×</button>';
       var nut = d.querySelectorAll("button");
       if (bam) nut[0].onclick = function () { bam(); d.remove(); };
       nut[nut.length - 1].onclick = function () { d.remove(); try { localStorage.setItem("anCaiApp", "1"); } catch (e) {} };
@@ -81,18 +81,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     body { background-color: #f4f6fb; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    .navbar-custom { background: linear-gradient(135deg, #311b92, #6a1b9a); color: white; }
+    .navbar-custom { background: linear-gradient(135deg, #8c4821, #934c22); color: white; }
     .nav-tabs .nav-link { color: #555; font-weight: 600; border-radius: 8px 8px 0 0; padding: 8px 8px; font-size: 13px; white-space: nowrap; }
     #mainTab .nav-link i { margin-right: 3px !important; }
     #mainTab { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
     #mainTab .nav-item { flex: 0 0 auto; }
-    .nav-tabs .nav-link.active { color: #6a1b9a; background-color: #ffffff; border-bottom: 3px solid #6a1b9a; }
-    .nav-tabs .nav-link.tab-highlight.active { color: #d63384; border-bottom: 3px solid #d63384; }
+    .nav-tabs .nav-link.active { color: #934c22; background-color: #ffffff; border-bottom: 3px solid #934c22; }
+    .nav-tabs .nav-link.tab-highlight.active { color: #d07039; border-bottom: 3px solid #d07039; }
     .main-container { max-width: 1420px; margin: auto; }
     .card-box { border-radius: 12px; border: none; box-shadow: 0 4px 16px rgba(0,0,0,0.06); background: white; }
-    .timeline-col { background: #fdfcff; border-radius: 10px; border: 1px solid #e1bee7; padding: 15px; }
-    .timeline-card-table { background: #ffffff; border: 1.5px solid #d1c4e9; border-radius: 10px; padding: 12px 14px 26px 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); font-size: 13px; line-height: 1.5; color: #212529; position: relative; height: 100%; }
-    .timeline-card-table.decor-small { border-left: 5px solid #ab47bc; }
+    .timeline-col { background: #fefdfd; border-radius: 10px; border: 1px solid #e7cdbe; padding: 15px; }
+    .timeline-card-table { background: #ffffff; border: 1.5px solid #e9d2c4; border-radius: 10px; padding: 12px 14px 26px 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); font-size: 13px; line-height: 1.5; color: #212529; position: relative; height: 100%; }
+    .timeline-card-table.decor-small { border-left: 5px solid #bc7247; }
     .timeline-card-table.decor-large { border-left: 5px solid #e91e63; }
     .timeline-card-table.normal { border-left: 5px solid #0288d1; }
     .table-card-header { font-weight: 800; font-size: 13.5px; color: #1a237e; letter-spacing: 0.2px; }
@@ -108,12 +108,12 @@
     /* Ẩn/hiện cột: tab 2 (Dòng, Email) và tab 3 (Email) - mặc định ẩn */
     .hide-dt-row .col-dt-row, .hide-dt-email .col-dt-email { display: none !important; }
     .hide-col-email .field-col-20 { display: none !important; }
-    .tool-icon-btn.active { background: #6a1b9a !important; color: #fff !important; border-color: #6a1b9a !important; }
+    .tool-icon-btn.active { background: #934c22 !important; color: #fff !important; border-color: #934c22 !important; }
     /* Tab 2: tô màu dòng theo phân loại bàn */
-    tr.row-pastel-small > td { background: #fdf4ff !important; }
+    tr.row-pastel-small > td { background: #fdf9f6 !important; }
     tr.row-pastel-large > td { background: #fff1f2 !important; }
     tr.row-pastel-normal > td { background: #f0f9ff !important; }
-    tr.row-pastel-small > td:first-child, tr.row-pastel-small > td:nth-child(2) { box-shadow: inset 4px 0 0 #a21caf; }
+    tr.row-pastel-small > td:first-child, tr.row-pastel-small > td:nth-child(2) { box-shadow: inset 4px 0 0 #a45527; }
     tr.row-pastel-large > td:first-child, tr.row-pastel-large > td:nth-child(2) { box-shadow: inset 4px 0 0 #e11d48; }
     tr.row-pastel-normal > td:first-child, tr.row-pastel-normal > td:nth-child(2) { box-shadow: inset 4px 0 0 #0284c7; }
     .hide-col-kenh .field-col-14 { display: none !important; }
@@ -124,29 +124,29 @@
     .vat-corner-ticker { position: absolute; bottom: 5px; right: 8px; background: linear-gradient(135deg, #d32f2f, #ff5252); color: #fff; font-weight: 800; font-size: 10.5px; padding: 1px 8px; border-radius: 10px; box-shadow: 0 2px 5px rgba(211,47,47,0.3); letter-spacing: 0.4px; }
 
     .stat-card { border-radius: 10px; padding: 12px 18px; color: white; display: flex; align-items: center; justify-content: space-between; }
-    .stat-purple { background: linear-gradient(135deg, #7b1fa2, #9c27b0); }
+    .stat-purple { background: linear-gradient(135deg, #9c5125, #ae5a29); }
     .stat-blue { background: linear-gradient(135deg, #1565c0, #1976d2); }
     .stat-orange { background: linear-gradient(135deg, #e65100, #f57c00); }
     .decor-catalog-box { border: 1px solid #dee2e6; border-radius: 10px; padding: 14px; background: #fdfdfe; max-height: 760px; overflow-y: auto; }
     .decor-item-thumb { border: 1.5px solid #eee; border-radius: 8px; padding: 8px; margin-bottom: 8px; cursor: pointer; background: #fff; transition: 0.18s; position: relative; }
-    .decor-item-thumb:hover { background: #f3e5f5; border-color: #9c27b0; }
-    .decor-item-thumb.selected-decor { border: 2px solid #d63384; background: #fff0f6; }
+    .decor-item-thumb:hover { background: #f5ebe5; border-color: #ae5a29; }
+    .decor-item-thumb.selected-decor { border: 2px solid #d07039; background: #fff0f6; }
     .decor-item-thumb.booked-decor { opacity: 0.72; border-color: #ef9a9a; background: #fff5f5; }
     .decor-list-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 10px; margin-bottom: 6px; border: 1.5px solid #eee; border-radius: 8px; background: #fff; cursor: pointer; transition: 0.15s; }
-    .decor-list-row:hover { background: #f3e5f5; border-color: #9c27b0; }
-    .decor-list-row.selected-decor { border: 2px solid #d63384; background: #fff0f6; }
+    .decor-list-row:hover { background: #f5ebe5; border-color: #ae5a29; }
+    .decor-list-row.selected-decor { border: 2px solid #d07039; background: #fff0f6; }
     .decor-list-row.booked-decor { opacity: 0.72; border-color: #ef9a9a; background: #fff5f5; }
 
-    .order-tag-card { border: 2px solid #dcd7e8; border-radius: 12px; padding: 14px; margin-bottom: 14px; background: #ffffff; cursor: pointer; transition: 0.2s; position: relative; }
-    .order-tag-card.active-tag { border-color: #6a1b9a; background: #fcf9ff; box-shadow: 0 4px 14px rgba(106,27,154,0.14); }
-    .order-tag-header { background: linear-gradient(90deg, #f3e5f5, #fff); border-radius: 8px; padding: 7px 12px; margin-bottom: 10px; border-left: 4px solid #6a1b9a; }
-    .deposit-chip { font-size: 11px; padding: 1px 7px; border-radius: 10px; cursor: pointer; border: 1px solid #ce93d8; background: #f3e5f5; color: #4a148c; font-weight: 600; }
-    .deposit-chip:hover { background: #6a1b9a; color: #fff; }
+    .order-tag-card { border: 2px solid #eedcd1; border-radius: 12px; padding: 14px; margin-bottom: 14px; background: #ffffff; cursor: pointer; transition: 0.2s; position: relative; }
+    .order-tag-card.active-tag { border-color: #934c22; background: #fefcfa; box-shadow: 0 4px 14px rgba(147, 76, 34,0.14); }
+    .order-tag-header { background: linear-gradient(90deg, #f5ebe5, #fff); border-radius: 8px; padding: 7px 12px; margin-bottom: 10px; border-left: 4px solid #934c22; }
+    .deposit-chip { font-size: 11px; padding: 1px 7px; border-radius: 10px; cursor: pointer; border: 1px solid #d8ac93; background: #f5ebe5; color: #82431e; font-weight: 600; }
+    .deposit-chip:hover { background: #934c22; color: #fff; }
     .dishes-wide-textarea { background: #fffdf7 !important; border: 1.5px solid #ffe082 !important; font-size: 13px !important; line-height: 1.45 !important; }
     .dishes-wide-textarea:focus { border-color: #ff8f00 !important; box-shadow: 0 0 0 0.2rem rgba(255,143,0,0.15) !important; }
     .bill-box-tab5 { background: #f8fdf9; border: 1px dashed #81c784; border-radius: 8px; padding: 8px 10px; }
 
-    .filter-cat-btn.active, .tool-icon-btn.active { background-color: #6a1b9a !important; color: #fff !important; border-color: #6a1b9a !important; }
+    .filter-cat-btn.active, .tool-icon-btn.active { background-color: #934c22 !important; color: #fff !important; border-color: #934c22 !important; }
 
     .dt-nhap-box { background: #fffbeb; border: 1px dashed #f59e0b; }
     .dt-che-do { display: inline-block; padding: 4px 10px; border-radius: 999px; }
@@ -160,27 +160,27 @@
     .bill-thumb-mini { width: 42px; height: 42px; object-fit: cover; border-radius: 6px; border: 1.5px solid #2e7d32; cursor: pointer; transition: transform 0.15s; }
     .bill-thumb-mini:hover { transform: scale(1.08); }
 
-    #billAnchoredPopover { position: fixed; z-index: 9999; display: none; background: #fff; border: 2px solid #6a1b9a; border-radius: 10px; padding: 6px; box-shadow: 0 8px 28px rgba(0,0,0,0.28); width: 290px; }
+    #billAnchoredPopover { position: fixed; z-index: 9999; display: none; background: #fff; border: 2px solid #934c22; border-radius: 10px; padding: 6px; box-shadow: 0 8px 28px rgba(0,0,0,0.28); width: 290px; }
     #billAnchoredPopover img { width: 100%; max-height: 380px; object-fit: contain; border-radius: 6px; background: #f8f9fa; }
     #billAnchoredPopover .btn-close-pop { position: absolute; top: -10px; right: -10px; width: 24px; height: 24px; border-radius: 50%; background: #d32f2f; color: #fff; border: 2px solid #fff; font-size: 12px; font-weight: bold; line-height: 18px; text-align: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25); }
 
-    .email-suggest-menu { position: absolute; top: 100%; left: 0; right: 0; z-index: 1050; max-height: 280px; overflow-y: auto; background: #fff; border: 1.5px solid #6a1b9a; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); display: none; }
+    .email-suggest-menu { position: absolute; top: 100%; left: 0; right: 0; z-index: 1050; max-height: 280px; overflow-y: auto; background: #fff; border: 1.5px solid #934c22; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); display: none; }
     .email-suggest-item { padding: 8px 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 13px; }
-    .email-suggest-item:hover { background: #f3e5f5; }
+    .email-suggest-item:hover { background: #f5ebe5; }
     /* Tông màu nhẹ: header lavender nhạt, nút trắng viền mảnh, thẻ thống kê pastel */
-    body { background-color: #f6f4f9; }
-    .navbar-custom { background: linear-gradient(135deg, #efe8f8, #f8f4fc); color: #4a2b6b; border-bottom: 1px solid #e6ddf1; box-shadow: none !important; }
-    .navbar-custom .btn { background: #fff; border: 1px solid #e3d9ef; color: #4a2b6b !important; font-weight: 600 !important; }
-    .navbar-custom .btn:hover { background: #f3edfa; }
-    .stat-card { color: #3d3a4a; border: 1px solid rgba(0,0,0,.04); }
+    body { background-color: #faf5f3; }
+    .navbar-custom { background: linear-gradient(135deg, #f8eee8, #fcf7f4); color: #6f432a; border-bottom: 1px solid #f2e4dc; box-shadow: none !important; }
+    .navbar-custom .btn { background: #fff; border: 1px solid #f0e1d8; color: #6f432a !important; font-weight: 600 !important; }
+    .navbar-custom .btn:hover { background: #faf2ed; }
+    .stat-card { color: #6f432a; border: 1px solid rgba(0,0,0,.04); }
     .stat-card .opacity-75, .stat-card i { opacity: .8 !important; }
-    .stat-purple { background: #f2ebf9; color: #5b2a86; }
+    .stat-purple { background: #f9f0eb; color: #864c2a; }
     .stat-blue { background: #e9f1fb; color: #1f5fa8; }
     .stat-orange { background: #fdf1e5; color: #a8581a; }
-    #tab3 .btn-outline-primary { color: #5b2a86; border-color: #ddd2ea; background: #fff; }
-    #tab3 .btn-check:checked + .btn-outline-primary, #tab3 .btn-outline-primary:hover { background: #efe8f8; color: #4a2b6b; border-color: #cdbfe0; }
-    #tab3 .btn-primary { background: #5b2a86; border-color: #5b2a86; }
-    #tab3 .text-warning-emphasis { color: #5b2a86 !important; }
+    #tab3 .btn-outline-primary { color: #864c2a; border-color: #eddacf; background: #fff; }
+    #tab3 .btn-check:checked + .btn-outline-primary, #tab3 .btn-outline-primary:hover { background: #f8eee8; color: #6f432a; border-color: #e5caba; }
+    #tab3 .btn-primary { background: #864c2a; border-color: #864c2a; }
+    #tab3 .text-warning-emphasis { color: #864c2a !important; }
     /* Header 1 dòng */
     .admin-sub { display: none !important; }
     @media (min-width: 768px) { .admin-title { white-space: nowrap; } }
@@ -189,30 +189,30 @@
     .dtt-bar .form-control { width: 180px; }
     .dtt-board { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
     /* Huy hiệu VAT tròn gắn góc thẻ: 💵 hoàn cọc tiền mặt, 🏦 hoàn cọc chuyển khoản */
-    .vat-tag { position: absolute; top: -12px; right: -8px; width: 42px; height: 42px; z-index: 3; display: block; filter: drop-shadow(0 2px 3px rgba(40,20,70,.28)); }
+    .vat-tag { position: absolute; top: -12px; right: -8px; width: 42px; height: 42px; z-index: 3; display: block; filter: drop-shadow(0 2px 3px rgba(119, 65, 34,.28)); }
     .vat-tag svg { width: 100%; height: 100%; display: block; }
     .vat-mini { display: inline-block; width: 20px; height: 20px; vertical-align: -5px; } .vat-mini svg { width: 100%; height: 100%; display: block; }
     .vat-tag.inline { position: static; width: 30px; height: 30px; display: inline-block; vertical-align: middle; margin-left: 4px; }
     .co-vat { position: relative; margin-top: 12px; }
     .dtt-card.co-vat .dtt-l1, .timeline-card-table.co-vat .table-card-header { padding-right: 32px; }
-    .dtt-col { background: #f7f6fa; border-radius: 12px; display: flex; flex-direction: column; min-width: 0; }
-    .dtt-col-h { padding: 9px 12px 6px; font-weight: 700; font-size: 13.5px; color: #3d3a4a; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--line); }
-    .dtt-col-h .so { font-size: 12px; font-weight: 700; color: #6b6780; background: #fff; border-radius: 10px; padding: 0 8px; }
+    .dtt-col { background: #fbf7f5; border-radius: 12px; display: flex; flex-direction: column; min-width: 0; }
+    .dtt-col-h { padding: 9px 12px 6px; font-weight: 700; font-size: 13.5px; color: #6f432a; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--line); }
+    .dtt-col-h .so { font-size: 12px; font-weight: 700; color: #807067; background: #fff; border-radius: 10px; padding: 0 8px; }
     .dtt-col-b { padding: 8px; max-height: 68vh; overflow-y: auto; }
-    .dtt-card { background: #fff; border: 1px solid #e6e3ee; border-left: 4px solid var(--mau, #e6e3ee); border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; font-size: 13px; }
+    .dtt-card { background: #fff; border: 1px solid #f3e6de; border-left: 4px solid var(--mau, #f3e6de); border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; font-size: 13px; }
     .dtt-l1 { display: flex; justify-content: space-between; gap: 6px; align-items: baseline; }
     .dtt-ten { font-weight: 700; font-size: 14px; color: #222; }
     .dtt-l1 a { font-size: 13px; color: #555; text-decoration: none; white-space: nowrap; }
-    .dtt-meta { color: #6b6780; font-size: 12px; margin-top: 2px; }
-    .dtt-ma { font-family: ui-monospace, Menlo, monospace; font-weight: 700; color: var(--mau, #6b6780); }
-    .dtt-sub { color: #6b6780; font-size: 11.5px; margin-top: 3px; }
+    .dtt-meta { color: #807067; font-size: 12px; margin-top: 2px; }
+    .dtt-ma { font-family: ui-monospace, Menlo, monospace; font-weight: 700; color: var(--mau, #807067); }
+    .dtt-sub { color: #807067; font-size: 11.5px; margin-top: 3px; }
     .dtt-anh { display: flex; gap: 6px; margin-top: 6px; }
-    .dtt-anh img { width: 46px; height: 46px; object-fit: cover; border-radius: 6px; border: 1px solid #e6e3ee; cursor: zoom-in; display: block; }
-    .dtt-anh span { font-size: 10px; color: #8a8698; display: block; text-align: center; }
+    .dtt-anh img { width: 46px; height: 46px; object-fit: cover; border-radius: 6px; border: 1px solid #f3e6de; cursor: zoom-in; display: block; }
+    .dtt-anh span { font-size: 10px; color: #988d86; display: block; text-align: center; }
     .dtt-nut { margin-top: 7px; display: flex; }
-    .dtt-nut .btn { flex: 1; padding: 3px 2px; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-color: #d9d5e4; color: #555; background: #fff; }
-    .dtt-nut .btn.on { background: #5b2a86; border-color: #5b2a86; color: #fff; }
-    .dtt-nut .btn:hover:not(.on) { background: #f1edf7; }
+    .dtt-nut .btn { flex: 1; padding: 3px 2px; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-color: #ecd8cd; color: #555; background: #fff; }
+    .dtt-nut .btn.on { background: #864c2a; border-color: #864c2a; color: #fff; }
+    .dtt-nut .btn:hover:not(.on) { background: #f8f0ec; }
     /* Chống nhảy dòng: tên cắt "…", SĐT/mục thông tin không tách, nút chỉ còn biểu tượng khi thẻ hẹp */
     .dtt-card { container-type: inline-size; }
     .dtt-l1 .dtt-ten { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -223,25 +223,25 @@
     .dtt-ngay .so { flex-shrink: 0; margin-left: 6px; }
     @container (max-width: 250px) { .dtt-nut .t { display: none; } .dtt-nut .btn { font-size: 14px; } }
     .dtt-anh-btn { line-height: 1; font-size: 15px; flex-shrink: 0; }
-    .dtt-ngay { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #5b5470; padding: 6px 8px; margin: 2px 0 6px; border-radius: 8px; }
-    .dtt-ngay .so { font-weight: 600; color: #8a8698; }
-    .dtt-ngay.cu { background: #fff; border: 1px solid #e6e3ee; cursor: pointer; }
-    .dtt-ngay.cu:hover { background: #f3eff9; }
-    #dttBox .form-switch .form-check-input:checked { background-color: #5b2a86; border-color: #5b2a86; }
-    .dtt-loc-ngay .btn.on { background: #5b2a86; color: #fff; border-color: #5b2a86 !important; }
-    .dtt-them { text-align: center; font-size: 12px; color: #6b6780; padding: 6px; cursor: pointer; border-radius: 8px; }
-    .dtt-them:hover { background: #efe8f8; }
-    .dtt-ngay.cu.mo { background: #efe8f8; border-color: #d9cdea; color: #4a2b6b; }
+    .dtt-ngay { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #8e5636; padding: 6px 8px; margin: 2px 0 6px; border-radius: 8px; }
+    .dtt-ngay .so { font-weight: 600; color: #988d86; }
+    .dtt-ngay.cu { background: #fff; border: 1px solid #f3e6de; cursor: pointer; }
+    .dtt-ngay.cu:hover { background: #f9f3ef; }
+    #dttBox .form-switch .form-check-input:checked { background-color: #864c2a; border-color: #864c2a; }
+    .dtt-loc-ngay .btn.on { background: #864c2a; color: #fff; border-color: #864c2a !important; }
+    .dtt-them { text-align: center; font-size: 12px; color: #807067; padding: 6px; cursor: pointer; border-radius: 8px; }
+    .dtt-them:hover { background: #f8eee8; }
+    .dtt-ngay.cu.mo { background: #f8eee8; border-color: #ebd7cc; color: #6f432a; }
     .dtt-rong { text-align: center; color: #aaa; font-size: 12px; padding: 16px 4px; }
     @media (max-width: 1399px) { .dtt-board { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
     @media (max-width: 991px) { .dtt-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     .dtt-seg { display: none; }
     @media (max-width: 576px) {
-      .dtt-seg { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; background: #f1edf7; border-radius: 10px; padding: 4px; margin-bottom: 8px; position: sticky; top: 0; z-index: 5; }
+      .dtt-seg { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; background: #f8f0ec; border-radius: 10px; padding: 4px; margin-bottom: 8px; position: sticky; top: 0; z-index: 5; }
       .dtt-seg .vat-mini { width: 14px; height: 14px; vertical-align: -2px; }
-      .dtt-seg button { border: 0; background: transparent; border-radius: 8px; padding: 5px 2px; font-size: 10.5px; font-weight: 600; color: #6b6780; line-height: 1.2; }
-      .dtt-seg button b { display: block; font-size: 15px; color: #3d3a4a; }
-      .dtt-seg button.on { background: #fff; color: #5b2a86; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+      .dtt-seg button { border: 0; background: transparent; border-radius: 8px; padding: 5px 2px; font-size: 10.5px; font-weight: 600; color: #807067; line-height: 1.2; }
+      .dtt-seg button b { display: block; font-size: 15px; color: #6f432a; }
+      .dtt-seg button.on { background: #fff; color: #864c2a; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
       .dtt-board[data-show] .dtt-col { display: none; }
       .dtt-board[data-show="0"] .dtt-col:nth-child(1), .dtt-board[data-show="1"] .dtt-col:nth-child(2),
       .dtt-board[data-show="2"] .dtt-col:nth-child(3), .dtt-board[data-show="3"] .dtt-col:nth-child(4), .dtt-board[data-show="4"] .dtt-col:nth-child(5), .dtt-board[data-show="5"] .dtt-col:nth-child(6) { display: flex; }
@@ -314,6 +314,7 @@
         <a href="decor.html" class="btn btn-danger btn-sm fw-bold" target="_blank">🎀 Đặt bàn decor</a>
         <a href="thuong.html" class="btn btn-primary btn-sm fw-bold" target="_blank">🍲 Đặt bàn thường</a>
         <a href=new URL("tracuu.html", location.href).href class="btn btn-success btn-sm fw-bold" target="_blank">🔍 Tra cứu</a>
+        <button type="button" class="btn btn-light btn-sm fw-bold" onclick="caiTelegram()" title="Báo đơn mới / hoàn cọc về nhóm Telegram">🔔 Telegram</button>
         <span class="badge bg-light text-dark py-2 px-3 ms-1"><i class="fa-solid fa-clock me-1"></i> <span id="clockDisplay"></span></span>
       </div>
     </div>
@@ -325,7 +326,7 @@
       <li class="nav-item"><button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button"><i class="fa-solid fa-table-list me-1 text-success"></i> 2. Nhập & Quản Lý DATA_TONG</button></li>
       <li class="nav-item"><button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button"><i class="fa-solid fa-clipboard-check me-1 text-warning"></i> 3. Xác nhận</button></li>
       <li class="nav-item"><button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button"><i class="fa-solid fa-magnifying-glass me-1 text-danger"></i> 4. Email Xác Nhận</button></li>
-      <li class="nav-item"><button class="nav-link tab-highlight " id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button" style="color: #6a1b9a;"><i class="fa-solid fa-wand-magic-sparkles me-1 text-purple"></i> 5. Nhập Đặt Bàn</button></li>
+      <li class="nav-item"><button class="nav-link tab-highlight " id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button" style="color: #934c22;"><i class="fa-solid fa-wand-magic-sparkles me-1 text-purple"></i> 5. Nhập Đặt Bàn</button></li>
       <li class="nav-item"><button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button" onclick="loadCalendarYearTab6()"><i class="fa-solid fa-toggle-on me-1 text-success"></i> 6. Lịch Decor</button></li>
       <li class="nav-item"><button class="nav-link" id="tab7-tab" data-bs-toggle="tab" data-bs-target="#tab7" type="button"><i class="fa-solid fa-chart-line me-1 text-primary"></i> 7. Phân Tích</button></li>
       <li class="nav-item"><button class="nav-link" id="tab8-tab" data-bs-toggle="tab" data-bs-target="#tab8" type="button"><i class="fa-solid fa-coins me-1 text-warning"></i> 8. Lịch Tiền Cọc</button></li>
@@ -413,7 +414,7 @@
           <div class="row g-3" id="timelineRow">
             <div class="col-md-4 timeline-cat-col" id="colWrapSmallDecor">
               <div class="timeline-col h-100" id="printAreaSmallDecor">
-                <h6 class="fw-bold mb-3 pb-2 border-bottom" style="color: #6a1b9a;">🎀 BÀN DECOR &lt; 6 KHÁCH (<span id="countSmallDecor">0</span>)</h6>
+                <h6 class="fw-bold mb-3 pb-2 border-bottom" style="color: #934c22;">🎀 BÀN DECOR &lt; 6 KHÁCH (<span id="countSmallDecor">0</span>)</h6>
                 <div class="row g-2" id="listSmallDecor"></div>
               </div>
             </div>
@@ -490,7 +491,7 @@
           <!-- DUYỆT TRẠNG THÁI FORM booking -->
           <div id="dttBox" class="mb-4">
             <div class="dtt-bar">
-              <h5 class="fw-bold mb-0 me-2" style="color:#5b2a86"><i class="fa-solid fa-clipboard-check me-1"></i>Xác nhận đơn</h5>
+              <h5 class="fw-bold mb-0 me-2" style="color:#864c2a"><i class="fa-solid fa-clipboard-check me-1"></i>Xác nhận đơn</h5>
               <input type="text" id="dttTim" class="form-control form-control-sm" placeholder="Tìm tên, SĐT, mã..." oninput="veDuyetTrangThai()">
               <div class="btn-group btn-group-sm dtt-loc-ngay" role="group">
                 <button class="btn btn-light border" id="dttTatCa" onclick="dttXemTatCa()" title="Hiện tất cả các ngày">📅 Tất cả</button>
@@ -506,7 +507,7 @@
                 <input class="form-check-input" type="checkbox" id="dttTuLuuAnh" onchange="dttGatLuuAnh(this)">
                 <label class="form-check-label" for="dttTuLuuAnh">Tự lưu ảnh <b id="dttOnOff" class="text-muted">OFF</b></label>
               </div>
-              <button class="btn btn-sm fw-bold text-white" style="background:#5b2a86" id="dttXuLy" onclick="xuLyDuyetTrangThai()" title="Chuyển đơn XÁC NHẬN sang DATA_TONG, ghi trạng thái hoàn cọc (không gửi email)"><i class="fa-solid fa-check-double me-1"></i>Xử lý (<span id="dttSoXuLy">0</span>)</button>
+              <button class="btn btn-sm fw-bold text-white" style="background:#864c2a" id="dttXuLy" onclick="xuLyDuyetTrangThai()" title="Chuyển đơn XÁC NHẬN sang DATA_TONG, ghi trạng thái hoàn cọc (không gửi email)"><i class="fa-solid fa-check-double me-1"></i>Xử lý (<span id="dttSoXuLy">0</span>)</button>
             </div>
             <div class="dtt-seg" id="dttSeg">
               <button class="on" onclick="dttXemCot(0)">🕓 Chờ duyệt<b id="dttSeg0">0</b></button>
@@ -517,7 +518,7 @@
               <button onclick="dttXemCot(5)">💸 Đã hoàn<b id="dttSeg5">0</b></button>
             </div>
             <div class="dtt-board" id="dttBoard" data-show="0">
-              <div class="dtt-col"><div class="dtt-col-h" style="--line:#b0abc0"><span>🕓 Chờ duyệt</span><span class="so" id="dttSoCho">0</span></div><div class="dtt-col-b" id="dttCho"><div class="dtt-rong">Đang tải...</div></div></div>
+              <div class="dtt-col"><div class="dtt-col-h" style="--line:#d7ad94"><span>🕓 Chờ duyệt</span><span class="so" id="dttSoCho">0</span></div><div class="dtt-col-b" id="dttCho"><div class="dtt-rong">Đang tải...</div></div></div>
               <div class="dtt-col"><div class="dtt-col-h" style="--line:#43a047"><span>✅ Xác nhận</span><span class="so" id="dttSoXN">0</span></div><div class="dtt-col-b" id="dttXN"></div></div>
               <div class="dtt-col"><div class="dtt-col-h" style="--line:#fb8c00"><span>⏳ Chờ hoàn cọc</span><span class="so" id="dttSoCH">0</span></div><div class="dtt-col-b" id="dttCH"></div></div>
               <div class="dtt-col"><div class="dtt-col-h" style="--line:#7a7a7a"><span><span class="vat-mini" data-l="tm"></span> Hoàn VAT - Tiền mặt</span><span class="so" id="dttSoVT">0</span></div><div class="dtt-col-b" id="dttVT"></div></div>
@@ -580,7 +581,7 @@
           </div>
           <div class="d-flex align-items-center gap-2">
             <span class="badge bg-danger px-2 py-2">🔒 Đã khóa (Full Decor)</span>
-            <span class="badge px-2 py-2" style="background:#f3e5f5; color:#6a1b9a; border:1px solid #ce93d8;">🎀 Có đơn Decor</span>
+            <span class="badge px-2 py-2" style="background:#f5ebe5; color:#934c22; border:1px solid #d8ac93;">🎀 Có đơn Decor</span>
             <span class="badge bg-light text-dark border px-2 py-2">🟢 Đang mở</span>
             <select id="calViewMode" class="form-select form-select-sm w-auto fw-bold" onchange="doiKieuXemTab6_()">
               <option value="nam">Cả năm</option><option value="quy">Theo quý</option><option value="thang">Theo tháng</option>
@@ -721,7 +722,19 @@
   <script>
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb"];
+    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb"];
+    // 🔔 Cài / thử thông báo Telegram (mã bot lưu ở máy chủ, không lưu trên trình duyệt)
+    function caiTelegram() {
+      var token = prompt("🔔 Thông báo Telegram\n\n1. Thêm bot vào nhóm Telegram và nhắn 1 tin trong nhóm.\n2. Dán MÃ BOT (lấy ở @BotFather) rồi bấm OK.\n\nĐể trống + OK = chỉ gửi tin thử. Gõ TAT = tắt thông báo.");
+      if (token === null) return;
+      token = token.trim();
+      var xong = function(kq) {
+        if (!kq.coMaBot) return alert("Chưa cài Telegram. Bấm 🔔 Telegram và dán mã bot.");
+        alert((kq.daGui ? "✅ Đã gửi tin thử tới: " : "❌ Chưa gửi được tới: ") + (kq.noiNhan || "?") + (kq.loiGui ? "\nLỗi: " + kq.loiGui : "") + (kq.loiChat ? "\nLỗi: " + kq.loiChat : ""));
+      };
+      if (!token) return adminRun().withSuccessHandler(xong).thuTelegramWeb();
+      adminRun().withSuccessHandler(function(kq) { if (kq.tat) return alert("Đã tắt thông báo Telegram."); xong(kq); }).caiTelegramWeb(token);
+    }
     function adminRun() {
       var ok = null, fail = null, o = {
         withSuccessHandler: function(h) { ok = h; return o; },
@@ -923,7 +936,7 @@
           moDau: "Túi Nướng Lavender chân thành cảm ơn Quý khách đã đặt tiệc decor tại Túi. Rất tiếc, ngày " + ngay + " mà Quý khách chọn hiện đã đủ bàn decor, nên Túi chưa thể nhận thêm tiệc cho ngày này. Túi thành thật xin lỗi và mong Quý khách thông cảm!",
           noiBat: [["Ngày đã chọn", ngay], ["Giờ đến", d.gio || "--"], ["Tiền cọc", coc || "--"]],
           dong: [["Khách hàng", ten], ["Số điện thoại", d.sdt]],
-          luuY: "💜 Quý khách vui lòng chọn một trong hai cách", luuYDong: ["1. Đổi sang ngày khác: gọi / nhắn hotline " + HOTLINE_TUI + " cho Túi biết ngày, giờ mong muốn để Túi giữ chỗ.",
+          luuY: "🧡 Quý khách vui lòng chọn một trong hai cách", luuYDong: ["1. Đổi sang ngày khác: gọi / nhắn hotline " + HOTLINE_TUI + " cho Túi biết ngày, giờ mong muốn để Túi giữ chỗ.",
             "2. Nhận lại tiền cọc: quét mã QR bên dưới để gửi tài khoản nhận tiền. Túi sẽ hoàn đầy đủ tiền cọc sớm nhất trong ngày."],
           link: LINK_HOAN_COC + encodeURIComponent(d.ma || ""), linkChu: "Gửi thông tin nhận hoàn cọc" },
         dahoan: { badge: "✔ ĐÃ HOÀN TIỀN CỌC", mau: "#1f5fa8", nen: "#e8f1fb",
@@ -951,26 +964,26 @@
         var y = 0;
         if (that) { cx.fillStyle = "#ffffff"; cx.fillRect(0, 0, W, cv.height); }
         // đầu ảnh
-        if (that) { var g = cx.createLinearGradient(0, 0, W, 0); g.addColorStop(0, "#efe8f8"); g.addColorStop(1, "#f8f4fc"); cx.fillStyle = g; cx.fillRect(0, 0, W, 170); }
-        if (that) { font(40, 800); cx.fillStyle = "#4a2b6b"; cx.fillText("🍽️ TÚI NƯỚNG LAVENDER", P, 78); font(24); cx.fillStyle = "#7a6a92"; cx.fillText("Lưu giữ những khoảnh khắc trọn vẹn", P, 120); }
+        if (that) { var g = cx.createLinearGradient(0, 0, W, 0); g.addColorStop(0, "#f8eee8"); g.addColorStop(1, "#fcf7f4"); cx.fillStyle = g; cx.fillRect(0, 0, W, 170); }
+        if (that) { font(40, 800); cx.fillStyle = "#6f432a"; cx.fillText("🍽️ TÚI NƯỚNG LAVENDER", P, 78); font(24); cx.fillStyle = "#b76f45"; cx.fillText("Lưu giữ những khoảnh khắc trọn vẹn", P, 120); }
         y = 210;
         font(30, 800); var bw = cx.measureText(M.badge).width + 48;
         if (that) { boGoc(P, y, bw, 58, 29, M.nen); cx.fillStyle = M.mau; cx.fillText(M.badge, P + 24, y + 40); }
         y += 100;
-        font(30, 700); if (that) { cx.fillStyle = "#2f2b3a"; cx.fillText("Kính gửi Quý khách " + ten + ",", P, y); }
+        font(30, 700); if (that) { cx.fillStyle = "#6f432a"; cx.fillText("Kính gửi Quý khách " + ten + ",", P, y); }
         y += 50; font(27); ngat(M.moDau, W - 2 * P).forEach(function(l) { if (that) { cx.fillStyle = "#444"; cx.fillText(l, P, y); } y += 40; });
-        if (d.ma) { y += 14; font(26, 600); if (that) { boGoc(P, y, W - 2 * P, 64, 14, "#f6f4f9"); cx.fillStyle = "#6b6780"; cx.fillText("Mã đặt bàn", P + 24, y + 42); font(30, 800); cx.fillStyle = "#5b2a86"; cx.textAlign = "right"; cx.fillText(d.ma, W - P - 24, y + 43); cx.textAlign = "left"; } y += 88; }
+        if (d.ma) { y += 14; font(26, 600); if (that) { boGoc(P, y, W - 2 * P, 64, 14, "#faf5f3"); cx.fillStyle = "#807067"; cx.fillText("Mã đặt bàn", P + 24, y + 42); font(30, 800); cx.fillStyle = "#864c2a"; cx.textAlign = "right"; cx.fillText(d.ma, W - P - 24, y + 43); cx.textAlign = "left"; } y += 88; }
         // ô nổi bật
         var n = M.noiBat.length, gap = 18, tw = (W - 2 * P - gap * (n - 1)) / n;
         M.noiBat.forEach(function(o, k) {
           var x = P + k * (tw + gap);
-          if (that) { boGoc(x, y, tw, 120, 16, "#fff", "#e6e3ee"); font(22, 600); cx.fillStyle = "#8a8698"; cx.fillText(o[0], x + 22, y + 42); font(32, 800); cx.fillStyle = "#2f2b3a"; cx.fillText(String(o[1]), x + 22, y + 92); }
+          if (that) { boGoc(x, y, tw, 120, 16, "#fff", "#f3e6de"); font(22, 600); cx.fillStyle = "#988d86"; cx.fillText(o[0], x + 22, y + 42); font(32, 800); cx.fillStyle = "#6f432a"; cx.fillText(String(o[1]), x + 22, y + 92); }
         });
         y += 172;
         // các dòng thông tin
         M.dong.filter(function(o) { return o[1]; }).forEach(function(o) {
           font(26); var ls = ngat(o[1], W - 2 * P - 300);
-          if (that) { font(26, 600); cx.fillStyle = "#8a8698"; cx.fillText(o[0], P, y); font(26, 600); cx.fillStyle = "#2f2b3a"; ls.forEach(function(l, k) { cx.fillText(l, P + 300, y + k * 38); }); cx.fillStyle = "#eee9f4"; cx.fillRect(P, y + ls.length * 38 - 14, W - 2 * P, 2); }
+          if (that) { font(26, 600); cx.fillStyle = "#988d86"; cx.fillText(o[0], P, y); font(26, 600); cx.fillStyle = "#6f432a"; ls.forEach(function(l, k) { cx.fillText(l, P + 300, y + k * 38); }); cx.fillStyle = "#f6ede7"; cx.fillRect(P, y + ls.length * 38 - 14, W - 2 * P, 2); }
           y += ls.length * 38 + 22;
         });
         // lưu ý
@@ -981,17 +994,17 @@
         // chân ảnh: QR + link + hotline
         var qrS = 200;
         if (that) {
-          boGoc(P, y, W - 2 * P, qrS + 48, 18, "#f6f4f9");
+          boGoc(P, y, W - 2 * P, qrS + 48, 18, "#faf5f3");
           var q = null; try { if (window.qrcode) { q = qrcode(0, "M"); q.addData(M.link); q.make(); } } catch (e) { q = null; }
-          if (q) { var nM = q.getModuleCount(), c = qrS / nM; cx.fillStyle = "#fff"; cx.fillRect(P + 24, y + 24, qrS, qrS); cx.fillStyle = "#2f2b3a";
+          if (q) { var nM = q.getModuleCount(), c = qrS / nM; cx.fillStyle = "#fff"; cx.fillRect(P + 24, y + 24, qrS, qrS); cx.fillStyle = "#6f432a";
             for (var r = 0; r < nM; r++) for (var cc = 0; cc < nM; cc++) if (q.isDark(r, cc)) cx.fillRect(P + 24 + cc * c, y + 24 + r * c, Math.ceil(c), Math.ceil(c)); }
           var tx = P + 24 + (q ? qrS + 32 : 0);
-          font(28, 800); cx.fillStyle = "#5b2a86"; cx.fillText("📱 " + M.linkChu, tx, y + 70);
+          font(28, 800); cx.fillStyle = "#864c2a"; cx.fillText("📱 " + M.linkChu, tx, y + 70);
           font(22); cx.fillStyle = "#555"; ngat(M.link.replace(/^https:\/\//, ""), W - P - 24 - tx).forEach(function(l, k) { cx.fillText(l, tx, y + 110 + k * 30); });
           font(26, 700); cx.fillStyle = "#c62828"; cx.fillText("☎ Hotline: " + HOTLINE_TUI, tx, y + qrS + 10);
         }
         y += qrS + 48 + 40;
-        if (that) { font(22); cx.fillStyle = "#9a96a8"; cx.textAlign = "center"; cx.fillText("Trân trọng, Túi Nướng Lavender", W / 2, y); cx.textAlign = "left"; }
+        if (that) { font(22); cx.fillStyle = "#a89d96"; cx.textAlign = "center"; cx.fillText("Trân trọng, Túi Nướng Lavender", W / 2, y); cx.textAlign = "left"; }
         return y + 40;
       }
       cv.width = W; cv.height = 2000; var H = ve(false); cv.height = H; ve(true);
@@ -1005,7 +1018,7 @@
     // ===== TAB 3: DUYỆT TRẠNG THÁI FORM booking =====
     var _dtt = null, _dttDangTai = false;
     // Chỉ mã đặt bàn xuất hiện từ 2 thẻ trở lên mới được tô màu (dịu), mỗi mã 1 màu
-    var DTT_MAU = ["#8e6bbf", "#e0965a", "#4fa3a5", "#d9739b", "#6f8fd6", "#a8945f"];
+    var DTT_MAU = ["#c58865", "#e0965a", "#4fa3a5", "#d9739b", "#6f8fd6", "#a8945f"];
     var _dttMauMa = {}, _dttDem = {};
     function dttMau(ma) { ma = String(ma || ""); if (!ma || (_dttDem[ma] || 0) < 2) return ""; if (!(ma in _dttMauMa)) _dttMauMa[ma] = Object.keys(_dttMauMa).length % DTT_MAU.length; return DTT_MAU[_dttMauMa[ma]]; }
     function dttTien(v) { var s = String(v || "").trim(); return /^\d+$/.test(s) ? Number(s).toLocaleString("vi-VN") + " VNĐ" : s; }
@@ -1101,7 +1114,7 @@
     // Nút gạt "📷 Tự lưu ảnh" (nhớ theo từng máy)
     function dttTuLuuAnh() { var c = document.getElementById("dttTuLuuAnh"); return !!(c && c.checked); } // mặc định tắt
     function dttGatLuuAnh(c) {
-      var t = document.getElementById("dttOnOff"); t.textContent = c.checked ? "ON" : "OFF"; t.style.color = c.checked ? "#5b2a86" : "";
+      var t = document.getElementById("dttOnOff"); t.textContent = c.checked ? "ON" : "OFF"; t.style.color = c.checked ? "#864c2a" : "";
       try { localStorage.setItem("dttTuLuuAnh", c.checked ? "1" : "0"); } catch (e) {}
     }
     try { if (localStorage.getItem("dttTuLuuAnh") === "1") document.addEventListener("DOMContentLoaded", function() { var c = document.getElementById("dttTuLuuAnh"); if (c) { c.checked = true; dttGatLuuAnh(c); } }); } catch (e) {}
@@ -1417,7 +1430,7 @@
         (rows.length ? rows.map(function(r) {
           var pct = tong ? Math.round(r[1] / tong * 100) : 0;
           return '<div class="mb-2"><div class="d-flex justify-content-between small"><span>' + escapeHtml(r[0]) + '</span><span class="fw-bold">' + r[1] + ' <span class="text-muted fw-normal">(' + pct + '%)</span></span></div>' +
-            '<div style="height:7px;background:#f1eaf6;border-radius:4px;"><div style="height:7px;border-radius:4px;background:#8e44ad;width:' + Math.round(r[1] / max * 100) + '%"></div></div></div>';
+            '<div style="height:7px;background:#f7eee9;border-radius:4px;"><div style="height:7px;border-radius:4px;background:#af6a42;width:' + Math.round(r[1] / max * 100) + '%"></div></div></div>';
         }).join("") : '<div class="text-muted small">Chưa có dữ liệu</div>') + '</div></div>';
     }
 
@@ -1467,8 +1480,8 @@
           data: {
             labels: ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"],
             datasets: [
-              { label: "Năm " + kq.nam, data: kq.theoThang.nam.map(function(s) { return s.ban; }), backgroundColor: "#8e44ad", borderRadius: 4 },
-              { label: "Năm " + kq.namTruoc, data: kq.theoThang.namTruoc.map(function(s) { return s.ban; }), backgroundColor: "#d7c2e6", borderRadius: 4 }
+              { label: "Năm " + kq.nam, data: kq.theoThang.nam.map(function(s) { return s.ban; }), backgroundColor: "#af6a42", borderRadius: 4 },
+              { label: "Năm " + kq.namTruoc, data: kq.theoThang.namTruoc.map(function(s) { return s.ban; }), backgroundColor: "#e7cfc1", borderRadius: 4 }
             ]
           },
           options: { responsive: true, plugins: { legend: { position: "bottom" } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
@@ -1547,7 +1560,7 @@
           var key = nam + "-" + pad(m + 1) + "-" + pad(d), v = res.ngay[key];
           var dam = v && max ? 0.18 + 0.82 * (v.coc / max) : 0;
           var nen = v && v.coc ? "rgba(245,179,1," + dam.toFixed(2) + ")" : "#f8f9fa";
-          html += '<div class="text-center rounded-2" style="padding:' + (lon ? '8px 2px' : '3px 1px') + ';min-height:' + (lon ? 74 : 38) + 'px;background:' + nen + ';' + (key === keyHomNay ? 'outline:2px solid #6a1b9a;' : '') + '" title="' +
+          html += '<div class="text-center rounded-2" style="padding:' + (lon ? '8px 2px' : '3px 1px') + ';min-height:' + (lon ? 74 : 38) + 'px;background:' + nen + ';' + (key === keyHomNay ? 'outline:2px solid #934c22;' : '') + '" title="' +
             d + '/' + (m + 1) + (v ? ': ' + v.coc.toLocaleString("vi-VN") + ' đ - ' + v.so + ' đơn' : ': chưa có đơn') + '">' +
             '<div style="font-weight:600;color:#555;">' + d + '</div>' +
             (v && v.coc
@@ -1626,7 +1639,7 @@
           var key = year + "-" + pad(m + 1) + "-" + pad(d);
           var cnt = counts[key] || 0;
           var style = locked[key] ? "background:#dc3545; color:#fff;"
-            : (cnt ? "background:#f3e5f5; color:#6a1b9a; border:1px solid #ce93d8;" : "background:#f8f9fa; border:1px solid #e9ecef;");
+            : (cnt ? "background:#f5ebe5; color:#934c22; border:1px solid #d8ac93;" : "background:#f8f9fa; border:1px solid #e9ecef;");
           var tip = (locked[key] ? "Đã khóa" : "Đang mở") + (cnt ? " • " + cnt + " bàn decor" : "") + " • Nhấp để " + (locked[key] ? "mở" : "khóa");
           html += '<div class="text-center rounded-2" style="cursor:pointer; padding:' + (lon ? '8px 2px' : '4px 0') + '; min-height:' + (lon ? 70 : 0) + 'px; ' + style + '" title="' + tip + '" onclick="toggleNgayDecorTab6(\'' + key + '\', this)">' +
             '<div style="font-weight:600;">' + d + '</div>' +
@@ -1687,7 +1700,7 @@
     function taoTrangInA4_(mode, dateVal, nguon) {
       var ngayHien = dateVal ? dateVal.split("-").reverse().join("/") : "";
       var NHOM = {
-        small: { ten: "BÀN DECOR DƯỚI 6 KHÁCH", ico: "🎀", mau: "#a21caf", nen: "#fdf4ff", items: nguon.listSmallDecor || [] },
+        small: { ten: "BÀN DECOR DƯỚI 6 KHÁCH", ico: "🎀", mau: "#a45527", nen: "#fdf9f6", items: nguon.listSmallDecor || [] },
         large: { ten: "BÀN DECOR TỪ 6 KHÁCH", ico: "🎉", mau: "#e11d48", nen: "#fff1f2", items: nguon.listLargeDecor || [] },
         normal: { ten: "BÀN ĂN THƯỜNG", ico: "🍽️", mau: "#0284c7", nen: "#f0f9ff", items: nguon.listNormal || [] }
       };
@@ -1849,7 +1862,7 @@
         badgeStyle = "background:#ffe4e6; color:#be123c; border:1px solid #fecdd3;";
       } else {
         rowPastelClass = "row-pastel-small";
-        badgeStyle = "background:#fae8ff; color:#86198f; border:1px solid #f5d0fe;";
+        badgeStyle = "background:#fbf2ec; color:#884620; border:1px solid #f6e3d8;";
       }
     }
 
@@ -1860,7 +1873,7 @@
     }
 
     var combinedBlocks = [];
-    if (r.mauDecor) combinedBlocks.push('<div><span class="badge bg-purple text-white" style="background:#7b1fa2;">✨ ' + escapeHtml(r.mauDecor) + '</span></div>');
+    if (r.mauDecor) combinedBlocks.push('<div><span class="badge bg-purple text-white" style="background:#9c5125;">✨ ' + escapeHtml(r.mauDecor) + '</span></div>');
     if (r.decor && r.decor.toLowerCase() !== "không") combinedBlocks.push('<div><b>🎀 Decor:</b> ' + escapeHtml(r.decor) + '</div>');
     if (r.datMon) combinedBlocks.push('<div class="text-warning-emphasis"><b>🍲 Đặt món:</b> ' + escapeHtml(r.datMon) + '</div>');
     if (r.ghiChu) combinedBlocks.push('<div class="text-secondary"><b>📝 Note:</b> ' + escapeHtml(r.ghiChu) + '</div>');
