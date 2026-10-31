@@ -194,6 +194,16 @@
     .vat-mini { display: inline-block; width: 20px; height: 20px; vertical-align: -5px; } .vat-mini svg { width: 100%; height: 100%; display: block; }
     .vat-tag.inline { position: static; width: 30px; height: 30px; display: inline-block; vertical-align: middle; margin-left: 4px; }
     .co-vat { position: relative; margin-top: 12px; }
+    .gh-bang input[type=number] { width: 64px; min-width: 52px; margin: 0 auto; text-align: center; padding: 2px 4px; }
+    .gh-bang td, .gh-bang th { white-space: nowrap; background: transparent; }
+    .gh-bang tr.gh-khoa td { background: #fbe9e7; }
+    .gh-nhanh td { border-top: 2px dashed #e0c9b8; }
+    .gh-mini { width: 100%; margin-top: 4px; border-collapse: separate; border-spacing: 1px; font-size: 10.5px; line-height: 1.25; table-layout: fixed; }
+    .gh-mini th { font-weight: 600; opacity: .75; padding: 0 1px; }
+    .gh-mini td { background: rgba(255,255,255,.75); border-radius: 3px; padding: 1px 0; }
+    .gh-mini tr.gh-tong th, .gh-mini tr.gh-tong td { border-top: 1px solid #e0c9b8; }
+    @media (max-width: 576px) { .gh-mini { font-size: 8.5px; } .gh-mini th:first-child { width: 14px; } }
+    @media (max-width: 576px) { .gh-o { font-size: 9px; line-height: 1.15; display: inline-block; } }
     .dtt-card.co-vat .dtt-l1, .timeline-card-table.co-vat .table-card-header { padding-right: 32px; }
     .dtt-col { background: #fbf7f5; border-radius: 12px; display: flex; flex-direction: column; min-width: 0; }
     .dtt-col-h { padding: 9px 12px 6px; font-weight: 700; font-size: 13.5px; color: #6f432a; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--line); }
@@ -595,13 +605,40 @@
             <button class="btn btn-sm btn-outline-primary fw-bold" onclick="loadCalendarYearTab6()"><i class="fa-solid fa-rotate me-1"></i> Làm mới</button>
           </div>
         </div>
-        <div class="d-flex align-items-center flex-wrap gap-2 mb-3 p-2 rounded-3" style="background:#faf4ef;border:1px solid #ecdccf">
-          <span class="fw-bold text-nowrap">🎀 Giới hạn bàn decor theo thứ:</span>
-          <span id="ghThu" class="d-inline-flex flex-wrap gap-1"><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="1">T2</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="2">T3</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="3">T4</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="4">T5</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="5">T6</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="6">T7</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="0">CN</label></span>
-          <span class="text-nowrap">&lt; 6 khách <input id="ghDecorNho" type="number" min="0" class="form-control form-control-sm d-inline-block text-center" style="width:64px"> bàn</span>
-          <span class="text-nowrap">≥ 6 khách <input id="ghDecorLon" type="number" min="0" class="form-control form-control-sm d-inline-block text-center" style="width:64px"> bàn</span>
-          <button class="btn btn-sm fw-bold text-white" style="background:#864c2a" onclick="luuGioiHanDecorT67()">💾 Lưu</button>
-          <small class="text-muted">0 = không giới hạn • Đủ số bàn thì web đặt bàn tự báo hết chỗ loại đó</small>
+        <!-- Giới hạn decor theo từng thứ -->
+        <div class="mb-3 p-2 rounded-3 gh-box" style="background:#faf4ef;border:1px solid #ecdccf">
+          <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+            <span class="fw-bold text-nowrap">🎀 Giới hạn decor theo thứ</span>
+            <small class="text-muted">0 = không giới hạn • Đủ chỗ thì web đặt bàn tự báo hết loại đó</small>
+            <button class="btn btn-sm fw-bold text-white ms-auto" style="background:#864c2a" onclick="luuGioiHanDecorT67()">💾 Lưu</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle mb-1 gh-bang">
+              <thead><tr class="small text-muted text-center">
+                <th style="width:34px" title="Chọn thứ để gán nhanh"><input type="checkbox" class="form-check-input" onchange="ghChonHet(this.checked)"></th>
+                <th class="text-start">Thứ</th><th>⛔ Khóa</th><th>Bàn &lt;6</th><th>Khách &lt;6</th><th>Bàn ≥6</th><th>Khách ≥6</th><th>Tổng bàn</th>
+              </tr></thead>
+              <tbody id="ghBang"></tbody>
+              <tfoot><tr class="gh-nhanh">
+                <td colspan="2" class="small fw-bold text-nowrap">⚡ Gán nhanh</td>
+                <td class="text-center"><input type="checkbox" class="form-check-input" id="ghN_khoa"></td>
+                <td><input type="number" min="0" class="form-control form-control-sm" id="ghN_nho" placeholder="–"></td>
+                <td><input type="number" min="0" class="form-control form-control-sm" id="ghN_khachNho" placeholder="–"></td>
+                <td><input type="number" min="0" class="form-control form-control-sm" id="ghN_lon" placeholder="–"></td>
+                <td><input type="number" min="0" class="form-control form-control-sm" id="ghN_khachLon" placeholder="–"></td>
+                <td><input type="number" min="0" class="form-control form-control-sm" id="ghN_tong" placeholder="–"></td>
+              </tr></tfoot>
+            </table>
+          </div>
+          <div class="d-flex flex-wrap gap-1 align-items-center">
+            <small class="text-muted me-1">Chọn nhanh:</small>
+            <button class="btn btn-sm btn-outline-secondary py-0" onclick="ghChonNhom([1,2,3,4])">T2–T5</button>
+            <button class="btn btn-sm btn-outline-secondary py-0" onclick="ghChonNhom([5,6])">T6–T7</button>
+            <button class="btn btn-sm btn-outline-secondary py-0" onclick="ghChonNhom([5,6,0])">T6–CN</button>
+            <button class="btn btn-sm btn-outline-secondary py-0" onclick="ghChonNhom([0,1,2,3,4,5,6])">Cả tuần</button>
+            <button class="btn btn-sm fw-bold ms-auto" style="background:#f3e3d6;color:#864c2a" onclick="ghGanNhanh()" title="Ô gán nhanh để trống thì giữ nguyên giá trị cũ">⚡ Gán cho thứ đã chọn</button>
+            <button class="btn btn-sm btn-outline-danger py-0" onclick="ghXoaChon()" title="Đặt 0 (không giới hạn) và bỏ khóa cho thứ đã chọn">Xóa giới hạn</button>
+          </div>
         </div>
         <div id="calYearGridContainer" class="row g-3">
           <div class="col-12 text-center py-5 text-muted">Đang tải lịch Decor 12 tháng...</div>
@@ -1620,10 +1657,7 @@
             return;
           }
           _calTab6Data = res;
-          var gh = res.gioiHan || {}, thuChon = gh.thu || [5, 6];
-          [].forEach.call(document.querySelectorAll("#ghThu input"), function(c) { c.checked = thuChon.indexOf(+c.value) !== -1; });
-          document.getElementById("ghDecorNho").value = gh.nho || 0;
-          document.getElementById("ghDecorLon").value = gh.lon || 0;
+          veBangGioiHan_(res.gioiHan);
           veLichTab6_(year);
         })
         .withFailureHandler(function(err) {
@@ -1670,7 +1704,7 @@
         html += '<div class="' + colCls + '"><div class="border rounded-3 p-' + (lon ? 3 : 2) + ' h-100 bg-white">';
         html += '<div class="d-flex justify-content-between align-items-center mb-2"><span class="fw-bold text-purple' + (lon ? ' fs-5' : '') + '">Tháng ' + (m + 1) + '/' + year + '</span>' +
           '<span class="small text-muted">🔒 ' + soKhoa + ' ngày khóa • 🎀 ' + soDecor + ' bàn decor</span></div>';
-        html += '<div style="display:grid; grid-template-columns:repeat(7,1fr); gap:' + (lon ? 6 : 3) + 'px; font-size:' + (lon ? 13 : 12) + 'px;">';
+        html += '<div style="display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); overflow-wrap:anywhere; gap:' + (lon ? 6 : 3) + 'px; font-size:' + (lon ? 13 : 12) + 'px;">';
         ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].forEach(function(t) {
           html += '<div class="text-center fw-bold text-muted">' + t + '</div>';
         });
@@ -1679,10 +1713,13 @@
         for (var d = 1; d <= days; d++) {
           var key = year + "-" + pad(m + 1) + "-" + pad(d);
           var cnt = counts[key] || 0;
-          var gh = _calTab6Data.gioiHan || {}, nh = (_calTab6Data.decorNhom || {})[key] || { nho: 0, lon: 0 }, wd = new Date(year, m, d).getDay();
-          var t67 = (gh.thu || [5, 6]).indexOf(wd) !== -1 && (gh.nho || gh.lon);
-          var du = t67 && ((gh.nho && nh.nho >= gh.nho) || (gh.lon && nh.lon >= gh.lon));
-          var dongGh = t67 ? ("<6: " + nh.nho + (gh.nho ? "/" + gh.nho : "") + " · ≥6: " + nh.lon + (gh.lon ? "/" + gh.lon : "")) : "";
+          var wd = new Date(year, m, d).getDay(), ghc = (((_calTab6Data.gioiHan || {}).ngay) || {})[wd] || {};
+          var nh = (_calTab6Data.decorNhom || {})[key] || { nho: 0, lon: 0, khachNho: 0, khachLon: 0 };
+          var coGh = ghc.nho || ghc.lon || ghc.khachNho || ghc.khachLon || ghc.tong;
+          var du = !!ghc.khoa || (coGh && ((ghc.tong && nh.nho + nh.lon >= ghc.tong) || (ghc.nho && nh.nho >= ghc.nho) || (ghc.lon && nh.lon >= ghc.lon) ||
+            (ghc.khachNho && nh.khachNho >= ghc.khachNho) || (ghc.khachLon && nh.khachLon >= ghc.khachLon)));
+          var dongGh = ghc.khoa ? "⛔ Khóa thứ" : coGh ? ("<6: " + nh.nho + (ghc.nho ? "/" + ghc.nho : "") + " · ≥6: " + nh.lon + (ghc.lon ? "/" + ghc.lon : "") +
+            (ghc.tong ? " · Σ " + (nh.nho + nh.lon) + "/" + ghc.tong : "") + (ghc.khachNho || ghc.khachLon ? " · khách " + nh.khachNho + (ghc.khachNho ? "/" + ghc.khachNho : "") + "+" + nh.khachLon + (ghc.khachLon ? "/" + ghc.khachLon : "") : "")) : "";
           var style = locked[key] ? "background:#dc3545; color:#fff;"
             : (cnt ? "background:#f5ebe5; color:#934c22; border:1px solid #d8ac93;" : "background:#f8f9fa; border:1px solid #e9ecef;");
           if (du && !locked[key]) style += "box-shadow:inset 0 0 0 2px #dc3545;";
@@ -1690,7 +1727,8 @@
           html += '<div class="text-center rounded-2" style="cursor:pointer; padding:' + (lon ? '8px 2px' : '4px 0') + '; min-height:' + (lon ? 70 : 0) + 'px; ' + style + '" title="' + tip + '" onclick="toggleNgayDecorTab6(\'' + key + '\', this)">' +
             '<div style="font-weight:600;">' + d + '</div>' +
             (lon
-              ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '🔒 Đã khóa' : '🟢 Mở') + (cnt ? '<br>🎀 ' + cnt + ' bàn' : '') + (dongGh ? '<br><span style="color:' + (du ? '#dc3545' : '#6b5a4e') + ';font-weight:600">' + dongGh + '</span>' : '') + '</div>'
+              ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '🔒 Đã khóa' : ghc.khoa ? '<b style="color:#dc3545">⛔ Khóa thứ</b>' : '🟢 Mở') +
+                (coGh && !ghc.khoa ? bangOGh_(nh, ghc, locked[key]) : (cnt ? '<br>🎀 ' + cnt + ' bàn' : '')) + '</div>'
               : (cnt || du ? '<div style="font-size:9px; line-height:1;">' + (cnt || "") + (du ? ' 🔴' : '') + '</div>' : '')) + '</div>';
         }
         html += '</div></div></div>';
@@ -1698,14 +1736,66 @@
       box.innerHTML = html;
     }
 
+    // Bảng nhỏ trong ô ngày (xem theo tháng): hàng <6 / ≥6 / Σ, cột Bàn / Khách — "đã đặt/tối đa", đủ thì tô đỏ
+    function bangOGh_(nh, c, khoaNgay) {
+      var o = function(da, max) {
+        if (!max) return '<td>' + (da || '·') + '</td>';
+        var du = da >= max;
+        return '<td style="' + (du ? 'background:#dc3545;color:#fff;' : da ? 'background:#f3e3d6;' : '') + 'font-weight:700">' + da + '<span style="opacity:.7;font-weight:400">/' + max + '</span></td>';
+      };
+      var mau = 'color:#4a3426';  // chữ tối cả khi ngày bị khóa (ô bảng có nền trắng mờ)
+      return '<table class="gh-mini" style="' + mau + '"><tr><th></th><th>Bàn</th><th>Khách</th></tr>' +
+        '<tr><th>&lt;6</th>' + o(nh.nho, c.nho) + o(nh.khachNho, c.khachNho) + '</tr>' +
+        '<tr><th>≥6</th>' + o(nh.lon, c.lon) + o(nh.khachLon, c.khachLon) + '</tr>' +
+        '<tr class="gh-tong"><th>Σ</th>' + o(nh.nho + nh.lon, c.tong) + '<td>' + ((nh.khachNho + nh.khachLon) || '·') + '</td></tr></table>';
+    }
+    // ===== Giới hạn decor theo từng thứ =====
+    var GH_THU = [[1, "Thứ 2"], [2, "Thứ 3"], [3, "Thứ 4"], [4, "Thứ 5"], [5, "Thứ 6"], [6, "Thứ 7"], [0, "Chủ nhật"]], GH_TRUONG = ["nho", "khachNho", "lon", "khachLon", "tong"];
+    function veBangGioiHan_(gh) {
+      var ngay = (gh && gh.ngay) || {};
+      document.getElementById("ghBang").innerHTML = GH_THU.map(function(t) {
+        var c = ngay[t[0]] || {};
+        return '<tr data-thu="' + t[0] + '"' + (c.khoa ? ' class="gh-khoa"' : '') + '><td class="text-center"><input type="checkbox" class="form-check-input gh-chon"></td>' +
+          '<td class="fw-bold">' + t[1] + '</td><td class="text-center"><input type="checkbox" class="form-check-input gh-khoa-o"' + (c.khoa ? ' checked' : '') + ' onchange="this.closest(\'tr\').classList.toggle(\'gh-khoa\', this.checked)"></td>' +
+          GH_TRUONG.map(function(k) { return '<td><input type="number" min="0" class="form-control form-control-sm" data-k="' + k + '" value="' + (c[k] || 0) + '"></td>'; }).join("") + '</tr>';
+      }).join("");
+    }
+    function docBangGioiHan_() {
+      var ngay = {};
+      [].forEach.call(document.querySelectorAll("#ghBang tr"), function(tr) {
+        var o = { khoa: tr.querySelector(".gh-khoa-o").checked };
+        [].forEach.call(tr.querySelectorAll("input[data-k]"), function(i) { o[i.getAttribute("data-k")] = Math.max(0, parseInt(i.value, 10) || 0); });
+        ngay[tr.getAttribute("data-thu")] = o;
+      });
+      return { ngay: ngay };
+    }
+    function ghChonHet(v) { [].forEach.call(document.querySelectorAll("#ghBang .gh-chon"), function(c) { c.checked = v; }); }
+    function ghChonNhom(ds) { [].forEach.call(document.querySelectorAll("#ghBang tr"), function(tr) { tr.querySelector(".gh-chon").checked = ds.indexOf(+tr.getAttribute("data-thu")) !== -1; }); }
+    function ghDongChon_() { return [].filter.call(document.querySelectorAll("#ghBang tr"), function(tr) { return tr.querySelector(".gh-chon").checked; }); }
+    // Gán đồng đều: ô gán nhanh nào có số thì ghi cho mọi thứ đã chọn, ô trống giữ nguyên; tự tính Tổng bàn = Bàn<6 + Bàn≥6 nếu để trống
+    function ghGanNhanh() {
+      var dong = ghDongChon_();
+      if (!dong.length) return alert("Tích chọn thứ ở cột đầu (hoặc bấm T2–T5 / T6–T7 / Cả tuần) rồi bấm Gán.");
+      var v = {}; GH_TRUONG.forEach(function(k) { var x = document.getElementById("ghN_" + k).value; if (x !== "") v[k] = Math.max(0, parseInt(x, 10) || 0); });
+      if (v.tong === undefined && v.nho !== undefined && v.lon !== undefined && v.nho && v.lon) v.tong = v.nho + v.lon;
+      var khoa = document.getElementById("ghN_khoa").checked;
+      dong.forEach(function(tr) {
+        Object.keys(v).forEach(function(k) { tr.querySelector('input[data-k="' + k + '"]').value = v[k]; });
+        var o = tr.querySelector(".gh-khoa-o"); o.checked = khoa; tr.classList.toggle("gh-khoa", khoa);
+      });
+    }
+    function ghXoaChon() {
+      ghDongChon_().forEach(function(tr) {
+        [].forEach.call(tr.querySelectorAll("input[data-k]"), function(i) { i.value = 0; });
+        var o = tr.querySelector(".gh-khoa-o"); o.checked = false; tr.classList.remove("gh-khoa");
+      });
+    }
     function luuGioiHanDecorT67() {
-      var nho = document.getElementById("ghDecorNho").value, lon = document.getElementById("ghDecorLon").value;
-      var thu = [].filter.call(document.querySelectorAll("#ghThu input"), function(c) { return c.checked; }).map(function(c) { return +c.value; });
-      var tenThu = thu.map(function(t) { return t ? "T" + (t + 1) : "CN"; }).join(", ") || "(chưa chọn thứ nào)";
       adminRun().withSuccessHandler(function(res) {
         if (_calTab6Data) { _calTab6Data.gioiHan = res.gioiHan; veLichTab6_(parseInt(document.getElementById("calYearSelect").value, 10)); }
-        alert("✅ Đã lưu giới hạn bàn decor cho " + tenThu + ": < 6 khách " + (res.gioiHan.nho || "không giới hạn") + " bàn, ≥ 6 khách " + (res.gioiHan.lon || "không giới hạn") + " bàn.");
-      }).luuGioiHanDecorT67Web(nho, lon, thu);
+        veBangGioiHan_(res.gioiHan);
+        alert("✅ Đã lưu giới hạn decor theo thứ.");
+      }).luuGioiHanDecorT67Web(docBangGioiHan_());
     }
     function toggleNgayDecorTab6(dateKey, cellEl) {
       if (!_calTab6Data) return;
