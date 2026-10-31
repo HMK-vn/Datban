@@ -631,13 +631,13 @@
       capNhatQrCoc();
     }
     var _cocHienTai = 300000;
-    // Nội dung chuyển khoản cọc = Tên trên nền tảng + số điện thoại (bỏ dấu, viết hoa, tối đa 50 ký tự)
+    // Nội dung chuyển khoản cọc = Nền tảng + Tên trên nền tảng + SĐT, viết liền không dấu (VD: ZaloMinhhy0909090909), tối đa 50 ký tự
     function noiDungCkCoc() {
       var f = document.getElementById("bookingForm") || document.forms[0];
+      var nt = f && f.nenTang && f.nenTang.value !== "Khác" ? f.nenTang.value : "";
       var ten = (f && f.tenNenTang ? f.tenNenTang.value : "").trim(), sdt = (f && f.sdt ? f.sdt.value : "").replace(/\D/g, "");
-      var s = (ten + " " + sdt).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D")
-        .replace(/[^A-Za-z0-9 ]/g, " ").replace(/\s+/g, " ").trim().toUpperCase();
-      return s.slice(0, 50) || "COC BAN LAVENDER";
+      var s = (nt + ten).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9]/g, "") + sdt;
+      return ten ? s.slice(0, 50) : "COC BAN LAVENDER";
     }
     function capNhatQrCoc() {
       var nd = noiDungCkCoc();
@@ -650,6 +650,7 @@
       if (f && d && document.activeElement !== document.getElementById("ckSdt")) d.style.display = f.sdt.value.trim() ? "none" : "";
     }
     document.addEventListener("DOMContentLoaded", hienCkSdt);
+    document.addEventListener("change", function(e) { if (e.target && e.target.name === "nenTang") capNhatQrCoc(); });
     document.addEventListener("focusout", function(e) { if (e.target && e.target.id === "ckSdt") setTimeout(hienCkSdt, 0); });
     // SĐT ở khu nội dung CK liên kết 2 chiều với ô Số điện thoại phía trên
     document.addEventListener("input", function(e) {
@@ -657,7 +658,7 @@
       if (!t || !f || !ck) return;
       if (t.name === "sdt") { ck.value = t.value; hienCkSdt(); }
       else if (t.id === "ckSdt") f.sdt.value = t.value;
-      if (t.name === "tenNenTang" || t.name === "sdt" || t.id === "ckSdt") capNhatQrCoc();
+      if (t.name === "tenNenTang" || t.name === "nenTang" || t.name === "sdt" || t.id === "ckSdt") capNhatQrCoc();
     });
 
     function updateSubmitButtonState() {
