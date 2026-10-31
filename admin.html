@@ -6,8 +6,8 @@
   <meta name="referrer" content="no-referrer">
 
   <link rel="manifest" href="app-quantri.webmanifest">
-  <link rel="apple-touch-icon" href="app_icon/icon_admin_180.png">
-  <link rel="icon" type="image/png" href="app_icon/icon_admin_192.png">
+  <link rel="apple-touch-icon" href="app_icon/logo_admin_180.png">
+  <link rel="icon" type="image/png" href="app_icon/logo_admin_192.png">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -767,7 +767,7 @@
   <script>
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web"];
+    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb"];
     // 🔔 Khung cài / thử thông báo Telegram (khung trên trang, không dùng hộp prompt vì vài trình duyệt chặn)
     function caiTelegram() {
       var k = document.getElementById("tgKhung");
@@ -1713,7 +1713,7 @@
         for (var d = 1; d <= days; d++) {
           var key = year + "-" + pad(m + 1) + "-" + pad(d);
           var cnt = counts[key] || 0;
-          var wd = new Date(year, m, d).getDay(), ghc = (((_calTab6Data.gioiHan || {}).ngay) || {})[wd] || {};
+          var wd = new Date(year, m, d).getDay(), rieng = (_calTab6Data.gioiHanNgay || {})[key], ghc = rieng || (((_calTab6Data.gioiHan || {}).ngay) || {})[wd] || {};
           var nh = (_calTab6Data.decorNhom || {})[key] || { nho: 0, lon: 0, khachNho: 0, khachLon: 0 };
           var coGh = ghc.nho || ghc.lon || ghc.khachNho || ghc.khachLon || ghc.tong;
           var du = !!ghc.khoa || (coGh && ((ghc.tong && nh.nho + nh.lon >= ghc.tong) || (ghc.nho && nh.nho >= ghc.nho) || (ghc.lon && nh.lon >= ghc.lon) ||
@@ -1723,12 +1723,12 @@
           var style = locked[key] ? "background:#dc3545; color:#fff;"
             : (cnt ? "background:#f5ebe5; color:#934c22; border:1px solid #d8ac93;" : "background:#f8f9fa; border:1px solid #e9ecef;");
           if (du && !locked[key]) style += "box-shadow:inset 0 0 0 2px #dc3545;";
-          var tip = (locked[key] ? "Đã khóa" : "Đang mở") + (cnt ? " • " + cnt + " bàn decor" : "") + (dongGh ? " • " + dongGh + (du ? " (đủ)" : "") : "") + " • Nhấp để " + (locked[key] ? "mở" : "khóa");
-          html += '<div class="text-center rounded-2" style="cursor:pointer; padding:' + (lon ? '8px 2px' : '4px 0') + '; min-height:' + (lon ? 70 : 0) + 'px; ' + style + '" title="' + tip + '" onclick="toggleNgayDecorTab6(\'' + key + '\', this)">' +
-            '<div style="font-weight:600;">' + d + '</div>' +
+          var tip = (rieng ? "📌 Giới hạn riêng • " : "") + (locked[key] ? "Đã khóa" : "Đang mở") + (cnt ? " • " + cnt + " bàn decor" : "") + (dongGh ? " • " + dongGh + (du ? " (đủ)" : "") : "") + " • Nhấp để chỉnh khóa / giới hạn ngày này";
+          html += '<div class="text-center rounded-2" style="cursor:pointer; padding:' + (lon ? '8px 2px' : '4px 0') + '; min-height:' + (lon ? 70 : 0) + 'px; ' + style + '" title="' + tip + '" onclick="moNgayGh(\'' + key + '\')">' +
+            '<div style="font-weight:600;">' + d + (rieng ? ' <span title="Có giới hạn riêng ngày này">📌</span>' : '') + '</div>' +
             (lon
-              ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '🔒 Đã khóa' : ghc.khoa ? '<b style="color:#dc3545">⛔ Khóa thứ</b>' : '🟢 Mở') +
-                (coGh && !ghc.khoa ? bangOGh_(nh, ghc, locked[key]) : (cnt ? '<br>🎀 ' + cnt + ' bàn' : '')) + '</div>'
+              ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '🔒 Đã khóa' : ghc.khoa ? '<b style="color:#dc3545">⛔ ' + (rieng ? 'Khóa ngày' : 'Khóa thứ') + '</b>' : '🟢 Mở') +
+                (coGh && !ghc.khoa ? bangOGh_(nh, ghc, locked[key], key) : (cnt ? '<br>🎀 ' + cnt + ' bàn' : '')) + '</div>'
               : (cnt || du ? '<div style="font-size:9px; line-height:1;">' + (cnt || "") + (du ? ' 🔴' : '') + '</div>' : '')) + '</div>';
         }
         html += '</div></div></div>';
@@ -1737,17 +1737,80 @@
     }
 
     // Bảng nhỏ trong ô ngày (xem theo tháng): hàng <6 / ≥6 / Σ, cột Bàn / Khách — "đã đặt/tối đa", đủ thì tô đỏ
-    function bangOGh_(nh, c, khoaNgay) {
-      var o = function(da, max) {
-        if (!max) return '<td>' + (da || '·') + '</td>';
-        var du = da >= max;
-        return '<td style="' + (du ? 'background:#dc3545;color:#fff;' : da ? 'background:#f3e3d6;' : '') + 'font-weight:700">' + da + '<span style="opacity:.7;font-weight:400">/' + max + '</span></td>';
+    function bangOGh_(nh, c, khoaNgay, key) {
+      // Ô giới hạn bấm sửa trực tiếp -> lưu thành giới hạn riêng của ngày (📌)
+      var o = function(da, max, k) {
+        var du = max && da >= max;
+        return '<td data-k="' + k + '" onclick="event.stopPropagation(); suaOGh(this, \'' + key + '\', \'' + k + '\')" title="Bấm để sửa giới hạn riêng ngày này" style="cursor:text;' +
+          (du ? 'background:#dc3545;color:#fff;' : da ? 'background:#f3e3d6;' : '') + (max ? 'font-weight:700' : '') + '">' +
+          (max ? da + '<span style="opacity:.7;font-weight:400">/' + max + '</span>' : (da || '·')) + '</td>';
       };
-      var mau = 'color:#4a3426';  // chữ tối cả khi ngày bị khóa (ô bảng có nền trắng mờ)
-      return '<table class="gh-mini" style="' + mau + '"><tr><th></th><th>Bàn</th><th>Khách</th></tr>' +
-        '<tr><th>&lt;6</th>' + o(nh.nho, c.nho) + o(nh.khachNho, c.khachNho) + '</tr>' +
-        '<tr><th>≥6</th>' + o(nh.lon, c.lon) + o(nh.khachLon, c.khachLon) + '</tr>' +
-        '<tr class="gh-tong"><th>Σ</th>' + o(nh.nho + nh.lon, c.tong) + '<td>' + ((nh.khachNho + nh.khachLon) || '·') + '</td></tr></table>';
+      return '<table class="gh-mini" style="color:#4a3426"><tr><th></th><th>Bàn</th><th>Khách</th></tr>' +
+        '<tr><th>&lt;6</th>' + o(nh.nho, c.nho, "nho") + o(nh.khachNho, c.khachNho, "khachNho") + '</tr>' +
+        '<tr><th>≥6</th>' + o(nh.lon, c.lon, "lon") + o(nh.khachLon, c.khachLon, "khachLon") + '</tr>' +
+        '<tr class="gh-tong"><th>Σ</th>' + o(nh.nho + nh.lon, c.tong, "tong") + '<td>' + ((nh.khachNho + nh.khachLon) || '·') + '</td></tr></table>';
+    }
+    // Sửa 1 ô giới hạn ngay trong lịch: Enter / bấm ra ngoài = lưu, Esc = hủy, để trống hoặc 0 = không giới hạn
+    function suaOGh(td, key, k) {
+      if (td.querySelector("input")) return;
+      var dt = _calTab6Data, m = key.split("-"), wd = new Date(+m[0], m[1] - 1, +m[2]).getDay();
+      var c = JSON.parse(JSON.stringify((dt.gioiHanNgay || {})[key] || (((dt.gioiHan || {}).ngay) || {})[wd] || {}));
+      var inp = document.createElement("input");
+      inp.type = "number"; inp.min = "0"; inp.value = c[k] || ""; inp.placeholder = "0";
+      inp.style.cssText = "width:100%;font-size:inherit;text-align:center;border:1px solid #864c2a;border-radius:3px;padding:0;color:#000";
+      td.innerHTML = ""; td.appendChild(inp); inp.focus(); inp.select();
+      var xong = false;
+      var luu = function(ok) {
+        if (xong) return; xong = true;
+        if (!ok) return veLichTab6_(parseInt(document.getElementById("calYearSelect").value, 10));
+        c[k] = Math.max(0, parseInt(inp.value, 10) || 0);
+        td.innerHTML = "⏳";
+        adminRun().withSuccessHandler(function(res) {
+          dt.gioiHanNgay = res.gioiHanNgay;
+          veLichTab6_(parseInt(document.getElementById("calYearSelect").value, 10));
+        }).luuGioiHanNgayWeb(key, c);
+      };
+      inp.onclick = function(e) { e.stopPropagation(); };
+      inp.onkeydown = function(e) { if (e.key === "Enter") luu(true); else if (e.key === "Escape") luu(false); };
+      inp.onblur = function() { luu(true); };
+    }
+    // ===== Khung chỉnh 1 ngày: khóa full decor (Calender-Booking) + giới hạn riêng ngày =====
+    function moNgayGh(key) {
+      var cu = document.getElementById("ngKhung"); if (cu) cu.remove();
+      var dt = _calTab6Data || {}, m = key.split("-"), wd = new Date(+m[0], m[1] - 1, +m[2]).getDay();
+      var rieng = (dt.gioiHanNgay || {})[key], c = rieng || (((dt.gioiHan || {}).ngay) || {})[wd] || {}, khoaLich = !!(dt.lockedDates || {})[key];
+      var nh = (dt.decorNhom || {})[key] || { nho: 0, lon: 0, khachNho: 0, khachLon: 0 };
+      var tenThu = wd ? "Thứ " + (wd + 1) : "Chủ nhật", o = function(k, nhan) {
+        return '<label class="small text-muted d-block">' + nhan + '<input type="number" min="0" class="form-control form-control-sm text-center" data-k="' + k + '" value="' + (c[k] || 0) + '"></label>';
+      };
+      var k = document.createElement("div"); k.id = "ngKhung";
+      k.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:3000;width:min(440px,94vw);max-height:92vh;overflow:auto;background:#fff;border:1px solid #e3d3c6;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.22);padding:14px;font-size:14px";
+      k.innerHTML = '<div class="d-flex justify-content-between align-items-center mb-1"><b>📅 ' + tenThu + ', ' + m[2] + '/' + m[1] + '/' + m[0] + '</b><button type="button" class="btn-close" onclick="document.getElementById(\'ngKhung\').remove()"></button></div>' +
+        '<div class="small mb-2">Đã đặt: bàn &lt;6 <b>' + nh.nho + '</b> (' + nh.khachNho + ' khách) · bàn ≥6 <b>' + nh.lon + '</b> (' + nh.khachLon + ' khách)</div>' +
+        '<button type="button" class="btn btn-sm w-100 mb-2 fw-bold ' + (khoaLich ? 'btn-success' : 'btn-danger') + '" onclick="document.getElementById(\'ngKhung\').remove();toggleNgayDecorTab6(\'' + key + '\')">' +
+          (khoaLich ? '🟢 Mở lại nhận decor (bỏ FULL trên Calender-Booking)' : '🔒 Khóa FULL decor ngày này (Calender-Booking)') + '</button>' +
+        '<div class="p-2 rounded-3" style="background:#faf4ef;border:1px solid #ecdccf">' +
+          '<div class="fw-bold mb-1">🎀 Giới hạn riêng ngày này ' + (rieng ? '<span class="badge bg-warning text-dark">📌 đang dùng</span>' : '<span class="badge bg-light text-muted border">đang theo ' + tenThu + '</span>') + '</div>' +
+          '<label class="form-check mb-1"><input type="checkbox" class="form-check-input" id="ngKhoa"' + (c.khoa ? ' checked' : '') + '> ⛔ Không nhận bàn decor ngày này</label>' +
+          '<div class="row g-2"><div class="col-6">' + o("nho", "Bàn &lt;6") + '</div><div class="col-6">' + o("khachNho", "Khách &lt;6") + '</div>' +
+          '<div class="col-6">' + o("lon", "Bàn ≥6") + '</div><div class="col-6">' + o("khachLon", "Khách ≥6") + '</div><div class="col-6">' + o("tong", "Tổng bàn decor") + '</div></div>' +
+          '<small class="text-muted d-block mt-1">0 = không giới hạn</small>' +
+          '<div class="d-flex gap-2 mt-2"><button type="button" class="btn btn-sm fw-bold text-white flex-fill" style="background:#864c2a" onclick="luuNgayGh(\'' + key + '\', true)">💾 Lưu riêng ngày này</button>' +
+          (rieng ? '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="luuNgayGh(\'' + key + '\', false)">↩ Dùng theo ' + tenThu + '</button>' : '') + '</div>' +
+        '</div>';
+      document.body.appendChild(k);
+    }
+    function luuNgayGh(key, luu) {
+      var k = document.getElementById("ngKhung"), cfg = null;
+      if (luu) {
+        cfg = { khoa: document.getElementById("ngKhoa").checked };
+        [].forEach.call(k.querySelectorAll("input[data-k]"), function(i) { cfg[i.getAttribute("data-k")] = Math.max(0, parseInt(i.value, 10) || 0); });
+      }
+      adminRun().withSuccessHandler(function(res) {
+        _calTab6Data.gioiHanNgay = res.gioiHanNgay;
+        k.remove();
+        veLichTab6_(parseInt(document.getElementById("calYearSelect").value, 10));
+      }).luuGioiHanNgayWeb(key, cfg);
     }
     // ===== Giới hạn decor theo từng thứ =====
     var GH_THU = [[1, "Thứ 2"], [2, "Thứ 3"], [3, "Thứ 4"], [4, "Thứ 5"], [5, "Thứ 6"], [6, "Thứ 7"], [0, "Chủ nhật"]], GH_TRUONG = ["nho", "khachNho", "lon", "khachLon", "tong"];
