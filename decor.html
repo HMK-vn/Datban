@@ -216,7 +216,6 @@
               <input type="tel" name="sdt" class="form-control" required placeholder="09xxx">
             </div>
           </div>
-
           <!-- ĐỘ TUỔI, GIỚI TÍNH, TỈNH THÀNH -->
           <div class="row">
             <div class="col-md-4 mb-3">
@@ -374,9 +373,21 @@
             <div class="row align-items-center g-3">
               <div class="col-sm-5 text-center">
                 <span class="small fw-bold text-muted d-block mb-1">Mã QR VietQR Chuyển Cọc:</span>
+                <div class="small mb-1">Nội dung CK: <b id="ndCkCoc" class="text-nowrap">COC BAN LAVENDER</b></div>
                 <img id="qrBankImage" src="https://api.vietqr.io/image/970436-0561000604253-compact.jpg?amount=300000&addInfo=COC%20BAN%20LAVENDER" class="img-fluid rounded border shadow-sm" style="max-height:160px;">
               </div>
               <div class="col-sm-7">
+                <div class="text-start p-2 mb-3 rounded-3" style="background:#fff;border:1px dashed #d8ac93">
+                  <div class="small fw-bold mb-1" style="color:#864c2a">✍️ Nội dung chuyển khoản *</div>
+                  <select name="nenTang" class="form-select form-select-sm mb-1"  required>
+                      <option value="Zalo">💬 Zalo</option><option value="Facebook">📘 Facebook</option><option value="Instagram">📷 Instagram</option><option value="TikTok">🎵 TikTok</option><option value="Khác">✳️ Khác</option>
+                    </select>
+                    <input type="text" name="tenNenTang" class="form-control form-control-sm mb-1" required maxlength="40" placeholder="Tên trên nền tảng">
+                  <div class="input-group input-group-sm" id="ckSdtDong" style="display:none">
+                    <span class="input-group-text">SĐT</span>
+                    <input type="tel" id="ckSdt" class="form-control" placeholder="Tự lấy từ ô Số điện thoại">
+                  </div>
+                </div>
                 <label class="form-label fw-bold small text-danger">Upload ảnh chuyển khoản ngân hàng *</label>
                 <input type="file" id="billFileInput" accept="image/*" class="form-control form-control-sm" required>
                 <div class="small text-muted mt-2" style="font-size:11px;">
@@ -616,8 +627,38 @@
       const guests = parseInt(document.getElementById("txtSoKhach").value, 10) || 2;
       const deposit = (guests <= COC.nguong) ? COC.cocThap : COC.cocCao;
       document.getElementById("depositDisplay").innerText = deposit.toLocaleString("vi-VN") + " VNĐ";
-      document.getElementById("qrBankImage").src = 'https://api.vietqr.io/image/970436-0561000604253-compact.jpg?amount=' + deposit + '&addInfo=COC%20BAN%20LAVENDER';
+      _cocHienTai = deposit;
+      capNhatQrCoc();
     }
+    var _cocHienTai = 300000;
+    // Nội dung chuyển khoản cọc = Tên trên nền tảng + số điện thoại (bỏ dấu, viết hoa, tối đa 50 ký tự)
+    function noiDungCkCoc() {
+      var f = document.getElementById("bookingForm") || document.forms[0];
+      var ten = (f && f.tenNenTang ? f.tenNenTang.value : "").trim(), sdt = (f && f.sdt ? f.sdt.value : "").replace(/\D/g, "");
+      var s = (ten + " " + sdt).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D")
+        .replace(/[^A-Za-z0-9 ]/g, " ").replace(/\s+/g, " ").trim().toUpperCase();
+      return s.slice(0, 50) || "COC BAN LAVENDER";
+    }
+    function capNhatQrCoc() {
+      var nd = noiDungCkCoc();
+      document.getElementById("qrBankImage").src = "https://api.vietqr.io/image/970436-0561000604253-compact.jpg?amount=" + _cocHienTai + "&addInfo=" + encodeURIComponent(nd);
+      var el = document.getElementById("ndCkCoc"); if (el) el.textContent = nd;
+    }
+    // Ô SĐT trong khung nội dung CK chỉ hiện khi ô Số điện thoại phía trên còn trống
+    function hienCkSdt() {
+      var f = document.getElementById("bookingForm"), d = document.getElementById("ckSdtDong");
+      if (f && d && document.activeElement !== document.getElementById("ckSdt")) d.style.display = f.sdt.value.trim() ? "none" : "";
+    }
+    document.addEventListener("DOMContentLoaded", hienCkSdt);
+    document.addEventListener("focusout", function(e) { if (e.target && e.target.id === "ckSdt") setTimeout(hienCkSdt, 0); });
+    // SĐT ở khu nội dung CK liên kết 2 chiều với ô Số điện thoại phía trên
+    document.addEventListener("input", function(e) {
+      var t = e.target, f = document.getElementById("bookingForm"), ck = document.getElementById("ckSdt");
+      if (!t || !f || !ck) return;
+      if (t.name === "sdt") { ck.value = t.value; hienCkSdt(); }
+      else if (t.id === "ckSdt") f.sdt.value = t.value;
+      if (t.name === "tenNenTang" || t.name === "sdt" || t.id === "ckSdt") capNhatQrCoc();
+    });
 
     function updateSubmitButtonState() {
       const btn = document.getElementById("btnSubmit");
@@ -773,6 +814,8 @@
       const form = document.getElementById("bookingForm");
       const data = {
         hoTen: form.hoTen.value,
+        tenNenTang: form.tenNenTang ? form.tenNenTang.value.trim() : "",
+        nenTang: form.nenTang ? form.nenTang.value : "",
         sdt: form.sdt.value,
         doTuoi: form.doTuoi.value,
         gioiTinh: form.gioiTinh.value,

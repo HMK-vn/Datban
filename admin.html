@@ -198,6 +198,8 @@
     .gh-bang td, .gh-bang th { white-space: nowrap; background: transparent; }
     .gh-bang tr.gh-khoa td { background: #fbe9e7; }
     .gh-nhanh td { border-top: 2px dashed #e0c9b8; }
+    .gh-box summary::-webkit-details-marker { display: none; }
+    .gh-cham { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 3px; vertical-align: -1px; border: 1px solid rgba(0,0,0,.08); }
     /* Màu theo phân loại: bàn < 6 khách (xanh lá), bàn ≥ 6 khách (đất nung), tổng (vàng cát) */
     .gh-bang .c-nho { background: #eaf3e6 !important; } .gh-bang th.c-nho { color: #3f6b35; }
     .gh-bang .c-lon { background: #fbe8dc !important; } .gh-bang th.c-lon { color: #a24a22; }
@@ -613,9 +615,13 @@
           </div>
         </div>
         <!-- Giới hạn decor theo từng thứ -->
-        <div class="mb-3 p-2 rounded-3 gh-box" style="background:#faf4ef;border:1px solid #ecdccf">
-          <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
-            <span class="fw-bold text-nowrap">🎀 Giới hạn decor theo thứ</span>
+        <details class="mb-2 p-2 rounded-3 gh-box" style="background:#faf4ef;border:1px solid #ecdccf">
+          <summary class="d-flex align-items-center flex-wrap gap-2" style="cursor:pointer;list-style:none">
+            <span class="fw-bold text-nowrap">⚙️ Giới hạn decor theo thứ ▾</span>
+            <span id="ghTomTat" class="small text-muted"></span>
+            <small class="text-muted ms-auto d-none d-md-inline">Bấm để mở / thu gọn</small>
+          </summary>
+          <div class="d-flex align-items-center flex-wrap gap-2 my-2">
             <small class="text-muted">0 = không giới hạn • Đủ chỗ thì web đặt bàn tự báo hết loại đó</small>
             <button class="btn btn-sm fw-bold text-white ms-auto" style="background:#864c2a" onclick="luuGioiHanDecorT67()">💾 Lưu</button>
           </div>
@@ -646,7 +652,7 @@
             <button class="btn btn-sm fw-bold ms-auto" style="background:#f3e3d6;color:#864c2a" onclick="ghGanNhanh()" title="Ô gán nhanh để trống thì giữ nguyên giá trị cũ">⚡ Gán cho thứ đã chọn</button>
             <button class="btn btn-sm btn-outline-danger py-0" onclick="ghXoaChon()" title="Đặt 0 (không giới hạn) và bỏ khóa cho thứ đã chọn">Xóa giới hạn</button>
           </div>
-        </div>
+        </details>
         <div id="calYearGridContainer" class="row g-3">
           <div class="col-12 text-center py-5 text-muted">Đang tải lịch Decor 12 tháng...</div>
         </div>
@@ -1720,7 +1726,11 @@
         html += '<div class="' + colCls + '"><div class="border rounded-3 p-' + (lon ? 3 : 2) + ' h-100 bg-white">';
         html += '<div class="d-flex justify-content-between align-items-center mb-2"><span class="fw-bold text-purple' + (lon ? ' fs-5' : '') + '"' +
           (lon ? '' : ' style="cursor:pointer;text-decoration:underline dotted" title="Bấm để xem tháng này dạng bảng chi tiết" onclick="xemThangTab6_(' + (m + 1) + ')"') + '>Tháng ' + (m + 1) + '/' + year + (lon ? '' : ' 🔍') + '</span>' +
-          '<span class="small text-muted">🔒 ' + soKhoa + ' ngày khóa • 🎀 ' + soDecor + ' bàn decor</span></div>';
+          '<span class="small text-muted">%%TOMTAT%%</span></div>' +
+          (lon ? '<div class="small text-muted mb-2 d-flex flex-wrap gap-2"><span><span class="gh-cham" style="background:#eaf3e6"></span>&lt;6 khách</span><span><span class="gh-cham" style="background:#fbe8dc"></span>≥6 khách</span>' +
+            '<span><span class="gh-cham" style="background:#f5eed8"></span>Σ tổng</span><span><span class="gh-cham" style="background:#dc3545"></span>ô vượt</span><span><span class="gh-cham" style="background:#e8833a"></span>ngày vượt mức</span>' +
+            '<span>🔒 khóa FULL · 📌 giới hạn riêng · bấm số để sửa</span></div>' : '');
+        var dauThang = html.lastIndexOf("%%TOMTAT%%"), soVuot = 0, banThang = 0, khachThang = 0;
         html += '<div style="display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); overflow-wrap:anywhere; gap:' + (lon ? 6 : 3) + 'px; font-size:' + (lon ? 13 : 12) + 'px;">';
         ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].forEach(function(t) {
           html += '<div class="text-center fw-bold text-muted">' + t + '</div>';
@@ -1740,18 +1750,20 @@
           var style = locked[key] ? "background:#dc3545; color:#fff;"
             : (cnt ? "background:#f5ebe5; color:#934c22; border:1px solid #d8ac93;" : "background:#f8f9fa; border:1px solid #e9ecef;");
           var vuot = du && !locked[key]; // vượt / đủ mức chỉ định: đầu ô (ngày + trạng thái) tô cam
+          if (vuot) soVuot++; banThang += nh.nho + nh.lon; khachThang += nh.khachNho + nh.khachLon;
           if (vuot) style += "box-shadow:inset 0 0 0 2px #e8833a;";
           var tip = (rieng ? "📌 Giới hạn riêng • " : "") + (locked[key] ? "Đã khóa" : "Đang mở") + (cnt ? " • " + cnt + " bàn decor" : "") + (dongGh ? " • " + dongGh + (du ? " (đủ)" : "") : "") + " • Nhấp để chỉnh khóa / giới hạn ngày này";
-          html += '<div class="text-center rounded-2" style="cursor:pointer; padding:' + (lon ? '8px 2px' : '4px 0') + '; min-height:' + (lon ? 70 : 0) + 'px; ' + style + '" title="' + tip + '" onclick="moNgayGh(\'' + key + '\')">' +
+          html += '<div class="text-center rounded-2" style="cursor:pointer; padding:' + (lon ? '6px 3px 4px' : '4px 0') + '; ' + style + '" title="' + tip + '" onclick="moNgayGh(\'' + key + '\')">' +
             '<div style="' + (vuot && lon ? 'background:#e8833a;color:#fff;border-radius:6px;margin:-6px 0 2px;padding:3px 0;' : '') + '">' +
               '<div style="font-weight:600;">' + d + (rieng ? ' <span title="Có giới hạn riêng ngày này">📌</span>' : '') + '</div>' +
-              (lon ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '🔒 Đã khóa' : ghc.khoa ? '<b style="color:' + (vuot ? '#fff' : '#dc3545') + '">⛔ ' + (rieng ? 'Khóa ngày' : 'Khóa thứ') + '</b>' : vuot ? '⚠️ Vượt mức' : '🟢 Mở') + '</div>' : '') +
+              (lon ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '🔒 Đã khóa' : ghc.khoa ? '<b style="color:' + (vuot ? '#fff' : '#dc3545') + '">⛔ ' + (rieng ? 'Khóa ngày' : 'Khóa thứ') + '</b>' : vuot ? '⚠️ Vượt mức' : '') + '</div>' : '') +
             '</div>' +
             (lon
               ? '<div style="font-size:11px; line-height:1.2;">' + (coGh && !ghc.khoa ? bangOGh_(nh, ghc, locked[key], key) : (cnt ? '🎀 ' + cnt + ' bàn' : '')) + '</div>'
               : (cnt || du ? '<div style="font-size:9px; line-height:1;">' + (cnt || "") + (vuot ? ' 🟠' : '') + '</div>' : '')) + '</div>';
         }
         html += '</div></div></div>';
+        html = html.slice(0, dauThang) + '🔒 ' + soKhoa + ' khóa · <b style="color:#e8833a">⚠️ ' + soVuot + ' vượt mức</b> · 🎀 ' + banThang + ' bàn · 👥 ' + khachThang + ' khách' + html.slice(dauThang + 10);
       });
       box.innerHTML = html;
     }
@@ -1836,6 +1848,14 @@
     var GH_THU = [[1, "Thứ 2"], [2, "Thứ 3"], [3, "Thứ 4"], [4, "Thứ 5"], [5, "Thứ 6"], [6, "Thứ 7"], [0, "Chủ nhật"]], GH_TRUONG = ["nho", "khachNho", "lon", "khachLon", "tong"];
     function veBangGioiHan_(gh) {
       var ngay = (gh && gh.ngay) || {};
+      // Tóm tắt 1 dòng khi thu gọn: gom các thứ cùng cấu hình
+      var nhom = {}, thuTen = { 1: "T2", 2: "T3", 3: "T4", 4: "T5", 5: "T6", 6: "T7", 0: "CN" };
+      GH_THU.forEach(function(t) {
+        var c = ngay[t[0]] || {}, ma = c.khoa ? "⛔ khóa" : (c.nho || c.khachNho || c.lon || c.khachLon || c.tong) ?
+          "<6: " + (c.nho || "–") + " bàn/" + (c.khachNho || "–") + " khách · ≥6: " + (c.lon || "–") + "/" + (c.khachLon || "–") + " · Σ " + (c.tong || "–") : "không giới hạn";
+        (nhom[ma] = nhom[ma] || []).push(thuTen[t[0]]);
+      });
+      document.getElementById("ghTomTat").innerHTML = Object.keys(nhom).map(function(ma) { return '<b>' + nhom[ma].join(",") + '</b> ' + ma; }).join(" &nbsp;|&nbsp; ");
       document.getElementById("ghBang").innerHTML = GH_THU.map(function(t) {
         var c = ngay[t[0]] || {};
         return '<tr data-thu="' + t[0] + '"' + (c.khoa ? ' class="gh-khoa"' : '') + '><td class="text-center"><input type="checkbox" class="form-check-input gh-chon"></td>' +
