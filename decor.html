@@ -119,7 +119,12 @@
       margin-top: 2px; max-height: 180px; overflow-y: auto; display: none; box-shadow: 0 6px 16px rgba(130, 67, 30,.12); }
     .hc-bank-item { padding: 6px 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f7eee9; }
     .hc-bank-item:hover { background: #fbf3ef; }
-  </style>
+      /* Chọn nền tảng bằng logo gốc (icon chỉ để nhận diện, không đưa vào nội dung chuyển khoản) */
+    .nt-chon { display: flex; flex-wrap: wrap; gap: 4px; }
+    .nt-btn { border: 1px solid #e3d3c6; background: #fff; border-radius: 8px; padding: 3px 8px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px; line-height: 1.2; color: #333; }
+    .nt-btn img, .nt-khac { width: 16px; height: 16px; display: inline-block; text-align: center; line-height: 16px; font-weight: 700; color: #864c2a; }
+    .nt-btn.on { border-color: #864c2a; background: #f6ebe3; font-weight: 600; box-shadow: 0 0 0 1px #864c2a inset; }
+</style>
   <style>
     .tc-ok { text-align: center; }
     .tc-buoc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; position: relative; }
@@ -379,9 +384,8 @@
               <div class="col-sm-7">
                 <div class="text-start p-2 mb-3 rounded-3" style="background:#fff;border:1px dashed #d8ac93">
                   <div class="small fw-bold mb-1" style="color:#864c2a">✍️ Nội dung chuyển khoản *</div>
-                  <select name="nenTang" class="form-select form-select-sm mb-1"  required>
-                      <option value="Zalo">💬 Zalo</option><option value="Facebook">📘 Facebook</option><option value="Instagram">📷 Instagram</option><option value="Threads">🧵 Threads</option><option value="TikTok">🎵 TikTok</option><option value="Khác">✳️ Khác</option>
-                    </select>
+                  <input type="hidden" name="nenTang" value="Zalo">
+                  <div class="nt-chon mb-1"><button type="button" class="nt-btn on" data-v="Zalo"><img src="https://cdn.simpleicons.org/zalo/0068FF" alt="" loading="lazy">Zalo</button><button type="button" class="nt-btn" data-v="Facebook"><img src="https://cdn.simpleicons.org/facebook/0866FF" alt="" loading="lazy">Facebook</button><button type="button" class="nt-btn" data-v="Instagram"><img src="https://cdn.simpleicons.org/instagram/E4405F" alt="" loading="lazy">Instagram</button><button type="button" class="nt-btn" data-v="Threads"><img src="https://cdn.simpleicons.org/threads/000000" alt="" loading="lazy">Threads</button><button type="button" class="nt-btn" data-v="TikTok"><img src="https://cdn.simpleicons.org/tiktok/000000" alt="" loading="lazy">TikTok</button><button type="button" class="nt-btn" data-v="Khác"><span class="nt-khac">⋯</span>Khác</button></div>
                     <input type="text" name="tenNenTang" class="form-control form-control-sm mb-1" required maxlength="40" placeholder="Tên trên nền tảng">
                   <div class="input-group input-group-sm" id="ckSdtDong" style="display:none">
                     <span class="input-group-text">SĐT</span>
@@ -650,7 +654,13 @@
       if (f && d && document.activeElement !== document.getElementById("ckSdt")) d.style.display = f.sdt.value.trim() ? "none" : "";
     }
     document.addEventListener("DOMContentLoaded", hienCkSdt);
-    document.addEventListener("change", function(e) { if (e.target && e.target.name === "nenTang") capNhatQrCoc(); });
+    // Bấm logo nền tảng: ghi vào ô ẩn nenTang rồi cập nhật mã QR
+    document.addEventListener("click", function(e) {
+      var b = e.target.closest && e.target.closest(".nt-btn"); if (!b) return;
+      var f = document.getElementById("bookingForm"); f.nenTang.value = b.getAttribute("data-v");
+      [].forEach.call(document.querySelectorAll(".nt-btn"), function(x) { x.classList.toggle("on", x === b); });
+      capNhatQrCoc();
+    });
     document.addEventListener("focusout", function(e) { if (e.target && e.target.id === "ckSdt") setTimeout(hienCkSdt, 0); });
     // SĐT ở khu nội dung CK liên kết 2 chiều với ô Số điện thoại phía trên
     document.addEventListener("input", function(e) {
