@@ -198,6 +198,13 @@
     .gh-bang td, .gh-bang th { white-space: nowrap; background: transparent; }
     .gh-bang tr.gh-khoa td { background: #fbe9e7; }
     .gh-nhanh td { border-top: 2px dashed #e0c9b8; }
+    /* Màu theo phân loại: bàn < 6 khách (xanh lá), bàn ≥ 6 khách (đất nung), tổng (vàng cát) */
+    .gh-bang .c-nho { background: #eaf3e6 !important; } .gh-bang th.c-nho { color: #3f6b35; }
+    .gh-bang .c-lon { background: #fbe8dc !important; } .gh-bang th.c-lon { color: #a24a22; }
+    .gh-bang .c-tong { background: #f5eed8 !important; } .gh-bang th.c-tong { color: #7a6224; }
+    .gh-mini tr.r-nho th { color: #3f6b35; opacity: 1; } .gh-mini tr.r-nho td { background: #eaf3e6; }
+    .gh-mini tr.r-lon th { color: #a24a22; opacity: 1; } .gh-mini tr.r-lon td { background: #fbe8dc; }
+    .gh-mini tr.gh-tong th { color: #7a6224; opacity: 1; } .gh-mini tr.gh-tong td { background: #f5eed8; }
     .gh-mini { width: 100%; margin-top: 4px; border-collapse: separate; border-spacing: 1px; font-size: 10.5px; line-height: 1.25; table-layout: fixed; }
     .gh-mini th { font-weight: 600; opacity: .75; padding: 0 1px; }
     .gh-mini td { background: rgba(255,255,255,.75); border-radius: 3px; padding: 1px 0; }
@@ -594,7 +601,7 @@
             <span class="badge px-2 py-2" style="background:#f5ebe5; color:#934c22; border:1px solid #d8ac93;">🎀 Có đơn Decor</span>
             <span class="badge bg-light text-dark border px-2 py-2">🟢 Đang mở</span>
             <select id="calViewMode" class="form-select form-select-sm w-auto fw-bold" onchange="doiKieuXemTab6_()">
-              <option value="nam">Cả năm</option><option value="quy">Theo quý</option><option value="thang">Theo tháng</option>
+              <option value="thang" selected>Theo tháng</option><option value="quy">Theo quý</option><option value="nam">Cả năm</option>
             </select>
             <select id="calPeriod" class="form-select form-select-sm w-auto fw-bold" style="display:none" onchange="veLichTab6_(parseInt(document.getElementById('calYearSelect').value, 10))"></select>
             <select id="calYearSelect" class="form-select form-select-sm w-auto fw-bold border-primary" onchange="loadCalendarYearTab6()">
@@ -616,17 +623,17 @@
             <table class="table table-sm align-middle mb-1 gh-bang">
               <thead><tr class="small text-muted text-center">
                 <th style="width:34px" title="Chọn thứ để gán nhanh"><input type="checkbox" class="form-check-input" onchange="ghChonHet(this.checked)"></th>
-                <th class="text-start">Thứ</th><th>⛔ Khóa</th><th>Bàn &lt;6</th><th>Khách &lt;6</th><th>Bàn ≥6</th><th>Khách ≥6</th><th>Tổng bàn</th>
+                <th class="text-start">Thứ</th><th>⛔ Khóa</th><th class="c-nho">Bàn &lt;6</th><th class="c-nho">Khách &lt;6</th><th class="c-lon">Bàn ≥6</th><th class="c-lon">Khách ≥6</th><th class="c-tong">Tổng bàn</th>
               </tr></thead>
               <tbody id="ghBang"></tbody>
               <tfoot><tr class="gh-nhanh">
                 <td colspan="2" class="small fw-bold text-nowrap">⚡ Gán nhanh</td>
                 <td class="text-center"><input type="checkbox" class="form-check-input" id="ghN_khoa"></td>
-                <td><input type="number" min="0" class="form-control form-control-sm" id="ghN_nho" placeholder="–"></td>
-                <td><input type="number" min="0" class="form-control form-control-sm" id="ghN_khachNho" placeholder="–"></td>
-                <td><input type="number" min="0" class="form-control form-control-sm" id="ghN_lon" placeholder="–"></td>
-                <td><input type="number" min="0" class="form-control form-control-sm" id="ghN_khachLon" placeholder="–"></td>
-                <td><input type="number" min="0" class="form-control form-control-sm" id="ghN_tong" placeholder="–"></td>
+                <td class="c-nho"><input type="number" min="0" class="form-control form-control-sm" id="ghN_nho" placeholder="–"></td>
+                <td class="c-nho"><input type="number" min="0" class="form-control form-control-sm" id="ghN_khachNho" placeholder="–"></td>
+                <td class="c-lon"><input type="number" min="0" class="form-control form-control-sm" id="ghN_lon" placeholder="–"></td>
+                <td class="c-lon"><input type="number" min="0" class="form-control form-control-sm" id="ghN_khachLon" placeholder="–"></td>
+                <td class="c-tong"><input type="number" min="0" class="form-control form-control-sm" id="ghN_tong" placeholder="–"></td>
               </tr></tfoot>
             </table>
           </div>
@@ -1658,6 +1665,8 @@
           }
           _calTab6Data = res;
           veBangGioiHan_(res.gioiHan);
+          // Lần đầu: chọn sẵn tháng / quý hiện tại (mặc định Theo tháng, có bảng chi tiết trong ô)
+          if (document.getElementById("calViewMode").value !== "nam" && !document.getElementById("calPeriod").options.length) { doiKieuXemTab6_(); return; }
           veLichTab6_(year);
         })
         .withFailureHandler(function(err) {
@@ -1683,6 +1692,13 @@
       if (_calTab6Data) veLichTab6_(parseInt(document.getElementById("calYearSelect").value, 10));
     }
 
+    // Từ kiểu xem cả năm / quý: bấm tên tháng để mở tháng đó dạng bảng chi tiết
+    function xemThangTab6_(thang) {
+      document.getElementById("calViewMode").value = "thang";
+      doiKieuXemTab6_();
+      document.getElementById("calPeriod").value = thang;
+      veLichTab6_(parseInt(document.getElementById("calYearSelect").value, 10));
+    }
     function veLichTab6_(year) {
       var box = document.getElementById("calYearGridContainer");
       var locked = _calTab6Data.lockedDates || {};
@@ -1702,7 +1718,8 @@
         var days = new Date(year, m + 1, 0).getDate();
         for (var dd = 1; dd <= days; dd++) { var kk = year + "-" + pad(m + 1) + "-" + pad(dd); if (locked[kk]) soKhoa++; soDecor += counts[kk] || 0; }
         html += '<div class="' + colCls + '"><div class="border rounded-3 p-' + (lon ? 3 : 2) + ' h-100 bg-white">';
-        html += '<div class="d-flex justify-content-between align-items-center mb-2"><span class="fw-bold text-purple' + (lon ? ' fs-5' : '') + '">Tháng ' + (m + 1) + '/' + year + '</span>' +
+        html += '<div class="d-flex justify-content-between align-items-center mb-2"><span class="fw-bold text-purple' + (lon ? ' fs-5' : '') + '"' +
+          (lon ? '' : ' style="cursor:pointer;text-decoration:underline dotted" title="Bấm để xem tháng này dạng bảng chi tiết" onclick="xemThangTab6_(' + (m + 1) + ')"') + '>Tháng ' + (m + 1) + '/' + year + (lon ? '' : ' 🔍') + '</span>' +
           '<span class="small text-muted">🔒 ' + soKhoa + ' ngày khóa • 🎀 ' + soDecor + ' bàn decor</span></div>';
         html += '<div style="display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); overflow-wrap:anywhere; gap:' + (lon ? 6 : 3) + 'px; font-size:' + (lon ? 13 : 12) + 'px;">';
         ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].forEach(function(t) {
@@ -1742,12 +1759,12 @@
       var o = function(da, max, k) {
         var du = max && da >= max;
         return '<td data-k="' + k + '" onclick="event.stopPropagation(); suaOGh(this, \'' + key + '\', \'' + k + '\')" title="Bấm để sửa giới hạn riêng ngày này" style="cursor:text;' +
-          (du ? 'background:#dc3545;color:#fff;' : da ? 'background:#f3e3d6;' : '') + (max ? 'font-weight:700' : '') + '">' +
+          (du ? 'background:#dc3545;color:#fff;' : da ? 'filter:brightness(.92);' : '') + (max ? 'font-weight:700' : '') + '">' +
           (max ? da + '<span style="opacity:.7;font-weight:400">/' + max + '</span>' : (da || '·')) + '</td>';
       };
       return '<table class="gh-mini" style="color:#4a3426"><tr><th></th><th>Bàn</th><th>Khách</th></tr>' +
-        '<tr><th>&lt;6</th>' + o(nh.nho, c.nho, "nho") + o(nh.khachNho, c.khachNho, "khachNho") + '</tr>' +
-        '<tr><th>≥6</th>' + o(nh.lon, c.lon, "lon") + o(nh.khachLon, c.khachLon, "khachLon") + '</tr>' +
+        '<tr class="r-nho"><th>&lt;6</th>' + o(nh.nho, c.nho, "nho") + o(nh.khachNho, c.khachNho, "khachNho") + '</tr>' +
+        '<tr class="r-lon"><th>≥6</th>' + o(nh.lon, c.lon, "lon") + o(nh.khachLon, c.khachLon, "khachLon") + '</tr>' +
         '<tr class="gh-tong"><th>Σ</th>' + o(nh.nho + nh.lon, c.tong, "tong") + '<td>' + ((nh.khachNho + nh.khachLon) || '·') + '</td></tr></table>';
     }
     // Sửa 1 ô giới hạn ngay trong lịch: Enter / bấm ra ngoài = lưu, Esc = hủy, để trống hoặc 0 = không giới hạn
@@ -1820,7 +1837,7 @@
         var c = ngay[t[0]] || {};
         return '<tr data-thu="' + t[0] + '"' + (c.khoa ? ' class="gh-khoa"' : '') + '><td class="text-center"><input type="checkbox" class="form-check-input gh-chon"></td>' +
           '<td class="fw-bold">' + t[1] + '</td><td class="text-center"><input type="checkbox" class="form-check-input gh-khoa-o"' + (c.khoa ? ' checked' : '') + ' onchange="this.closest(\'tr\').classList.toggle(\'gh-khoa\', this.checked)"></td>' +
-          GH_TRUONG.map(function(k) { return '<td><input type="number" min="0" class="form-control form-control-sm" data-k="' + k + '" value="' + (c[k] || 0) + '"></td>'; }).join("") + '</tr>';
+          GH_TRUONG.map(function(k) { return '<td class="' + (k === "tong" ? "c-tong" : /Lon|lon/.test(k) ? "c-lon" : "c-nho") + '"><input type="number" min="0" class="form-control form-control-sm" data-k="' + k + '" value="' + (c[k] || 0) + '"></td>'; }).join("") + '</tr>';
       }).join("");
     }
     function docBangGioiHan_() {
