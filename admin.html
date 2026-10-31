@@ -1739,14 +1739,17 @@
             (ghc.tong ? " · Σ " + (nh.nho + nh.lon) + "/" + ghc.tong : "") + (ghc.khachNho || ghc.khachLon ? " · khách " + nh.khachNho + (ghc.khachNho ? "/" + ghc.khachNho : "") + "+" + nh.khachLon + (ghc.khachLon ? "/" + ghc.khachLon : "") : "")) : "";
           var style = locked[key] ? "background:#dc3545; color:#fff;"
             : (cnt ? "background:#f5ebe5; color:#934c22; border:1px solid #d8ac93;" : "background:#f8f9fa; border:1px solid #e9ecef;");
-          if (du && !locked[key]) style += "box-shadow:inset 0 0 0 2px #dc3545;";
+          var vuot = du && !locked[key]; // vượt / đủ mức chỉ định: đầu ô (ngày + trạng thái) tô cam
+          if (vuot) style += "box-shadow:inset 0 0 0 2px #e8833a;";
           var tip = (rieng ? "📌 Giới hạn riêng • " : "") + (locked[key] ? "Đã khóa" : "Đang mở") + (cnt ? " • " + cnt + " bàn decor" : "") + (dongGh ? " • " + dongGh + (du ? " (đủ)" : "") : "") + " • Nhấp để chỉnh khóa / giới hạn ngày này";
           html += '<div class="text-center rounded-2" style="cursor:pointer; padding:' + (lon ? '8px 2px' : '4px 0') + '; min-height:' + (lon ? 70 : 0) + 'px; ' + style + '" title="' + tip + '" onclick="moNgayGh(\'' + key + '\')">' +
-            '<div style="font-weight:600;">' + d + (rieng ? ' <span title="Có giới hạn riêng ngày này">📌</span>' : '') + '</div>' +
+            '<div style="' + (vuot && lon ? 'background:#e8833a;color:#fff;border-radius:6px;margin:-6px 0 2px;padding:3px 0;' : '') + '">' +
+              '<div style="font-weight:600;">' + d + (rieng ? ' <span title="Có giới hạn riêng ngày này">📌</span>' : '') + '</div>' +
+              (lon ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '🔒 Đã khóa' : ghc.khoa ? '<b style="color:' + (vuot ? '#fff' : '#dc3545') + '">⛔ ' + (rieng ? 'Khóa ngày' : 'Khóa thứ') + '</b>' : vuot ? '⚠️ Vượt mức' : '🟢 Mở') + '</div>' : '') +
+            '</div>' +
             (lon
-              ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '🔒 Đã khóa' : ghc.khoa ? '<b style="color:#dc3545">⛔ ' + (rieng ? 'Khóa ngày' : 'Khóa thứ') + '</b>' : '🟢 Mở') +
-                (coGh && !ghc.khoa ? bangOGh_(nh, ghc, locked[key], key) : (cnt ? '<br>🎀 ' + cnt + ' bàn' : '')) + '</div>'
-              : (cnt || du ? '<div style="font-size:9px; line-height:1;">' + (cnt || "") + (du ? ' 🔴' : '') + '</div>' : '')) + '</div>';
+              ? '<div style="font-size:11px; line-height:1.2;">' + (coGh && !ghc.khoa ? bangOGh_(nh, ghc, locked[key], key) : (cnt ? '🎀 ' + cnt + ' bàn' : '')) + '</div>'
+              : (cnt || du ? '<div style="font-size:9px; line-height:1;">' + (cnt || "") + (vuot ? ' 🟠' : '') + '</div>' : '')) + '</div>';
         }
         html += '</div></div></div>';
       });
