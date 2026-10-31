@@ -596,7 +596,8 @@
           </div>
         </div>
         <div class="d-flex align-items-center flex-wrap gap-2 mb-3 p-2 rounded-3" style="background:#faf4ef;border:1px solid #ecdccf">
-          <span class="fw-bold text-nowrap">🎀 Giới hạn bàn decor Thứ 6 & Thứ 7:</span>
+          <span class="fw-bold text-nowrap">🎀 Giới hạn bàn decor theo thứ:</span>
+          <span id="ghThu" class="d-inline-flex flex-wrap gap-1"><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="1">T2</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="2">T3</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="3">T4</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="4">T5</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="5">T6</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="6">T7</label><label class="btn btn-sm btn-outline-secondary py-0 px-2"><input type="checkbox" class="form-check-input me-1" value="0">CN</label></span>
           <span class="text-nowrap">&lt; 6 khách <input id="ghDecorNho" type="number" min="0" class="form-control form-control-sm d-inline-block text-center" style="width:64px"> bàn</span>
           <span class="text-nowrap">≥ 6 khách <input id="ghDecorLon" type="number" min="0" class="form-control form-control-sm d-inline-block text-center" style="width:64px"> bàn</span>
           <button class="btn btn-sm fw-bold text-white" style="background:#864c2a" onclick="luuGioiHanDecorT67()">💾 Lưu</button>
@@ -1619,7 +1620,8 @@
             return;
           }
           _calTab6Data = res;
-          var gh = res.gioiHan || {};
+          var gh = res.gioiHan || {}, thuChon = gh.thu || [5, 6];
+          [].forEach.call(document.querySelectorAll("#ghThu input"), function(c) { c.checked = thuChon.indexOf(+c.value) !== -1; });
           document.getElementById("ghDecorNho").value = gh.nho || 0;
           document.getElementById("ghDecorLon").value = gh.lon || 0;
           veLichTab6_(year);
@@ -1678,7 +1680,7 @@
           var key = year + "-" + pad(m + 1) + "-" + pad(d);
           var cnt = counts[key] || 0;
           var gh = _calTab6Data.gioiHan || {}, nh = (_calTab6Data.decorNhom || {})[key] || { nho: 0, lon: 0 }, wd = new Date(year, m, d).getDay();
-          var t67 = (wd === 5 || wd === 6) && (gh.nho || gh.lon);
+          var t67 = (gh.thu || [5, 6]).indexOf(wd) !== -1 && (gh.nho || gh.lon);
           var du = t67 && ((gh.nho && nh.nho >= gh.nho) || (gh.lon && nh.lon >= gh.lon));
           var dongGh = t67 ? ("<6: " + nh.nho + (gh.nho ? "/" + gh.nho : "") + " · ≥6: " + nh.lon + (gh.lon ? "/" + gh.lon : "")) : "";
           var style = locked[key] ? "background:#dc3545; color:#fff;"
@@ -1698,10 +1700,12 @@
 
     function luuGioiHanDecorT67() {
       var nho = document.getElementById("ghDecorNho").value, lon = document.getElementById("ghDecorLon").value;
+      var thu = [].filter.call(document.querySelectorAll("#ghThu input"), function(c) { return c.checked; }).map(function(c) { return +c.value; });
+      var tenThu = thu.map(function(t) { return t ? "T" + (t + 1) : "CN"; }).join(", ") || "(chưa chọn thứ nào)";
       adminRun().withSuccessHandler(function(res) {
         if (_calTab6Data) { _calTab6Data.gioiHan = res.gioiHan; veLichTab6_(parseInt(document.getElementById("calYearSelect").value, 10)); }
-        alert("✅ Đã lưu giới hạn Thứ 6 & Thứ 7: decor < 6 khách " + (res.gioiHan.nho || "không giới hạn") + " bàn, ≥ 6 khách " + (res.gioiHan.lon || "không giới hạn") + " bàn.");
-      }).luuGioiHanDecorT67Web(nho, lon);
+        alert("✅ Đã lưu giới hạn bàn decor cho " + tenThu + ": < 6 khách " + (res.gioiHan.nho || "không giới hạn") + " bàn, ≥ 6 khách " + (res.gioiHan.lon || "không giới hạn") + " bàn.");
+      }).luuGioiHanDecorT67Web(nho, lon, thu);
     }
     function toggleNgayDecorTab6(dateKey, cellEl) {
       if (!_calTab6Data) return;
