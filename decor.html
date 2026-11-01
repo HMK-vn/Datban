@@ -635,13 +635,18 @@
       capNhatQrCoc();
     }
     var _cocHienTai = 300000;
-    // Nội dung chuyển khoản cọc = Nền tảng + Tên trên nền tảng + SĐT, viết liền không dấu (VD: ZaloMinhhy0909090909), tối đa 50 ký tự
+    // Nội dung chuyển khoản cọc: MÃ NỀN TẢNG.TÊN.SĐT — chữ in hoa không dấu, phân tách bằng dấu chấm, tối đa 25 ký tự
+    // (giới hạn chung của nhiều ngân hàng; luôn giữ đủ SĐT, dài quá thì cắt bớt tên). VD: ZL.MINHHY.0909090909
+    var MA_NEN_TANG = { Zalo: "ZL", Facebook: "FB", Instagram: "IG", Threads: "TH", TikTok: "TT", "Khác": "" };
     function noiDungCkCoc() {
       var f = document.getElementById("bookingForm") || document.forms[0];
-      var nt = f && f.nenTang && f.nenTang.value !== "Khác" ? f.nenTang.value : "";
-      var ten = (f && f.tenNenTang ? f.tenNenTang.value : "").trim(), sdt = (f && f.sdt ? f.sdt.value : "").replace(/\D/g, "");
-      var s = (nt + ten).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9]/g, "") + sdt;
-      return ten ? s.slice(0, 50) : "COC BAN LAVENDER";
+      var ma = f && f.nenTang ? (MA_NEN_TANG[f.nenTang.value] || "") : "";
+      var ten = (f && f.tenNenTang ? f.tenNenTang.value : "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D")
+        .replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+      var sdt = (f && f.sdt ? f.sdt.value : "").replace(/\D/g, "");
+      if (!ten) return "COC BAN LAVENDER";
+      var conLai = 25 - (ma ? ma.length + 1 : 0) - (sdt ? sdt.length + 1 : 0);
+      return [ma, ten.slice(0, Math.max(3, conLai)), sdt].filter(Boolean).join(".").slice(0, 25);
     }
     function capNhatQrCoc() {
       var nd = noiDungCkCoc();
