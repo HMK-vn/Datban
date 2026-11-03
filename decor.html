@@ -383,10 +383,10 @@
               </div>
               <div class="col-sm-7">
                 <div class="text-start p-2 mb-3 rounded-3" style="background:#fff;border:1px dashed #d8ac93">
-                  <div class="small fw-bold mb-1" style="color:#864c2a">✍️ Nội dung chuyển khoản *</div>
-                  <input type="hidden" name="nenTang" value="Zalo">
-                  <div class="nt-chon mb-1"><button type="button" class="nt-btn on" data-v="Zalo"><img src="https://cdn.simpleicons.org/zalo/0068FF" alt="" loading="lazy">Zalo</button><button type="button" class="nt-btn" data-v="Facebook"><img src="https://cdn.simpleicons.org/facebook/0866FF" alt="" loading="lazy">Facebook</button><button type="button" class="nt-btn" data-v="Instagram"><img src="https://cdn.simpleicons.org/instagram/E4405F" alt="" loading="lazy">Instagram</button><button type="button" class="nt-btn" data-v="Threads"><img src="https://cdn.simpleicons.org/threads/000000" alt="" loading="lazy">Threads</button><button type="button" class="nt-btn" data-v="TikTok"><img src="https://cdn.simpleicons.org/tiktok/000000" alt="" loading="lazy">TikTok</button><button type="button" class="nt-btn" data-v="Khác"><span class="nt-khac">⋯</span>Khác</button></div>
-                    <input type="text" name="tenNenTang" class="form-control form-control-sm mb-1" required maxlength="40" placeholder="Tên trên nền tảng">
+                  <div class="small fw-bold mb-1" style="color:#864c2a">✍️ Nội dung chuyển khoản <span class="fw-normal text-muted" style="font-size:11px">(không bắt buộc · để trống thì dùng tên khách + SĐT ở trên)</span></div>
+                  <input type="hidden" name="nenTang" value="">
+                  <div class="nt-chon mb-1"><button type="button" class="nt-btn" data-v="Zalo"><img src="https://cdn.simpleicons.org/zalo/0068FF" alt="" loading="lazy">Zalo</button><button type="button" class="nt-btn" data-v="Facebook"><img src="https://cdn.simpleicons.org/facebook/0866FF" alt="" loading="lazy">Facebook</button><button type="button" class="nt-btn" data-v="Instagram"><img src="https://cdn.simpleicons.org/instagram/E4405F" alt="" loading="lazy">Instagram</button><button type="button" class="nt-btn" data-v="Threads"><img src="https://cdn.simpleicons.org/threads/000000" alt="" loading="lazy">Threads</button><button type="button" class="nt-btn" data-v="TikTok"><img src="https://cdn.simpleicons.org/tiktok/000000" alt="" loading="lazy">TikTok</button><button type="button" class="nt-btn" data-v="Khác"><span class="nt-khac">⋯</span>Khác</button></div>
+                    <input type="text" name="tenNenTang" class="form-control form-control-sm mb-1" maxlength="40" placeholder="Tên trên nền tảng">
                   <div class="input-group input-group-sm" id="ckSdtDong" style="display:none">
                     <span class="input-group-text">SĐT</span>
                     <input type="tel" id="ckSdt" class="form-control" placeholder="Tự lấy từ ô Số điện thoại">
@@ -395,7 +395,7 @@
                 <label class="form-label fw-bold small text-danger">Upload ảnh chuyển khoản ngân hàng *</label>
                 <input type="file" id="billFileInput" accept="image/*" class="form-control form-control-sm" required>
                 <div class="small text-muted mt-2" style="font-size:11px;">
-                  Quý khách vui lòng chuyển khoản và upload ảnh chuyển khoản thành công. Sau đó nhấn nút <b>"GỬI YÊU CẦU ĐẶT TIỆC DECOR"</b>.
+                  Quý khách vui lòng chuyển khoản và upload ảnh chuyển khoản thành công.<br>Sau đó nhấn nút <b class="text-nowrap">"GỬI YÊU CẦU ĐẶT TIỆC DECOR"</b>.
                 </div>
               </div>
             </div>
@@ -640,11 +640,13 @@
     var MA_NEN_TANG = { Zalo: "ZL", Facebook: "FB", Instagram: "IG", Threads: "TH", TikTok: "TT", "Khác": "" };
     function noiDungCkCoc() {
       var f = document.getElementById("bookingForm") || document.forms[0];
-      var ma = f && f.nenTang ? (MA_NEN_TANG[f.nenTang.value] || "") : "";
-      var ten = (f && f.tenNenTang ? f.tenNenTang.value : "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D")
-        .replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+      var boDau = function(x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9]/g, "").toUpperCase(); };
+      var tenNT = boDau(f && f.tenNenTang ? f.tenNenTang.value : "");
+      // Không điền tên trên nền tảng: mặc định lấy Họ tên khách (không kèm mã nền tảng)
+      var ma = tenNT && f.nenTang ? (MA_NEN_TANG[f.nenTang.value] || "") : "";
+      var ten = tenNT || boDau(f && f.hoTen ? f.hoTen.value : "");
       var sdt = (f && f.sdt ? f.sdt.value : "").replace(/\D/g, "");
-      if (!ten) return "COC BAN LAVENDER";
+      if (!ten) return sdt ? sdt : "COC BAN LAVENDER";
       var conLai = 25 - (ma ? ma.length + 1 : 0) - (sdt ? sdt.length + 1 : 0);
       return [ma, ten.slice(0, Math.max(3, conLai)), sdt].filter(Boolean).join(".").slice(0, 25);
     }
@@ -662,8 +664,9 @@
     // Bấm logo nền tảng: ghi vào ô ẩn nenTang rồi cập nhật mã QR
     document.addEventListener("click", function(e) {
       var b = e.target.closest && e.target.closest(".nt-btn"); if (!b) return;
-      var f = document.getElementById("bookingForm"); f.nenTang.value = b.getAttribute("data-v");
-      [].forEach.call(document.querySelectorAll(".nt-btn"), function(x) { x.classList.toggle("on", x === b); });
+      var f = document.getElementById("bookingForm"), bo = b.classList.contains("on");
+      f.nenTang.value = bo ? "" : b.getAttribute("data-v");
+      [].forEach.call(document.querySelectorAll(".nt-btn"), function(x) { x.classList.toggle("on", !bo && x === b); });
       capNhatQrCoc();
     });
     document.addEventListener("focusout", function(e) { if (e.target && e.target.id === "ckSdt") setTimeout(hienCkSdt, 0); });
@@ -673,7 +676,7 @@
       if (!t || !f || !ck) return;
       if (t.name === "sdt") { ck.value = t.value; hienCkSdt(); }
       else if (t.id === "ckSdt") f.sdt.value = t.value;
-      if (t.name === "tenNenTang" || t.name === "nenTang" || t.name === "sdt" || t.id === "ckSdt") capNhatQrCoc();
+      if (t.name === "tenNenTang" || t.name === "nenTang" || t.name === "sdt" || t.name === "hoTen" || t.id === "ckSdt") capNhatQrCoc();
     });
 
     function updateSubmitButtonState() {
