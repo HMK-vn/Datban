@@ -6,8 +6,9 @@
   <meta name="referrer" content="no-referrer">
 
   <link rel="manifest" href="app-khach.webmanifest">
-  <link rel="apple-touch-icon" href="app_icon/logo_khach_180.png">
-  <link rel="icon" type="image/png" href="app_icon/logo_khach_192.png">
+  <link rel="apple-touch-icon" href="app_icon/logo_khach_180.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="192x192" href="app_icon/logo_khach_192.png?v=20261103">
+  <link rel="shortcut icon" type="image/png" href="app_icon/logo_khach_192.png?v=20261103">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -55,7 +56,7 @@
   <style>
     body { background-color: #fdf9f7; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     .card { border-radius: 14px; box-shadow: 0 4px 18px rgba(147, 76, 34, 0.1); border: none; }
-    .header-bar { background: linear-gradient(135deg, #82431e, #9c5125); color: white; border-radius: 14px 14px 0 0; padding: 22px; }
+    .header-bar { background: linear-gradient(135deg, #82431e, #9c5125); color: white; border-radius: 14px 14px 0 0; padding: 18px 16px; }
     .btn-submit { background-color: #934c22; color: white; border-radius: 8px; font-weight: 700; padding: 13px; font-size: 16px; border: none; }
     .btn-submit:hover { background-color: #82431e; color: white; }
     .btn-submit:disabled { background-color: #dbb49d; cursor: not-allowed; }
@@ -124,7 +125,41 @@
     .nt-btn { border: 1px solid #e3d3c6; background: #fff; border-radius: 8px; padding: 3px 8px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px; line-height: 1.2; color: #333; }
     .nt-btn img, .nt-khac { width: 16px; height: 16px; display: inline-block; text-align: center; line-height: 16px; font-weight: 700; color: #864c2a; }
     .nt-btn.on { border-color: #864c2a; background: #f6ebe3; font-weight: 600; box-shadow: 0 0 0 1px #864c2a inset; }
-</style>
+    /* Giãn hàng gọn: đủ thông tin, nhìn bao quát trên mọi màn hình */
+    form .form-control, form .form-select { font-size: .92rem; }
+    form .form-control::placeholder { font-size: .88rem; }
+    form .mb-3 { margin-bottom: .65rem !important; }
+    form .form-label { margin-bottom: .2rem; font-size: .95rem; }
+    form .p-3 { padding: .6rem .8rem !important; }
+    form .form-control, form .form-select { padding-top: .38rem; padding-bottom: .38rem; }
+    @media (max-width: 576px) {
+      form .mb-3 { margin-bottom: .5rem !important; }
+      form .form-label { font-size: .9rem; }
+      form .row { --bs-gutter-x: .6rem; }
+      form .form-select { padding-left: .5rem; padding-right: 1.5rem; background-position: right .35rem center; }
+      form .form-control, form .form-select { font-size: .88rem; }
+      form .input-group .form-select { min-width: 0; }
+      form .input-group-text { padding: 0 .35rem; }
+      #txtSoKhach, #txtSoKhachT { width: 64px !important; }
+      form .gap-3 { gap: .6rem !important; }
+      form .d-flex.flex-wrap.gap-3 { flex-wrap: nowrap !important; }
+    }
+    /* Sơ đồ quy trình gọn */
+    .step-box { padding: 7px 10px !important; }
+    .step-circle { width: 22px !important; height: 22px !important; font-size: 11px !important; }
+    .step-hang .fw-bold { font-size: 12.5px; line-height: 1.2; }
+    .step-hang .text-muted { font-size: 10.5px !important; line-height: 1.2; }
+    .step-hang .mb-1 { margin-bottom: 2px !important; }
+    @media (max-width: 576px) { .card-body.p-4 { padding: 14px !important; } .step-hang .fw-bold { font-size: 11.5px; } }
+
+    .hd-wrap{display:flex;align-items:center;justify-content:flex-start;padding-left:8px;gap:18px;text-align:left}
+    .hd-logo{width:100px;height:100px;border-radius:50%;object-fit:cover;flex:none;border:3px solid rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(0,0,0,.22);background:#fff}
+    .hd-txt{min-width:0}
+    .hd-brand{font-size:23px;font-weight:800;letter-spacing:.6px;line-height:1.15;margin:0}
+    .hd-title{font-size:15px;font-weight:700;letter-spacing:1.2px;margin-top:3px;opacity:.95}
+    .hd-sub{font-size:12.5px;margin-top:3px;opacity:.82}
+    @media (max-width:480px){label[for^=coTreEm]{font-size:14px}.hd-wrap{gap:12px}.hd-logo{width:80px;height:80px}.hd-brand{font-size:18px}.hd-title{font-size:13px;letter-spacing:.8px}.hd-sub{font-size:12px}}
+  </style>
   <style>
     .tc-ok { text-align: center; }
     .tc-buoc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; position: relative; }
@@ -142,23 +177,26 @@
     input, select, textarea { min-width: 0; }
     a[href^="mailto:"], .email, [class*="email"] { overflow-wrap: anywhere; }
     @media (max-width: 576px) { h4 { font-size: clamp(1.05rem, 5vw, 1.4rem); } h5 { font-size: clamp(1rem, 4.4vw, 1.2rem); } }
-  </style>
+      /* Ô giờ: bỏ mũi tên chọn, chữ số căn giữa luôn hiện rõ */
+    #selectHourDecor, #selectMinDecor, #selectGioVao { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important;
+      padding-left: .3rem !important; padding-right: .3rem !important; text-align: center; text-align-last: center; font-size: .9rem !important; font-weight: 600; cursor: pointer; }
+    .input-group > #selectHourDecor, .input-group > #selectMinDecor { min-width: 0; }
+</style>
 </head>
 <body class="py-4">
   <div class="container" style="max-width: 680px;">
     <div class="card">
       <div class="header-bar text-center">
-        <h4 class="mb-1 fw-bold">🎉 ỨNG DỤNG WEB ĐẶT BÀN ĂN DECOR</h4>
-        <p class="mb-0 small opacity-75">Túi Nướng Lavender • Lưu giữ những khoảnh khắc trọn vẹn</p>
+        <div class="hd-wrap"><img class="hd-logo" src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'"><div class="hd-txt"><div class="hd-brand">TÚI NƯỚNG LAVENDER</div><div class="hd-title">ĐẶT BÀN ĂN DECOR</div><div class="hd-sub">Lưu giữ những khoảnh khắc trọn vẹn</div></div></div>
       </div>
 
       <div class="card-body p-4">
         <!-- SƠ ĐỒ QUY TRÌNH 4 BƯỚC -->
-        <div class="step-box mb-4">
-          <div class="text-center fw-bold mb-3" style="color:#934c22; font-size:13px; text-transform:uppercase;">
+        <div class="step-box mb-3">
+          <div class="text-center fw-bold mb-1" style="color:#934c22; font-size:12px; text-transform:uppercase;">
             📋 Sơ Đồ Quy Trình Đặt Bàn Tiệc Decor
           </div>
-          <div class="row g-2 text-center small">
+          <div class="row g-1 text-center small step-hang">
             <div class="col-3">
               <div class="step-circle mb-1">1</div>
               <div class="fw-bold">Điền Form</div>
@@ -177,14 +215,14 @@
             <div class="col-3">
               <div class="step-circle mb-1" style="background:#2e7d32;">4</div>
               <div class="fw-bold">Xác Nhận</div>
-              <div class="text-muted" style="font-size:11px;">Email / Hotline</div>
+              <div class="text-muted" style="font-size:11px;">Tra cứu / Hotline</div>
             </div>
           </div>
         </div>
 
         <!-- CẢNH BÁO KHÓA NGÀY TỪ SHEET (FULL DECOR) -->
         <div id="lockWarning" class="alert alert-danger p-3 mb-3 text-center" style="display: none;">
-          <h6 class="fw-bold mb-1">🔒 NGÀY NÀY ĐÃ ĐẦY (FULL DECOR)</h6>
+          <h6 class="fw-bold mb-1" id="lockWarningTitle">🔒 NGÀY NÀY ĐÃ ĐẦY (FULL DECOR)</h6>
           <span id="lockWarningText">Rất tiếc, ngày bạn chọn đã khóa nhận đơn decor. Vui lòng chọn ngày khác!</span>
         </div>
 
@@ -212,29 +250,15 @@
         <form id="bookingForm" onsubmit="handleFormSubmit(event)">
           <!-- KHÁCH HÀNG & SĐT -->
           <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-5 mb-3">
               <label class="form-label fw-bold">Khách hàng *</label>
               <input type="text" name="hoTen" class="form-control" required placeholder="Nguyễn Văn A">
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 col-7 mb-3">
               <label class="form-label fw-bold">Số Điện Thoại *</label>
               <input type="tel" name="sdt" class="form-control" required placeholder="09xxx">
             </div>
-          </div>
-          <!-- ĐỘ TUỔI, GIỚI TÍNH, TỈNH THÀNH -->
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <label class="form-label fw-bold">Độ tuổi *</label>
-              <select name="doTuoi" class="form-select" required>
-                <option value="" disabled selected>Chọn độ tuổi</option>
-                <option value="Dưới 18">Dưới 18</option>
-                <option value="18 - 25">18 - 25</option>
-                <option value="26 - 35">26 - 35</option>
-                <option value="36 - 50">36 - 50</option>
-                <option value="Trên 50">Trên 50</option>
-              </select>
-            </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 col-5 mb-3">
               <label class="form-label fw-bold">Giới tính *</label>
               <div class="btn-group w-100">
                 <input type="radio" class="btn-check" name="gioiTinh" id="genderMaleD" value="Nam">
@@ -243,8 +267,22 @@
                 <label class="btn btn-outline-secondary" for="genderFemaleD">Nữ</label>
               </div>
             </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label fw-bold">Tỉnh / Thành phố đang Sinh Sống *</label>
+          </div>
+          <!-- ĐỘ TUỔI, TỈNH THÀNH -->
+          <div class="row">
+            <div class="col-md-4 col-5 mb-3">
+              <label class="form-label fw-bold">Độ tuổi *</label>
+              <select name="doTuoi" class="form-select" required>
+                <option value="" disabled selected>Chọn</option>
+                <option value="Dưới 18">Dưới 18</option>
+                <option value="18 - 25">18 - 25</option>
+                <option value="26 - 35">26 - 35</option>
+                <option value="36 - 50">36 - 50</option>
+                <option value="Trên 50">Trên 50</option>
+              </select>
+            </div>
+            <div class="col-md-8 col-7 mb-3">
+              <label class="form-label fw-bold text-nowrap"><span class="d-none d-sm-inline">Tỉnh / Thành phố đang sinh sống</span><span class="d-sm-none">Tỉnh / TP sinh sống</span> *</label>
               <select name="tinhThanh" class="form-select" required>
                 <option value="Lâm Đồng (Đà Lạt)">Lâm Đồng (Đà Lạt)</option>
                 <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
@@ -259,22 +297,20 @@
             </div>
           </div>
 
-          <!-- EMAIL CÓ GỢI Ý THÔNG MINH SAU KHI GÕ @ -->
-          <div class="mb-3 position-relative">
-            <label class="form-label fw-bold">Email gửi xác nhận *</label>
-            <input type="email" id="emailInputDecor" name="email" class="form-control" required autocomplete="off" placeholder="Tuinuong@gmail.com" oninput="handleEmailInput(this, 'emailSuggestDecor')">
-            <div id="emailSuggestDecor" class="email-suggest-box" style="display:none;"></div>
-          </div>
 
           <!-- NGÀY TIỆC, GIỜ ĐÓN (CHỐNG NHẬP PHÚT TRƯỚC GIỜ SAU), SỐ KHÁCH -->
           <div class="row">
-            <div class="col-md-4 mb-3">
-              <label class="form-label fw-bold">Ngày đặt bàn *</label>
-              <input type="date" id="inputNgay" name="ngay" class="form-control" required onchange="onDateChanged(this.value)">
-              <small id="dateCheckNotice" style="font-size:11px;"></small>
+            <div class="col-md-5 mb-3 position-relative">
+              <label class="form-label fw-bold">Email <span class="fw-normal text-muted" style="font-size:11px">(không bắt buộc)</span></label>
+              <input type="email" id="emailInputDecor" name="email" class="form-control" autocomplete="off" placeholder="tui@gmail.com" oninput="handleEmailInput(this, 'emailSuggestDecor')">
+              <div id="emailSuggestDecor" class="email-suggest-box" style="display:none;"></div>
             </div>
-            <div class="col-md-5 mb-3">
-              <label class="form-label fw-bold">Giờ đến (hh:mm) *</label>
+            <div class="col-md-4 col-6 mb-3">
+              <label class="form-label fw-bold text-nowrap">Ngày đặt bàn * <small id="dateCheckNotice" class="fw-normal" style="font-size:11px;"></small></label>
+              <input type="date" id="inputNgay" name="ngay" class="form-control" required onchange="onDateChanged(this.value)">
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+              <label class="form-label fw-bold">Giờ đến *</label>
               <input type="hidden" name="gioVao" id="selectGioDecor" value="18:00">
               <div class="input-group">
                 <select id="selectHourDecor" class="form-select fw-bold" required onchange="onHourMinDecorChange('hour')"></select>
@@ -283,19 +319,19 @@
               </div>
               <small id="weekendTimeHint" class="text-danger fw-bold" style="font-size:10.5px; display:none;">* T6 & T7: Chỉ nhận từ 14:00 đến 18:30</small>
             </div>
-            <div class="col-md-3 mb-3">
-              <label class="form-label fw-bold">Số khách *</label>
-              <input type="number" id="txtSoKhach" name="soKhach" min="1" class="form-control" required placeholder="2" value="4" oninput="updateDepositCalculation()">
-            </div>
           </div>
 
           <!-- STICKER CÓ TRẺ EM -->
-          <div class="p-3 mb-3 bg-light rounded border d-flex justify-content-between align-items-center">
+          <div class="p-3 mb-3 bg-light rounded border d-flex flex-wrap align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+              <label class="fw-bold mb-0 text-nowrap" for="txtSoKhach">Số khách *</label>
+              <input type="number" id="txtSoKhach" name="soKhach" min="1" class="form-control" style="width:88px" required placeholder="2" value="4" oninput="updateDepositCalculation()">
+            </div>
             <div class="form-check form-switch mb-0">
               <input class="form-check-input" type="checkbox" id="coTreEmCheckDecor" onchange="document.getElementById('kidsBox').style.display=this.checked?'block':'none'">
-              <label class="form-check-label fw-bold" for="coTreEmCheckDecor" style="color:#934c22;">👶 Có trẻ em</label>
+              <label class="form-check-label fw-bold text-nowrap" for="coTreEmCheckDecor" style="color:#934c22;">👶 Có trẻ em</label>
             </div>
-            <div id="kidsBox" style="display:none; width:140px;">
+            <div id="kidsBox" style="display:none; width:110px;">
               <select class="form-select form-select-sm" id="childQuantitySelectDecor">
                 <option value="1 bé">1 bé</option>
                 <option value="2 bé">2 bé</option>
@@ -324,7 +360,7 @@
               (Số tiền này sẽ được hoàn lại/ trừ vào số tiền thanh toán khi dùng bữa tại quán)
             </div>
             <div class="small mt-1 px-2 py-1 rounded" style="font-size:11.5px;background:#fff7e6;color:#9a3412;border-left:3px solid #f59e0b;">
-              🧾 Bàn decor có <b>xuất VAT</b>, Túi sẽ <b>hoàn lại tiền cọc riêng</b>, không trừ trực tiếp vào bill. Quý khách vui lòng chọn phương thức hoàn tiền.
+              🧾 Bàn decor có <b>xuất VAT</b>, Túi sẽ <b>hoàn lại tiền cọc riêng</b>, không trừ trực tiếp vào bill.<br>Quý khách vui lòng chọn phương thức hoàn tiền.
             </div>
           </div>
 
@@ -369,12 +405,16 @@
           </div>
           <!-- GHI CHÚ THÊM -->
           <div class="mb-3">
-            <label class="form-label fw-bold">Ghi chú thêm (nếu có):</label>
-            <textarea name="ghiChu" class="form-control" rows="2" placeholder="Ghi chú thêm về chỗ ngồi, không gian..."></textarea>
+            <div class="form-check form-switch mb-1">
+              <input class="form-check-input" type="checkbox" id="coGhiChu" onchange="var t=document.getElementById('oGhiChu');t.style.display=this.checked?'block':'none';if(this.checked)t.focus();else t.value='';">
+              <label class="form-check-label fw-bold" for="coGhiChu">📝 Ghi chú thêm</label>
+            </div>
+            <textarea name="ghiChu" id="oGhiChu" class="form-control" rows="2" style="display:none" placeholder="Chỗ ngồi, không gian…"></textarea>
           </div>
 
           <!-- UPLOAD BILL KÈM MÃ QR VIETQR -->
-          <div class="card p-3 mb-3 bg-light border">
+          <div id="theCocCho" class="alert alert-secondary text-center mb-3 px-2" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(11px,3.3vw,14px)"><span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>Tên + SĐT</b> để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>Tên + SĐT</b> để hiện QR cọc</span></div>
+          <div class="card p-3 mb-3 bg-light border" id="theCoc" style="display:none">
             <div class="row align-items-center g-3">
               <div class="col-sm-5 text-center">
                 <span class="small fw-bold text-muted d-block mb-1">Mã QR VietQR Chuyển Cọc:</span>
@@ -403,7 +443,7 @@
 
           <!-- LƯU Ý CAO ĐIỂM -->
           <div class="alert alert-warning py-2 px-3 small mb-3">
-            ⚠️ <b>Lưu ý:</b> Đặt bàn chỉ thành công khi Túi gửi email "Xác nhận đặt bàn thành công". <b>Vào thời gian cao điểm, số bàn decor hoặc mẫu Quý khách chọn có thể đã đủ</b> - trường hợp này Túi sẽ hoàn lại đầy đủ tiền cọc cho Quý khách.
+            ⚠️ <b>Lưu ý:</b> Đơn chỉ thành công khi tra cứu báo <b>"Đã xác nhận"</b>.<br>Giờ cao điểm nếu hết bàn/mẫu decor, <b>Túi xin hoàn đủ cọc</b> cho Quý khách ạ.
           </div>
 
           <button type="submit" id="btnSubmit" class="btn btn-submit w-100">GỬI YÊU CẦU ĐẶT TIỆC DECOR</button>
@@ -506,7 +546,7 @@
 
       // Thứ 6 & Thứ 7 chỉ từ 14h (2h chiều) đến 18h; Ngày thường từ 11h đến 20h
       const allowedHours = weekend ? ["14", "15", "16", "17", "18"] : ["11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
-      hourSel.innerHTML = allowedHours.map(h => `<option value="${h}">${h} giờ</option>`).join("");
+      hourSel.innerHTML = allowedHours.map(h => `<option value="${h}">${h}</option>`).join("");
       hourSel.value = allowedHours.includes(prevH) ? prevH : (weekend ? "18" : "18");
 
       syncMinutesForSelectedHour(prevM);
@@ -527,7 +567,7 @@
       }
 
       const curM = preferredMin || minSel.value || "00";
-      minSel.innerHTML = allowedMins.map(m => `<option value="${m}">${m} phút</option>`).join("");
+      minSel.innerHTML = allowedMins.map(m => `<option value="${m}">${m}</option>`).join("");
       // Nếu khách chọn phút 45 trước rồi mới đổi sang 18h -> Tự động ép về 30p!
       minSel.value = allowedMins.includes(curM) ? curM : allowedMins[allowedMins.length - 1];
 
@@ -679,10 +719,50 @@
       if (t.name === "tenNenTang" || t.name === "nenTang" || t.name === "sdt" || t.name === "hoTen" || t.id === "ckSdt") capNhatQrCoc();
     });
 
+    // ===== Chặn hoàn toàn khi ngày khóa / đủ giới hạn: khóa mọi ô (trừ ngày), ẩn QR + upload cọc =====
+    var _ghNgay = null, _dangKiemNgay = false, _ngayDaKiem = "";
+    function lyDoKhoaNgay() {
+      if (isCurrentDateLocked) return "Ngày bạn chọn đã khóa nhận đơn decor (FULL DECOR).";
+      if (!_ghNgay || !_ghNgay.cauHinh) return "";
+      var c = _ghNgay.cauHinh, da = _ghNgay.daDat || {}, k = parseInt(document.getElementById("txtSoKhach").value, 10) || 0, lon = k >= 6;
+      if (c.khoa) return "Ngày bạn chọn không nhận bàn decor.";
+      if (c.tong && (da.nho || 0) + (da.lon || 0) >= c.tong) return "Ngày bạn chọn đã đủ " + c.tong + " bàn decor.";
+      var maxBan = lon ? c.lon : c.nho, daBan = (lon ? da.lon : da.nho) || 0;
+      if (maxBan && daBan >= maxBan) return "Ngày bạn chọn đã đủ bàn decor " + (lon ? "từ 6 khách" : "dưới 6 khách") + ".";
+      var maxKhach = lon ? c.khachLon : c.khachNho, daKhach = (lon ? da.khachLon : da.khachNho) || 0;
+      if (maxKhach && daKhach + k > maxKhach) return "Bàn decor " + (lon ? "từ 6 khách" : "dưới 6 khách") + " ngày này chỉ còn nhận " + Math.max(0, maxKhach - daKhach) + " khách.";
+      return "";
+    }
+    function capNhatKhoaForm() {
+      var f = document.getElementById("bookingForm"); if (!f) return;
+      var ngay = document.getElementById("inputNgay").value, lyDo = ngay ? lyDoKhoaNgay() : "", khoa = !!lyDo;
+      var w = document.getElementById("lockWarning");
+      w.style.display = khoa ? "block" : "none";
+      if (khoa) document.getElementById("lockWarningText").textContent = lyDo + " Vui lòng chọn ngày khác!";
+      var n = document.getElementById("dateCheckNotice");
+      if (n && ngay) n.innerHTML = khoa ? "<span class='text-danger fw-bold'>❌<span class='d-none d-sm-inline'> Hết nhận</span></span>" : "<span class='text-success fw-bold'>🟢<span class='d-none d-sm-inline'> Mở nhận</span></span>";
+      // Khóa mọi ô nhập trừ ô ngày (và số khách để khách thử loại bàn khác khi chỉ hết 1 loại)
+      [].forEach.call(f.elements, function(el) {
+        if (el.id === "inputNgay" || el.id === "txtSoKhach" || el.type === "submit") return;
+        el.disabled = khoa;
+      });
+      // QR + upload cọc chỉ hiện khi ngày mở và đã điền tên + SĐT
+      var duTT = f.hoTen.value.trim() && f.sdt.value.replace(/\D/g, "").length >= 9;
+      // Chỉ hiện khi ngày đã được máy chủ xác nhận còn mở (không hiện trong lúc đang kiểm tra)
+      var hienCoc = ngay && ngay === _ngayDaKiem && !_dangKiemNgay && !khoa && !isTimeRuleLocked && duTT;
+      if (hienCoc) capNhatQrCoc();
+      document.getElementById("theCoc").style.display = hienCoc ? "" : "none";
+      document.getElementById("theCocCho").style.display = hienCoc ? "none" : "";
+      document.getElementById("theCocCho").innerHTML = khoa ? "🔒 Ngày này <b>hết nhận bàn decor</b> · ẩn mã QR cọc" :
+        '<span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>Tên + SĐT</b> để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>Tên + SĐT</b> để hiện QR cọc</span>';
+      updateSubmitButtonState();
+    }
+    document.addEventListener("input", function(e) { if (e.target && /^(hoTen|sdt|soKhach)$/.test(e.target.name || "")) capNhatKhoaForm(); });
+    document.addEventListener("DOMContentLoaded", function() { setTimeout(capNhatKhoaForm, 0); });
     function updateSubmitButtonState() {
       const btn = document.getElementById("btnSubmit");
       if (!btn) return;
-      if (isCurrentDateLocked) {
+      if (isCurrentDateLocked || lyDoKhoaNgay()) {
         btn.disabled = true;
         btn.innerText = "NGÀY NÀY ĐÃ ĐẦY - VUI LÒNG CHỌN NGÀY KHÁC";
       } else if (isTimeRuleLocked) {
@@ -712,7 +792,7 @@
       isTimeRuleLocked = false;
 
       if (!inputNgay || !inputNgay.value) {
-        updateSubmitButtonState();
+        capNhatKhoaForm();
         return;
       }
 
@@ -745,7 +825,7 @@
             } else {
               if (txtLyDo) txtLyDo.innerText = "Rất tiếc, đã quá 18h31 nên hệ thống đã khóa nhận đặt tiệc Decor cho ngày Thứ 6 / Thứ 7. Anh/chị vui lòng chọn một ngày khác giúp Túi nhé ạ! 🧡";
             }
-            updateSubmitButtonState();
+            capNhatKhoaForm();
             if (diff <= 0 && decorIntervalTimer) {
               clearInterval(decorIntervalTimer);
               decorIntervalTimer = null;
@@ -756,7 +836,7 @@
           isTimeRuleLocked = false;
           if (boxDem) boxDem.style.display = "block";
           if (boxKhoa) boxKhoa.style.display = "none";
-          updateSubmitButtonState();
+          capNhatKhoaForm();
 
           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
           const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -772,7 +852,7 @@
         updateCountdown();
         decorIntervalTimer = setInterval(updateCountdown, 1000);
       } else {
-        updateSubmitButtonState();
+        capNhatKhoaForm();
       }
     }
 
@@ -781,14 +861,15 @@
       checkDecorTimeLimit();
       if (!d) return;
       const notice = document.getElementById("dateCheckNotice");
-      notice.innerHTML = "⏳ Đang kiểm tra...";
+      notice.innerHTML = "⏳";
+      _dangKiemNgay = true; _ngayDaKiem = ""; capNhatKhoaForm();
 
       google.script.run.withSuccessHandler(function(res) {
         document.getElementById("decorSectionBox").style.display = res.hideDecor ? "none" : "block";
         isCurrentDateLocked = res.isDecorLocked;
-        document.getElementById("lockWarning").style.display = res.isDecorLocked ? "block" : "none";
-        notice.innerHTML = res.isDecorLocked ? "<span class='text-danger fw-bold'>❌ Đã khóa ngày</span>" : "<span class='text-success fw-bold'>🟢 Mở nhận đơn</span>";
-        updateSubmitButtonState();
+        _ghNgay = res.gioiHan || null;
+        _dangKiemNgay = false; _ngayDaKiem = d;
+        capNhatKhoaForm();
 
         // CHỈ HIỂN THỊ NHỮNG MẪU DECOR CÒN LẠI CHƯA ĐƯỢC ĐẶT TRONG DATA_TONG
         const sel = document.getElementById("selectMauDecor");
@@ -812,7 +893,8 @@
     function handleFormSubmit(e) {
       e.preventDefault();
       onHourMinDecorChange();
-      if (isCurrentDateLocked) { alert("Ngày đã khóa nhận bàn decor!"); return; }
+      var lyDoKhoa = lyDoKhoaNgay();
+      if (lyDoKhoa) { alert(lyDoKhoa + " Vui lòng chọn ngày khác!"); return; }
       if (isTimeRuleLocked) { alert("Thứ 6 & Thứ 7 chỉ nhận đặt bàn Decor từ 14h00 đến 18h30. Vui lòng chọn lại giờ hoặc chọn ngày khác nhé ạ!"); return; }
 
       const fileInput = document.getElementById("billFileInput");
@@ -857,7 +939,7 @@
         billBase64: billBase64
       };
 
-      google.script.run.withSuccessHandler(function(res) {
+      guiDonWebAnToan(data, function(res) {
         const btn = document.getElementById("btnSubmit");
         btn.disabled = false;
         btn.innerText = "GỬI YÊU CẦU ĐẶT TIỆC DECOR";
@@ -867,8 +949,30 @@
         } else {
           alert("Lỗi: " + res.message);
         }
-      }).submitBooking(data);
+      }, function(err) {
+        const btn = document.getElementById("btnSubmit");
+        btn.disabled = false;
+        btn.innerText = "GỬI LẠI YÊU CẦU";
+        alert("Chưa gửi được do mạng chập chờn. Quý khách vui lòng bấm GỬI LẠI (không bị trùng đơn) hoặc gọi hotline 0911 588 138.");
+      });
     }
+    // Gửi đơn an toàn: kèm "mã gửi" để máy chủ không tạo đơn trùng; mất mạng thì tự gửi lại tối đa 2 lần
+    function guiDonWebAnToan(data, khiXong, khiLoi) {
+      // Bấm GỬI LẠI cùng thông tin (SĐT + ngày + giờ) → dùng lại mã gửi cũ để không tạo đơn trùng
+      var khoa = [data.sdt, data.ngay, data.gioVao].join("|");
+      if (window._donCho && window._donCho.khoa === khoa) data.maGui = window._donCho.ma;
+      data.maGui = data.maGui || ("G" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7));
+      window._donCho = { khoa: khoa, ma: data.maGui };
+      var lan = 0;
+      (function gui() {
+        lan++;
+        google.script.run.withSuccessHandler(function(res) { if (res && res.success) window._donCho = null; khiXong(res); }).withFailureHandler(function(err) {
+          if (lan < 3) return setTimeout(gui, lan * 2500);
+          khiLoi(err);
+        }).submitBooking(data);
+      })();
+    }
+
 
     window.addEventListener("DOMContentLoaded", function() {
       document.getElementById("inputNgay").value = new Date().toISOString().split("T")[0];

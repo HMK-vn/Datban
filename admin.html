@@ -6,8 +6,9 @@
   <meta name="referrer" content="no-referrer">
 
   <link rel="manifest" href="app-quantri.webmanifest">
-  <link rel="apple-touch-icon" href="app_icon/logo_admin_180.png">
-  <link rel="icon" type="image/png" href="app_icon/logo_admin_192.png">
+  <link rel="apple-touch-icon" href="app_icon/logo_admin_180.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="192x192" href="app_icon/logo_admin_192.png?v=20261103">
+  <link rel="shortcut icon" type="image/png" href="app_icon/logo_admin_192.png?v=20261103">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -350,6 +351,8 @@
       <li class="nav-item"><button class="nav-link" id="tab7-tab" data-bs-toggle="tab" data-bs-target="#tab7" type="button"><i class="fa-solid fa-chart-line me-1 text-primary"></i> 7. Phân Tích</button></li>
       <li class="nav-item"><button class="nav-link" id="tab8-tab" data-bs-toggle="tab" data-bs-target="#tab8" type="button"><i class="fa-solid fa-coins me-1 text-warning"></i> 8. Lịch Tiền Cọc</button></li>
     </ul>
+    <!-- Cảnh báo đơn web cần kiểm tra (NHAT_KY_WEB: lỗi / nghi / treo) -->
+    <div id="donWebNghi" class="alert alert-danger py-2 px-3 mt-2 mb-0" style="display:none"></div>
 
     <div class="tab-content" id="mainTabContent">
 
@@ -780,7 +783,7 @@
   <script>
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb"];
+    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
     // 🔔 Khung cài / thử thông báo Telegram (khung trên trang, không dùng hộp prompt vì vài trình duyệt chặn)
     function caiTelegram() {
       var k = document.getElementById("tgKhung");
@@ -1139,6 +1142,28 @@
         '<text x="50" y="93" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="800" letter-spacing="1.5" fill="#fff" text-anchor="middle">VAT</text></svg>';
     }
     // Logo nhỏ ở tiêu đề cột và nút chọn cột Hoàn VAT (data-l: tm xám, ck cam)
+    // ===== Cảnh báo đơn đặt bàn web có thể chưa về hệ thống (kiểm khi mở trang + mỗi 5 phút) =====
+    function kiemTraDonWeb() {
+      adminRun().withSuccessHandler(function(ds) {
+        var box = document.getElementById("donWebNghi");
+        if (!ds || !ds.length) { box.style.display = "none"; return; }
+        var ten = { "LỖI": "Lỗi ghi đơn", "NGHI": "Nghi chưa vào sheet", "TREO": "Treo khi xử lý" };
+        box.innerHTML = '<div class="fw-bold mb-1">⚠️ ' + ds.length + ' đơn đặt bàn web cần kiểm tra — đối chiếu FORM booking, nhập tay nếu chưa có rồi bấm "Đã xử lý"</div>' +
+          ds.map(function(d) {
+            return '<div class="d-flex flex-wrap align-items-center gap-2 small border-top border-danger-subtle pt-1 mt-1">' +
+              '<span class="badge bg-danger">' + escapeHtml(ten[d.trangThai] || d.trangThai) + '</span>' +
+              '<b>' + escapeHtml(d.ten) + '</b> · <a href="tel:' + escapeHtml(d.sdt) + '">' + escapeHtml(d.sdt) + '</a> · ' + escapeHtml(d.ngay) + ' ' + escapeHtml(d.gio) + ' · ' + escapeHtml(String(d.khach)) + ' khách · ' + escapeHtml(d.loai) +
+              ' <span class="text-muted">(gửi ' + escapeHtml(d.luc) + (d.ghiChu ? ' · ' + escapeHtml(d.ghiChu) : '') + ')</span>' +
+              '<button class="btn btn-sm btn-outline-danger py-0 ms-auto" onclick="xuLyDonWeb(' + d.dong + ', this)">✔ Đã xử lý</button></div>';
+          }).join("");
+        box.style.display = "block";
+      }).withFailureHandler(function() {}).layDonWebNghiNgo();
+    }
+    function xuLyDonWeb(dong, btn) {
+      btn.disabled = true;
+      adminRun().withSuccessHandler(kiemTraDonWeb).danhDauDonWebXuLy(dong);
+    }
+    document.addEventListener("DOMContentLoaded", function() { setTimeout(kiemTraDonWeb, 1500); setInterval(kiemTraDonWeb, 5 * 60000); });
     document.addEventListener("DOMContentLoaded", function() { [].forEach.call(document.querySelectorAll(".vat-mini"), function(e) { e.innerHTML = vatSvg(e.getAttribute("data-l")); }); });
     function vatTag(x, inline) {
       var l = loaiVat(x); if (!l) return "";

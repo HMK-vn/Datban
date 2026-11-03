@@ -6,8 +6,9 @@
   <meta name="referrer" content="no-referrer">
 
   <link rel="manifest" href="app-khach.webmanifest">
-  <link rel="apple-touch-icon" href="app_icon/logo_khach_180.png">
-  <link rel="icon" type="image/png" href="app_icon/logo_khach_192.png">
+  <link rel="apple-touch-icon" href="app_icon/logo_khach_180.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="192x192" href="app_icon/logo_khach_192.png?v=20261103">
+  <link rel="shortcut icon" type="image/png" href="app_icon/logo_khach_192.png?v=20261103">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -76,6 +77,14 @@
     button:disabled { background: #d7ad95; cursor: wait; }
     .msg { margin-top: 14px; padding: 12px 14px; border-radius: 9px; font-size: 14px; display: none; line-height: 1.5; }
     .ok { background: #eaf7ef; color: #1e5631; } .err { background: #fdecea; color: #8a1f11; }
+  
+    .hd-wrap{display:flex;align-items:center;justify-content:flex-start;padding-left:8px;gap:18px;text-align:left}
+    .hd-logo{width:100px;height:100px;border-radius:50%;object-fit:cover;flex:none;border:3px solid rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(0,0,0,.22);background:#fff}
+    .hd-txt{min-width:0}
+    .hd-brand{font-size:23px;font-weight:800;letter-spacing:.6px;line-height:1.15;margin:0}
+    .hd-title{font-size:15px;font-weight:700;letter-spacing:1.2px;margin-top:3px;opacity:.95}
+    .hd-sub{font-size:12.5px;margin-top:3px;opacity:.82}
+    @media (max-width:480px){.hd-wrap{gap:12px}.hd-logo{width:80px;height:80px}.hd-brand{font-size:18px}.hd-title{font-size:13px;letter-spacing:.8px}.hd-sub{font-size:12px}}
   </style>
   <style>
     /* Canh chữ chung mọi nền tảng: tiêu đề cân dòng, đoạn văn không để chữ lẻ, nút nhỏ / nhãn / SĐT không tách dòng */
@@ -92,7 +101,7 @@
   <div class="wrap">
     <div class="card">
       <div class="head">
-        <h1>🧡 Thông tin nhận hoàn cọc</h1>
+        <div class="hd-wrap"><img class="hd-logo" src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'"><div class="hd-txt"><h1 class="hd-brand">Thông tin nhận hoàn cọc</h1><div class="hd-sub">Túi Nướng Lavender</div></div></div>
         <p>Túi chỉ dùng thông tin này để hoàn lại tiền cọc trong trường hợp ngày Quý khách chọn đã đủ bàn decor.</p>
       </div>
       <div class="body">
