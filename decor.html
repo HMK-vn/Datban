@@ -276,9 +276,9 @@
             <div class="col-md-3 col-5 mb-3">
               <label class="form-label fw-bold">Giới tính *</label>
               <div class="btn-group w-100">
-                <input type="radio" class="btn-check" name="gioiTinh" id="genderMaleD" value="Nam">
+                <input type="radio" class="btn-check" name="gioiTinh" id="genderMaleD" value="Nam" required>
                 <label class="btn btn-outline-secondary" for="genderMaleD">Nam</label>
-                <input type="radio" class="btn-check" name="gioiTinh" id="genderFemaleD" value="Nữ" checked>
+                <input type="radio" class="btn-check" name="gioiTinh" id="genderFemaleD" value="Nữ">
                 <label class="btn btn-outline-secondary" for="genderFemaleD">Nữ</label>
               </div>
             </div>
@@ -299,6 +299,7 @@
             <div class="col-md-7 col-7 mb-3">
               <label class="form-label fw-bold text-nowrap"><span class="d-none d-sm-inline">Tỉnh / Thành phố đang sinh sống</span><span class="d-sm-none">Tỉnh / TP sinh sống</span> *</label>
               <select name="tinhThanh" class="form-select" required>
+                <option value="" disabled selected>Chọn</option>
                 <option value="Lâm Đồng (Đà Lạt)">Lâm Đồng (Đà Lạt)</option>
                 <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
                 <option value="Hà Nội">Hà Nội</option>
@@ -428,7 +429,7 @@
           </div>
 
           <!-- UPLOAD BILL KÈM MÃ QR VIETQR -->
-          <div id="theCocCho" class="alert alert-secondary text-start mb-3 px-3" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(13px,3.9vw,16px)"><span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>Tên + SĐT</b> để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>Tên + SĐT</b> để hiện QR cọc</span></div>
+          <div id="theCocCho" class="alert alert-secondary text-start mb-3 px-3" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(13px,3.9vw,16px)"><span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>đủ thông tin</b> phía trên để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>đủ thông tin</b> để hiện QR cọc</span></div>
           <div class="card p-3 mb-3 bg-light border" id="theCoc" style="display:none">
             <div class="row align-items-center g-3">
               <div class="col-sm-5 text-center">
@@ -760,17 +761,18 @@
         el.disabled = khoa;
       });
       // QR + upload cọc chỉ hiện khi ngày mở và đã điền tên + SĐT
-      var duTT = f.hoTen.value.trim() && f.sdt.value.replace(/\D/g, "").length >= 9;
+      var duTT = f.hoTen.value.trim() && f.sdt.value.replace(/\D/g, "").length >= 9 && f.doTuoi.value && f.gioiTinh.value && f.tinhThanh.value;
       // Chỉ hiện khi ngày đã được máy chủ xác nhận còn mở (không hiện trong lúc đang kiểm tra)
       var hienCoc = ngay && ngay === _ngayDaKiem && !_dangKiemNgay && !khoa && !isTimeRuleLocked && duTT;
       if (hienCoc) capNhatQrCoc();
       document.getElementById("theCoc").style.display = hienCoc ? "" : "none";
       document.getElementById("theCocCho").style.display = hienCoc ? "none" : "";
       document.getElementById("theCocCho").innerHTML = khoa ? "🔒 Ngày này <b>hết nhận bàn decor</b> · ẩn mã QR cọc" :
-        '<span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>Tên + SĐT</b> để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>Tên + SĐT</b> để hiện QR cọc</span>';
+        '<span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>đủ thông tin</b> phía trên để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>đủ thông tin</b> để hiện QR cọc</span>';
       updateSubmitButtonState();
     }
     document.addEventListener("input", function(e) { if (e.target && /^(hoTen|sdt|soKhach)$/.test(e.target.name || "")) capNhatKhoaForm(); });
+    document.addEventListener("change", function(e) { if (e.target && /^(doTuoi|gioiTinh|tinhThanh)$/.test(e.target.name || "")) capNhatKhoaForm(); });
     document.addEventListener("DOMContentLoaded", function() { setTimeout(capNhatKhoaForm, 0); });
     // Sơ đồ 4 bước: bước xong sáng rõ, bước đang làm nhấp nháy
     window._daGuiDon = false;
