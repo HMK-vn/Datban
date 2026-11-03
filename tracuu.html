@@ -53,7 +53,7 @@
   <style>
     body { background: #faf5f3; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #6f432a; }
     .card { border-radius: 16px; box-shadow: 0 4px 18px rgba(111, 67, 42,.08); border: none; }
-    .header-bar { background: linear-gradient(135deg, #f8eee8, #fcf7f4); color: #6f432a; border-radius: 16px 16px 0 0; padding: 20px; border-bottom: 1px solid #f2e4dc; }
+    .header-bar { background: linear-gradient(135deg, #82431e, #9c5125); color: white; border-radius: 16px 16px 0 0; padding: 18px 16px; }
     .btn-search { background: #864c2a; color: #fff; font-weight: 600; border: none; }
     .btn-search:hover { background: #754224; color: #fff; }
     .don { border: 1px solid #f3e6de; border-radius: 14px; padding: 14px; margin-bottom: 12px; background: #fff; }
@@ -75,6 +75,14 @@
     .buoc div { font-size: clamp(9.5px, 2.8vw, 11px); }
     .form-label { font-size: clamp(13px, 4vw, 16px); }
     @media (max-width: 420px) { .kv { grid-template-columns: 1fr; } }
+  
+    .hd-wrap{display:flex;align-items:center;justify-content:flex-start;padding-left:8px;gap:18px;text-align:left}
+    .hd-logo{width:100px;height:100px;border-radius:50%;object-fit:cover;flex:none;border:3px solid rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(0,0,0,.22);background:#fff}
+    .hd-txt{min-width:0}
+    .hd-brand{font-size:23px;font-weight:800;letter-spacing:.6px;line-height:1.15;margin:0}
+    .hd-title{font-size:15px;font-weight:700;letter-spacing:1.2px;margin-top:3px;opacity:.95}
+    .hd-sub{font-size:12.5px;margin-top:3px;opacity:.82}
+    @media (max-width:480px){.hd-wrap{gap:12px}.hd-logo{width:80px;height:80px}.hd-brand{font-size:18px}.hd-title{font-size:13px;letter-spacing:.8px}.hd-sub{font-size:12px}}
   </style>
   <style>
     /* Canh chữ chung mọi nền tảng: tiêu đề cân dòng, đoạn văn không để chữ lẻ, nút nhỏ / nhãn / SĐT không tách dòng */
@@ -91,17 +99,16 @@
   <div class="container" style="max-width: 640px;">
     <div class="card">
       <div class="header-bar text-center">
-        <h4 class="mb-1 fw-bold">🔍 TRA CỨU ĐƠN ĐẶT BÀN</h4>
-        <p class="mb-0 small">Túi Nướng Lavender · Trạng thái đơn đặt bàn</p>
+        <div class="hd-wrap"><img class="hd-logo" src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'"><div class="hd-txt"><div class="hd-brand">TÚI NƯỚNG LAVENDER</div><div class="hd-title">TRA CỨU ĐƠN ĐẶT BÀN</div><div class="hd-sub">Xem trạng thái đơn đặt bàn</div></div></div>
       </div>
       <div class="card-body p-3 p-sm-4">
         <label class="form-label fw-bold">Nhập số điện thoại hoặc email đặt bàn:</label>
         <div class="input-group mb-3">
-          <input type="text" inputmode="text" id="inputSearchPhone" class="form-control form-control-lg" placeholder="VD: 0911 588 138 hoặc Tui@gmail.com" onkeypress="if(event.key==='Enter') searchBooking()">
+          <input type="text" inputmode="text" id="inputSearchPhone" class="form-control form-control-lg" placeholder="SĐT hoặc email" onkeypress="if(event.key==='Enter') searchBooking()">
           <button class="btn btn-search px-4" id="btnSearch" onclick="searchBooking()">Tra cứu</button>
         </div>
-        <div id="bookingResult"><div class="text-center py-3 text-muted small">Nhập số điện thoại hoặc email Quý khách đã dùng khi đặt bàn.</div></div>
-        <div class="text-center small text-muted mt-2">Cần hỗ trợ? Hotline <a href="tel:0911588138" class="fw-bold text-danger text-decoration-none">0911 588 138</a></div>
+        <div id="bookingResult"><div class="py-3 text-muted small">Nhập số điện thoại hoặc email Quý khách đã dùng khi đặt bàn.</div></div>
+        <div class="small text-muted mt-2">Cần hỗ trợ? Hotline <a href="tel:0911588138" class="fw-bold text-danger text-decoration-none">0911 588 138</a></div>
       </div>
     </div>
   </div>

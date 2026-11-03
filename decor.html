@@ -193,9 +193,6 @@
       <div class="card-body p-4">
         <!-- SƠ ĐỒ QUY TRÌNH 4 BƯỚC -->
         <div class="step-box mb-3">
-          <div class="text-center fw-bold mb-1" style="color:#934c22; font-size:12px; text-transform:uppercase;">
-            📋 Sơ Đồ Quy Trình Đặt Bàn Tiệc Decor
-          </div>
           <div class="row g-1 text-center small step-hang">
             <div class="col-3">
               <div class="step-circle mb-1">1</div>
@@ -218,6 +215,9 @@
               <div class="text-muted" style="font-size:11px;">Tra cứu / Hotline</div>
             </div>
           </div>
+          <div class="text-center fw-bold mt-2" style="color:#934c22; font-size:12px; text-transform:uppercase;">
+            📋 Sơ Đồ Quy Trình Đặt Bàn Tiệc Decor
+          </div>
         </div>
 
         <!-- CẢNH BÁO KHÓA NGÀY TỪ SHEET (FULL DECOR) -->
@@ -229,13 +229,13 @@
         <!-- ĐỒNG HỒ ĐẾM NGƯỢC (HIỂN THỊ KHI CHỌN THỨ 6 & THỨ 7) -->
         <div id="boxDemGioDecor" style="display:none; margin-bottom: 16px; padding: 14px; border-radius: 8px; background-color: #fff3cd; border: 2px solid #ffeeba; text-align: center;">
           <div style="font-size: 13.5px; font-weight: bold; color: #856404; margin-bottom: 4px;">
-            ⏳ THỜI GIAN CÒN LẠI ĐÉN NHẬN BÀN DECOR SẼ ĐẶT TRƯỚC 18:30 [Thứ 6/ Thứ 7]
+            ⏳ THỜI GIAN CÒN LẠI ĐỂ ĐẶT BÀN DECOR NHẬN TRƯỚC 18:30 [THỨ 6 / THỨ 7]
           </div>
           <div id="dongHoTextDecor" style="font-size: 26px; font-weight: 800; color: #d9534f; letter-spacing: 2px;">
             00:00:00
           </div>
           <div style="font-size: 11.5px; color: #6c757d; margin-top: 4px;">
-            (Thứ 6 & Thứ 7 chỉ nhận đơn đón trước 18:30 — Sau 18:31 tự động khóa nhận tiệc)
+            (Thứ 6 & Thứ 7 chỉ nhận khách đến trước 18:30 — từ 18:31 tự động khóa nhận tiệc)
           </div>
         </div>
 
@@ -270,7 +270,7 @@
           </div>
           <!-- ĐỘ TUỔI, TỈNH THÀNH -->
           <div class="row">
-            <div class="col-md-4 col-5 mb-3">
+            <div class="col-md-5 col-5 mb-3">
               <label class="form-label fw-bold">Độ tuổi *</label>
               <select name="doTuoi" class="form-select" required>
                 <option value="" disabled selected>Chọn</option>
@@ -281,7 +281,7 @@
                 <option value="Trên 50">Trên 50</option>
               </select>
             </div>
-            <div class="col-md-8 col-7 mb-3">
+            <div class="col-md-7 col-7 mb-3">
               <label class="form-label fw-bold text-nowrap"><span class="d-none d-sm-inline">Tỉnh / Thành phố đang sinh sống</span><span class="d-sm-none">Tỉnh / TP sinh sống</span> *</label>
               <select name="tinhThanh" class="form-select" required>
                 <option value="Lâm Đồng (Đà Lạt)">Lâm Đồng (Đà Lạt)</option>
@@ -317,7 +317,7 @@
                 <span class="input-group-text fw-bold">:</span>
                 <select id="selectMinDecor" class="form-select fw-bold" required onchange="onHourMinDecorChange('min')"></select>
               </div>
-              <small id="weekendTimeHint" class="text-danger fw-bold" style="font-size:10.5px; display:none;">* T6 & T7: Chỉ nhận từ 14:00 đến 18:30</small>
+              <small id="weekendTimeHint" class="text-danger fw-bold" style="font-size:10.5px; display:none; white-space:nowrap; text-align:right; margin-left:-220px; position:relative; z-index:1;">* T6 & T7: Chỉ nhận từ 14:00 đến 18:30</small>
             </div>
           </div>
 
@@ -413,7 +413,7 @@
           </div>
 
           <!-- UPLOAD BILL KÈM MÃ QR VIETQR -->
-          <div id="theCocCho" class="alert alert-secondary text-center mb-3 px-2" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(11px,3.3vw,14px)"><span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>Tên + SĐT</b> để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>Tên + SĐT</b> để hiện QR cọc</span></div>
+          <div id="theCocCho" class="alert alert-secondary text-end mb-3 px-3" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(13px,3.9vw,16px)"><span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>Tên + SĐT</b> để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>Tên + SĐT</b> để hiện QR cọc</span></div>
           <div class="card p-3 mb-3 bg-light border" id="theCoc" style="display:none">
             <div class="row align-items-center g-3">
               <div class="col-sm-5 text-center">
