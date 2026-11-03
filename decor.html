@@ -157,8 +157,23 @@
     .hd-txt{min-width:0}
     .hd-brand{font-size:23px;font-weight:800;letter-spacing:.6px;line-height:1.15;margin:0}
     .hd-title{font-size:15px;font-weight:700;letter-spacing:1.2px;margin-top:3px;opacity:.95}
-    .hd-sub{font-size:12.5px;margin-top:3px;opacity:.82}
+    .hd-sub{font-size:12.5px;margin-top:8px;opacity:.85;letter-spacing:.3px}
     @media (max-width:480px){label[for^=coTreEm]{font-size:14px}.hd-wrap{gap:12px}.hd-logo{width:80px;height:80px}.hd-brand{font-size:18px}.hd-title{font-size:13px;letter-spacing:.8px}.hd-sub{font-size:12px}}
+  
+    .step-hang > div{opacity:.45;transition:opacity .3s}
+    .step-hang > div .step-circle{background:#c4ad9f !important;transition:background .3s}
+    .step-hang > div.buoc-xong, .step-hang > div.buoc-dang{opacity:1}
+    .step-hang > div.buoc-xong .step-circle{background:#934c22 !important}
+    .step-hang > div.buoc-xong:last-child .step-circle{background:#2e7d32 !important}
+    .step-hang > div.buoc-dang .step-circle{background:#c97a45 !important;animation:buocNhay 1.1s ease-in-out infinite}
+    @keyframes buocNhay{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(201,122,69,.65)}50%{transform:scale(1.15);box-shadow:0 0 0 7px rgba(201,122,69,0)}}
+  
+    .o-thieu{border-color:#dc3545 !important;border-radius:8px;animation:oThieu 1s ease-in-out infinite}
+    @keyframes oThieu{0%,100%{box-shadow:0 0 0 0 rgba(220,53,69,.55)}50%{box-shadow:0 0 0 4px rgba(220,53,69,.22);background-color:#fff1f0}}
+      .tc-ok{container-type:inline-size}
+  
+    .nut-nhay{animation:nutNhay 1.2s ease-in-out infinite}
+    @keyframes nutNhay{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(134,76,42,.55)}50%{transform:scale(1.06);box-shadow:0 0 0 8px rgba(134,76,42,0)}}
   </style>
   <style>
     .tc-ok { text-align: center; }
@@ -413,7 +428,7 @@
           </div>
 
           <!-- UPLOAD BILL KÈM MÃ QR VIETQR -->
-          <div id="theCocCho" class="alert alert-secondary text-end mb-3 px-3" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(13px,3.9vw,16px)"><span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>Tên + SĐT</b> để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>Tên + SĐT</b> để hiện QR cọc</span></div>
+          <div id="theCocCho" class="alert alert-secondary text-start mb-3 px-3" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(13px,3.9vw,16px)"><span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>Tên + SĐT</b> để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>Tên + SĐT</b> để hiện QR cọc</span></div>
           <div class="card p-3 mb-3 bg-light border" id="theCoc" style="display:none">
             <div class="row align-items-center g-3">
               <div class="col-sm-5 text-center">
@@ -456,13 +471,11 @@
   <div class="modal fade" id="modalConfirmSuccess" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header bg-success text-white">
-          <h6 class="modal-title fw-bold">🎉 TIẾP NHẬN YÊU CẦU THÀNH CÔNG</h6>
-        </div>
+        <div class="modal-header p-0 border-0 d-block"><div class="d-flex align-items-center gap-3 text-start text-white p-3" style="background:linear-gradient(135deg,#82431e,#9c5125);border-radius:8px 8px 0 0"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" style="width:58px;height:58px;width:min(58px,13vw);height:min(58px,13vw);border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.2);background:#fff"><div><div class="fw-bold text-nowrap" style="font-size:16px;font-size:min(16px,3.5vw);letter-spacing:.3px"><span style="display:inline-block;width:1.5em">🎉</span>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div><div class="text-nowrap" style="font-size:12.5px;font-size:min(12.5px,3.3vw);opacity:.85;padding-left:min(24px,5.25vw);margin-top:2px">Túi Nướng Lavender · Đặt bàn ăn decor</div></div></div></div>
         <div class="modal-body p-4 text-center">
           <div class="tc-ok">
-            <p class="fs-6 fw-bold mb-2">Túi Nướng Lavender đã nhận được yêu cầu đặt bàn của Quý khách.</p>
-            <a href="https://hmk-vn.github.io/Datban/tracuu.html" class="btn fw-bold px-4 mb-2 text-white" style="background:#864c2a" onclick="try{sessionStorage.setItem('tracuu_q', window._sdtVuaDat || '')}catch(e){}">🔎 Tra cứu đơn đặt bàn</a>
+            <p class="fw-bold mb-2" style="white-space:nowrap;font-size:15px;font-size:min(15.5px,4.05cqw)">Túi đã nhận được yêu cầu đặt bàn của Quý khách.</p>
+            <a href="https://hmk-vn.github.io/Datban/tracuu.html" class="btn fw-bold px-4 mb-2 text-white nut-nhay" style="background:#864c2a" onclick="try{sessionStorage.setItem('tracuu_q', window._sdtVuaDat || '')}catch(e){}">🔎 Tra cứu đơn đặt bàn</a>
             <p class="small text-muted mb-3">Quý khách vui lòng kiểm tra trạng thái bằng số điện thoại hoặc email.</p>
             <div class="tc-buoc">
               <div class="xong"><span>📝</span>Gửi yêu cầu</div>
@@ -759,6 +772,26 @@
     }
     document.addEventListener("input", function(e) { if (e.target && /^(hoTen|sdt|soKhach)$/.test(e.target.name || "")) capNhatKhoaForm(); });
     document.addEventListener("DOMContentLoaded", function() { setTimeout(capNhatKhoaForm, 0); });
+    // Sơ đồ 4 bước: bước xong sáng rõ, bước đang làm nhấp nháy
+    window._daGuiDon = false;
+    function capNhatBuoc() {
+      var f = document.getElementById("bookingForm"), cot = document.querySelectorAll(".step-hang > div");
+      if (!f || cot.length < 4) return;
+      var theCoc = document.getElementById("theCoc"), bill = document.getElementById("billFileInput");
+      var qrMo = theCoc && theCoc.style.display !== "none";
+      var ok1 = qrMo && Array.prototype.every.call(f.querySelectorAll("[required]"), function(e) {
+        return e === bill || e.disabled || e.offsetParent === null || e.checkValidity();
+      });
+      var ok2 = ok1 && bill && bill.files && bill.files.length > 0;
+      var xong = [ok1, ok2, window._daGuiDon, false], dang = xong.indexOf(false);
+      if (window._daGuiDon) { xong = [true, true, true, false]; dang = 3; }
+      cot.forEach(function(c, i) { c.classList.toggle("buoc-xong", xong[i]); c.classList.toggle("buoc-dang", i === dang); });
+    }
+    document.addEventListener("input", function() { setTimeout(capNhatBuoc, 0); });
+    document.addEventListener("change", function() { setTimeout(capNhatBuoc, 0); });
+    document.addEventListener("click", function() { setTimeout(capNhatBuoc, 50); });
+    setInterval(capNhatBuoc, 1500);
+
     function updateSubmitButtonState() {
       const btn = document.getElementById("btnSubmit");
       if (!btn) return;
@@ -945,6 +978,7 @@
         btn.innerText = "GỬI YÊU CẦU ĐẶT TIỆC DECOR";
         if (res.success) {
           window._sdtVuaDat = data.sdt;
+          window._daGuiDon = true; capNhatBuoc();
           new bootstrap.Modal(document.getElementById("modalConfirmSuccess")).show();
         } else {
           alert("Lỗi: " + res.message);
@@ -981,6 +1015,19 @@
       rebuildHourMinSelectors();
       onDateChanged(document.getElementById("inputNgay").value);
     });
+  </script>
+
+  <script>
+    // Ô bắt buộc còn thiếu: nhấp nháy khi bấm gửi, điền xong thì thôi
+    (function() {
+      var f = document.getElementById("bookingForm");
+      if (!f) return;
+      function dich(e) { return (e.classList.contains("btn-check") && e.closest(".btn-group")) || e; }
+      f.addEventListener("invalid", function(e) { dich(e.target).classList.add("o-thieu"); }, true);
+      function kiem(e) { var t = e.target; if (t && t.checkValidity && t.checkValidity()) dich(t).classList.remove("o-thieu"); }
+      f.addEventListener("input", kiem, true);
+      f.addEventListener("change", kiem, true);
+    })();
   </script>
 </body>
 </html>

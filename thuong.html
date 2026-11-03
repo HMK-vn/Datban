@@ -129,8 +129,15 @@
     .hd-txt{min-width:0}
     .hd-brand{font-size:23px;font-weight:800;letter-spacing:.6px;line-height:1.15;margin:0}
     .hd-title{font-size:15px;font-weight:700;letter-spacing:1.2px;margin-top:3px;opacity:.95}
-    .hd-sub{font-size:12.5px;margin-top:3px;opacity:.82}
+    .hd-sub{font-size:12.5px;margin-top:8px;opacity:.85;letter-spacing:.3px}
     @media (max-width:480px){label[for^=coTreEm]{font-size:14px}.hd-wrap{gap:12px}.hd-logo{width:80px;height:80px}.hd-brand{font-size:18px}.hd-title{font-size:13px;letter-spacing:.8px}.hd-sub{font-size:12px}}
+  
+    .o-thieu{border-color:#dc3545 !important;border-radius:8px;animation:oThieu 1s ease-in-out infinite}
+    @keyframes oThieu{0%,100%{box-shadow:0 0 0 0 rgba(220,53,69,.55)}50%{box-shadow:0 0 0 4px rgba(220,53,69,.22);background-color:#fff1f0}}
+      .tc-ok{container-type:inline-size}
+  
+    .nut-nhay{animation:nutNhay 1.2s ease-in-out infinite}
+    @keyframes nutNhay{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(134,76,42,.55)}50%{transform:scale(1.06);box-shadow:0 0 0 8px rgba(134,76,42,0)}}
   </style>
   
   <style>
@@ -347,8 +354,8 @@
 
       guiDonWebAnToan(data, function(res) {
           window._sdtVuaDat = data.sdt;
-          msg.className = "alert alert-light border mt-3";
-          msg.innerHTML = res.success === false ? "" : '<div class="fw-bold text-success text-center mb-2">🎉 TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div>' + document.getElementById("tplThanhCong").innerHTML;
+          msg.className = "alert alert-light border mt-3 p-0 overflow-hidden";
+          msg.innerHTML = res.success === false ? "" : '<div class="d-flex align-items-center gap-3 text-start text-white p-3" style="background:linear-gradient(135deg,#b4703f,#c98a5b);border-radius:8px 8px 0 0"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src=\'https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png\'" style="width:58px;height:58px;width:min(58px,13vw);height:min(58px,13vw);border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.2);background:#fff"><div><div class="fw-bold text-nowrap" style="font-size:16px;font-size:min(16px,3.5vw);letter-spacing:.3px"><span style="display:inline-block;width:1.5em">🎉</span>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div><div class="text-nowrap" style="font-size:12.5px;font-size:min(12.5px,3.3vw);opacity:.85;padding-left:min(24px,5.25vw);margin-top:2px">Túi Nướng Lavender · Đặt bàn ăn tiêu chuẩn</div></div></div><div class="p-3">' + document.getElementById("tplThanhCong").innerHTML + '</div>';
           if (res.success === false) { msg.className = "alert alert-danger mt-3 text-center"; msg.innerText = res.message; }
           msg.style.display = "block";
           form.reset();
@@ -435,8 +442,8 @@ function validateBookingTime(selectedDateStr, hourVal, minuteVal) {
 }
   </script>
   <template id="tplThanhCong"><div class="tc-ok">
-            <p class="fs-6 fw-bold mb-2">Túi Nướng Lavender đã nhận được yêu cầu đặt bàn của Quý khách.</p>
-            <a href="https://hmk-vn.github.io/Datban/tracuu.html" class="btn fw-bold px-4 mb-2 text-white" style="background:#864c2a" onclick="try{sessionStorage.setItem('tracuu_q', window._sdtVuaDat || '')}catch(e){}">🔎 Tra cứu đơn đặt bàn</a>
+            <p class="fw-bold mb-2" style="white-space:nowrap;font-size:15px;font-size:min(15.5px,4.05cqw)">Túi đã nhận được yêu cầu đặt bàn của Quý khách.</p>
+            <a href="https://hmk-vn.github.io/Datban/tracuu.html" class="btn fw-bold px-4 mb-2 text-white nut-nhay" style="background:#864c2a" onclick="try{sessionStorage.setItem('tracuu_q', window._sdtVuaDat || '')}catch(e){}">🔎 Tra cứu đơn đặt bàn</a>
             <p class="small text-muted mb-3">Quý khách vui lòng kiểm tra trạng thái bằng số điện thoại hoặc email.</p>
             <div class="tc-buoc">
               <div class="xong"><span>📝</span>Gửi yêu cầu</div>
@@ -446,5 +453,18 @@ function validateBookingTime(selectedDateStr, hourVal, minuteVal) {
             </div>
             <div class="small mt-3">Cần hỗ trợ, Quý khách vui lòng gọi hotline: <a href="tel:0911588138" class="fw-bold text-danger text-decoration-none text-nowrap">0911 588 138</a></div>
           </div></template>
+
+  <script>
+    // Ô bắt buộc còn thiếu: nhấp nháy khi bấm gửi, điền xong thì thôi
+    (function() {
+      var f = document.getElementById("bookingForm");
+      if (!f) return;
+      function dich(e) { return (e.classList.contains("btn-check") && e.closest(".btn-group")) || e; }
+      f.addEventListener("invalid", function(e) { dich(e.target).classList.add("o-thieu"); }, true);
+      function kiem(e) { var t = e.target; if (t && t.checkValidity && t.checkValidity()) dich(t).classList.remove("o-thieu"); }
+      f.addEventListener("input", kiem, true);
+      f.addEventListener("change", kiem, true);
+    })();
+  </script>
 </body>
 </html>
