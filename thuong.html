@@ -466,5 +466,15 @@ function validateBookingTime(selectedDateStr, hourVal, minuteVal) {
       f.addEventListener("change", kiem, true);
     })();
   </script>
+
+  <script>
+    // Giới hạn chọn ngày: từ hôm nay đến 1 năm tới (tránh nhập nhầm năm / ngày sinh)
+    (function() {
+      function ymd(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+      var o = document.getElementById("txtNgayT"); if (!o) return;
+      var nay = new Date(), xa = new Date(); xa.setFullYear(xa.getFullYear() + 1);
+      o.min = ymd(nay); o.max = ymd(xa);
+    })();
+  </script>
 </body>
 </html>
