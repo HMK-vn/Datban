@@ -244,13 +244,13 @@
         <!-- ĐỒNG HỒ ĐẾM NGƯỢC (HIỂN THỊ KHI CHỌN THỨ 6 & THỨ 7) -->
         <div id="boxDemGioDecor" style="display:none; margin-bottom: 16px; padding: 14px; border-radius: 8px; background-color: #fff3cd; border: 2px solid #ffeeba; text-align: center;">
           <div style="font-size: 13.5px; font-weight: bold; color: #856404; margin-bottom: 4px;">
-            ⏳ THỜI GIAN CÒN LẠI ĐỂ ĐẶT BÀN DECOR NHẬN TRƯỚC 18:30 [THỨ 6 / THỨ 7]
+            ⏳ THỜI GIAN CÒN LẠI ĐỂ ĐẶT BÀN DECOR NHẬN TRƯỚC <span class="mocTruoc">18:30</span> [THỨ 6 / THỨ 7]
           </div>
           <div id="dongHoTextDecor" style="font-size: 26px; font-weight: 800; color: #d9534f; letter-spacing: 2px;">
             00:00:00
           </div>
           <div style="font-size: 11.5px; color: #6c757d; margin-top: 4px;">
-            (Thứ 6 & Thứ 7 chỉ nhận khách đến trước 18:30 — từ 18:31 tự động khóa nhận tiệc)
+            (Thứ 6 & Thứ 7 chỉ nhận khách đến trước <span class="mocTruoc">18:30</span> — từ <span id="mocKhoa">18:31</span> tự động khóa nhận tiệc)
           </div>
         </div>
 
@@ -555,6 +555,13 @@
         if (k && k.decor) { KHOA_GIO = k.decor; rebuildHourMinSelectors(); onHourMinDecorChange(); }
       }).withFailureHandler(function() {}).layKhoaGio();
     }
+    // Mốc khóa decor Thứ 6/Thứ 7: khung khóa bắt đầu sớm hơn 18:30 thì theo khung khóa, không thì 18:31
+    function mocT67() {
+      const som = KHOA_GIO.bat && KHOA_GIO.tu <= "18:30";
+      const khoa = som ? KHOA_GIO.tu : "18:31", p = khoa.split(":").map(Number);
+      const gio = ["14", "15", "16", "17", "18"].filter(h => phutChoGio(h, true).length), cuoi = gio[gio.length - 1];
+      return { truoc: som ? KHOA_GIO.tu : "18:30", khoa: khoa, h: p[0], m: p[1], cuoi: cuoi ? cuoi + ":" + phutChoGio(cuoi, true).slice(-1)[0] : "18:30" };
+    }
     function phutChoGio(h, weekend) {
       const mins = ((weekend && h === "18") || (!weekend && h === "20")) ? ["00", "15", "30"] : ["00", "15", "30", "45"];
       return mins.filter(m => { const g = h + ":" + m; return !(KHOA_GIO.bat && g >= KHOA_GIO.tu && g <= KHOA_GIO.den); });
@@ -853,9 +860,12 @@
         }
 
         const MIN_START = 14 * 60;       // 14h00
-        const LOCK_MINUTES = 18 * 60 + 31; // 18h31
+        const moc = mocT67();
+        const LOCK_MINUTES = moc.h * 60 + moc.m;
+        document.querySelectorAll(".mocTruoc").forEach(function(el) { el.innerText = moc.truoc; });
+        document.getElementById("mocKhoa").innerText = moc.khoa;
         const isInvalidTimeRange = (selectedMinutes < MIN_START || selectedMinutes >= LOCK_MINUTES);
-        const cutoffSelectedDate = new Date(parts[0], parts[1] - 1, parts[2], 18, 31, 0);
+        const cutoffSelectedDate = new Date(parts[0], parts[1] - 1, parts[2], moc.h, moc.m, 0);
 
         function updateCountdown() {
           const now = new Date();
@@ -866,9 +876,9 @@
             if (boxDem) boxDem.style.display = "none";
             if (boxKhoa) boxKhoa.style.display = "block";
             if (isInvalidTimeRange && diff > 0) {
-              if (txtLyDo) txtLyDo.innerText = "Thứ 6 & Thứ 7 quán chỉ nhận đặt bàn Decor trong khung giờ từ 14h00 đến 18h30. Anh/chị vui lòng chọn lại giờ nhé ạ! 🧡";
+              if (txtLyDo) txtLyDo.innerText = "Thứ 6 & Thứ 7 quán chỉ nhận đặt bàn Decor trong khung giờ từ 14:00 đến " + moc.cuoi + ". Anh/chị vui lòng chọn lại giờ nhé ạ! 🧡";
             } else {
-              if (txtLyDo) txtLyDo.innerText = "Rất tiếc, đã quá 18h31 nên hệ thống đã khóa nhận đặt tiệc Decor cho ngày Thứ 6 / Thứ 7. Anh/chị vui lòng chọn một ngày khác giúp Túi nhé ạ! 🧡";
+              if (txtLyDo) txtLyDo.innerText = "Rất tiếc, đã quá " + moc.khoa + " nên hệ thống đã khóa nhận đặt tiệc Decor cho ngày Thứ 6 / Thứ 7. Anh/chị vui lòng chọn một ngày khác giúp Túi nhé ạ! 🧡";
             }
             capNhatKhoaForm();
             if (diff <= 0 && decorIntervalTimer) {
@@ -940,7 +950,7 @@
       onHourMinDecorChange();
       var lyDoKhoa = lyDoKhoaNgay();
       if (lyDoKhoa) { alert(lyDoKhoa + " Vui lòng chọn ngày khác!"); return; }
-      if (isTimeRuleLocked) { alert("Thứ 6 & Thứ 7 chỉ nhận đặt bàn Decor từ 14h00 đến 18h30. Vui lòng chọn lại giờ hoặc chọn ngày khác nhé ạ!"); return; }
+      if (isTimeRuleLocked) { alert("Thứ 6 & Thứ 7 chỉ nhận đặt bàn Decor từ 14:00 đến " + mocT67().cuoi + ". Vui lòng chọn lại giờ hoặc chọn ngày khác nhé ạ!"); return; }
 
       const fileInput = document.getElementById("billFileInput");
       if (!fileInput.files || !fileInput.files[0]) { alert("Vui lòng đính kèm ảnh bill chuyển khoản ngân hàng!"); return; }
