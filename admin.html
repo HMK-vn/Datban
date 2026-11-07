@@ -622,6 +622,14 @@
             <button class="btn btn-sm btn-outline-primary fw-bold" onclick="loadCalendarYearTab6()"><i class="fa-solid fa-rotate me-1"></i> Làm mới</button>
           </div>
         </div>
+        <!-- Khóa khung giờ đặt bàn trên web khách -->
+        <div class="mb-2 p-2 rounded-3 d-flex flex-wrap align-items-center gap-2 gap-md-3" style="background:#faf4ef;border:1px solid #ecdccf">
+          <b style="color:#864c2a">⏰ Khóa khung giờ đặt bàn (web khách)</b>
+          <span class="d-inline-flex flex-wrap align-items-center gap-1"><label class="d-inline-flex align-items-center gap-1 fw-bold mb-0 text-nowrap"><input type="checkbox" id="kgDecorBat" checked> 🎀 Bàn decor</label> từ <input type="time" step="900" id="kgDecorTu" class="form-control form-control-sm w-auto"> đến <input type="time" step="900" id="kgDecorDen" class="form-control form-control-sm w-auto"></span>
+          <span class="d-inline-flex flex-wrap align-items-center gap-1"><label class="d-inline-flex align-items-center gap-1 fw-bold mb-0 text-nowrap"><input type="checkbox" id="kgThuongBat" checked> 🍽️ Bàn thường</label> từ <input type="time" step="900" id="kgThuongTu" class="form-control form-control-sm w-auto"> đến <input type="time" step="900" id="kgThuongDen" class="form-control form-control-sm w-auto"></span>
+          <button class="btn btn-sm fw-bold text-white" style="background:#864c2a" onclick="luuKhoaGioAdmin()">💾 Lưu giờ khóa</button>
+          <small class="text-muted" id="kgTrangThai"></small>
+        </div>
         <!-- Giới hạn decor theo từng thứ -->
         <details class="mb-2 p-2 rounded-3 gh-box" style="background:#faf4ef;border:1px solid #ecdccf">
           <summary class="d-flex align-items-center flex-wrap gap-2" style="cursor:pointer;list-style:none">
@@ -788,7 +796,7 @@
   <script>
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
+    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
     // 🔔 Khung cài / thử thông báo Telegram (khung trên trang, không dùng hộp prompt vì vài trình duyệt chặn)
     function caiTelegram() {
       var k = document.getElementById("tgKhung");
@@ -1689,7 +1697,23 @@
       box.innerHTML = html;
     }
 
+    function veKhoaGioAdmin_(k) {
+      [["Decor", k.decor], ["Thuong", k.thuong]].forEach(function(x) {
+        document.getElementById("kg" + x[0] + "Bat").checked = x[1].bat;
+        document.getElementById("kg" + x[0] + "Tu").value = x[1].tu;
+        document.getElementById("kg" + x[0] + "Den").value = x[1].den;
+      });
+    }
+    function luuKhoaGioAdmin() {
+      function doc(t) { return { bat: document.getElementById("kg" + t + "Bat").checked, tu: document.getElementById("kg" + t + "Tu").value, den: document.getElementById("kg" + t + "Den").value }; }
+      var tt = document.getElementById("kgTrangThai");
+      tt.innerText = "Đang lưu...";
+      adminRun().withSuccessHandler(function(k) { veKhoaGioAdmin_(k); tt.innerText = "✅ Đã lưu"; })
+        .withFailureHandler(function(err) { tt.innerText = ""; alert("Chưa lưu được: " + (err && err.message || err)); })
+        .luuKhoaGioWeb({ decor: doc("Decor"), thuong: doc("Thuong") });
+    }
     function loadCalendarYearTab6() {
+      adminRun().withSuccessHandler(veKhoaGioAdmin_).layKhoaGio();
       var box = document.getElementById("calYearGridContainer");
       var year = parseInt(document.getElementById("calYearSelect").value, 10) || new Date().getFullYear();
       box.innerHTML = '<div class="col-12 text-center py-5 text-muted">Đang tải lịch Decor năm ' + year + '...</div>';

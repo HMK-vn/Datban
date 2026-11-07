@@ -245,6 +245,7 @@
                 <option value="19:30" style="color: #cf1322; font-weight: bold;">19:30 🔥</option>
                 <option value="20:00" style="color: #cf1322; font-weight: bold;">20:00 🔥</option>
               </select>
+              <small id="khoaGioHintT" class="text-danger fw-bold" style="font-size:10.5px; display:none; white-space:nowrap; text-align:right; margin-left:-220px; position:relative; z-index:1;"></small>
             </div>
           </div>
 
@@ -308,6 +309,26 @@
     // Tự động kiểm tra ngay khi mở trang
     checkRushHour();
 
+    // Khung giờ khóa cài ở tab 6 web quản trị; chưa tải xong thì dùng mức mặc định
+    var KHOA_GIO = { bat: true, tu: "18:00", den: "20:30" };
+    var OPT_GIO = [].slice.call(document.getElementById("selectGioVao").options);
+    function apDungKhoaGio() {
+      const sel = document.getElementById("selectGioVao"), hint = document.getElementById("khoaGioHintT"), truoc = sel.value;
+      const con = OPT_GIO.filter(function(o) { return !(KHOA_GIO.bat && o.value >= KHOA_GIO.tu && o.value <= KHOA_GIO.den); });
+      sel.innerHTML = "";
+      con.forEach(function(o) { sel.appendChild(o); });
+      const giuLai = con.some(function(o) { return o.value === truoc; });
+      const sat = con.filter(function(o) { return o.value < KHOA_GIO.tu; }).pop() || con[0];
+      if (giuLai) sel.value = truoc; else if (sat) sel.value = sat.value;
+      hint.style.display = KHOA_GIO.bat ? "block" : "none";
+      hint.innerText = "* Tạm khóa nhận khách " + KHOA_GIO.tu + "–" + KHOA_GIO.den;
+      checkRushHour();
+    }
+    apDungKhoaGio();
+    google.script.run.withSuccessHandler(function(k) {
+      if (k && k.thuong) { KHOA_GIO = k.thuong; apDungKhoaGio(); }
+    }).withFailureHandler(function() {}).layKhoaGio();
+
     function addDishRowT() {
       const tbody = document.getElementById("dishesBodyT");
       const tr = document.createElement("tr");
@@ -358,7 +379,7 @@
           msg.innerHTML = res.success === false ? "" : '<div class="d-flex align-items-center gap-3 text-start text-white p-3" style="background:linear-gradient(135deg,#b4703f,#c98a5b);border-radius:8px 8px 0 0"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src=\'https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png\'" style="width:58px;height:58px;width:min(58px,13vw);height:min(58px,13vw);border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.2);background:#fff"><div><div class="fw-bold text-nowrap" style="font-size:16px;font-size:min(16px,3.5vw);letter-spacing:.3px"><span style="display:inline-block;width:1.5em">🎉</span>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div><div class="text-nowrap" style="font-size:12.5px;font-size:min(12.5px,3.3vw);opacity:.85;padding-left:min(24px,5.25vw);margin-top:2px">Túi Nướng Lavender · Đặt bàn ăn tiêu chuẩn</div></div></div><div class="p-3">' + document.getElementById("tplThanhCong").innerHTML + '</div>';
           if (res.success === false) { msg.className = "alert alert-danger mt-3 text-center"; msg.innerText = res.message; }
           msg.style.display = "block";
-          form.reset();
+          if (res.success !== false) { form.reset(); apDungKhoaGio(); }
           btn.disabled = false;
           btn.innerText = "GỬI YÊU CẦU ĐẶT BÀN";
           checkRushHour();

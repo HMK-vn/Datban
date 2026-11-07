@@ -548,20 +548,38 @@
       return (day === 5 || day === 6);
     }
 
+    // Khung giờ khóa cài ở tab 6 web quản trị; chưa tải xong thì dùng mức mặc định
+    var KHOA_GIO = { bat: true, tu: "18:00", den: "20:30" };
+    function taiKhoaGio() {
+      google.script.run.withSuccessHandler(function(k) {
+        if (k && k.decor) { KHOA_GIO = k.decor; rebuildHourMinSelectors(); onHourMinDecorChange(); }
+      }).withFailureHandler(function() {}).layKhoaGio();
+    }
+    function phutChoGio(h, weekend) {
+      const mins = ((weekend && h === "18") || (!weekend && h === "20")) ? ["00", "15", "30"] : ["00", "15", "30", "45"];
+      return mins.filter(m => { const g = h + ":" + m; return !(KHOA_GIO.bat && g >= KHOA_GIO.tu && g <= KHOA_GIO.den); });
+    }
+
     function rebuildHourMinSelectors() {
       const hourSel = document.getElementById("selectHourDecor");
       const minSel = document.getElementById("selectMinDecor");
       const hint = document.getElementById("weekendTimeHint");
       const weekend = isWeekendFriSat();
-      if (hint) hint.style.display = weekend ? "block" : "none";
 
       const prevH = hourSel.value || (weekend ? "17" : "18");
       const prevM = minSel.value || "00";
 
       // Thứ 6 & Thứ 7 chỉ từ 14h (2h chiều) đến 18h; Ngày thường từ 11h đến 20h
-      const allowedHours = weekend ? ["14", "15", "16", "17", "18"] : ["11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
+      const allowedHours = (weekend ? ["14", "15", "16", "17", "18"] : ["11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]).filter(h => phutChoGio(h, weekend).length);
       hourSel.innerHTML = allowedHours.map(h => `<option value="${h}">${h}</option>`).join("");
-      hourSel.value = allowedHours.includes(prevH) ? prevH : (weekend ? "18" : "18");
+      hourSel.value = allowedHours.includes(prevH) ? prevH : (allowedHours.includes("18") ? "18" : allowedHours[allowedHours.length - 1] || "");
+      if (hint) {
+        const dau = allowedHours[0], cuoi = allowedHours[allowedHours.length - 1];
+        hint.style.display = (weekend || KHOA_GIO.bat) ? "block" : "none";
+        hint.innerText = !dau ? "* Ngày này tạm khóa nhận khách" : weekend
+          ? "* T6 & T7: Chỉ nhận từ " + dau + ":" + phutChoGio(dau, true)[0] + " đến " + cuoi + ":" + phutChoGio(cuoi, true).slice(-1)[0]
+          : "* Tạm khóa nhận khách " + KHOA_GIO.tu + "–" + KHOA_GIO.den;
+      }
 
       syncMinutesForSelectedHour(prevM);
     }
@@ -569,23 +587,15 @@
     function syncMinutesForSelectedHour(preferredMin) {
       const hourSel = document.getElementById("selectHourDecor");
       const minSel = document.getElementById("selectMinDecor");
-      const h = parseInt(hourSel.value, 10);
-      const weekend = isWeekendFriSat();
-
-      let allowedMins = ["00", "15", "30", "45"];
-      // Nếu là Thứ 6/Thứ 7 và đang ở giờ 18 -> CHỈ CHO PHÉP ĐẾN 30 PHÚT (18:30)
-      if (weekend && h === 18) {
-        allowedMins = ["00", "15", "30"];
-      } else if (!weekend && h === 20) {
-        allowedMins = ["00", "15", "30"];
-      }
+      // Thứ 6/Thứ 7 giờ 18 và ngày thường giờ 20 chỉ đến 30 phút; bỏ các phút nằm trong khung khóa
+      const allowedMins = phutChoGio(hourSel.value, isWeekendFriSat());
 
       const curM = preferredMin || minSel.value || "00";
       minSel.innerHTML = allowedMins.map(m => `<option value="${m}">${m}</option>`).join("");
       // Nếu khách chọn phút 45 trước rồi mới đổi sang 18h -> Tự động ép về 30p!
       minSel.value = allowedMins.includes(curM) ? curM : allowedMins[allowedMins.length - 1];
 
-      document.getElementById("selectGioDecor").value = `${hourSel.value}:${minSel.value}`;
+      document.getElementById("selectGioDecor").value = hourSel.value ? `${hourSel.value}:${minSel.value}` : "";
     }
 
     function onHourMinDecorChange(source) {
@@ -1015,6 +1025,7 @@
       updateDepositCalculation();
       taiCaiDatCoc();
       rebuildHourMinSelectors();
+      taiKhoaGio();
       onDateChanged(document.getElementById("inputNgay").value);
     });
   </script>
