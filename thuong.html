@@ -252,6 +252,8 @@
             </div>
           </div>
 
+          <div id="ngayKhoaT" class="rush-hour-box" style="display:none; padding:8px 12px; color:#b4231b; font-size:13px; font-weight:600">🔒 Ngày bạn chọn Túi không nhận khách. Vui lòng chọn ngày khác!</div>
+
           <!-- THÔNG BÁO GIỜ CAO ĐIỂM (18h30-20h00) -->
           <div id="rushHourNotice" class="rush-hour-box" style="display: block; padding: 8px 12px;">
             <div class="alert-cao-diem" style="font-size:13px;font-weight:600;line-height:1.45;color:#b4231b;text-align:left"><span class="text-nowrap">⚠️ Giờ cao điểm: nếu chưa có bàn ngay,</span> <span class="text-nowrap">mong Quý khách chờ Túi 10–15 phút 🧡</span></div>
@@ -313,7 +315,14 @@
     checkRushHour();
 
     // Khung giờ khóa cài ở tab 6 web quản trị; chưa tải xong thì dùng mức mặc định
-    var KHOA_GIO = { bat: true, tu: "18:00", den: "22:30" };
+    var KHOA_GIO = { bat: true, tu: "18:00", den: "22:30" }, NGAY_KHOA = [];
+    function kiemNgayKhoa() {
+      const khoa = NGAY_KHOA.indexOf(document.getElementById("txtNgayT").value) !== -1, btn = document.getElementById("btnSubmitT");
+      document.getElementById("ngayKhoaT").style.display = khoa ? "block" : "none";
+      btn.disabled = khoa;
+      btn.innerText = khoa ? "NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : "GỬI YÊU CẦU ĐẶT BÀN";
+    }
+    document.getElementById("txtNgayT").addEventListener("change", kiemNgayKhoa);
     var OPT_GIO = [].slice.call(document.getElementById("selectGioVao").options);
     function apDungKhoaGio() {
       const sel = document.getElementById("selectGioVao"), hint = document.getElementById("khoaGioHintT"), truoc = sel.value;
@@ -329,7 +338,7 @@
     }
     apDungKhoaGio();
     google.script.run.withSuccessHandler(function(k) {
-      if (k && k.thuong) { KHOA_GIO = k.thuong; apDungKhoaGio(); }
+      if (k && k.thuong) { KHOA_GIO = k.thuong; NGAY_KHOA = k.ngayKhoa || []; apDungKhoaGio(); kiemNgayKhoa(); }
     }).withFailureHandler(function() {}).layKhoaGio();
 
     function addDishRowT() {

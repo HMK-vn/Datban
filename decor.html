@@ -549,10 +549,10 @@
     }
 
     // Khung giờ khóa cài ở tab 6 web quản trị; chưa tải xong thì dùng mức mặc định
-    var KHOA_GIO = { bat: true, tu: "18:00", den: "20:30" };
+    var KHOA_GIO = { bat: true, tu: "18:00", den: "20:30" }, NGAY_KHOA = [];
     function taiKhoaGio() {
       google.script.run.withSuccessHandler(function(k) {
-        if (k && k.decor) { KHOA_GIO = k.decor; rebuildHourMinSelectors(); onHourMinDecorChange(); }
+        if (k && k.decor) { KHOA_GIO = k.decor; NGAY_KHOA = k.ngayKhoa || []; rebuildHourMinSelectors(); onHourMinDecorChange(); capNhatKhoaForm(); }
       }).withFailureHandler(function() {}).layKhoaGio();
     }
     // Mốc khóa decor Thứ 6/Thứ 7: khung khóa bắt đầu sớm hơn 18:30 thì theo khung khóa, không thì 18:31
@@ -753,6 +753,7 @@
     // ===== Chặn hoàn toàn khi ngày khóa / đủ giới hạn: khóa mọi ô (trừ ngày), ẩn QR + upload cọc =====
     var _ghNgay = null, _dangKiemNgay = false, _ngayDaKiem = "";
     function lyDoKhoaNgay() {
+      if (NGAY_KHOA.indexOf(document.getElementById("inputNgay").value) !== -1) return "Ngày bạn chọn Túi không nhận khách.";
       if (isCurrentDateLocked) return "Ngày bạn chọn đã khóa nhận đơn decor (FULL DECOR).";
       if (!_ghNgay || !_ghNgay.cauHinh) return "";
       var c = _ghNgay.cauHinh, da = _ghNgay.daDat || {}, k = parseInt(document.getElementById("txtSoKhach").value, 10) || 0, lon = k >= 6;
@@ -770,6 +771,7 @@
       var w = document.getElementById("lockWarning");
       w.style.display = khoa ? "block" : "none";
       if (khoa) document.getElementById("lockWarningText").textContent = lyDo + " Vui lòng chọn ngày khác!";
+      document.getElementById("lockWarningTitle").textContent = NGAY_KHOA.indexOf(ngay) !== -1 ? "🔒 NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : "🔒 NGÀY NÀY ĐÃ ĐẦY (FULL DECOR)";
       var n = document.getElementById("dateCheckNotice");
       if (n && ngay) n.innerHTML = khoa ? "<span class='text-danger fw-bold'>❌<span class='d-none d-sm-inline'> Hết nhận</span></span>" : "<span class='text-success fw-bold'>🟢<span class='d-none d-sm-inline'> Mở nhận</span></span>";
       // Khóa mọi ô nhập trừ ô ngày (và số khách để khách thử loại bàn khác khi chỉ hết 1 loại)
@@ -816,7 +818,7 @@
       if (!btn) return;
       if (isCurrentDateLocked || lyDoKhoaNgay()) {
         btn.disabled = true;
-        btn.innerText = "NGÀY NÀY ĐÃ ĐẦY - VUI LÒNG CHỌN NGÀY KHÁC";
+        btn.innerText = NGAY_KHOA.indexOf(document.getElementById("inputNgay").value) !== -1 ? "NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : "NGÀY NÀY ĐÃ ĐẦY - VUI LÒNG CHỌN NGÀY KHÁC";
       } else if (isTimeRuleLocked) {
         btn.disabled = true;
         btn.innerText = "ĐÃ KHÓA ĐẶT DECOR (SAU 18H31 THỨ 6 & THỨ 7)";

@@ -629,6 +629,12 @@
           <span class="d-inline-flex flex-wrap align-items-center gap-1"><label class="d-inline-flex align-items-center gap-1 fw-bold mb-0 text-nowrap"><input type="checkbox" id="kgThuongBat" checked> 🍽️ Bàn thường</label> từ <input type="time" step="900" id="kgThuongTu" class="form-control form-control-sm w-auto"> đến <input type="time" step="900" id="kgThuongDen" class="form-control form-control-sm w-auto"></span>
           <button class="btn btn-sm fw-bold text-white" style="background:#864c2a" onclick="luuKhoaGioAdmin()">💾 Lưu giờ khóa</button>
           <small class="text-muted" id="kgTrangThai"></small>
+          <div class="w-100 d-flex flex-wrap align-items-center gap-1 pt-2 border-top">
+            <b style="color:#864c2a">🚫 Ngày không nhận khách (cả bàn decor và bàn thường)</b>
+            <input type="date" id="kgNgayMoi" class="form-control form-control-sm w-auto">
+            <button class="btn btn-sm fw-bold" style="background:#f3e3d6;color:#864c2a" onclick="themNgayKhoa()">➕ Thêm ngày</button>
+            <div class="w-100 d-flex flex-wrap gap-1" id="kgNgayList"></div>
+          </div>
         </div>
         <!-- Giới hạn decor theo từng thứ -->
         <details class="mb-2 p-2 rounded-3 gh-box" style="background:#faf4ef;border:1px solid #ecdccf">
@@ -796,7 +802,7 @@
   <script>
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
+    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
     // 🔔 Khung cài / thử thông báo Telegram (khung trên trang, không dùng hộp prompt vì vài trình duyệt chặn)
     function caiTelegram() {
       var k = document.getElementById("tgKhung");
@@ -1697,7 +1703,33 @@
       box.innerHTML = html;
     }
 
+    var _ngayKhoa = [];
+    function veNgayKhoa_() {
+      document.getElementById("kgNgayList").innerHTML = _ngayKhoa.map(function(n) {
+        return '<span class="badge fw-bold d-inline-flex align-items-center gap-1" style="background:#fbe9e7;color:#b4231b;font-size:13px">' + n.split("-").reverse().join("/") +
+          ' <a href="#" class="text-decoration-none" style="color:#b4231b" title="Mở lại ngày này" onclick="boNgayKhoa(\'' + n + '\');return false">✕</a></span>';
+      }).join("") || '<small class="text-muted">Chưa có ngày nào</small>';
+    }
+    function luuNgayKhoa_(ds) {
+      var tt = document.getElementById("kgTrangThai");
+      tt.innerText = "Đang lưu...";
+      adminRun().withSuccessHandler(function(k) { veKhoaGioAdmin_(k); tt.innerText = "✅ Đã lưu"; })
+        .withFailureHandler(function(err) { tt.innerText = ""; alert("Chưa lưu được: " + (err && err.message || err)); })
+        .luuNgayKhoaWeb(ds);
+    }
+    function themNgayKhoa() {
+      var o = document.getElementById("kgNgayMoi");
+      if (!o.value) { alert("Vui lòng chọn ngày."); return; }
+      if (_ngayKhoa.indexOf(o.value) === -1) luuNgayKhoa_(_ngayKhoa.concat([o.value]));
+      o.value = "";
+    }
+    function boNgayKhoa(n) {
+      if (!confirm("Mở lại nhận khách ngày " + n.split("-").reverse().join("/") + "?")) return;
+      luuNgayKhoa_(_ngayKhoa.filter(function(x) { return x !== n; }));
+    }
     function veKhoaGioAdmin_(k) {
+      _ngayKhoa = k.ngayKhoa || [];
+      veNgayKhoa_();
       [["Decor", k.decor], ["Thuong", k.thuong]].forEach(function(x) {
         document.getElementById("kg" + x[0] + "Bat").checked = x[1].bat;
         document.getElementById("kg" + x[0] + "Tu").value = x[1].tu;
