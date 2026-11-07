@@ -244,6 +244,9 @@
                 <option value="19:00" style="color: #cf1322; font-weight: bold;">19:00 🔥</option>
                 <option value="19:30" style="color: #cf1322; font-weight: bold;">19:30 🔥</option>
                 <option value="20:00" style="color: #cf1322; font-weight: bold;">20:00 🔥</option>
+                <option value="20:30">20:30</option>
+                <option value="21:00">21:00</option>
+                <option value="21:30">21:30</option>
               </select>
               <small id="khoaGioHintT" class="text-danger fw-bold" style="font-size:10.5px; display:none; white-space:nowrap; text-align:right; margin-left:-220px; position:relative; z-index:1;"></small>
             </div>
@@ -310,7 +313,7 @@
     checkRushHour();
 
     // Khung giờ khóa cài ở tab 6 web quản trị; chưa tải xong thì dùng mức mặc định
-    var KHOA_GIO = { bat: true, tu: "18:00", den: "20:30" };
+    var KHOA_GIO = { bat: true, tu: "18:00", den: "22:30" };
     var OPT_GIO = [].slice.call(document.getElementById("selectGioVao").options);
     function apDungKhoaGio() {
       const sel = document.getElementById("selectGioVao"), hint = document.getElementById("khoaGioHintT"), truoc = sel.value;

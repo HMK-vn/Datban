@@ -256,8 +256,8 @@
 
         <!-- CẢNH BÁO KHÓA DECOR SAU 18H31 THỨ 6 & THỨ 7 -->
         <div id="boxKhoaDecorSau18h31" style="display:none; margin-bottom: 16px; padding: 14px; border-radius: 8px; background-color: #ffebee; border: 1.5px solid #ef5350; color: #c62828; font-weight: bold; text-align: center;">
-          🔒 ĐÃ QUÁ 18H31 (THỨ 6 & THỨ 7):<br>
-          <span id="txtLyDoKhoa18h31" style="font-weight: 600; font-size: 13.5px;">
+          🔒 ĐÃ QUÁ <span id="mocKhoaTieuDe">18:31</span> (THỨ 6 & THỨ 7):<br>
+          <span id="txtLyDoKhoa18h31" class="d-block" style="font-weight: 600; font-size: 13px; text-wrap: balance;">
             Rất tiếc, hệ thống khóa nhận đặt tiệc Decor từ sau 18h31 vào Thứ 6 và Thứ 7 hàng tuần. Anh/chị vui lòng chọn giờ đón từ 18h30 trở về trước hoặc chọn ngày khác giúp Túi nhé ạ! 🧡
           </span>
         </div>
@@ -322,7 +322,7 @@
               <div id="emailSuggestDecor" class="email-suggest-box" style="display:none;"></div>
             </div>
             <div class="col-md-4 col-6 mb-3">
-              <label class="form-label fw-bold text-nowrap">Ngày đặt bàn * <small id="dateCheckNotice" class="fw-normal" style="font-size:11px;"></small></label>
+              <label class="form-label fw-bold d-flex align-items-baseline gap-1" style="white-space:nowrap !important;overflow:visible">Ngày đặt bàn * <small id="dateCheckNotice" class="fw-normal" style="font-size:10.5px;white-space:nowrap;letter-spacing:-.1px"></small></label>
               <input type="date" id="inputNgay" name="ngay" class="form-control" required onchange="onDateChanged(this.value)">
             </div>
             <div class="col-md-3 col-6 mb-3">
@@ -563,7 +563,7 @@
       return { truoc: som ? KHOA_GIO.tu : "18:30", khoa: khoa, h: p[0], m: p[1], cuoi: cuoi ? cuoi + ":" + phutChoGio(cuoi, true).slice(-1)[0] : "18:30" };
     }
     function phutChoGio(h, weekend) {
-      const mins = ((weekend && h === "18") || (!weekend && h === "20")) ? ["00", "15", "30"] : ["00", "15", "30", "45"];
+      const mins = ((weekend && h === "18") || (!weekend && h === "21")) ? ["00", "15", "30"] : ["00", "15", "30", "45"];
       return mins.filter(m => { const g = h + ":" + m; return !(KHOA_GIO.bat && g >= KHOA_GIO.tu && g <= KHOA_GIO.den); });
     }
 
@@ -577,9 +577,9 @@
       const prevM = minSel.value || "00";
 
       // Thứ 6 & Thứ 7 chỉ từ 14h (2h chiều) đến 18h; Ngày thường từ 11h đến 20h
-      const allowedHours = (weekend ? ["14", "15", "16", "17", "18"] : ["11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]).filter(h => phutChoGio(h, weekend).length);
+      const allowedHours = (weekend ? ["14", "15", "16", "17", "18"] : ["11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"]).filter(h => phutChoGio(h, weekend).length);
       hourSel.innerHTML = allowedHours.map(h => `<option value="${h}">${h}</option>`).join("");
-      hourSel.value = allowedHours.includes(prevH) ? prevH : (allowedHours.includes("18") ? "18" : allowedHours[allowedHours.length - 1] || "");
+      hourSel.value = allowedHours.includes(prevH) ? prevH : (allowedHours.filter(h => h <= "18").pop() || allowedHours[0] || "");
       if (hint) {
         const dau = allowedHours[0], cuoi = allowedHours[allowedHours.length - 1];
         hint.style.display = (weekend || KHOA_GIO.bat) ? "block" : "none";
@@ -594,7 +594,7 @@
     function syncMinutesForSelectedHour(preferredMin) {
       const hourSel = document.getElementById("selectHourDecor");
       const minSel = document.getElementById("selectMinDecor");
-      // Thứ 6/Thứ 7 giờ 18 và ngày thường giờ 20 chỉ đến 30 phút; bỏ các phút nằm trong khung khóa
+      // Thứ 6/Thứ 7 giờ 18 và ngày thường giờ 21 chỉ đến 30 phút; bỏ các phút nằm trong khung khóa
       const allowedMins = phutChoGio(hourSel.value, isWeekendFriSat());
 
       const curM = preferredMin || minSel.value || "00";
@@ -864,6 +864,7 @@
         const LOCK_MINUTES = moc.h * 60 + moc.m;
         document.querySelectorAll(".mocTruoc").forEach(function(el) { el.innerText = moc.truoc; });
         document.getElementById("mocKhoa").innerText = moc.khoa;
+        document.getElementById("mocKhoaTieuDe").innerText = moc.khoa;
         const isInvalidTimeRange = (selectedMinutes < MIN_START || selectedMinutes >= LOCK_MINUTES);
         const cutoffSelectedDate = new Date(parts[0], parts[1] - 1, parts[2], moc.h, moc.m, 0);
 
@@ -878,7 +879,7 @@
             if (isInvalidTimeRange && diff > 0) {
               if (txtLyDo) txtLyDo.innerText = "Thứ 6 & Thứ 7 quán chỉ nhận đặt bàn Decor trong khung giờ từ 14:00 đến " + moc.cuoi + ". Anh/chị vui lòng chọn lại giờ nhé ạ! 🧡";
             } else {
-              if (txtLyDo) txtLyDo.innerText = "Rất tiếc, đã quá " + moc.khoa + " nên hệ thống đã khóa nhận đặt tiệc Decor cho ngày Thứ 6 / Thứ 7. Anh/chị vui lòng chọn một ngày khác giúp Túi nhé ạ! 🧡";
+              if (txtLyDo) txtLyDo.innerHTML = '<span class="d-block">Rất tiếc, đã quá ' + moc.khoa + ' nên hệ thống đã khóa nhận đặt tiệc Decor cho ngày Thứ 6 / Thứ 7.</span><span class="d-block">Anh/chị vui lòng chọn một ngày khác giúp Túi nhé ạ! 🧡</span>';
             }
             capNhatKhoaForm();
             if (diff <= 0 && decorIntervalTimer) {
