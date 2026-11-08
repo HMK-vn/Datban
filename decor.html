@@ -7,8 +7,8 @@
 
   <link rel="manifest" href="app-khach.webmanifest">
   <link rel="apple-touch-icon" href="app_icon/logo_khach_180.png?v=20261103">
-  <link rel="icon" type="image/png" sizes="192x192" href="app_icon/logo_khach_192.png?v=20261103">
-  <link rel="shortcut icon" type="image/png" href="app_icon/logo_khach_192.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="256x256" href="app_icon/be_cho_256.png?v=1">
+  <link rel="shortcut icon" type="image/png" href="app_icon/be_cho_256.png?v=1">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -197,6 +197,34 @@
       padding-left: .3rem !important; padding-right: .3rem !important; text-align: center; text-align-last: center; font-size: .9rem !important; font-weight: 600; cursor: pointer; }
     .input-group > #selectHourDecor, .input-group > #selectMinDecor { min-width: 0; }
 </style>
+  <style>
+    /* Ngày full / khoá: ẩn các phần không cần (chỉ còn băng đỏ + ô chọn ngày) */
+    #bookingForm.ngay-day .an-khi-day, #bookingForm.ngay-day-han .an-khi-day-han { display: none !important; }
+  </style>
+  <style>
+    /* Popup lịch tháng: số bàn decor còn nhận từng ngày */
+    .lich-phu { position: absolute; inset: 0; width: 100%; background: transparent; border: 0; cursor: pointer; z-index: 2; }
+    .lich-nen { position: fixed; inset: 0; z-index: 4000; background: rgba(40,25,15,.45); display: flex; align-items: center; justify-content: center; padding: 12px; }
+    .lich-hop { background: #fff; border-radius: 16px; width: min(420px, 100%); max-height: 94vh; overflow: auto; padding: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+    .lich-dau { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .lich-dau b { flex: 1; text-align: center; color: #864c2a; font-size: 17px; }
+    .lich-dau button { border: 1px solid #e3d3c6; background: #fff; border-radius: 10px; width: 36px; height: 34px; font-size: 18px; line-height: 1; color: #864c2a; }
+    .lich-dau .lich-dong { border: 0; font-size: 20px; color: #888; }
+    .lich-tom { text-align: center; font-size: 13px; color: #6b5a4c; margin-bottom: 8px; min-height: 18px; }
+    .lich-luoi { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+    .lich-luoi .th { text-align: center; font-size: 11px; font-weight: 700; color: #9a8a7e; padding: 2px 0; }
+    .lich-o { border-radius: 10px; padding: 4px 1px; text-align: center; min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border: 1px solid transparent; }
+    .lich-o .so { font-weight: 800; font-size: 14px; color: #3d2a1e; }
+    .lich-o .con { font-size: 10.5px; font-weight: 700; line-height: 1.1; }
+    .lich-o.mo { background: #e8f7ee; cursor: pointer; } .lich-o.mo .con { color: #1f7a45; }
+    .lich-o.it { background: #fff3e0; cursor: pointer; } .lich-o.it .con { color: #b45309; }
+    .lich-o.day { background: #fdecea; } .lich-o.day .con { color: #b42318; } .lich-o.day .so { color: #b98a85; }
+    .lich-o.nghi { background: #f1f1f1; } .lich-o.nghi .con { color: #888; } .lich-o.nghi .so { color: #aaa; }
+    .lich-o.qua { opacity: .35; }
+    .lich-o.chon { border-color: #864c2a; box-shadow: inset 0 0 0 1px #864c2a; }
+    .lich-o.mo:hover, .lich-o.it:hover { filter: brightness(.96); }
+    .lich-chu { margin-top: 8px; font-size: 11.5px; color: #7b6f66; text-align: center; }
+  </style>
 </head>
 <body class="py-4">
   <div class="container" style="max-width: 680px;">
@@ -264,7 +292,7 @@
 
         <form id="bookingForm" onsubmit="handleFormSubmit(event)">
           <!-- KHÁCH HÀNG & SĐT -->
-          <div class="row">
+          <div class="row an-khi-day">
             <div class="col-md-5 mb-3">
               <label class="form-label fw-bold">Khách hàng *</label>
               <input type="text" name="hoTen" class="form-control" required placeholder="Nguyễn Văn A">
@@ -284,7 +312,7 @@
             </div>
           </div>
           <!-- ĐỘ TUỔI, TỈNH THÀNH -->
-          <div class="row">
+          <div class="row an-khi-day">
             <div class="col-md-5 col-5 mb-3">
               <label class="form-label fw-bold">Độ tuổi *</label>
               <select name="doTuoi" class="form-select" required>
@@ -300,15 +328,42 @@
               <label class="form-label fw-bold text-nowrap"><span class="d-none d-sm-inline">Tỉnh / Thành phố đang sinh sống</span><span class="d-sm-none">Tỉnh / TP sinh sống</span> *</label>
               <select name="tinhThanh" class="form-select" required>
                 <option value="" disabled selected>Chọn</option>
-                <option value="Lâm Đồng (Đà Lạt)">Lâm Đồng (Đà Lạt)</option>
-                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                <!-- 34 tỉnh/thành sau sáp nhập (từ 01/07/2025); trong ngoặc là tỉnh cũ đã gộp -->
+                <option value="Lâm Đồng (Đà Lạt)">Lâm Đồng (Đà Lạt, Đắk Nông, Bình Thuận)</option>
+                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh (Bình Dương, Bà Rịa - Vũng Tàu)</option>
                 <option value="Hà Nội">Hà Nội</option>
-                <option value="Đà Nẵng">Đà Nẵng</option>
-                <option value="Khánh Hòa">Khánh Hòa</option>
-                <option value="Đồng Nai">Đồng Nai</option>
-                <option value="Bình Dương">Bình Dương</option>
-                <option value="Cần Thơ">Cần Thơ</option>
-                <option value="Khác">Tỉnh khác...</option>
+                <option value="Đà Nẵng">Đà Nẵng (Quảng Nam)</option>
+                <option value="Khánh Hòa">Khánh Hòa (Ninh Thuận)</option>
+                <option value="Đồng Nai">Đồng Nai (Bình Phước)</option>
+                <option value="Cần Thơ">Cần Thơ (Sóc Trăng, Hậu Giang)</option>
+                <option value="An Giang">An Giang (Kiên Giang)</option>
+                <option value="Bắc Ninh">Bắc Ninh (Bắc Giang)</option>
+                <option value="Cà Mau">Cà Mau (Bạc Liêu)</option>
+                <option value="Cao Bằng">Cao Bằng</option>
+                <option value="Đắk Lắk">Đắk Lắk (Phú Yên)</option>
+                <option value="Điện Biên">Điện Biên</option>
+                <option value="Đồng Tháp">Đồng Tháp (Tiền Giang)</option>
+                <option value="Gia Lai">Gia Lai (Bình Định)</option>
+                <option value="Hà Tĩnh">Hà Tĩnh</option>
+                <option value="Hải Phòng">Hải Phòng (Hải Dương)</option>
+                <option value="Huế">Huế</option>
+                <option value="Hưng Yên">Hưng Yên (Thái Bình)</option>
+                <option value="Lai Châu">Lai Châu</option>
+                <option value="Lạng Sơn">Lạng Sơn</option>
+                <option value="Lào Cai">Lào Cai (Yên Bái)</option>
+                <option value="Nghệ An">Nghệ An</option>
+                <option value="Ninh Bình">Ninh Bình (Hà Nam, Nam Định)</option>
+                <option value="Phú Thọ">Phú Thọ (Vĩnh Phúc, Hòa Bình)</option>
+                <option value="Quảng Ngãi">Quảng Ngãi (Kon Tum)</option>
+                <option value="Quảng Ninh">Quảng Ninh</option>
+                <option value="Quảng Trị">Quảng Trị (Quảng Bình)</option>
+                <option value="Sơn La">Sơn La</option>
+                <option value="Tây Ninh">Tây Ninh (Long An)</option>
+                <option value="Thái Nguyên">Thái Nguyên (Bắc Kạn)</option>
+                <option value="Thanh Hóa">Thanh Hóa</option>
+                <option value="Tuyên Quang">Tuyên Quang (Hà Giang)</option>
+                <option value="Vĩnh Long">Vĩnh Long (Bến Tre, Trà Vinh)</option>
+                <option value="Khác">Nước ngoài / khác...</option>
               </select>
             </div>
           </div>
@@ -316,14 +371,17 @@
 
           <!-- NGÀY TIỆC, GIỜ ĐÓN (CHỐNG NHẬP PHÚT TRƯỚC GIỜ SAU), SỐ KHÁCH -->
           <div class="row">
-            <div class="col-md-5 mb-3 position-relative">
+            <div class="col-md-5 mb-3 position-relative an-khi-day">
               <label class="form-label fw-bold">Email <span class="fw-normal text-muted" style="font-size:11px">(không bắt buộc)</span></label>
               <input type="email" id="emailInputDecor" name="email" class="form-control" autocomplete="off" placeholder="tui@gmail.com" oninput="handleEmailInput(this, 'emailSuggestDecor')">
               <div id="emailSuggestDecor" class="email-suggest-box" style="display:none;"></div>
             </div>
             <div class="col-md-4 col-6 mb-3">
               <label class="form-label fw-bold d-flex align-items-baseline gap-1" style="white-space:nowrap !important;overflow:visible">Ngày đặt bàn * <small id="dateCheckNotice" class="fw-normal" style="font-size:10.5px;white-space:nowrap;letter-spacing:-.1px"></small></label>
-              <input type="date" id="inputNgay" name="ngay" class="form-control" required onchange="onDateChanged(this.value)">
+              <div class="position-relative">
+                <input type="date" id="inputNgay" name="ngay" class="form-control" required onchange="onDateChanged(this.value)">
+                <button type="button" class="lich-phu" onclick="moLichPopup()" aria-label="Chọn ngày đặt bàn (xem số bàn còn nhận)" title="Bấm để xem số bàn còn nhận trong tháng"></button>
+              </div>
             </div>
             <div class="col-md-3 col-6 mb-3">
               <label class="form-label fw-bold">Giờ đến *</label>
@@ -338,7 +396,7 @@
           </div>
 
           <!-- STICKER CÓ TRẺ EM -->
-          <div class="p-3 mb-3 bg-light rounded border d-flex flex-wrap align-items-center gap-3">
+          <div class="p-3 mb-3 bg-light rounded border d-flex flex-wrap align-items-center gap-3 an-khi-day-han">
             <div class="d-flex align-items-center gap-2">
               <label class="fw-bold mb-0 text-nowrap" for="txtSoKhach">Số khách *</label>
               <input type="number" id="txtSoKhach" name="soKhach" min="1" class="form-control" style="width:88px" required placeholder="2" value="4" oninput="updateDepositCalculation()">
@@ -366,7 +424,7 @@
           </div>
 
           <!-- SỐ TIỀN CỌC TỰ ĐỘNG -->
-          <div class="deposit-badge mb-3">
+          <div class="deposit-badge mb-3 an-khi-day">
             <div class="d-flex justify-content-between align-items-center">
               <span class="fw-bold" style="color:#82431e;">Số tiền cọc tự động nhận diện:</span>
               <span id="depositDisplay" class="fs-5 fw-bold text-danger">300.000 VNĐ</span>
@@ -381,7 +439,7 @@
           </div>
 
           <!-- NÚT GẠT XUẤT VAT + PHƯƠNG THỨC HOÀN CỌC (chỉ hiện khi chọn xuất VAT) -->
-          <div class="p-3 mb-3 bg-light rounded border">
+          <div class="p-3 mb-3 bg-light rounded border an-khi-day">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
               <div class="d-flex align-items-center gap-2">
                 <label class="form-label fw-bold mb-0" style="color:#934c22;">🧾 XUẤT VAT</label>
@@ -420,7 +478,7 @@
             </div>
           </div>
           <!-- GHI CHÚ THÊM -->
-          <div class="mb-3">
+          <div class="mb-3 an-khi-day">
             <div class="form-check form-switch mb-1">
               <input class="form-check-input" type="checkbox" id="coGhiChu" onchange="var t=document.getElementById('oGhiChu');t.style.display=this.checked?'block':'none';if(this.checked)t.focus();else t.value='';">
               <label class="form-check-label fw-bold" for="coGhiChu">📝 Ghi chú thêm</label>
@@ -458,7 +516,7 @@
           </div>
 
           <!-- LƯU Ý CAO ĐIỂM -->
-          <div class="alert alert-warning py-2 px-3 small mb-3">
+          <div class="alert alert-warning py-2 px-3 small mb-3 an-khi-day">
             ⚠️ <b>Lưu ý:</b> Đơn chỉ thành công khi tra cứu báo <b>"Đã xác nhận"</b>.<br>Giờ cao điểm nếu hết bàn/mẫu decor, <b>Túi xin hoàn đủ cọc</b> cho Quý khách ạ.
           </div>
 
@@ -552,7 +610,15 @@
     }
 
     // Khung giờ khóa cài ở tab 6 web quản trị; chưa tải xong thì dùng mức mặc định
-    var KHOA_GIO = { bat: true, tu: "18:00", den: "20:30" }, NGAY_KHOA = [];
+    var KHOA_GIO = { bat: true, tu: "18:00", den: "20:30", thu: [5, 6] }, NGAY_KHOA = [];
+    // Khung khoá chỉ áp dụng cho các thứ chọn ở tab Lịch decor (mặc định T6, T7); chưa chọn ngày thì chưa khoá
+    function khoaGioHomChon_() {
+      if (!KHOA_GIO.bat) return false;
+      var v = (document.getElementById("inputNgay") || {}).value; if (!v) return false;
+      var p = v.split("-").map(Number);
+      return (KHOA_GIO.thu || [5, 6]).indexOf(new Date(p[0], p[1] - 1, p[2]).getDay()) !== -1;
+    }
+    function tenThuKhoa_() { return (KHOA_GIO.thu || [5, 6]).map(function(n) { return ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][n]; }).join(", "); }
     function taiKhoaGio() {
       google.script.run.withSuccessHandler(function(k) {
         if (k && k.decor) { KHOA_GIO = k.decor; NGAY_KHOA = k.ngayKhoa || []; rebuildHourMinSelectors(); onHourMinDecorChange(); capNhatKhoaForm(); }
@@ -567,7 +633,8 @@
     }
     function phutChoGio(h, weekend) {
       const mins = ((weekend && h === "18") || (!weekend && h === "21")) ? ["00", "15", "30"] : ["00", "15", "30", "45"];
-      return mins.filter(m => { const g = h + ":" + m; return !(KHOA_GIO.bat && g >= KHOA_GIO.tu && g <= KHOA_GIO.den); });
+      const khoa = khoaGioHomChon_();
+      return mins.filter(m => { const g = h + ":" + m; return !(khoa && g >= KHOA_GIO.tu && g <= KHOA_GIO.den); });
     }
 
     function rebuildHourMinSelectors() {
@@ -588,7 +655,7 @@
         hint.style.display = (weekend || KHOA_GIO.bat) ? "block" : "none";
         hint.innerText = !dau ? "* Ngày này tạm khóa nhận khách" : weekend
           ? "* T6 & T7: Chỉ nhận từ " + dau + ":" + phutChoGio(dau, true)[0] + " đến " + cuoi + ":" + phutChoGio(cuoi, true).slice(-1)[0]
-          : "* Tạm khóa nhận khách " + KHOA_GIO.tu + "–" + KHOA_GIO.den;
+          : "* " + tenThuKhoa_() + ": tạm khóa nhận khách " + KHOA_GIO.tu + "–" + KHOA_GIO.den;
       }
 
       syncMinutesForSelectedHour(prevM);
@@ -768,6 +835,7 @@
       if (maxKhach && daKhach + k > maxKhach) return "Bàn decor " + (lon ? "từ 6 khách" : "dưới 6 khách") + " ngày này chỉ còn nhận " + Math.max(0, maxKhach - daKhach) + " khách.";
       return "";
     }
+    var _anChonMau = false;
     function capNhatKhoaForm() {
       var f = document.getElementById("bookingForm"); if (!f) return;
       var ngay = document.getElementById("inputNgay").value, lyDo = ngay ? lyDoKhoaNgay() : "", khoa = !!lyDo;
@@ -788,10 +856,17 @@
       var hienCoc = ngay && ngay === _ngayDaKiem && !_dangKiemNgay && !khoa && !isTimeRuleLocked && duTT;
       if (hienCoc) capNhatQrCoc();
       document.getElementById("theCoc").style.display = hienCoc ? "" : "none";
-      document.getElementById("theCocCho").style.display = hienCoc ? "none" : "";
+      document.getElementById("theCocCho").style.display = (hienCoc || khoa) ? "none" : ""; // ngày khoá/đầy: băng đỏ trên + nút dưới đã báo, không cần ô này
       document.getElementById("theCocCho").innerHTML = khoa ? "🔒 Ngày này <b>hết nhận bàn decor</b> · ẩn mã QR cọc" :
         '<span class="d-none d-sm-inline">💳 Chọn <b>ngày còn nhận</b> &amp; điền <b>đủ thông tin</b> phía trên để hiện mã QR cọc</span><span class="d-sm-none">💳 Chọn <b>ngày</b> &amp; điền <b>đủ thông tin</b> để hiện QR cọc</span>';
       updateSubmitButtonState();
+      // Ngày full / khoá: chỉ còn băng đỏ + ô chọn ngày. Đầy hẳn cả ngày thì ẩn cả Số khách; chỉ hết 1 loại bàn thì giữ Số khách để đổi loại bàn
+      var cfgN = (_ghNgay && _ghNgay.cauHinh) || {}, daN = (_ghNgay && _ghNgay.daDat) || {};
+      var dayHan = khoa && (NGAY_KHOA.indexOf(ngay) !== -1 || isCurrentDateLocked || !!cfgN.khoa || !!(cfgN.tong && (daN.nho || 0) + (daN.lon || 0) >= cfgN.tong));
+      f.classList.toggle("ngay-day", khoa); f.classList.toggle("ngay-day-han", dayHan);
+      // Ngày full / khoá: băng đỏ phía trên đã báo lý do -> ẩn ô chọn mẫu decor và nút gửi
+      var hopMau = document.getElementById("decorSectionBox"); if (hopMau) hopMau.style.display = (khoa || _anChonMau) ? "none" : "block";
+      [].forEach.call(f.querySelectorAll('[type="submit"]'), function(b) { b.style.display = khoa ? "none" : ""; });
     }
     document.addEventListener("input", function(e) { if (e.target && /^(hoTen|sdt|soKhach)$/.test(e.target.name || "")) capNhatKhoaForm(); });
     document.addEventListener("change", function(e) { if (e.target && /^(doTuoi|gioiTinh|tinhThanh)$/.test(e.target.name || "")) capNhatKhoaForm(); });
@@ -926,7 +1001,7 @@
       _dangKiemNgay = true; _ngayDaKiem = ""; capNhatKhoaForm();
 
       google.script.run.withSuccessHandler(function(res) {
-        document.getElementById("decorSectionBox").style.display = res.hideDecor ? "none" : "block";
+        _anChonMau = !!res.hideDecor; // hiện/ẩn ô chọn mẫu do capNhatKhoaForm quyết định (ẩn cả khi ngày full/khoá)
         isCurrentDateLocked = res.isDecorLocked;
         _ghNgay = res.gioiHan || null;
         _dangKiemNgay = false; _ngayDaKiem = d;
@@ -1067,6 +1142,68 @@
       var nay = new Date(), xa = new Date(); xa.setFullYear(xa.getFullYear() + 1);
       o.min = ymd(nay); o.max = ymd(xa);
     })();
+  </script>
+  <div id="lichPopup" class="lich-nen" style="display:none" onclick="if (event.target === this) dongLichPopup()">
+    <div class="lich-hop" role="dialog" aria-label="Chọn ngày đặt bàn decor">
+      <div class="lich-dau"><button type="button" onclick="lichDoiThang(-1)" aria-label="Tháng trước">‹</button><b id="lichTieuDe"></b><button type="button" onclick="lichDoiThang(1)" aria-label="Tháng sau">›</button><button type="button" class="lich-dong" onclick="dongLichPopup()" aria-label="Đóng">✕</button></div>
+      <div class="lich-tom" id="lichTom"></div>
+      <div class="lich-luoi" id="lichLuoi"></div>
+      <div class="lich-chu">Số trên ô = bàn decor còn nhận · <span style="color:#1f7a45">●</span> còn nhiều · <span style="color:#b45309">●</span> sắp hết · <span style="color:#b42318">●</span> đầy · <span style="color:#999">●</span> nghỉ</div>
+    </div>
+  </div>
+  <script>
+    // 📅 Popup lịch tháng: bấm ô ngày -> xem số bàn decor còn nhận từng ngày, bấm ngày còn nhận để chọn
+    var _lichThang = "", _lichDuLieu = {};
+    function lichPad_(n) { return (n < 10 ? "0" : "") + n; }
+    function moLichPopup() {
+      var v = document.getElementById("inputNgay").value, d = v ? new Date(v + "T12:00:00") : new Date();
+      _lichThang = d.getFullYear() + "-" + lichPad_(d.getMonth() + 1);
+      document.getElementById("lichPopup").style.display = "flex";
+      veLichPopup_();
+    }
+    function dongLichPopup() { document.getElementById("lichPopup").style.display = "none"; }
+    function lichDoiThang(b) {
+      var p = _lichThang.split("-").map(Number), d = new Date(p[0], p[1] - 1 + b, 1), hn = new Date();
+      if (d < new Date(hn.getFullYear(), hn.getMonth(), 1)) return;
+      _lichThang = d.getFullYear() + "-" + lichPad_(d.getMonth() + 1); veLichPopup_();
+    }
+    function lichSoCon_(o) { return o.conTong != null ? o.conTong : (o.conNho != null && o.conLon != null ? o.conNho + o.conLon : null); }
+    function veLichPopup_() {
+      var p = _lichThang.split("-").map(Number), luoi = document.getElementById("lichLuoi"), tom = document.getElementById("lichTom");
+      document.getElementById("lichTieuDe").innerText = "Tháng " + p[1] + "/" + p[0];
+      var du = _lichDuLieu[_lichThang];
+      var dau = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map(function(t) { return '<div class="th">' + t + '</div>'; }).join("");
+      var lech = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, soNgay = new Date(p[0], p[1], 0).getDate(), hn = new Date();
+      var homNay = hn.getFullYear() + "-" + lichPad_(hn.getMonth() + 1) + "-" + lichPad_(hn.getDate()), dangChon = document.getElementById("inputNgay").value;
+      var html = dau; for (var b = 0; b < lech; b++) html += "<div></div>";
+      var tongCon = 0, soMo = 0;
+      for (var d = 1; d <= soNgay; d++) {
+        var k = _lichThang + "-" + lichPad_(d), o = du && du.ngay ? du.ngay[k] : null, lop = "", chu = "", tip = "";
+        if (k < homNay) { lop = "qua"; }
+        else if (!du) { lop = ""; chu = "…"; }
+        else if (!o || o.dong) { lop = (o && o.ly === "Nghỉ") ? "nghi" : "day"; chu = (o && o.ly) || "Đầy"; }
+        else {
+          var n = lichSoCon_(o); soMo++;
+          if (n != null) tongCon += n;
+          lop = n == null || n >= 3 ? "mo" : "it"; chu = n == null ? "Còn" : "Còn " + n;
+          tip = (o.conNho != null ? "Bàn dưới 6 khách còn " + o.conNho : "") + (o.conLon != null ? " · Bàn từ 6 khách còn " + o.conLon : "");
+        }
+        var bam = (lop === "mo" || lop === "it") ? ' onclick="chonNgayLich_(\'' + k + '\')"' : "";
+        html += '<div class="lich-o ' + lop + (k === dangChon ? " chon" : "") + '"' + bam + (tip ? ' title="' + tip + '"' : "") + '><span class="so">' + d + '</span>' + (chu ? '<span class="con">' + chu + '</span>' : "") + '</div>';
+      }
+      luoi.innerHTML = html;
+      tom.innerHTML = !du ? "Đang tải số bàn còn nhận…" : du.loi ? '<span style="color:#b42318">' + du.loi + '</span>' : soMo ? ("Còn <b>" + soMo + "</b> ngày nhận bàn decor" + (tongCon ? " · tổng <b>" + tongCon + "</b> bàn" : "")) : "Tháng này đã hết ngày nhận bàn decor";
+      if (!du) {
+        var thang = _lichThang;
+        google.script.run.withSuccessHandler(function(r) { _lichDuLieu[thang] = (r && r.success) ? r : { loi: (r && r.message) || "Chưa tải được, thử lại sau." }; if (thang === _lichThang) veLichPopup_(); })
+          .withFailureHandler(function() { _lichDuLieu[thang] = { loi: "Chưa tải được, vui lòng thử lại." }; if (thang === _lichThang) veLichPopup_(); delete _lichDuLieu[thang]; })
+          .layLichConNhanDecor(thang);
+      }
+    }
+    function chonNgayLich_(k) {
+      var i = document.getElementById("inputNgay"); i.value = k; dongLichPopup();
+      onDateChanged(k);
+    }
   </script>
 </body>
 </html>

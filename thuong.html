@@ -7,8 +7,8 @@
 
   <link rel="manifest" href="app-khach.webmanifest">
   <link rel="apple-touch-icon" href="app_icon/logo_khach_180.png?v=20261103">
-  <link rel="icon" type="image/png" sizes="192x192" href="app_icon/logo_khach_192.png?v=20261103">
-  <link rel="shortcut icon" type="image/png" href="app_icon/logo_khach_192.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="256x256" href="app_icon/be_cho_256.png?v=1">
+  <link rel="shortcut icon" type="image/png" href="app_icon/be_cho_256.png?v=1">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -206,15 +206,42 @@
             <div class="col-md-7 col-7 mb-3">
               <label class="form-label fw-bold text-nowrap"><span class="d-none d-sm-inline">Tỉnh / Thành phố đang sinh sống</span><span class="d-sm-none">Tỉnh / TP sinh sống</span> *</label>
               <select name="tinhThanh" class="form-select" required>
-                <option value="Lâm Đồng (Đà Lạt)">Lâm Đồng (Đà Lạt)</option>
-                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                <!-- 34 tỉnh/thành sau sáp nhập (từ 01/07/2025); trong ngoặc là tỉnh cũ đã gộp -->
+                <option value="Lâm Đồng (Đà Lạt)">Lâm Đồng (Đà Lạt, Đắk Nông, Bình Thuận)</option>
+                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh (Bình Dương, Bà Rịa - Vũng Tàu)</option>
                 <option value="Hà Nội">Hà Nội</option>
-                <option value="Đà Nẵng">Đà Nẵng</option>
-                <option value="Khánh Hòa">Khánh Hòa</option>
-                <option value="Đồng Nai">Đồng Nai</option>
-                <option value="Bình Dương">Bình Dương</option>
-                <option value="Cần Thơ">Cần Thơ</option>
-                <option value="Khác">Tỉnh khác...</option>
+                <option value="Đà Nẵng">Đà Nẵng (Quảng Nam)</option>
+                <option value="Khánh Hòa">Khánh Hòa (Ninh Thuận)</option>
+                <option value="Đồng Nai">Đồng Nai (Bình Phước)</option>
+                <option value="Cần Thơ">Cần Thơ (Sóc Trăng, Hậu Giang)</option>
+                <option value="An Giang">An Giang (Kiên Giang)</option>
+                <option value="Bắc Ninh">Bắc Ninh (Bắc Giang)</option>
+                <option value="Cà Mau">Cà Mau (Bạc Liêu)</option>
+                <option value="Cao Bằng">Cao Bằng</option>
+                <option value="Đắk Lắk">Đắk Lắk (Phú Yên)</option>
+                <option value="Điện Biên">Điện Biên</option>
+                <option value="Đồng Tháp">Đồng Tháp (Tiền Giang)</option>
+                <option value="Gia Lai">Gia Lai (Bình Định)</option>
+                <option value="Hà Tĩnh">Hà Tĩnh</option>
+                <option value="Hải Phòng">Hải Phòng (Hải Dương)</option>
+                <option value="Huế">Huế</option>
+                <option value="Hưng Yên">Hưng Yên (Thái Bình)</option>
+                <option value="Lai Châu">Lai Châu</option>
+                <option value="Lạng Sơn">Lạng Sơn</option>
+                <option value="Lào Cai">Lào Cai (Yên Bái)</option>
+                <option value="Nghệ An">Nghệ An</option>
+                <option value="Ninh Bình">Ninh Bình (Hà Nam, Nam Định)</option>
+                <option value="Phú Thọ">Phú Thọ (Vĩnh Phúc, Hòa Bình)</option>
+                <option value="Quảng Ngãi">Quảng Ngãi (Kon Tum)</option>
+                <option value="Quảng Ninh">Quảng Ninh</option>
+                <option value="Quảng Trị">Quảng Trị (Quảng Bình)</option>
+                <option value="Sơn La">Sơn La</option>
+                <option value="Tây Ninh">Tây Ninh (Long An)</option>
+                <option value="Thái Nguyên">Thái Nguyên (Bắc Kạn)</option>
+                <option value="Thanh Hóa">Thanh Hóa</option>
+                <option value="Tuyên Quang">Tuyên Quang (Hà Giang)</option>
+                <option value="Vĩnh Long">Vĩnh Long (Bến Tre, Trà Vinh)</option>
+                <option value="Khác">Nước ngoài / khác...</option>
               </select>
             </div>
           </div>
@@ -315,7 +342,7 @@
     checkRushHour();
 
     // Khung giờ khóa cài ở tab 6 web quản trị; chưa tải xong thì dùng mức mặc định
-    var KHOA_GIO = { bat: true, tu: "18:00", den: "22:30" }, NGAY_KHOA = [];
+    var KHOA_GIO = { bat: false, tu: "18:00", den: "22:30" }, NGAY_KHOA = []; // bàn thường không khoá giờ (chỉ bàn decor)
     function kiemNgayKhoa() {
       const khoa = NGAY_KHOA.indexOf(document.getElementById("txtNgayT").value) !== -1, btn = document.getElementById("btnSubmitT");
       document.getElementById("ngayKhoaT").style.display = khoa ? "block" : "none";

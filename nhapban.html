@@ -7,8 +7,8 @@
 
   <link rel="manifest" href="app-quantri.webmanifest">
   <link rel="apple-touch-icon" href="app_icon/logo_admin_180.png?v=20261103">
-  <link rel="icon" type="image/png" sizes="192x192" href="app_icon/logo_admin_192.png?v=20261103">
-  <link rel="shortcut icon" type="image/png" href="app_icon/logo_admin_192.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="256x256" href="app_icon/be_cho_256.png?v=1">
+  <link rel="shortcut icon" type="image/png" href="app_icon/be_cho_256.png?v=1">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -217,6 +217,34 @@
     input, select, textarea { min-width: 0; }
     a[href^="mailto:"], .email, [class*="email"] { overflow-wrap: anywhere; }
     @media (max-width: 576px) { h4 { font-size: clamp(1.05rem, 5vw, 1.4rem); } h5 { font-size: clamp(1rem, 4.4vw, 1.2rem); } }
+  </style>
+  <style id="lichConTrong">
+    /* 📅 Popup lịch số bàn decor còn trống (trang quản trị) */
+    .lct-input[readonly] { background-color: #fff; cursor: pointer; }
+    .lct-nen { position: fixed; inset: 0; z-index: 4000; background: rgba(40,25,15,.45); display: flex; align-items: center; justify-content: center; padding: 12px; }
+    .lct-hop { background: #fff; color: #3d2a1e; border-radius: 16px; width: min(460px, 100%); max-height: 94vh; overflow: auto; padding: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.25); font-size: 14px; }
+    .lct-dau { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .lct-dau b { flex: 1; text-align: center; color: #864c2a; font-size: 17px; }
+    .lct-dau button { border: 1px solid #e3d3c6; background: #fff; border-radius: 10px; width: 36px; height: 34px; font-size: 18px; line-height: 1; color: #864c2a; }
+    .lct-dau .lct-dong { border: 0; font-size: 20px; color: #888; }
+    .lct-tom { text-align: center; font-size: 13px; color: #6b5a4c; margin-bottom: 8px; min-height: 18px; }
+    .lct-luoi { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+    .lct-luoi .th { text-align: center; font-size: 11px; font-weight: 700; color: #9a8a7e; padding: 2px 0; }
+    .lct-o { border-radius: 10px; padding: 4px 1px; text-align: center; min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border: 1px solid #f0e8e0; cursor: pointer; background: #fafafa; color: #3d2a1e; }
+    .lct-o .so { font-weight: 800; font-size: 14px; }
+    .lct-o .con { font-size: 10.5px; font-weight: 700; line-height: 1.1; }
+    .lct-o .phu { font-size: 9px; color: #6b5a4c; line-height: 1.1; white-space: nowrap; }
+    .lct-o.mo { background: #e8f7ee; } .lct-o.mo .con { color: #1f7a45; }
+    .lct-o.it { background: #fff3e0; } .lct-o.it .con { color: #b45309; }
+    .lct-o.day { background: #fdecea; } .lct-o.day .con { color: #b42318; }
+    .lct-o.nghi { background: #eee; } .lct-o.nghi .con { color: #888; }
+    .lct-o.qua { opacity: .45; }
+    .lct-o.nay { box-shadow: inset 0 0 0 2px #e8833a; }
+    .lct-o.chon { box-shadow: inset 0 0 0 2px #864c2a; }
+    .lct-o:hover { filter: brightness(.96); }
+    .lct-chan { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; font-size: 11.5px; color: #7b6f66; flex-wrap: wrap; }
+    .lct-chan i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin: 0 2px 0 6px; border: 1px solid #ddd; vertical-align: -1px; }
+    .lct-chan button { font-size: 12px; padding: 2px 10px; border: 1px solid #d8c3b3; background: #fff; color: #6f432a; border-radius: 999px; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -914,6 +942,69 @@
         })
         .luuDanhSachDatBan(orders);
     }
+  </script>
+  <script>
+    // 📅 Popup lịch số bàn decor còn trống (trang quản trị): bấm ô ngày -> xem từng ngày còn bao nhiêu bàn; ngày nào cũng chọn được (kể cả đầy / đã qua)
+    var _lct = { input: null, thang: "", du: {} };
+    function lctPad_(n) { return (n < 10 ? "0" : "") + n; }
+    function ganLichConTrong_(id) {
+      var i = document.getElementById(id); if (!i || i._lct) return; i._lct = true;
+      i.readOnly = true; i.classList.add("lct-input"); i.title = "Bấm để chọn ngày (xem số bàn decor còn trống)";
+      i.addEventListener("click", function(e) { e.preventDefault(); moLichConTrong_(i); });
+      i.addEventListener("keydown", function(e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); moLichConTrong_(i); } });
+    }
+    function moLichConTrong_(i) {
+      _lct.input = i; _lct.du = {}; // mỗi lần mở lấy số mới
+      var v = i.value, d = v ? new Date(v + "T12:00:00") : new Date();
+      _lct.thang = d.getFullYear() + "-" + lctPad_(d.getMonth() + 1);
+      taoKhungLct_(); document.getElementById("lctNen").style.display = "flex"; veLct_();
+    }
+    function dongLct_() { var n = document.getElementById("lctNen"); if (n) n.style.display = "none"; }
+    function lctDoiThang_(b) { var p = _lct.thang.split("-").map(Number), d = new Date(p[0], p[1] - 1 + b, 1); _lct.thang = d.getFullYear() + "-" + lctPad_(d.getMonth() + 1); veLct_(); }
+    function lctHomNay_() { var d = new Date(); chonLct_(d.getFullYear() + "-" + lctPad_(d.getMonth() + 1) + "-" + lctPad_(d.getDate())); }
+    function taoKhungLct_() {
+      if (document.getElementById("lctNen")) return;
+      var n = document.createElement("div"); n.id = "lctNen"; n.className = "lct-nen"; n.style.display = "none";
+      n.onclick = function(e) { if (e.target === n) dongLct_(); };
+      n.innerHTML = '<div class="lct-hop" role="dialog" aria-label="Chọn ngày"><div class="lct-dau"><button type="button" onclick="lctDoiThang_(-1)" aria-label="Tháng trước">‹</button><b id="lctTieuDe"></b><button type="button" onclick="lctDoiThang_(1)" aria-label="Tháng sau">›</button><button type="button" class="lct-dong" onclick="dongLct_()" aria-label="Đóng">✕</button></div>' +
+        '<div class="lct-tom" id="lctTom"></div><div class="lct-luoi" id="lctLuoi"></div>' +
+        '<div class="lct-chan"><span>Số = bàn decor còn nhận<i style="background:#e8f7ee"></i>còn<i style="background:#fff3e0"></i>sắp hết<i style="background:#fdecea"></i>đầy<i style="background:#eee"></i>nghỉ</span><button type="button" onclick="lctHomNay_()">Hôm nay</button></div></div>';
+      document.body.appendChild(n);
+    }
+    function lctSoCon_(o) { return o.conTong != null ? o.conTong : (o.conNho != null && o.conLon != null ? o.conNho + o.conLon : null); }
+    function veLct_() {
+      var p = _lct.thang.split("-").map(Number), du = _lct.du[_lct.thang];
+      document.getElementById("lctTieuDe").innerText = "Tháng " + p[1] + "/" + p[0];
+      var hn = new Date(), homNay = hn.getFullYear() + "-" + lctPad_(hn.getMonth() + 1) + "-" + lctPad_(hn.getDate()), dang = _lct.input ? _lct.input.value : "";
+      var html = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map(function(t) { return '<div class="th">' + t + '</div>'; }).join("");
+      var lech = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, soNgay = new Date(p[0], p[1], 0).getDate(), soMo = 0, tong = 0;
+      for (var b = 0; b < lech; b++) html += "<div></div>";
+      for (var d = 1; d <= soNgay; d++) {
+        var k = _lct.thang + "-" + lctPad_(d), o = du && du.ngay ? du.ngay[k] : null, lop = "", chu = "", phu = "";
+        if (k < homNay) lop = "qua";
+        else if (!du) chu = "…";
+        else if (!o) lop = "qua";
+        else if (o.dong) { lop = o.ly === "Nghỉ" ? "nghi" : "day"; chu = o.ly || "Đầy"; }
+        else {
+          var n = lctSoCon_(o); soMo++; if (n != null) tong += n;
+          lop = n == null || n >= 3 ? "mo" : "it"; chu = n == null ? "Còn" : "Còn " + n;
+          if (o.conNho != null && o.conLon != null) phu = "&lt;6: " + o.conNho + " · ≥6: " + o.conLon;
+        }
+        html += '<div class="lct-o ' + lop + (k === homNay ? " nay" : "") + (k === dang ? " chon" : "") + '" onclick="chonLct_(\'' + k + '\')"><span class="so">' + d + '</span>' +
+          (chu ? '<span class="con">' + chu + '</span>' : '') + (phu ? '<span class="phu">' + phu + '</span>' : '') + '</div>';
+      }
+      document.getElementById("lctLuoi").innerHTML = html;
+      document.getElementById("lctTom").innerHTML = !du ? "Đang tải số bàn còn trống…" : du.loi ? '<span style="color:#b42318">' + du.loi + '</span>' :
+        (soMo ? "Còn <b>" + soMo + "</b> ngày nhận bàn decor" + (tong ? " · tổng <b>" + tong + "</b> bàn" : "") : "Không còn ngày nhận bàn decor (tính từ hôm nay)");
+      if (!du) {
+        var t = _lct.thang;
+        google.script.run.withSuccessHandler(function(r) { _lct.du[t] = (r && r.success) ? r : { loi: (r && r.message) || "Chưa tải được số bàn" }; if (t === _lct.thang) veLct_(); })
+          .withFailureHandler(function(e) { _lct.du[t] = { loi: "Chưa tải được: " + (e && e.message || e) }; if (t === _lct.thang) veLct_(); delete _lct.du[t]; })
+          .layLichConNhanDecor(t);
+      }
+    }
+    function chonLct_(k) { var i = _lct.input; dongLct_(); if (!i) return; i.value = k; i.dispatchEvent(new Event("change", { bubbles: true })); }
+    document.addEventListener("DOMContentLoaded", function() { ganLichConTrong_("dateSelector"); });
   </script>
 </body>
 </html>

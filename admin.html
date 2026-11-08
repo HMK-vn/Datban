@@ -7,8 +7,8 @@
 
   <link rel="manifest" href="app-quantri.webmanifest">
   <link rel="apple-touch-icon" href="app_icon/logo_admin_180.png?v=20261103">
-  <link rel="icon" type="image/png" sizes="192x192" href="app_icon/logo_admin_192.png?v=20261103">
-  <link rel="shortcut icon" type="image/png" href="app_icon/logo_admin_192.png?v=20261103">
+  <link rel="icon" type="image/png" sizes="256x256" href="app_icon/be_cho_256.png?v=1">
+  <link rel="shortcut icon" type="image/png" href="app_icon/be_cho_256.png?v=1">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -682,6 +682,7 @@
     #timelineContainer .kv-gio-vao .card-kv-val, #timelineContainer .kv-so-khach .card-kv-val { font-size: 1.35em; font-weight: 800; line-height: 1.1; }
     #timelineContainer .kv-id { display: none !important; } /* luôn ẩn ID khách trên thẻ */
     #timelineContainer .kv-decor, #timelineContainer .kv-mau-decore, #timelineContainer .kv-mau-decor { grid-column: 1 / -1; }
+    #timelineContainer .kv-mau-decore .card-kv-title, #timelineContainer .kv-mau-decor .card-kv-title { display: none !important; } /* bỏ chữ "Mẫu decore:", chỉ giữ tên mẫu */
     #timelineContainer .card-note-box, #timelineContainer .card-dishes-box { grid-column: 1 / -1; font-size: .92em; line-height: 1.4; }
     #timelineContainer .card-note-box .card-kv-title, #timelineContainer .card-dishes-box .card-kv-title { text-transform: none; font-size: 1em; color: #6b625a !important; }
     /* Tên + SĐT: in đậm, to, cùng màu chữ chính */
@@ -776,6 +777,83 @@
       #tab9 .md-o { padding: 6px 8px; }
     }
     body.gd-a #mainTab #tab9-tab .menu-ico, body.gd-a #mainTab #tab9-tab.active .menu-ico { color: #db2777 !important; }
+    /* Hàng vừa 1 dòng: phần cuối nằm sát lề phải; khi phần cuối rớt xuống dòng (JS gắn .da-xuong-dong) thì canh trái */
+    #tab9 .md-gh-khung > #mdBang { margin-left: auto; }
+    @media (min-width: 576px) {
+      .hang-ngay.da-xuong-dong > .ms-auto { margin-left: 0 !important; }
+      #tab9 .md-gh-khung.da-xuong-dong > #mdBang { margin-left: 0; }
+    }
+    /* Đầu trang: nhóm nút + đồng hồ dồn phải; màn vừa (đầu trang xuống dòng) đưa đồng hồ lên cùng hàng tên quán, canh phải */
+    header.navbar-custom .nhom-nut-dau { margin-left: auto; }
+    header.navbar-custom .gio-dau { order: 3; }
+    @media (max-width: 991.98px) {
+      header.navbar-custom .gio-dau { order: 2; margin-left: auto; }
+      header.navbar-custom .nhom-nut-dau { order: 3; flex-basis: 100%; margin-left: 0; }
+    }
+    /* Màn vừa: hàng nút giãn đều hết bề ngang, mép phải thẳng với ô giờ */
+    @media (min-width: 576px) and (max-width: 991.98px) {
+      header.navbar-custom .nhom-nut-dau { flex-wrap: nowrap !important; }
+      header.navbar-custom .nhom-nut-dau > .btn { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
+    }
+    /* Ô khoá giờ: 2 dòng Bàn decor / Bàn thường thẳng cột */
+    .kg-luoi { display: grid; grid-template-columns: max-content max-content 7.5em max-content 7.5em; align-items: center; gap: 6px 8px; }
+    .kg-luoi .kg-tieude, .kg-luoi .kg-luu { grid-column: 1 / -1; }
+    .kg-luoi .kg-thu { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+    .kg-thu label { margin: 0; cursor: pointer; }
+    .kg-thu input { position: absolute; opacity: 0; pointer-events: none; }
+    .kg-thu label span { display: inline-block; min-width: 2.4em; text-align: center; padding: 2px 8px; border-radius: 999px; border: 1px solid #d8c3b3; background: #fff; color: #6f432a; font-weight: 700; font-size: .85em; }
+    .kg-thu input:checked + span { background: #864c2a; border-color: #864c2a; color: #fff; }
+    .kg-luoi .kg-dau { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; } /* nút Lưu cùng dòng tiêu đề */
+    @media (max-width: 575.98px) { .kg-luoi { grid-template-columns: max-content auto minmax(0, 1fr) auto minmax(0, 1fr); } }
+    /* Chú thích màu lịch decor (chữ nhỏ, không phải nút) */
+    .chu-thich-lich { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: .78em; color: #7b6f66; }
+    .chu-thich-lich span { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .chu-thich-lich i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; }
+    /* Tab Mẫu decor: bảng giới hạn ngày (thứ + Bàn/Khách theo nhóm, đủ/vượt tô đỏ) */
+    #tab9 .md-gh-khung { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; background: #fff; border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(60,40,20,.07); }
+    #tab9 .md-gh-dau { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    #tab9 .md-gh-dau b { font-size: 1.08em; color: #3d2a1e; }
+    #tab9 .md-tt { font-size: .85em; font-weight: 700; padding: 2px 10px; border-radius: 999px; align-self: flex-start; white-space: nowrap; }
+    #tab9 .md-tt.khoa { background: #fdecea; color: #b42318; }
+    #tab9 .md-tt.mo { background: #e8f7ee; color: #1f7a45; }
+    #tab9 .md-gh-bang { border-collapse: separate; border-spacing: 4px 3px; margin-left: auto; font-variant-numeric: tabular-nums; }
+    #tab9 .md-gh-bang th { font-weight: 700; color: #6b5a4c; font-size: .85em; padding: 2px 6px; text-align: left; white-space: nowrap; }
+    #tab9 .md-gh-bang thead th { text-align: center; }
+    #tab9 .md-gh-bang td { text-align: center; font-weight: 800; padding: 3px 12px; border-radius: 6px; min-width: 4.4em; white-space: nowrap; color: #2b2522; }
+    #tab9 .md-gh-bang tr.nho td { background: #eaf3e6; }
+    #tab9 .md-gh-bang tr.lon td { background: #f8e9df; }
+    #tab9 .md-gh-bang tr.tong td { background: #f5eed8; }
+    #tab9 .md-gh-bang td.md-du { background: #dc3545 !important; color: #fff; }
+    #tab9 .md-gh { font-weight: 600; opacity: .75; }
+    #tab9 .md-ngay-hang { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+    #tab9 .md-thu { font-weight: 800; font-size: 1.08em; color: #3d2a1e; min-width: 4.8em; }
+    #tab9 .md-chon-ngay { width: auto; flex-wrap: nowrap; }
+    #tab9 .md-chon-ngay input[type=date] { width: 9.6em; font-weight: 700; }
+    #tab9 .md-tt-hang { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+    #tab9 .md-rieng { font-size: .78em; font-weight: 700; color: #8a5a00; background: #fff3cd; border-radius: 999px; padding: 1px 8px; }
+    #tab9 .md-nut-sua { border: 1px solid #d8c3b3; color: #6f432a; background: #fff; font-weight: 700; font-size: .8em; padding: 2px 10px; border-radius: 999px; }
+    #tab9 .md-nut-sua:hover { background: #faf2ed; }
+    @media (min-width: 992px) {
+      #tab9 .md-ngay-hang .form-control, #tab9 .md-ngay-hang .btn { font-size: .72rem; padding: .2rem .5rem; }
+      #tab9 .md-thu { font-size: .85rem; }
+      #tab9 .md-chon-ngay input[type=date] { width: 8.4em; }
+    }
+    @media (max-width: 575.98px) { #tab9 .md-ngay-hang .md-chu { display: none; } #tab9 .md-chon-ngay input[type=date] { width: 8.8em; } }
+    /* Danh sách đã đặt: đủ rộng thì tên | SĐT | giờ | khách | trạng thái chung 1 hàng theo cột */
+    #tab9 #mdDsDa { container-type: inline-size; }
+    @container (min-width: 600px) {
+      #tab9 .md-kh { grid-template-columns: minmax(9em, 1.5fr) 8em 4.6em 3.4em minmax(5.5em, 1fr) !important; }
+      #tab9 .md-kh .k-ten { grid-column: auto; }
+    }
+    @media (max-width: 575.98px) { #tab9 .md-gh-bang { margin-left: 0; width: 100%; } #tab9 .md-gh-khung { padding: 8px 10px; } }
+    /* Lịch tiền cọc: ngày đã qua hiển thị mờ (rê chuột thì rõ lại). Lịch decor thì ẩn hẳn ngày đã qua (veLichTab6_) */
+    #lcGrid .ngay-qua { opacity: .38; filter: grayscale(.7); transition: opacity .15s, filter .15s; }
+    #lcGrid .ngay-qua:hover { opacity: .9; filter: none; }
+    /* Thanh menu dưới (iPad/điện thoại): các nút chia đều hết bề ngang; màn hẹp không đủ chỗ thì vẫn vuốt ngang */
+    @media (max-width: 991.98px) {
+      html body #mainTab .nav-item { flex: 1 0 0; min-width: max-content; }
+      html body #mainTab .nav-item > .nav-link { width: 100%; }
+    }
     /* Máy tính (chữ trang x1,5): thanh đầu tab gọn, không chiếm nhiều bề ngang */
     @media (min-width: 992px) {
       #tab9 .md-thanh { gap: 8px 12px; }
@@ -809,6 +887,34 @@
     #tab9 .md-kh .md-the { margin-left: 0; }
     #tab9 .md-o.da > .md-ma { display: inline-block; min-width: 4.4em; }
     @media (max-width: 575.98px) { #tab9 .md-kh { grid-template-columns: 7.7em 4.5em 3.2em minmax(0, 1fr); } }
+  </style>
+  <style id="lichConTrong">
+    /* 📅 Popup lịch số bàn decor còn trống (trang quản trị) */
+    .lct-input[readonly] { background-color: #fff; cursor: pointer; }
+    .lct-nen { position: fixed; inset: 0; z-index: 4000; background: rgba(40,25,15,.45); display: flex; align-items: center; justify-content: center; padding: 12px; }
+    .lct-hop { background: #fff; color: #3d2a1e; border-radius: 16px; width: min(460px, 100%); max-height: 94vh; overflow: auto; padding: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.25); font-size: 14px; }
+    .lct-dau { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .lct-dau b { flex: 1; text-align: center; color: #864c2a; font-size: 17px; }
+    .lct-dau button { border: 1px solid #e3d3c6; background: #fff; border-radius: 10px; width: 36px; height: 34px; font-size: 18px; line-height: 1; color: #864c2a; }
+    .lct-dau .lct-dong { border: 0; font-size: 20px; color: #888; }
+    .lct-tom { text-align: center; font-size: 13px; color: #6b5a4c; margin-bottom: 8px; min-height: 18px; }
+    .lct-luoi { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+    .lct-luoi .th { text-align: center; font-size: 11px; font-weight: 700; color: #9a8a7e; padding: 2px 0; }
+    .lct-o { border-radius: 10px; padding: 4px 1px; text-align: center; min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border: 1px solid #f0e8e0; cursor: pointer; background: #fafafa; color: #3d2a1e; }
+    .lct-o .so { font-weight: 800; font-size: 14px; }
+    .lct-o .con { font-size: 10.5px; font-weight: 700; line-height: 1.1; }
+    .lct-o .phu { font-size: 9px; color: #6b5a4c; line-height: 1.1; white-space: nowrap; }
+    .lct-o.mo { background: #e8f7ee; } .lct-o.mo .con { color: #1f7a45; }
+    .lct-o.it { background: #fff3e0; } .lct-o.it .con { color: #b45309; }
+    .lct-o.day { background: #fdecea; } .lct-o.day .con { color: #b42318; }
+    .lct-o.nghi { background: #eee; } .lct-o.nghi .con { color: #888; }
+    .lct-o.qua { opacity: .45; }
+    .lct-o.nay { box-shadow: inset 0 0 0 2px #e8833a; }
+    .lct-o.chon { box-shadow: inset 0 0 0 2px #864c2a; }
+    .lct-o:hover { filter: brightness(.96); }
+    .lct-chan { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; font-size: 11.5px; color: #7b6f66; flex-wrap: wrap; }
+    .lct-chan i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin: 0 2px 0 6px; border: 1px solid #ddd; vertical-align: -1px; }
+    .lct-chan button { font-size: 12px; padding: 2px 10px; border: 1px solid #d8c3b3; background: #fff; color: #6f432a; border-radius: 999px; font-weight: 700; }
   </style>
 </head>
 <body class="pb-5">
@@ -858,15 +964,15 @@
           <small class="text-white-50 admin-sub">Timeline Decor • Nhập & Quản Lý DATA_TONG • Tra Cứu • Email • Nhập Đặt Bàn</small>
         </div>
       </div>
-      <div class="d-flex align-items-center gap-2 flex-wrap">
+      <div class="d-flex align-items-center gap-2 flex-wrap nhom-nut-dau">
         <a href="https://docs.google.com/spreadsheets/d/1cPOeqL8_aN3ktL5p7_NsT_rkrjObzJy7IllOIjGWJeA/edit?gid=999901#gid=999901" class="btn btn-warning btn-sm fw-bold text-dark" target="_blank"><i class="fa-solid fa-table nut-ico"></i><span class="nhan-dai">Sheet DATA_TONG</span><span class="nhan-ngan">Sheet</span></a>
         <a href="decor.html" class="btn btn-danger btn-sm fw-bold" target="_blank"><i class="fa-solid fa-cake-candles nut-ico"></i><span class="nhan-dai">Đặt bàn decor</span><span class="nhan-ngan">Decor</span></a>
         <a href="thuong.html" class="btn btn-primary btn-sm fw-bold" target="_blank"><i class="fa-solid fa-utensils nut-ico"></i><span class="nhan-dai">Đặt bàn thường</span><span class="nhan-ngan">Thường</span></a>
         <a href=new URL("tracuu.html", location.href).href class="btn btn-success btn-sm fw-bold" target="_blank"><i class="fa-solid fa-magnifying-glass nut-ico"></i>Tra cứu</a>
         <button type="button" class="btn btn-light btn-sm fw-bold" onclick="doiGiaoDien()" title="Đổi giao diện" id="nutGiaoDien"><i class="fa-solid fa-circle-half-stroke nut-ico"></i><span class="nhan-dai">Giao diện</span><span class="nhan-ngan">Giao diện</span></button>
         <button type="button" class="btn btn-light btn-sm fw-bold" onclick="caiTelegram()" title="Báo đơn mới / hoàn cọc về nhóm Telegram"><i class="fa-brands fa-telegram nut-ico"></i>Telegram</button>
-        <span class="badge bg-light text-dark py-2 px-3 ms-1"><i class="fa-solid fa-clock nut-ico"></i><span id="clockDisplay"></span></span>
       </div>
+      <span class="badge bg-light text-dark py-2 px-3 gio-dau"><i class="fa-solid fa-clock nut-ico"></i><span id="clockDisplay"></span></span>
     </div>
   </header>
   <script>
@@ -896,10 +1002,9 @@
       <!-- TAB 1: TIMELINE DECOR -->
       <div class="tab-pane fade show active" id="tab1" role="tabpanel">
            <div class="card-box p-2 px-3 mb-3">
-      <div class="d-flex flex-wrap align-items-center gap-2 hang-ngay">
-        <h5 class="fw-bold text-purple mb-0 text-nowrap">ĐẶT BÀN NGÀY <span id="displayTimelineDate" class="d-none"></span></h5>
+      <div class="d-flex flex-wrap align-items-center gap-2 hang-ngay" data-canh-hang data-canh-thu2>
+        <h5 class="fw-bold text-purple mb-0 text-nowrap">Ngày đặt <span id="displayTimelineDate" class="d-none"></span></h5>
         <div class="input-group flex-nowrap" style="width:auto">
-          <span class="input-group-text bg-primary text-white fw-bold"><i class="fa-regular fa-calendar-check"></i></span>
           <input type="date" id="timelineDateInput" class="form-control fw-bold border-primary" style="width:10.5em" onchange="loadTimeline()">
         </div>
           <div class="dropdown">
@@ -1158,9 +1263,8 @@
             <small class="text-muted">Nhấp trực tiếp vào từng ngày trên lịch để <b>Bật / Tắt Khóa Full Decor</b> • Tự động tích/bỏ tích 2 chiều với tab <b>Calender-Booking</b> trên Google Sheet</small>
           </div>
           <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-danger px-2 py-2">🔒 Đã khóa (Full Decor)</span>
-            <span class="badge px-2 py-2" style="background:#f5ebe5; color:#934c22; border:1px solid #d8ac93;">🎀 Có đơn Decor</span>
-            <span class="badge bg-light text-dark border px-2 py-2">🟢 Đang mở</span>
+            <span class="chu-thich-lich" title="Chú thích màu ô ngày. Bấm vào từng ô ngày trong lịch để khoá / mở / sửa giới hạn">Chú thích:
+              <span><i style="background:#dc3545"></i>Đã khoá FULL</span><span><i style="background:#f5ebe5;border:1px solid #d8ac93"></i>Có đơn decor</span><span><i style="background:#f8f9fa;border:1px solid #dee2e6"></i>Đang mở</span></span>
             <select id="calViewMode" class="form-select form-select-sm w-auto fw-bold" onchange="doiKieuXemTab6_()">
               <option value="thang" selected>Theo tháng</option><option value="quy">Theo quý</option><option value="nam">Cả năm</option>
             </select>
@@ -1175,11 +1279,11 @@
         </div>
         <!-- Khóa khung giờ đặt bàn trên web khách -->
         <div class="mb-2 p-2 rounded-3 d-flex flex-wrap align-items-center gap-2 gap-md-3" style="background:#faf4ef;border:1px solid #ecdccf">
-          <b style="color:#864c2a">⏰ Khóa khung giờ đặt bàn (web khách)</b>
-          <span class="d-inline-flex flex-wrap align-items-center gap-1"><label class="d-inline-flex align-items-center gap-1 fw-bold mb-0 text-nowrap"><input type="checkbox" id="kgDecorBat" checked> 🎀 Bàn decor</label> từ <input type="time" step="900" id="kgDecorTu" class="form-control form-control-sm w-auto"> đến <input type="time" step="900" id="kgDecorDen" class="form-control form-control-sm w-auto"></span>
-          <span class="d-inline-flex flex-wrap align-items-center gap-1"><label class="d-inline-flex align-items-center gap-1 fw-bold mb-0 text-nowrap"><input type="checkbox" id="kgThuongBat" checked> 🍽️ Bàn thường</label> từ <input type="time" step="900" id="kgThuongTu" class="form-control form-control-sm w-auto"> đến <input type="time" step="900" id="kgThuongDen" class="form-control form-control-sm w-auto"></span>
-          <button class="btn btn-sm fw-bold text-white" style="background:#864c2a" onclick="luuKhoaGioAdmin()">💾 Lưu giờ khóa</button>
-          <small class="text-muted" id="kgTrangThai"></small>
+          <div class="kg-luoi">
+            <div class="kg-tieude kg-dau"><b style="color:#864c2a">⏰ Khóa khung giờ đặt bàn (web khách)</b><span class="d-inline-flex align-items-center gap-2"><small class="text-muted" id="kgTrangThai"></small><button class="btn btn-sm fw-bold text-white" style="background:#864c2a" onclick="luuKhoaGioAdmin()">💾 Lưu giờ khóa</button></span></div>
+            <label class="d-inline-flex align-items-center gap-1 fw-bold mb-0 text-nowrap"><input type="checkbox" id="kgDecorBat" checked> 🎀 Bàn decor</label><span>từ</span><input type="time" step="900" id="kgDecorTu" class="form-control form-control-sm"><span>đến</span><input type="time" step="900" id="kgDecorDen" class="form-control form-control-sm">
+            <div class="kg-thu"><span class="text-muted small">Áp dụng:</span><label><input type="checkbox" class="kg-thu-o" value="1"><span>T2</span></label><label><input type="checkbox" class="kg-thu-o" value="2"><span>T3</span></label><label><input type="checkbox" class="kg-thu-o" value="3"><span>T4</span></label><label><input type="checkbox" class="kg-thu-o" value="4"><span>T5</span></label><label><input type="checkbox" class="kg-thu-o" value="5"><span>T6</span></label><label><input type="checkbox" class="kg-thu-o" value="6"><span>T7</span></label><label><input type="checkbox" class="kg-thu-o" value="0"><span>CN</span></label><span class="text-muted small ms-1">· Bàn thường không khoá giờ</span></div>
+          </div>
           <div class="w-100 d-flex flex-wrap align-items-center gap-1 pt-2 border-top">
             <b style="color:#864c2a">🚫 Ngày không nhận khách (cả bàn decor và bàn thường)</b>
             <input type="date" id="kgNgayMoi" class="form-control form-control-sm w-auto">
@@ -1235,22 +1339,26 @@
       <!-- TAB 7: PHÂN TÍCH KHÁCH (TỈNH THÀNH, ĐỘ TUỔI, BÀN LỚN, KÊNH, SO SÁNH THÁNG/NĂM) -->
       <!-- TAB 8: LỊCH NĂM - TIỀN CỌC THEO NGÀY NHẬP DỮ LIỆU (CỘT Q DATA_TONG) -->
       <div class="tab-pane fade" id="tab9" role="tabpanel">
-        <div class="md-thanh">
-          <span class="md-tieude" title="Mẫu decor ngày"><i class="fa-solid fa-palette md-i"></i><span class="md-chu">MẪU DECOR NGÀY</span></span>
-          <div class="input-group input-group-sm">
-            <button class="btn btn-outline-secondary" type="button" onclick="mdDoiNgay(-1)" title="Ngày trước" aria-label="Ngày trước"><i class="fa-solid fa-chevron-left"></i></button>
-            <input type="date" id="mdNgay" class="form-control" onchange="taiMauDecorNgay()">
-            <button class="btn btn-outline-secondary" type="button" onclick="mdDoiNgay(1)" title="Ngày sau" aria-label="Ngày sau"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="md-gh-khung" data-canh-hang title="Mẫu decor ngày · Nguồn: DANH_MUC_DECOR, DATA_TONG, FORM booking (đơn web chờ duyệt)">
+          <div class="md-gh-dau">
+            <div class="md-ngay-hang">
+              <span class="md-thu" id="mdThu"></span>
+              <div class="input-group input-group-sm md-chon-ngay">
+                <button class="btn btn-outline-secondary" type="button" onclick="mdDoiNgay(-1)" title="Ngày trước" aria-label="Ngày trước"><i class="fa-solid fa-chevron-left"></i></button>
+                <input type="date" id="mdNgay" class="form-control" onchange="taiMauDecorNgay()">
+                <button class="btn btn-outline-secondary" type="button" onclick="mdDoiNgay(1)" title="Ngày sau" aria-label="Ngày sau"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary" type="button" onclick="mdDoiNgay(0)" title="Hôm nay" aria-label="Hôm nay"><i class="fa-solid fa-calendar-day"></i><span class="md-chu ms-1">Hôm nay</span></button>
+            </div>
+            <div class="md-tt-hang"><span id="mdTT"></span><button type="button" class="btn btn-sm md-nut-sua" onclick="mdSuaGioiHan()" title="Sửa giới hạn decor ngày này"><i class="fa-solid fa-pen-to-square me-1"></i>Sửa giới hạn</button></div>
           </div>
-          <button class="btn btn-sm btn-outline-secondary" type="button" onclick="mdDoiNgay(0)" title="Hôm nay" aria-label="Hôm nay"><i class="fa-solid fa-calendar-day"></i><span class="md-chu ms-1">Hôm nay</span></button>
-          <span class="md-tom" id="mdTomTat"></span>
+          <div id="mdBang"></div>
         </div>
         <div id="mdBao"></div>
         <div class="row g-3">
           <div class="col-lg-6"><div class="md-khung"><h6 class="md-tieu con"><i class="fa-solid fa-circle-check md-i"></i>CÒN TRỐNG (<span id="mdSoCon">0</span>)</h6><div id="mdDsCon" class="md-luoi"></div></div></div>
           <div class="col-lg-6"><div class="md-khung"><h6 class="md-tieu da"><i class="fa-solid fa-calendar-check md-i"></i>ĐÃ ĐẶT (<span id="mdSoDa">0</span>)</h6><div id="mdDsDa"></div></div></div>
         </div>
-        <div class="small text-muted mt-2">Nguồn: DANH_MUC_DECOR · DATA_TONG · FORM booking (đơn web chờ duyệt)</div>
       </div>
       <div class="tab-pane fade" id="tab8" role="tabpanel">
         <div class="card-box p-4">
@@ -1262,7 +1370,7 @@
             <div class="d-flex align-items-center gap-2">
               <span class="badge bg-warning text-dark px-3 py-2 fs-6" id="lcTongNam">Tổng năm: ...</span>
               <select id="lcViewMode" class="form-select form-select-sm w-auto fw-bold" onchange="doiKieuXemLich_()">
-                <option value="nam">Cả năm</option><option value="quy">Theo quý</option><option value="thang">Theo tháng</option>
+                <option value="nam">Cả năm</option><option value="quy" selected>Theo quý</option><option value="thang">Theo tháng</option>
               </select>
               <select id="lcPeriod" class="form-select form-select-sm w-auto fw-bold" style="display:none" onchange="veLaiLichTienCoc_()"></select>
               <select id="lcYearSelect" class="form-select form-select-sm w-auto fw-bold border-primary" onchange="loadLichTienCoc()"></select>
@@ -2150,6 +2258,7 @@
       return '<span class="small fw-bold ' + (p >= 0 ? 'text-success' : 'text-danger') + '">' + (p >= 0 ? '▲ ' : '▼ ') + Math.abs(p) + '%</span>';
     }
 
+    function ptTong_(rows) { return (rows || []).reduce(function(s, r) { return s + r[1]; }, 0); }
     function ptBangThanh_(title, rows, tong) {
       var max = rows.reduce(function(m, r) { return Math.max(m, r[1]); }, 0) || 1;
       return '<div class="col-lg-4 col-md-6"><div class="border rounded-3 p-3 h-100 bg-white"><div class="fw-bold mb-2 text-purple">' + title + '</div>' +
@@ -2166,29 +2275,30 @@
       _ptCharts.forEach(function(c) { c.destroy(); });
       _ptCharts = [];
       var Y = kq.kpi.nam, P = kq.kpi.namTruoc;
+      var coNT = P.ban > 0; // năm trước không có dữ liệu thì không so sánh với năm trước
       function the(nhan, a, b, mau) {
         return '<div class="col-6 col-lg"><div class="stat-card ' + mau + ' py-2 px-3"><div><div class="small opacity-75">' + nhan + '</div>' +
-          '<h4 class="mb-0 fw-bold">' + a.toLocaleString("vi-VN") + '</h4><div class="small" style="opacity:.9">' + kq.namTruoc + ': ' + b.toLocaleString("vi-VN") + '</div></div></div></div>';
+          '<h4 class="mb-0 fw-bold">' + a.toLocaleString("vi-VN") + '</h4>' + (coNT ? '<div class="small" style="opacity:.9">' + kq.namTruoc + ': ' + b.toLocaleString("vi-VN") + '</div>' : '') + '</div></div></div>';
       }
       var html = '<div class="row g-2 mb-3">' +
         the("Số bàn " + kq.nam, Y.ban, P.ban, "stat-blue") + the("Số khách", Y.khach, P.khach, "stat-purple") +
         the("Bàn decor", Y.decor, P.decor, "stat-orange") + the("Bàn từ 6 khách", Y.banLon, P.banLon, "stat-blue") + '</div>';
 
       html += '<div class="row g-3 mb-3">' +
-        '<div class="col-lg-8"><div class="border rounded-3 p-3 bg-white h-100"><div class="fw-bold mb-2 text-purple">Số bàn theo tháng: ' + kq.nam + ' so với ' + kq.namTruoc + '</div><canvas id="ptChartThang" height="120"></canvas></div></div>' +
+        '<div class="col-lg-8"><div class="border rounded-3 p-3 bg-white h-100"><div class="fw-bold mb-2 text-purple">Số bàn theo tháng ' + (coNT ? ': ' + kq.nam + ' so với ' + kq.namTruoc : 'năm ' + kq.nam) + '</div><canvas id="ptChartThang" height="120"></canvas></div></div>' +
         '<div class="col-lg-4"><div class="border rounded-3 p-3 bg-white h-100"><div class="fw-bold mb-2 text-purple">So sánh nhanh (số bàn)</div>' +
           '<table class="table table-sm small mb-0"><tbody>' +
-          '<tr><td>Năm ' + kq.nam + ' / ' + kq.namTruoc + '</td><td class="text-end fw-bold">' + Y.ban + ' / ' + P.ban + '</td><td class="text-end">' + ptBienDong_(Y.ban, P.ban) + '</td></tr>' +
+          (coNT ? '<tr><td>Năm ' + kq.nam + ' / ' + kq.namTruoc + '</td><td class="text-end fw-bold">' + Y.ban + ' / ' + P.ban + '</td><td class="text-end">' + ptBienDong_(Y.ban, P.ban) + '</td></tr>' : '') +
           '<tr><td>Tháng ' + kq.thangSoSanh + ' / tháng trước</td><td class="text-end fw-bold">' + kq.thangNay.ban + ' / ' + kq.thangTruoc.ban + '</td><td class="text-end">' + ptBienDong_(kq.thangNay.ban, kq.thangTruoc.ban) + '</td></tr>' +
-          '<tr><td>Tháng ' + kq.thangSoSanh + ' / cùng kỳ ' + kq.namTruoc + '</td><td class="text-end fw-bold">' + kq.thangNay.ban + ' / ' + kq.cungKyNamTruoc.ban + '</td><td class="text-end">' + ptBienDong_(kq.thangNay.ban, kq.cungKyNamTruoc.ban) + '</td></tr>' +
+          (coNT ? '<tr><td>Tháng ' + kq.thangSoSanh + ' / cùng kỳ ' + kq.namTruoc + '</td><td class="text-end fw-bold">' + kq.thangNay.ban + ' / ' + kq.cungKyNamTruoc.ban + '</td><td class="text-end">' + ptBienDong_(kq.thangNay.ban, kq.cungKyNamTruoc.ban) + '</td></tr>' : '') +
           '<tr><td>Khách tháng ' + kq.thangSoSanh + ' / tháng trước</td><td class="text-end fw-bold">' + kq.thangNay.khach + ' / ' + kq.thangTruoc.khach + '</td><td class="text-end">' + ptBienDong_(kq.thangNay.khach, kq.thangTruoc.khach) + '</td></tr>' +
           '</tbody></table></div></div></div>';
 
       html += '<div class="row g-3 mb-3">' +
         '<div class="col-lg-5"><div class="border rounded-3 p-3 bg-white h-100"><div class="fw-bold mb-2 text-purple">Nguồn khách theo kênh</div>' +
-          '<table class="table table-sm small mb-0"><thead><tr><th>Kênh</th><th class="text-end">' + kq.nam + '</th><th class="text-end">' + kq.namTruoc + '</th><th class="text-end">Thay đổi</th></tr></thead><tbody>' +
+          '<table class="table table-sm small mb-0"><thead><tr><th>Kênh</th><th class="text-end">' + kq.nam + '</th>' + (coNT ? '<th class="text-end">' + kq.namTruoc + '</th><th class="text-end">Thay đổi</th>' : '<th class="text-end">Tỷ lệ</th>') + '</tr></thead><tbody>' +
           (kq.kenh.length ? kq.kenh.map(function(k) {
-            return '<tr><td>' + escapeHtml(k.ten) + '</td><td class="text-end fw-bold">' + k.nam + '</td><td class="text-end">' + k.namTruoc + '</td><td class="text-end">' + ptBienDong_(k.nam, k.namTruoc) + '</td></tr>';
+            return '<tr><td>' + escapeHtml(k.ten) + '</td><td class="text-end fw-bold">' + k.nam + '</td>' + (coNT ? '<td class="text-end">' + k.namTruoc + '</td><td class="text-end">' + ptBienDong_(k.nam, k.namTruoc) + '</td>' : '<td class="text-end text-muted">' + (Y.ban ? Math.round(k.nam / Y.ban * 100) : 0) + '%</td>') + '</tr>';
           }).join("") : '<tr><td colspan="4" class="text-muted">Chưa có dữ liệu</td></tr>') +
           '</tbody></table></div></div>' +
         '<div class="col-lg-7"><div class="border rounded-3 p-3 h-100" style="background:#fff8e6;border-color:#f5d48a !important;"><div class="fw-bold mb-2" style="color:#7a5200;">💡 Gợi ý chạy quảng cáo</div><ul class="mb-0 small" style="line-height:1.7;">' +
@@ -2197,6 +2307,8 @@
       var tong = Y.ban;
       html += '<div class="row g-3">' + ptBangThanh_("Tỉnh / thành phố", kq.tinh, tong) + ptBangThanh_("Độ tuổi", kq.doTuoi, tong) +
         ptBangThanh_("Giới tính", kq.gioiTinh, tong) + ptBangThanh_("Ngày trong tuần", kq.thu, tong) + '</div>' +
+        '<div class="row g-3 mt-0">' + ptBangThanh_("🕖 Khung giờ khách đến", kq.gioDen || [], ptTong_(kq.gioDen)) + ptBangThanh_("🎀 Mẫu decor được chọn", kq.mauDecor || [], ptTong_(kq.mauDecor)) +
+        ptBangThanh_("📲 Giờ khách đặt bàn", kq.gioDat || [], ptTong_(kq.gioDat)) + ptBangThanh_("📅 Đặt trước bao lâu", kq.datTruoc || [], ptTong_(kq.datTruoc)) + '</div>' +
         '<div class="small text-muted mt-2">Số liệu lấy từ DATA_TONG. ' + kq.tyLeCoThongTin + '% đơn năm ' + kq.nam + ' có thông tin tỉnh/thành, độ tuổi.</div>';
       box.innerHTML = html;
 
@@ -2208,7 +2320,7 @@
             datasets: [
               { label: "Năm " + kq.nam, data: kq.theoThang.nam.map(function(s) { return s.ban; }), backgroundColor: "#af6a42", borderRadius: 4 },
               { label: "Năm " + kq.namTruoc, data: kq.theoThang.namTruoc.map(function(s) { return s.ban; }), backgroundColor: "#e7cfc1", borderRadius: 4 }
-            ]
+            ].slice(0, coNT ? 2 : 1)
           },
           options: { responsive: true, plugins: { legend: { position: "bottom" } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
         }));
@@ -2225,6 +2337,8 @@
     function loadLichTienCoc() {
       var sel = document.getElementById("lcYearSelect");
       if (!sel.options.length) { var y = new Date().getFullYear(); for (var i = 0; i < 4; i++) sel.add(new Option("Năm " + (y - i), y - i)); }
+      // Mở lần đầu: luôn xem theo quý của tháng hiện tại
+      if (!document.getElementById("lcPeriod").options.length) { document.getElementById("lcViewMode").value = "quy"; doiKieuXemLich_(); }
       document.getElementById("lcGrid").innerHTML = '<div class="col-12 text-center text-muted py-5">Đang tải lịch tiền cọc năm ' + sel.value + '...</div>';
       adminRun().withSuccessHandler(veLichTienCoc_).getLichTienCocNam(sel.value);
       _lcLoaded = true;
@@ -2275,8 +2389,8 @@
       thangs.forEach(function(m) {
         var tm = res.thang[m];
         html += '<div class="' + colCls + '"><div class="border rounded-3 p-' + (lon ? 3 : 2) + ' h-100 bg-white">' +
-          '<div class="d-flex justify-content-between align-items-center mb-2"><span class="fw-bold text-purple' + (lon ? ' fs-5' : '') + '">Tháng ' + (m + 1) + '</span>' +
-          '<span class="badge ' + (tm.coc ? 'bg-warning text-dark' : 'bg-light text-muted border') + (lon ? ' fs-6' : '') + '">' + (tm.coc ? tm.coc.toLocaleString("vi-VN") + " đ" : "0 đ") + ' • ' + tm.so + ' đơn</span></div>' +
+          '<div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-2"><span class="fw-bold text-purple text-nowrap' + (lon ? ' fs-5' : '') + '">Tháng ' + (m + 1) + '</span>' +
+          '<span class="badge text-nowrap ' + (tm.coc ? 'bg-warning text-dark' : 'bg-light text-muted border') + (lon ? ' fs-6' : '') + '">' + (tm.coc ? tm.coc.toLocaleString("vi-VN") + " đ" : "0 đ") + ' • ' + tm.so + ' đơn</span></div>' +
           '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:' + (lon ? 6 : 3) + 'px;font-size:' + (lon ? 13 : 11) + 'px;">';
         ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].forEach(function(t) { html += '<div class="text-center fw-bold text-muted">' + t + '</div>'; });
         var lech = (new Date(nam, m, 1).getDay() + 6) % 7;
@@ -2286,7 +2400,7 @@
           var key = nam + "-" + pad(m + 1) + "-" + pad(d), v = res.ngay[key];
           var dam = v && max ? 0.18 + 0.82 * (v.coc / max) : 0;
           var nen = v && v.coc ? "rgba(245,179,1," + dam.toFixed(2) + ")" : "#f8f9fa";
-          html += '<div class="text-center rounded-2" style="padding:' + (lon ? '8px 2px' : '3px 1px') + ';min-height:' + (lon ? 74 : 38) + 'px;background:' + nen + ';' + (key === keyHomNay ? 'outline:2px solid #934c22;' : '') + '" title="' +
+          html += '<div class="text-center rounded-2' + (key < keyHomNay ? ' ngay-qua' : '') + '" style="padding:' + (lon ? '8px 2px' : '3px 1px') + ';min-height:' + (lon ? 74 : 38) + 'px;background:' + nen + ';' + (key === keyHomNay ? 'outline:2px solid #934c22;' : '') + '" title="' +
             d + '/' + (m + 1) + (v ? ': ' + v.coc.toLocaleString("vi-VN") + ' đ - ' + v.so + ' đơn' : ': chưa có đơn') + '">' +
             '<div style="font-weight:600;color:#555;">' + d + '</div>' +
             (v && v.coc
@@ -2301,7 +2415,7 @@
     var _ngayKhoa = [];
     function veNgayKhoa_() {
       document.getElementById("kgNgayList").innerHTML = _ngayKhoa.map(function(n) {
-        return '<span class="badge fw-bold d-inline-flex align-items-center gap-1" style="background:#fbe9e7;color:#b4231b;font-size:13px">' + n.split("-").reverse().join("/") +
+        return '<span class="badge fw-bold d-inline-flex align-items-center gap-1" style="background:#fbe9e7;color:#b4231b;font-size:13px" title="' + n.split("-").reverse().join("/") + '">' + n.slice(8, 10) + "/" + n.slice(5, 7) + "/" + n.slice(2, 4) +
           ' <a href="#" class="text-decoration-none" style="color:#b4231b" title="Mở lại ngày này" onclick="boNgayKhoa(\'' + n + '\');return false">✕</a></span>';
       }).join("") || '<small class="text-muted">Chưa có ngày nào</small>';
     }
@@ -2325,11 +2439,10 @@
     function veKhoaGioAdmin_(k) {
       _ngayKhoa = k.ngayKhoa || [];
       veNgayKhoa_();
-      [["Decor", k.decor], ["Thuong", k.thuong]].forEach(function(x) {
-        document.getElementById("kg" + x[0] + "Bat").checked = x[1].bat;
-        document.getElementById("kg" + x[0] + "Tu").value = x[1].tu;
-        document.getElementById("kg" + x[0] + "Den").value = x[1].den;
-      });
+      var d = k.decor || {};
+      document.getElementById("kgDecorBat").checked = d.bat; document.getElementById("kgDecorTu").value = d.tu; document.getElementById("kgDecorDen").value = d.den;
+      var thu = d.thu || [5, 6];
+      [].forEach.call(document.querySelectorAll(".kg-thu-o"), function(c) { c.checked = thu.indexOf(+c.value) !== -1; });
     }
     function luuKhoaGioAdmin() {
       function doc(t) { return { bat: document.getElementById("kg" + t + "Bat").checked, tu: document.getElementById("kg" + t + "Tu").value, den: document.getElementById("kg" + t + "Den").value }; }
@@ -2337,7 +2450,7 @@
       tt.innerText = "Đang lưu...";
       adminRun().withSuccessHandler(function(k) { veKhoaGioAdmin_(k); tt.innerText = "✅ Đã lưu"; })
         .withFailureHandler(function(err) { tt.innerText = ""; alert("Chưa lưu được: " + (err && err.message || err)); })
-        .luuKhoaGioWeb({ decor: doc("Decor"), thuong: doc("Thuong") });
+        .luuKhoaGioWeb({ decor: Object.assign(doc("Decor"), { thu: [].filter.call(document.querySelectorAll(".kg-thu-o"), function(c) { return c.checked; }).map(function(c) { return +c.value; }) }) });
     }
     function loadCalendarYearTab6() {
       adminRun().withSuccessHandler(veKhoaGioAdmin_).layKhoaGio();
@@ -2396,16 +2509,21 @@
       var lon = mode === "thang";
       var colCls = lon ? "col-12" : mode === "quy" ? "col-lg-4 col-md-6" : "col-xl-3 col-lg-4 col-md-6";
       var pad = function(n) { return (n < 10 ? "0" : "") + n; };
+      // Chỉ hiện hôm nay và tương lai: ẩn tháng đã qua, ẩn ngày đã qua
+      var _hn = new Date(), hnKey = _hn.getFullYear() + "-" + pad(_hn.getMonth() + 1) + "-" + pad(_hn.getDate());
+      var hnY = _hn.getFullYear(), hnM = _hn.getMonth();
+      thangs = thangs.filter(function(m) { return year > hnY || (year === hnY && m >= hnM); });
       var html = "";
       if (_calTab6Data.isGlobalLocked) {
         html += '<div class="col-12"><div class="alert alert-warning py-2 mb-0 small fw-bold">⚠️ Đang bật khóa Decor toàn hệ thống (checkHideDecor).</div></div>';
       }
+      if (!thangs.length) html += '<div class="col-12 text-center text-muted py-4">Kỳ này đã qua — lịch chỉ hiện hôm nay và các ngày sắp tới.</div>';
       thangs.forEach(function(m) {
         var soKhoa = 0, soDecor = 0;
         var days = new Date(year, m + 1, 0).getDate();
-        for (var dd = 1; dd <= days; dd++) { var kk = year + "-" + pad(m + 1) + "-" + pad(dd); if (locked[kk]) soKhoa++; soDecor += counts[kk] || 0; }
+        for (var dd = 1; dd <= days; dd++) { var kk = year + "-" + pad(m + 1) + "-" + pad(dd); if (kk < hnKey) continue; if (locked[kk]) soKhoa++; soDecor += counts[kk] || 0; }
         html += '<div class="' + colCls + '"><div class="border rounded-3 p-' + (lon ? 3 : 2) + ' h-100 bg-white">';
-        html += '<div class="d-flex justify-content-between align-items-center mb-2"><span class="fw-bold text-purple' + (lon ? ' fs-5' : '') + '"' +
+        html += '<div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-2"><span class="fw-bold text-purple text-nowrap' + (lon ? ' fs-5' : '') + '"' +
           (lon ? '' : ' style="cursor:pointer;text-decoration:underline dotted" title="Bấm để xem tháng này dạng bảng chi tiết" onclick="xemThangTab6_(' + (m + 1) + ')"') + '>Tháng ' + (m + 1) + '/' + year + (lon ? '' : ' 🔍') + '</span>' +
           '<span class="small text-muted">%%TOMTAT%%</span></div>' +
           (lon ? '<div class="small text-muted mb-2 d-flex flex-wrap gap-2"><span><span class="gh-cham" style="background:#eaf3e6"></span>&lt;6 khách</span><span><span class="gh-cham" style="background:#fbe8dc"></span>≥6 khách</span>' +
@@ -2416,10 +2534,13 @@
         ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].forEach(function(t) {
           html += '<div class="text-center fw-bold text-muted">' + t + '</div>';
         });
-        var offset = (new Date(year, m, 1).getDay() + 6) % 7;
+        // Tháng hiện tại: bắt đầu từ tuần có hôm nay; ngày đã qua trong tuần đó để trống (giữ đúng cột thứ)
+        var dau = (year === hnY && m === hnM) ? Math.max(1, _hn.getDate() - (_hn.getDay() + 6) % 7) : 1;
+        var offset = (new Date(year, m, dau).getDay() + 6) % 7;
         for (var b = 0; b < offset; b++) html += '<div></div>';
-        for (var d = 1; d <= days; d++) {
+        for (var d = dau; d <= days; d++) {
           var key = year + "-" + pad(m + 1) + "-" + pad(d);
+          if (key < hnKey) { html += '<div></div>'; continue; } // ẩn ngày đã qua
           var cnt = counts[key] || 0;
           var wd = new Date(year, m, d).getDay(), rieng = (_calTab6Data.gioiHanNgay || {})[key], ghc = rieng || (((_calTab6Data.gioiHan || {}).ngay) || {})[wd] || {};
           var nh = (_calTab6Data.decorNhom || {})[key] || { nho: 0, lon: 0, khachNho: 0, khachLon: 0 };
@@ -3346,15 +3467,82 @@
       if (!buoc || !o.value) d = new Date(); else { var p = o.value.split("-").map(Number); d = new Date(p[0], p[1] - 1, p[2] + buoc); }
       o.value = mdNgayKey_(d); taiMauDecorNgay();
     }
-    var _mdLan = 0, _mdTl = "";
+    var _mdLan = 0, _mdTl = "", _mdGh = null;
+    // Hàng có data-canh-hang: phần tử cuối rớt xuống dòng thì gắn .da-xuong-dong để canh trái (vừa 1 dòng thì giãn đều 2 lề)
+    function kiemXuongDong_() {
+      [].forEach.call(document.querySelectorAll("[data-canh-hang]"), function(h) {
+        var con = [].filter.call(h.children, function(c) { return c.offsetParent !== null && c.getBoundingClientRect().width > 0; });
+        if (con.length < 2) return;
+        var cuoi = con[con.length - 1], xuong = cuoi.getBoundingClientRect().top >= con[0].getBoundingClientRect().bottom - 2;
+        h.classList.toggle("da-xuong-dong", xuong);
+        // data-canh-thu2: phần xuống dòng thụt vào thẳng mép phần tử thứ 2 (VD ô ngày, sau chữ "Ngày đặt"); điện thoại giữ bố cục riêng
+        if (h.hasAttribute("data-canh-thu2")) {
+          if (xuong && con.length > 2 && window.innerWidth >= 576) {
+            var cs = getComputedStyle(h), le = con[1].getBoundingClientRect().left - h.getBoundingClientRect().left - parseFloat(cs.paddingLeft) - parseFloat(cs.borderLeftWidth);
+            cuoi.style.setProperty("margin-left", Math.max(0, Math.round(le)) + "px", "important");
+          } else cuoi.style.removeProperty("margin-left");
+        }
+      });
+    }
+    window.addEventListener("resize", function() { clearTimeout(window._kxd); window._kxd = setTimeout(kiemXuongDong_, 80); });
+    document.addEventListener("DOMContentLoaded", function() {
+      setTimeout(kiemXuongDong_, 50);
+      if (window.ResizeObserver) [].forEach.call(document.querySelectorAll("[data-canh-hang]"), function(h) { new ResizeObserver(function() { kiemXuongDong_(); }).observe(h); });
+      document.addEventListener("shown.bs.tab", function() { setTimeout(kiemXuongDong_, 30); });
+    });
+    function mdThuCua_(ngay) { var p = String(ngay).split("-").map(Number); return ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"][new Date(p[0], p[1] - 1, p[2]).getDay()] || ""; }
     function taiMauDecorNgay() {
       var ngay = document.getElementById("mdNgay").value; if (!ngay) return;
+      document.getElementById("mdThu").innerText = mdThuCua_(ngay);
       var lan = ++_mdLan, cho = '<div class="md-rong"><span class="spinner-border spinner-border-sm me-1"></span>Đang tải…</div>';
       document.getElementById("mdDsCon").innerHTML = cho; document.getElementById("mdDsDa").innerHTML = cho;
       adminRun().withSuccessHandler(function(r) { if (lan === _mdLan) veMauDecorNgay_(r); }) // cổng quản trị (có tên + SĐT khách)
         .withFailureHandler(function(e) { if (lan === _mdLan) veMauDecorNgay_({ success: false, message: "Lỗi: " + (e && e.message || e) }); })
         .layMauDecorTheoNgayWeb(ngay);
     }
+    // ✏️ Sửa giới hạn decor ngày đang xem: nhập số -> bấm Lưu -> hiện cảnh báo các thay đổi -> Xác nhận mới ghi
+    var MD_TRUONG = [["nho", "Bàn < 6 khách"], ["khachNho", "Khách bàn < 6"], ["lon", "Bàn ≥ 6 khách"], ["khachLon", "Khách bàn ≥ 6"], ["tong", "Tổng bàn decor"]];
+    function mdSuaGioiHan() {
+      if (!_mdGh) { alert("Chưa tải xong số liệu ngày này."); return; }
+      var cu = document.getElementById("mdKhungSua"); if (cu) cu.remove();
+      var g = _mdGh, c = g.c || {}, p = g.ngay.split("-");
+      var k = document.createElement("div"); k.id = "mdKhungSua";
+      k.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:3000;width:min(440px,94vw);max-height:92vh;overflow:auto;background:#fff;border:1px solid #e3d3c6;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.2);padding:14px;font-size:14px";
+      k.innerHTML = '<div class="d-flex justify-content-between align-items-center mb-1"><b>✏️ Giới hạn decor · ' + g.thu + ' ' + p[2] + '/' + p[1] + '/' + p[0] + '</b><button type="button" class="btn-close" onclick="document.getElementById(\'mdKhungSua\').remove()"></button></div>' +
+        '<div class="small text-muted mb-2">' + (g.rieng ? '📌 Ngày này đang dùng giới hạn riêng.' : 'Đang theo giới hạn chung của ' + g.thu + '. Lưu ở đây chỉ đổi riêng ngày này.') + ' 0 = không giới hạn.</div>' +
+        '<div id="mdSuaNhap"><label class="form-check mb-2"><input type="checkbox" class="form-check-input" id="mdSuaKhoa"' + (c.khoa ? ' checked' : '') + '> ⛔ Không nhận bàn decor ngày này</label>' +
+        '<div class="row g-2">' + MD_TRUONG.map(function(t) {
+          return '<div class="col-6"><label class="small text-muted d-block">' + t[1] + '<input type="number" min="0" inputmode="numeric" class="form-control form-control-sm text-center" data-k="' + t[0] + '" value="' + (c[t[0]] || 0) + '"></label></div>';
+        }).join("") + '</div>' +
+        '<div class="d-flex gap-2 mt-3"><button type="button" class="btn btn-sm fw-bold text-white flex-fill" style="background:#864c2a" onclick="mdXemThayDoi_(true)">💾 Lưu riêng ngày này</button>' +
+        (g.rieng ? '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="mdXemThayDoi_(false)">↩ Dùng theo ' + g.thu + '</button>' : '') + '</div></div>' +
+        '<div id="mdSuaXacNhan" style="display:none"></div>';
+      document.body.appendChild(k);
+    }
+    function mdXemThayDoi_(luu) {
+      var g = _mdGh, c = g.c || {}, cfg = null, dong = [];
+      if (luu) {
+        cfg = { khoa: document.getElementById("mdSuaKhoa").checked };
+        [].forEach.call(document.querySelectorAll("#mdKhungSua input[data-k]"), function(i) { cfg[i.getAttribute("data-k")] = Math.max(0, parseInt(i.value, 10) || 0); });
+        if (!!c.khoa !== cfg.khoa) dong.push("Nhận bàn decor: " + (c.khoa ? "đang KHOÁ" : "đang mở") + " → " + (cfg.khoa ? "KHOÁ" : "mở lại"));
+        MD_TRUONG.forEach(function(t) { var a = c[t[0]] || 0, b = cfg[t[0]]; if (a !== b) dong.push(t[1] + ": " + (a || "không giới hạn") + " → " + (b || "không giới hạn")); });
+        if (!dong.length) { alert("Chưa có thay đổi nào."); return; }
+      } else dong.push("Bỏ giới hạn riêng, dùng lại giới hạn chung của " + g.thu);
+      var x = document.getElementById("mdSuaXacNhan");
+      x.innerHTML = '<div class="p-2 rounded-3" style="background:#fff4e5;border:1px solid #fed7aa;color:#7c2d12">' +
+        '<div class="fw-bold mb-1">⚠️ Xác nhận đổi giới hạn decor ngày ' + g.ngay.split("-").reverse().join("/") + '</div><ul class="mb-1 ps-3">' +
+        dong.map(function(d) { return '<li>' + escapeHtml(d) + '</li>'; }).join("") + '</ul>' +
+        '<div class="small">Web đặt bàn decor sẽ nhận / chặn khách theo giới hạn mới ngay sau khi lưu.</div></div>' +
+        '<div class="d-flex gap-2 mt-2"><button type="button" class="btn btn-sm btn-danger fw-bold flex-fill" id="mdNutXacNhan">✅ Xác nhận lưu</button><button type="button" class="btn btn-sm btn-outline-secondary" onclick="mdQuayLaiSua_()">Quay lại</button></div>';
+      document.getElementById("mdSuaNhap").style.display = "none"; x.style.display = "";
+      document.getElementById("mdNutXacNhan").onclick = function() {
+        this.disabled = true; this.innerText = "Đang lưu...";
+        adminRun().withSuccessHandler(function() { var k = document.getElementById("mdKhungSua"); if (k) k.remove(); taiMauDecorNgay(); })
+          .withFailureHandler(function(e) { alert("Chưa lưu được: " + (e && e.message || e)); mdQuayLaiSua_(); })
+          .luuGioiHanNgayWeb(g.ngay, cfg);
+      };
+    }
+    function mdQuayLaiSua_() { document.getElementById("mdSuaXacNhan").style.display = "none"; document.getElementById("mdSuaNhap").style.display = ""; }
     function mdTachTen_(t) { t = String(t || ""); var i = t.indexOf(" - "); return i > 0 ? [t.slice(0, i), t.slice(i + 3)] : ["", t]; }
     function mdDongKhach_(k) {
       return '<div class="md-kh"><span class="k-ten"><i class="fa-solid fa-user"></i><b>' + escapeHtml(tenKhachGon_(k.ten) || "Khách") + '</b></span>' +
@@ -3365,28 +3553,27 @@
     }
     function veMauDecorNgay_(r) {
       var con = document.getElementById("mdDsCon"), da = document.getElementById("mdDsDa"), bao = document.getElementById("mdBao");
-      if (!r || !r.success) { con.innerHTML = ""; bao.innerHTML = ""; document.getElementById("mdTomTat").innerHTML = ""; document.getElementById("mdSoCon").innerText = "0"; document.getElementById("mdSoDa").innerText = "0"; da.innerHTML = '<div class="md-rong text-danger">' + escapeHtml((r && r.message) || "Không tải được dữ liệu") + '</div>'; return; }
+      if (!r || !r.success) { con.innerHTML = ""; bao.innerHTML = ""; document.getElementById("mdBang").innerHTML = ""; document.getElementById("mdTT").innerHTML = ""; _mdGh = null; document.getElementById("mdSoCon").innerText = "0"; document.getElementById("mdSoDa").innerText = "0"; da.innerHTML = '<div class="md-rong text-danger">' + escapeHtml((r && r.message) || "Không tải được dữ liệu") + '</div>'; return; }
       var dsCon = [], dsDa = [], soBan = (r.chuaMau || []).length;
       (r.mau || []).forEach(function(m) { if (m.khach.length) { dsDa.push(m); soBan += m.khach.length; } else if (!m.ngoaiDanhMuc) dsCon.push(m); });
       document.getElementById("mdSoCon").innerText = dsCon.length;
       document.getElementById("mdSoDa").innerText = dsDa.length;
-      document.getElementById("mdTomTat").innerHTML = '<span class="md-chip con" title="Mẫu còn trống"><i class="fa-solid fa-circle-check"></i><span class="md-chu">Còn </span>' + dsCon.length + '<span class="md-chu"> mẫu</span></span>' +
-        '<span class="md-chip da" title="Mẫu đã đặt"><i class="fa-solid fa-calendar-check"></i><span class="md-chu">Đã đặt </span>' + dsDa.length + '</span>' +
-        '<span class="md-chip ban" title="Bàn decor trong ngày"><i class="fa-solid fa-cake-candles"></i>' + soBan + '<span class="md-chu2"> bàn decor</span></span>';
-      var b = [], gh = r.gioiHan || {}, c = gh.cauHinh || {}, dd = gh.daDat || { nho: 0, lon: 0, khachNho: 0, khachLon: 0 };
-      if (r.khoaDecor) b.push('<div class="md-bao khoa"><i class="fa-solid fa-lock md-i"></i>Ngày này đã khoá nhận decor trên lịch (FULL DECOR) — khách không đặt được mẫu nào.</div>');
-      if (r.anChonMau) b.push('<div class="md-bao khoa"><i class="fa-solid fa-eye-slash md-i"></i>Web khách đang ẩn mục chọn mẫu (DATA_TONG!H1).</div>');
-      if (c.khoa) b.push('<div class="md-bao khoa"><i class="fa-solid fa-lock md-i"></i>Ngày này không nhận bàn decor (giới hạn theo ngày).</div>');
-      else if (c.tong || c.nho || c.lon || c.khachNho || c.khachLon) {
-        var p = [];
-        if (c.tong) p.push("Tổng " + (dd.nho + dd.lon) + "/" + c.tong + " bàn");
-        if (c.nho) p.push("Dưới 6 khách " + dd.nho + "/" + c.nho + " bàn");
-        if (c.lon) p.push("Từ 6 khách " + dd.lon + "/" + c.lon + " bàn");
-        if (c.khachNho) p.push("Khách bàn dưới 6: " + dd.khachNho + "/" + c.khachNho);
-        if (c.khachLon) p.push("Khách bàn từ 6: " + dd.khachLon + "/" + c.khachLon);
-        b.push('<div class="md-bao gh"><i class="fa-solid fa-chart-simple md-i"></i>Giới hạn ngày: ' + p.join(" · ") + '</div>');
-      }
-      bao.innerHTML = b.join("");
+      // Bảng giới hạn ngày: thứ + ngày, trạng thái nhận, Bàn / Khách theo nhóm (<6, ≥6, tổng) — đủ/vượt tô đỏ
+      var gh = r.gioiHan || {}, c = gh.cauHinh || {}, dd = gh.daDat || { nho: 0, lon: 0, khachNho: 0, khachLon: 0 };
+      var pn = String(r.ngay || "").split("-").map(Number);
+      var thu = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"][new Date(pn[0], pn[1] - 1, pn[2]).getDay()] || "";
+      var tongBan = dd.nho + dd.lon, tongKhach = dd.khachNho + dd.khachLon, ghKhach = (c.khachNho && c.khachLon) ? c.khachNho + c.khachLon : 0;
+      var duBan = (c.tong && tongBan >= c.tong) || (c.nho && dd.nho >= c.nho && c.lon && dd.lon >= c.lon);
+      var o = function(da, gioi) { return '<td class="' + (gioi && da >= gioi ? 'md-du' : '') + '">' + da + (gioi ? '<span class="md-gh">/' + gioi + '</span>' : '') + '</td>'; };
+      var tt = r.khoaDecor ? ['khoa', 'fa-lock', 'Đã khoá FULL decor trên lịch'] : c.khoa ? ['khoa', 'fa-ban', 'Không nhận thêm bàn decor'] : duBan ? ['khoa', 'fa-circle-exclamation', 'Đã đủ bàn decor'] : ['mo', 'fa-circle-check', 'Còn nhận bàn decor'];
+      _mdGh = { ngay: r.ngay, thu: thu, c: c, dd: dd, rieng: !!gh.rieng };
+      document.getElementById("mdThu").innerText = thu;
+      document.getElementById("mdTT").innerHTML = '<span class="md-tt ' + tt[0] + '"><i class="fa-solid ' + tt[1] + ' me-1"></i>' + tt[2] + '</span>' + (gh.rieng ? '<span class="md-rieng" title="Ngày này đang dùng giới hạn riêng">📌 riêng</span>' : '');
+      document.getElementById("mdBang").innerHTML = '<table class="md-gh-bang"><thead><tr><th></th><th>Bàn</th><th>Khách</th></tr></thead><tbody>' +
+        '<tr class="nho"><th>&lt; 6 khách</th>' + o(dd.nho, c.nho) + o(dd.khachNho, c.khachNho) + '</tr>' +
+        '<tr class="lon"><th>≥ 6 khách</th>' + o(dd.lon, c.lon) + o(dd.khachLon, c.khachLon) + '</tr>' +
+        '<tr class="tong"><th>Tổng</th>' + o(tongBan, c.tong) + o(tongKhach, ghKhach) + '</tr></tbody></table>';
+      bao.innerHTML = r.anChonMau ? '<div class="md-bao khoa"><i class="fa-solid fa-eye-slash md-i"></i>Web khách đang ẩn mục chọn mẫu (DATA_TONG!H1).</div>' : "";
       con.innerHTML = dsCon.length ? dsCon.map(function(m) {
         var t = mdTachTen_(m.ten);
         return '<div class="md-o"><span class="md-ma">' + escapeHtml(t[0]) + '</span><span class="md-ten">' + escapeHtml(t[1]) + '</span>' +
@@ -3409,6 +3596,69 @@
         _mdTl = tlv; taiMauDecorNgay();
       });
     });
+  </script>
+  <script>
+    // 📅 Popup lịch số bàn decor còn trống (trang quản trị): bấm ô ngày -> xem từng ngày còn bao nhiêu bàn; ngày nào cũng chọn được (kể cả đầy / đã qua)
+    var _lct = { input: null, thang: "", du: {} };
+    function lctPad_(n) { return (n < 10 ? "0" : "") + n; }
+    function ganLichConTrong_(id) {
+      var i = document.getElementById(id); if (!i || i._lct) return; i._lct = true;
+      i.readOnly = true; i.classList.add("lct-input"); i.title = "Bấm để chọn ngày (xem số bàn decor còn trống)";
+      i.addEventListener("click", function(e) { e.preventDefault(); moLichConTrong_(i); });
+      i.addEventListener("keydown", function(e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); moLichConTrong_(i); } });
+    }
+    function moLichConTrong_(i) {
+      _lct.input = i; _lct.du = {}; // mỗi lần mở lấy số mới
+      var v = i.value, d = v ? new Date(v + "T12:00:00") : new Date();
+      _lct.thang = d.getFullYear() + "-" + lctPad_(d.getMonth() + 1);
+      taoKhungLct_(); document.getElementById("lctNen").style.display = "flex"; veLct_();
+    }
+    function dongLct_() { var n = document.getElementById("lctNen"); if (n) n.style.display = "none"; }
+    function lctDoiThang_(b) { var p = _lct.thang.split("-").map(Number), d = new Date(p[0], p[1] - 1 + b, 1); _lct.thang = d.getFullYear() + "-" + lctPad_(d.getMonth() + 1); veLct_(); }
+    function lctHomNay_() { var d = new Date(); chonLct_(d.getFullYear() + "-" + lctPad_(d.getMonth() + 1) + "-" + lctPad_(d.getDate())); }
+    function taoKhungLct_() {
+      if (document.getElementById("lctNen")) return;
+      var n = document.createElement("div"); n.id = "lctNen"; n.className = "lct-nen"; n.style.display = "none";
+      n.onclick = function(e) { if (e.target === n) dongLct_(); };
+      n.innerHTML = '<div class="lct-hop" role="dialog" aria-label="Chọn ngày"><div class="lct-dau"><button type="button" onclick="lctDoiThang_(-1)" aria-label="Tháng trước">‹</button><b id="lctTieuDe"></b><button type="button" onclick="lctDoiThang_(1)" aria-label="Tháng sau">›</button><button type="button" class="lct-dong" onclick="dongLct_()" aria-label="Đóng">✕</button></div>' +
+        '<div class="lct-tom" id="lctTom"></div><div class="lct-luoi" id="lctLuoi"></div>' +
+        '<div class="lct-chan"><span>Số = bàn decor còn nhận<i style="background:#e8f7ee"></i>còn<i style="background:#fff3e0"></i>sắp hết<i style="background:#fdecea"></i>đầy<i style="background:#eee"></i>nghỉ</span><button type="button" onclick="lctHomNay_()">Hôm nay</button></div></div>';
+      document.body.appendChild(n);
+    }
+    function lctSoCon_(o) { return o.conTong != null ? o.conTong : (o.conNho != null && o.conLon != null ? o.conNho + o.conLon : null); }
+    function veLct_() {
+      var p = _lct.thang.split("-").map(Number), du = _lct.du[_lct.thang];
+      document.getElementById("lctTieuDe").innerText = "Tháng " + p[1] + "/" + p[0];
+      var hn = new Date(), homNay = hn.getFullYear() + "-" + lctPad_(hn.getMonth() + 1) + "-" + lctPad_(hn.getDate()), dang = _lct.input ? _lct.input.value : "";
+      var html = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map(function(t) { return '<div class="th">' + t + '</div>'; }).join("");
+      var lech = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, soNgay = new Date(p[0], p[1], 0).getDate(), soMo = 0, tong = 0;
+      for (var b = 0; b < lech; b++) html += "<div></div>";
+      for (var d = 1; d <= soNgay; d++) {
+        var k = _lct.thang + "-" + lctPad_(d), o = du && du.ngay ? du.ngay[k] : null, lop = "", chu = "", phu = "";
+        if (k < homNay) lop = "qua";
+        else if (!du) chu = "…";
+        else if (!o) lop = "qua";
+        else if (o.dong) { lop = o.ly === "Nghỉ" ? "nghi" : "day"; chu = o.ly || "Đầy"; }
+        else {
+          var n = lctSoCon_(o); soMo++; if (n != null) tong += n;
+          lop = n == null || n >= 3 ? "mo" : "it"; chu = n == null ? "Còn" : "Còn " + n;
+          if (o.conNho != null && o.conLon != null) phu = "&lt;6: " + o.conNho + " · ≥6: " + o.conLon;
+        }
+        html += '<div class="lct-o ' + lop + (k === homNay ? " nay" : "") + (k === dang ? " chon" : "") + '" onclick="chonLct_(\'' + k + '\')"><span class="so">' + d + '</span>' +
+          (chu ? '<span class="con">' + chu + '</span>' : '') + (phu ? '<span class="phu">' + phu + '</span>' : '') + '</div>';
+      }
+      document.getElementById("lctLuoi").innerHTML = html;
+      document.getElementById("lctTom").innerHTML = !du ? "Đang tải số bàn còn trống…" : du.loi ? '<span style="color:#b42318">' + du.loi + '</span>' :
+        (soMo ? "Còn <b>" + soMo + "</b> ngày nhận bàn decor" + (tong ? " · tổng <b>" + tong + "</b> bàn" : "") : "Không còn ngày nhận bàn decor (tính từ hôm nay)");
+      if (!du) {
+        var t = _lct.thang;
+        google.script.run.withSuccessHandler(function(r) { _lct.du[t] = (r && r.success) ? r : { loi: (r && r.message) || "Chưa tải được số bàn" }; if (t === _lct.thang) veLct_(); })
+          .withFailureHandler(function(e) { _lct.du[t] = { loi: "Chưa tải được: " + (e && e.message || e) }; if (t === _lct.thang) veLct_(); delete _lct.du[t]; })
+          .layLichConNhanDecor(t);
+      }
+    }
+    function chonLct_(k) { var i = _lct.input; dongLct_(); if (!i) return; i.value = k; i.dispatchEvent(new Event("change", { bubbles: true })); }
+    document.addEventListener("DOMContentLoaded", function() { ganLichConTrong_("timelineDateInput"); ganLichConTrong_("mdNgay"); });
   </script>
 </body>
 </html>
