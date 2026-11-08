@@ -670,6 +670,61 @@
     body.gd-a .hang-ngay .btn-danger i { color: #e8566a; }
     body.gd-a .hang-ngay .chip-tk .fa-chair { color: #3b82f6 !important; } body.gd-a .hang-ngay .chip-tk .fa-users { color: #3a9d6a !important; } body.gd-a .hang-ngay .chip-tk .fa-coins { color: #d49a12 !important; }
   </style>
+  <style id="theDeDoc">
+    /* Thẻ đơn ở Timeline: bỏ thông tin trùng (ngày, nhóm bàn), giờ + số khách nổi bật, nhãn nhỏ xám ở trên, giá trị đậm ở dưới */
+    #timelineContainer .field-col-0, #timelineContainer .field-col-1 { display: none !important; }
+    #timelineContainer .customer-fields-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px 14px !important; align-items: start; }
+    #timelineContainer:not(.smart-2col-mode) .customer-fields-grid { grid-template-columns: 1fr !important; }
+    #timelineContainer .card-kv-row { display: flex; flex-direction: column; min-width: 0; gap: 1px; }
+    #timelineContainer .card-kv-title { font-size: .7em; font-weight: 600 !important; color: #9a9188 !important; text-transform: uppercase; letter-spacing: .3px; }
+    #timelineContainer .card-kv-val { font-size: 1em; font-weight: 600; color: #2b2522 !important; overflow-wrap: anywhere; }
+    #timelineContainer .kv-gio-vao { order: -3; } #timelineContainer .kv-so-khach { order: -2; } #timelineContainer .kv-tien-coc { order: -1; }
+    #timelineContainer .kv-gio-vao .card-kv-val, #timelineContainer .kv-so-khach .card-kv-val { font-size: 1.35em; font-weight: 800; line-height: 1.1; }
+    #timelineContainer .kv-id .card-kv-val { font-size: .8em; font-weight: 500; color: #9a9188 !important; }
+    #timelineContainer .kv-decor, #timelineContainer .kv-mau-decore, #timelineContainer .kv-mau-decor { grid-column: 1 / -1; }
+    #timelineContainer .card-note-box, #timelineContainer .card-dishes-box { grid-column: 1 / -1; font-size: .92em; line-height: 1.4; }
+    #timelineContainer .card-note-box .card-kv-title, #timelineContainer .card-dishes-box .card-kv-title { text-transform: none; font-size: 1em; color: #6b625a !important; }
+    /* Tên + SĐT: in đậm, to, cùng màu chữ chính */
+    #timelineContainer .table-card-header { font-size: 1.12em !important; font-weight: 800 !important; color: #2b2522 !important; }
+    #timelineContainer .table-card-header .tk-sdt { font-size: 1em !important; font-weight: 800 !important; color: #2b2522 !important; opacity: 1 !important; }
+    /* Đủ chỗ thì tên + SĐT cùng 1 dòng; thẻ hẹp thì SĐT xuống dòng dưới (mỗi thông tin vẫn trọn 1 dòng) */
+    #timelineContainer .table-card-header { flex-wrap: nowrap !important; white-space: nowrap !important; gap: 6px !important; align-items: baseline; }
+    #timelineContainer .table-card-header .tk-ico { flex: 0 0 auto; }
+    #timelineContainer .table-card-header .tk-ten { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #timelineContainer .table-card-header .tk-sdt { flex: 0 0 auto; margin-left: auto; white-space: nowrap; }
+    #timelineContainer .kv-id .card-kv-val { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    @media (max-width: 575.98px) { #timelineContainer .customer-fields-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
+  </style>
+  <style id="bongDo">
+    /* Bóng đổ mềm, lan rộng, không viền cứng (tránh cảm giác bóng đen phẳng 2D) */
+    body .card-box, body #timelineContainer { box-shadow: 0 12px 32px rgba(70,45,25,.06) !important; border: 0 !important; }
+    body .timeline-cat-col > div { box-shadow: none !important; border: 0 !important; background: transparent !important; }
+    body .timeline-cat-col h6 { border-bottom: 1px solid rgba(70,45,25,.08) !important; }
+    body .timeline-card-table { border: 0 !important; box-shadow: 0 10px 28px rgba(70,45,25,.08) !important; transition: box-shadow .18s ease, transform .18s ease; }
+    body .table-card-divider { border-color: rgba(70,45,25,.08) !important; }
+    @media (hover: hover) {
+      body .timeline-card-table:hover { box-shadow: 0 16px 38px rgba(70,45,25,.13) !important; transform: translateY(-2px); }
+    }
+    @media (min-width: 576px) { body #timelineContainer .thanh-cong-cu { box-shadow: none !important; } }
+    @media (max-width: 575.98px) { body #timelineContainer { box-shadow: none !important; } body .thanh-cong-cu { box-shadow: 0 10px 28px rgba(70,45,25,.06) !important; border: 0 !important; } }
+    /* Thẻ đủ rộng thì thông tin chia 3 cột cho thoáng (như trên điện thoại); thẻ hẹp mới chia 2 cột */
+    #timelineContainer .timeline-card-table { container-type: inline-size; }
+    @container (min-width: 300px) { .smart-2col-mode .customer-fields-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
+    @media (min-width: 992px) {
+      #timelineContainer .timeline-card-table { font-size: 18px !important; }
+      #timelineContainer .table-card-header { font-size: 19px !important; }
+    }
+  </style>
+  <style id="nenToiHon">
+    /* Nền tối hơn một chút để thẻ đơn màu trắng nổi rõ */
+    html:has(body.gd-a), body.gd-a, body.gd-a header.navbar-custom { background: #e9e1d6 !important; background-image: none !important; }
+    @media (min-width: 576px) { body.gd-a #mainTab { background: #e9e1d6 !important; } }
+    body.gd-a #timelineContainer { background: #f2ebe2 !important; }
+    @media (max-width: 575.98px) { body.gd-a #timelineContainer { background: transparent !important; } }
+    body:not(.gd-a):not(.gd-b) #timelineContainer { background: #f3ede6 !important; }
+    body.gd-b #timelineContainer { background: #f4f4f4 !important; }
+    html:has(body.gd-b), body.gd-b { background: #ededed !important; }
+  </style>
 </head>
 <body class="pb-5">
   <script>
@@ -681,6 +736,7 @@
       apGiaoDien_(GIAO_DIEN[tiep]);
       try { localStorage.setItem("giao_dien", GIAO_DIEN[tiep]); } catch (e) {}
       var n = document.getElementById("nutGiaoDien"); if (n) n.title = "Giao diện: " + TEN_GIAO_DIEN[tiep];
+      setTimeout(function() { if (window.vuaTenThe_) vuaTenThe_(); }, 80);
     }
     try { var _gd = localStorage.getItem("giao_dien"); apGiaoDien_(_gd === null ? "gd-a" : _gd); } catch (e) { apGiaoDien_("gd-a"); }
   </script>
@@ -1824,6 +1880,10 @@
       return s;
     }
 
+    // "Giờ Vào" -> "gio-vao", "Mẫu decore" -> "mau-decore": dùng để làm nổi bật / sắp xếp từng loại thông tin trên thẻ
+    function kvSlug_(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+    // Bỏ tiền tố "Tên:" khách tự gõ trong ô tên
+    function tenKhachGon_(t) { return String(t || "").replace(/^\s*(tên|ten|họ tên|họ & tên|ho ten)\s*[:：]\s*/i, "").trim(); }
     function renderNonEmptyCustomerFieldsHtml(it, opts) {
       opts = opts || {};
       var html = '<div class="customer-fields-grid">';
@@ -1834,7 +1894,7 @@
           var f = it.extraFields[i];
           if (f.colIndex === 2 || f.colIndex === 7) continue;
           if (String(f.value).toLowerCase().indexOf("vat") !== -1) hasVatFlag = true;
-          var fieldCls = "card-kv-row field-col-" + f.colIndex;
+          var fieldCls = "card-kv-row field-col-" + f.colIndex + " kv-" + kvSlug_(f.title);
 
           if (f.colIndex === 4 && f.value.indexOf("http") === 0) {
             var thumbUrl = it.billThumb || f.value;
@@ -1878,6 +1938,25 @@
     }
 
     var _tlItems = {}; // dữ liệu timeline đang hiển thị, dùng cho in A4
+    // Tên khách trên thẻ: luôn cùng dòng với SĐT; thiếu chỗ thì viết tắt dần các chữ đầu (chữ nào đủ chỗ vẫn để nguyên)
+    function vuaTenThe_() {
+      Array.prototype.forEach.call(document.querySelectorAll("#timelineContainer .tk-ten[data-ten]"), function(el) {
+        var w = el.getAttribute("data-ten").split(/\s+/).filter(Boolean);
+        el.textContent = w.join(" ");
+        for (var k = 1; el.scrollWidth > el.clientWidth + 1 && k < w.length; k++) {
+          el.textContent = w.slice(0, k).map(function(x) { return x.charAt(0) + "."; }).join("") + " " + w.slice(k).join(" ");
+        }
+      });
+    }
+    (function() {
+      var hen = null;
+      function canLai() { clearTimeout(hen); hen = setTimeout(vuaTenThe_, 120); }
+      window.addEventListener("resize", canLai);
+      document.addEventListener("DOMContentLoaded", function() {
+        var c = document.getElementById("timelineContainer");
+        if (c && window.ResizeObserver) new ResizeObserver(canLai).observe(c);
+      });
+    })();
     function renderTimelineCol(elemId, items, typeClass) {
       _tlItems[elemId] = items || [];
       var container = document.getElementById(elemId);
@@ -1888,7 +1967,8 @@
       var html = "";
       for (var i = 0; i < items.length; i++) {
         var it = items[i];
-        var headerTitle = '<span class="tk-ten">👤 ' + escapeHtml((it.tenKH || "KHÁCH HÀNG").toUpperCase()) + '</span>' + (it.sdt ? '<span class="tk-sdt">' + escapeHtml(it.sdt) + '</span>' : '');
+        var tenThe = (tenKhachGon_(it.tenKH) || "KHÁCH HÀNG").toUpperCase();
+        var headerTitle = '<span class="tk-ico">👤</span><span class="tk-ten" data-ten="' + escapeHtml(tenThe) + '">' + escapeHtml(tenThe) + '</span>' + (it.sdt ? '<span class="tk-sdt">' + escapeHtml(it.sdt) + '</span>' : '');
         html += '<div class="' + currentTab1CardColClass + ' t1-card-col-wrap">' +
           '<div class="timeline-card-table ' + typeClass + (loaiVat(it) ? ' co-vat' : '') + '">' + vatTag(it) +
             '<div class="table-card-header">' + headerTitle + '</div>' +
@@ -1898,6 +1978,7 @@
         '</div>';
       }
       container.innerHTML = html;
+      requestAnimationFrame(vuaTenThe_);
     }
 
     function filterTimelineCategory(cat, btnEl) {
@@ -2982,7 +3063,8 @@
           if (upperNhom.indexOf("DECOR") !== -1 || it.mauDecor) {
             typeClass = (parseInt(it.soKhach, 10) >= 6) ? "decor-large" : "decor-small";
           }
-          var headerTitle = '<span class="tk-ten">👤 ' + escapeHtml((it.tenKH || "KHÁCH HÀNG").toUpperCase()) + '</span>' + (it.sdt ? '<span class="tk-sdt">' + escapeHtml(it.sdt) + '</span>' : '');
+          var tenThe = (tenKhachGon_(it.tenKH) || "KHÁCH HÀNG").toUpperCase();
+        var headerTitle = '<span class="tk-ico">👤</span><span class="tk-ten" data-ten="' + escapeHtml(tenThe) + '">' + escapeHtml(tenThe) + '</span>' + (it.sdt ? '<span class="tk-sdt">' + escapeHtml(it.sdt) + '</span>' : '');
           html += '<div class="' + currentTab3CardColClass + ' t3-card-col-wrap">' +
             '<div class="timeline-card-table ' + typeClass + (loaiVat(it) ? ' co-vat' : '') + '">' + vatTag(it) +
               '<div class="d-flex justify-content-between align-items-center mb-1">' +
