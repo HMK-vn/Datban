@@ -7,8 +7,12 @@
 
   <link rel="manifest" href="app-khach.webmanifest">
   <link rel="apple-touch-icon" href="app_icon/logo_khach_180.png?v=20261103">
-  <link rel="icon" type="image/png" sizes="256x256" href="app_icon/be_cho_256.png?v=1">
-  <link rel="shortcut icon" type="image/png" href="app_icon/be_cho_256.png?v=1">
+  <link rel="icon" type="image/png" sizes="64x64" href="app_icon/be_cho_64.png">
+  <link rel="shortcut icon" type="image/png" href="app_icon/be_cho_64.png">
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -167,7 +171,7 @@
   <div class="container" style="max-width: 650px;">
     <div class="card">
       <div class="header-bar text-center">
-        <div class="hd-wrap"><img class="hd-logo" src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'"><div class="hd-txt"><div class="hd-brand">TÚI NƯỚNG LAVENDER</div><div class="hd-title">ĐẶT BÀN ĂN TIÊU CHUẨN</div><div class="hd-sub">Đặt bàn nhanh, không cần cọc</div></div></div>
+        <div class="hd-wrap"><img class="hd-logo" src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'"><div class="hd-txt"><div class="hd-brand">TÚI NƯỚNG LAVENDER</div><div class="hd-title">ĐẶT BÀN ĂN TIÊU CHUẨN</div><div class="hd-sub">Đặt bàn nhanh, không cần cọc</div></div></div>
       </div>
       <div class="card-body p-4">
         <form id="bookingForm" onsubmit="handleFormSubmit(event)">
@@ -415,7 +419,7 @@
       guiDonWebAnToan(data, function(res) {
           window._sdtVuaDat = data.sdt;
           msg.className = "alert alert-light border mt-3 p-0 overflow-hidden";
-          msg.innerHTML = res.success === false ? "" : '<div class="d-flex align-items-center gap-3 text-start text-white p-3" style="background:linear-gradient(135deg,#b4703f,#c98a5b);border-radius:8px 8px 0 0"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src=\'https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png\'" style="width:58px;height:58px;width:min(58px,13vw);height:min(58px,13vw);border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.2);background:#fff"><div><div class="fw-bold text-nowrap" style="font-size:16px;font-size:min(16px,3.5vw);letter-spacing:.3px"><span style="display:inline-block;width:1.5em">🎉</span>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div><div class="text-nowrap" style="font-size:12.5px;font-size:min(12.5px,3.3vw);opacity:.85;padding-left:min(24px,5.25vw);margin-top:2px">Túi Nướng Lavender · Đặt bàn ăn tiêu chuẩn</div></div></div><div class="p-3">' + document.getElementById("tplThanhCong").innerHTML + '</div>';
+          msg.innerHTML = res.success === false ? "" : '<div class="d-flex align-items-center gap-3 text-start text-white p-3" style="background:linear-gradient(135deg,#b4703f,#c98a5b);border-radius:8px 8px 0 0"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src=\'https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png\'" style="width:58px;height:58px;width:min(58px,13vw);height:min(58px,13vw);border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.2);background:#fff"><div><div class="fw-bold text-nowrap" style="font-size:16px;font-size:min(16px,3.5vw);letter-spacing:.3px"><span style="display:inline-block;width:1.5em">🎉</span>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div><div class="text-nowrap" style="font-size:12.5px;font-size:min(12.5px,3.3vw);opacity:.85;padding-left:min(24px,5.25vw);margin-top:2px">Túi Nướng Lavender · Đặt bàn ăn tiêu chuẩn</div></div></div><div class="p-3">' + document.getElementById("tplThanhCong").innerHTML + '</div>';
           if (res.success === false) { msg.className = "alert alert-danger mt-3 text-center"; msg.innerText = res.message; }
           msg.style.display = "block";
           if (res.success !== false) { form.reset(); apDungKhoaGio(); }

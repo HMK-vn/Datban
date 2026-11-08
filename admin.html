@@ -7,8 +7,12 @@
 
   <link rel="manifest" href="app-quantri.webmanifest">
   <link rel="apple-touch-icon" href="app_icon/logo_admin_180.png?v=20261103">
-  <link rel="icon" type="image/png" sizes="256x256" href="app_icon/be_cho_256.png?v=1">
-  <link rel="shortcut icon" type="image/png" href="app_icon/be_cho_256.png?v=1">
+  <link rel="icon" type="image/png" sizes="64x64" href="app_icon/be_cho_64.png">
+  <link rel="shortcut icon" type="image/png" href="app_icon/be_cho_64.png">
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -79,7 +83,6 @@
   <title>Túi Nướng Lavender - Quản Lý Đặt Bàn & Decor</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     body { background-color: #f4f6fb; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     .navbar-custom { background: linear-gradient(135deg, #8c4821, #934c22); color: white; }
@@ -912,7 +915,8 @@
     .lct-o.nay { box-shadow: inset 0 0 0 2px #e8833a; }
     .lct-o.chon { box-shadow: inset 0 0 0 2px #864c2a; }
     .lct-o:hover { filter: brightness(.96); }
-    .lct-chan { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; font-size: 11.5px; color: #7b6f66; flex-wrap: wrap; }
+    .lct-chan { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; font-size: min(11.5px, 2.8vw); color: #7b6f66; flex-wrap: nowrap; }
+    .lct-chan > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
     .lct-chan i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin: 0 2px 0 6px; border: 1px solid #ddd; vertical-align: -1px; }
     .lct-chan button { font-size: 12px; padding: 2px 10px; border: 1px solid #d8c3b3; background: #fff; color: #6f432a; border-radius: 999px; font-weight: 700; }
   </style>
@@ -958,7 +962,7 @@
   <header class="navbar-custom py-2 px-4 shadow-sm mb-3" style="">
     <div class="main-container d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-3">
-        <img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" style="width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.18);flex:none">
+        <img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" style="width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.18);flex:none">
         <div>
           <h5 class="mb-0 fw-bold admin-title">TÚI NƯỚNG LAVENDER</h5>
           <small class="text-white-50 admin-sub">Timeline Decor • Nhập & Quản Lý DATA_TONG • Tra Cứu • Email • Nhập Đặt Bàn</small>
@@ -1262,7 +1266,7 @@
             <h5 class="fw-bold mb-0 text-purple"><i class="fa-solid fa-toggle-on me-2 text-success"></i>Lịch Quản Lý & Khóa Nhận Decor 12 Tháng (Đồng Bộ Calender-Booking)</h5>
             <small class="text-muted">Nhấp trực tiếp vào từng ngày trên lịch để <b>Bật / Tắt Khóa Full Decor</b> • Tự động tích/bỏ tích 2 chiều với tab <b>Calender-Booking</b> trên Google Sheet</small>
           </div>
-          <div class="d-flex align-items-center gap-2">
+          <div class="d-flex align-items-center flex-wrap gap-2">
             <span class="chu-thich-lich" title="Chú thích màu ô ngày. Bấm vào từng ô ngày trong lịch để khoá / mở / sửa giới hạn">Chú thích:
               <span><i style="background:#dc3545"></i>Đã khoá FULL</span><span><i style="background:#f5ebe5;border:1px solid #d8ac93"></i>Có đơn decor</span><span><i style="background:#f8f9fa;border:1px solid #dee2e6"></i>Đang mở</span></span>
             <select id="calViewMode" class="form-select form-select-sm w-auto fw-bold" onchange="doiKieuXemTab6_()">
@@ -1367,8 +1371,8 @@
               <h5 class="fw-bold mb-0 text-purple"><i class="fa-solid fa-coins me-2 text-warning"></i>Lịch Tiền Cọc Theo Ngày Nhập</h5>
               <small class="text-muted">Mỗi ô = tổng tiền cọc của các đơn được nhập vào DATA_TONG trong ngày đó (theo cột Thời gian nhập)</small>
             </div>
-            <div class="d-flex align-items-center gap-2">
-              <span class="badge bg-warning text-dark px-3 py-2 fs-6" id="lcTongNam">Tổng năm: ...</span>
+            <div class="d-flex align-items-center flex-wrap gap-2">
+              <span class="badge bg-warning text-dark px-3 py-2 fs-6 text-wrap text-start" id="lcTongNam">Tổng năm: ...</span>
               <select id="lcViewMode" class="form-select form-select-sm w-auto fw-bold" onchange="doiKieuXemLich_()">
                 <option value="nam">Cả năm</option><option value="quy" selected>Theo quý</option><option value="thang">Theo tháng</option>
               </select>
@@ -1475,7 +1479,18 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script>
+    // Thư viện nặng chỉ tải khi cần (Chart.js: tab Phân tích; html2canvas: xuất ảnh) để trang quản trị mở nhanh hơn
+    var TV_CHART_ = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js", TV_H2C_ = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+    function taiThuVien_(url, coSan, xong) {
+      if (coSan()) return xong();
+      var cu = document.querySelector('script[data-tv="' + url + '"]');
+      if (cu) { cu.addEventListener("load", xong); return; }
+      var s = document.createElement("script"); s.src = url; s.async = true; s.setAttribute("data-tv", url);
+      s.onload = xong; s.onerror = function() { alert("Chưa tải được thư viện, kiểm tra mạng rồi thử lại."); };
+      document.head.appendChild(s);
+    }
+  </script>
   <script>
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
@@ -2312,7 +2327,8 @@
         '<div class="small text-muted mt-2">Số liệu lấy từ DATA_TONG. ' + kq.tyLeCoThongTin + '% đơn năm ' + kq.nam + ' có thông tin tỉnh/thành, độ tuổi.</div>';
       box.innerHTML = html;
 
-      if (window.Chart) {
+      taiThuVien_(TV_CHART_, function() { return !!window.Chart; }, function() {
+        if (!document.getElementById("ptChartThang")) return;
         _ptCharts.push(new Chart(document.getElementById("ptChartThang"), {
           type: "bar",
           data: {
@@ -2324,7 +2340,7 @@
           },
           options: { responsive: true, plugins: { legend: { position: "bottom" } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
         }));
-      }
+      });
     }
 
     // TAB 8: LỊCH TIỀN CỌC THEO NGÀY NHẬP
@@ -2736,12 +2752,14 @@
         clone.style.left = "-9999px";
         clone.style.top = "0";
         document.body.appendChild(clone);
+        taiThuVien_(TV_H2C_, function() { return !!window.html2canvas; }, function() {
         html2canvas(clone, { scale: 2, backgroundColor: "#ffffff", useCORS: true }).then(function(canvas) {
           var link = document.createElement("a");
           link.download = fileName;
           link.href = canvas.toDataURL("image/png");
           link.click();
           document.body.removeChild(clone);
+        });
         });
       }, delayMs);
     }
@@ -3599,7 +3617,7 @@
   </script>
   <script>
     // 📅 Popup lịch số bàn decor còn trống (trang quản trị): bấm ô ngày -> xem từng ngày còn bao nhiêu bàn; ngày nào cũng chọn được (kể cả đầy / đã qua)
-    var _lct = { input: null, thang: "", du: {} };
+    var _lct = { input: null, thang: "", du: {}, dang: {}, cu: {} };
     function lctPad_(n) { return (n < 10 ? "0" : "") + n; }
     function ganLichConTrong_(id) {
       var i = document.getElementById(id); if (!i || i._lct) return; i._lct = true;
@@ -3608,13 +3626,21 @@
       i.addEventListener("keydown", function(e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); moLichConTrong_(i); } });
     }
     function moLichConTrong_(i) {
-      _lct.input = i; _lct.du = {}; // mỗi lần mở lấy số mới
+      _lct.input = i; _lct.cu = {}; // số đã có hiện ngay, tải lại ngầm để cập nhật
       var v = i.value, d = v ? new Date(v + "T12:00:00") : new Date();
       _lct.thang = d.getFullYear() + "-" + lctPad_(d.getMonth() + 1);
-      taoKhungLct_(); document.getElementById("lctNen").style.display = "flex"; veLct_();
+      taoKhungLct_(); document.getElementById("lctNen").style.display = "flex"; veLct_(); lctTai_(_lct.thang, true);
+    }
+    // Tải số bàn còn trống 1 tháng; lamMoi = tải lại ngầm dù đã có số (giữ số cũ trên màn hình tới khi có số mới)
+    function lctTai_(t, lamMoi) {
+      if (_lct.dang[t] || (_lct.du[t] && !lamMoi) || (lamMoi && _lct.cu[t])) return;
+      _lct.dang[t] = 1; if (lamMoi) _lct.cu[t] = 1;
+      google.script.run.withSuccessHandler(function(r) { delete _lct.dang[t]; if (r && r.success) _lct.du[t] = r; else if (!_lct.du[t]) _lct.du[t] = { loi: (r && r.message) || "Chưa tải được số bàn" }; if (t === _lct.thang && document.getElementById("lctNen") && document.getElementById("lctNen").style.display === "flex") veLct_(); })
+        .withFailureHandler(function(e) { delete _lct.dang[t]; if (!_lct.du[t] && t === _lct.thang) { _lct.du[t] = { loi: "Chưa tải được: " + (e && e.message || e) }; veLct_(); delete _lct.du[t]; } })
+        .layLichConNhanDecor(t);
     }
     function dongLct_() { var n = document.getElementById("lctNen"); if (n) n.style.display = "none"; }
-    function lctDoiThang_(b) { var p = _lct.thang.split("-").map(Number), d = new Date(p[0], p[1] - 1 + b, 1); _lct.thang = d.getFullYear() + "-" + lctPad_(d.getMonth() + 1); veLct_(); }
+    function lctDoiThang_(b) { var p = _lct.thang.split("-").map(Number), d = new Date(p[0], p[1] - 1 + b, 1); _lct.thang = d.getFullYear() + "-" + lctPad_(d.getMonth() + 1); veLct_(); lctTai_(_lct.thang, true); }
     function lctHomNay_() { var d = new Date(); chonLct_(d.getFullYear() + "-" + lctPad_(d.getMonth() + 1) + "-" + lctPad_(d.getDate())); }
     function taoKhungLct_() {
       if (document.getElementById("lctNen")) return;
@@ -3622,7 +3648,7 @@
       n.onclick = function(e) { if (e.target === n) dongLct_(); };
       n.innerHTML = '<div class="lct-hop" role="dialog" aria-label="Chọn ngày"><div class="lct-dau"><button type="button" onclick="lctDoiThang_(-1)" aria-label="Tháng trước">‹</button><b id="lctTieuDe"></b><button type="button" onclick="lctDoiThang_(1)" aria-label="Tháng sau">›</button><button type="button" class="lct-dong" onclick="dongLct_()" aria-label="Đóng">✕</button></div>' +
         '<div class="lct-tom" id="lctTom"></div><div class="lct-luoi" id="lctLuoi"></div>' +
-        '<div class="lct-chan"><span>Số = bàn decor còn nhận<i style="background:#e8f7ee"></i>còn<i style="background:#fff3e0"></i>sắp hết<i style="background:#fdecea"></i>đầy<i style="background:#eee"></i>nghỉ</span><button type="button" onclick="lctHomNay_()">Hôm nay</button></div></div>';
+        '<div class="lct-chan"><span>Số = bàn còn nhận<i style="background:#e8f7ee"></i>còn<i style="background:#fff3e0"></i>sắp hết<i style="background:#fdecea"></i>đầy<i style="background:#eee"></i>nghỉ</span><button type="button" onclick="lctHomNay_()">Hôm nay</button></div></div>';
       document.body.appendChild(n);
     }
     function lctSoCon_(o) { return o.conTong != null ? o.conTong : (o.conNho != null && o.conLon != null ? o.conNho + o.conLon : null); }
@@ -3650,15 +3676,10 @@
       document.getElementById("lctLuoi").innerHTML = html;
       document.getElementById("lctTom").innerHTML = !du ? "Đang tải số bàn còn trống…" : du.loi ? '<span style="color:#b42318">' + du.loi + '</span>' :
         (soMo ? "Còn <b>" + soMo + "</b> ngày nhận bàn decor" + (tong ? " · tổng <b>" + tong + "</b> bàn" : "") : "Không còn ngày nhận bàn decor (tính từ hôm nay)");
-      if (!du) {
-        var t = _lct.thang;
-        google.script.run.withSuccessHandler(function(r) { _lct.du[t] = (r && r.success) ? r : { loi: (r && r.message) || "Chưa tải được số bàn" }; if (t === _lct.thang) veLct_(); })
-          .withFailureHandler(function(e) { _lct.du[t] = { loi: "Chưa tải được: " + (e && e.message || e) }; if (t === _lct.thang) veLct_(); delete _lct.du[t]; })
-          .layLichConNhanDecor(t);
-      }
+      if (!du) lctTai_(_lct.thang, false);
     }
     function chonLct_(k) { var i = _lct.input; dongLct_(); if (!i) return; i.value = k; i.dispatchEvent(new Event("change", { bubbles: true })); }
-    document.addEventListener("DOMContentLoaded", function() { ganLichConTrong_("timelineDateInput"); ganLichConTrong_("mdNgay"); });
+    document.addEventListener("DOMContentLoaded", function() { setTimeout(function() { var d = new Date(); lctTai_(d.getFullYear() + "-" + lctPad_(d.getMonth() + 1), false); }, 800); ganLichConTrong_("timelineDateInput"); ganLichConTrong_("mdNgay"); });
   </script>
 </body>
 </html>

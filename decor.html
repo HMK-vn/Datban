@@ -7,8 +7,12 @@
 
   <link rel="manifest" href="app-khach.webmanifest">
   <link rel="apple-touch-icon" href="app_icon/logo_khach_180.png?v=20261103">
-  <link rel="icon" type="image/png" sizes="256x256" href="app_icon/be_cho_256.png?v=1">
-  <link rel="shortcut icon" type="image/png" href="app_icon/be_cho_256.png?v=1">
+  <link rel="icon" type="image/png" sizes="64x64" href="app_icon/be_cho_64.png">
+  <link rel="shortcut icon" type="image/png" href="app_icon/be_cho_64.png">
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -223,14 +227,14 @@
     .lich-o.qua { opacity: .35; }
     .lich-o.chon { border-color: #864c2a; box-shadow: inset 0 0 0 1px #864c2a; }
     .lich-o.mo:hover, .lich-o.it:hover { filter: brightness(.96); }
-    .lich-chu { margin-top: 8px; font-size: 11.5px; color: #7b6f66; text-align: center; }
+    .lich-chu { margin-top: 8px; font-size: min(11.5px, 2.9vw); color: #7b6f66; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   </style>
 </head>
 <body class="py-4">
   <div class="container" style="max-width: 680px;">
     <div class="card">
       <div class="header-bar text-center">
-        <div class="hd-wrap"><img class="hd-logo" src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'"><div class="hd-txt"><div class="hd-brand">TÚI NƯỚNG LAVENDER</div><div class="hd-title">ĐẶT BÀN ĂN DECOR</div><div class="hd-sub">Lưu giữ những khoảnh khắc trọn vẹn</div></div></div>
+        <div class="hd-wrap"><img class="hd-logo" src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'"><div class="hd-txt"><div class="hd-brand">TÚI NƯỚNG LAVENDER</div><div class="hd-title">ĐẶT BÀN ĂN DECOR</div><div class="hd-sub">Lưu giữ những khoảnh khắc trọn vẹn</div></div></div>
       </div>
 
       <div class="card-body p-4">
@@ -383,7 +387,7 @@
                 <button type="button" class="lich-phu" onclick="moLichPopup()" aria-label="Chọn ngày đặt bàn (xem số bàn còn nhận)" title="Bấm để xem số bàn còn nhận trong tháng"></button>
               </div>
             </div>
-            <div class="col-md-3 col-6 mb-3">
+            <div class="col-md-3 col-6 mb-3 an-khi-day">
               <label class="form-label fw-bold">Giờ đến *</label>
               <input type="hidden" name="gioVao" id="selectGioDecor" value="18:00">
               <div class="input-group">
@@ -530,7 +534,7 @@
   <div class="modal fade" id="modalConfirmSuccess" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header p-0 border-0 d-block"><div class="d-flex align-items-center gap-3 text-start text-white p-3" style="background:linear-gradient(135deg,#82431e,#9c5125);border-radius:8px 8px 0 0"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" style="width:58px;height:58px;width:min(58px,13vw);height:min(58px,13vw);border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.2);background:#fff"><div><div class="fw-bold text-nowrap" style="font-size:16px;font-size:min(16px,3.5vw);letter-spacing:.3px"><span style="display:inline-block;width:1.5em">🎉</span>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div><div class="text-nowrap" style="font-size:12.5px;font-size:min(12.5px,3.3vw);opacity:.85;padding-left:min(24px,5.25vw);margin-top:2px">Túi Nướng Lavender · Đặt bàn ăn decor</div></div></div></div>
+        <div class="modal-header p-0 border-0 d-block"><div class="d-flex align-items-center gap-3 text-start text-white p-3" style="background:linear-gradient(135deg,#82431e,#9c5125);border-radius:8px 8px 0 0"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" style="width:58px;height:58px;width:min(58px,13vw);height:min(58px,13vw);border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.2);background:#fff"><div><div class="fw-bold text-nowrap" style="font-size:16px;font-size:min(16px,3.5vw);letter-spacing:.3px"><span style="display:inline-block;width:1.5em">🎉</span>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div><div class="text-nowrap" style="font-size:12.5px;font-size:min(12.5px,3.3vw);opacity:.85;padding-left:min(24px,5.25vw);margin-top:2px">Túi Nướng Lavender · Đặt bàn ăn decor</div></div></div></div>
         <div class="modal-body p-4 text-center">
           <div class="tc-ok">
             <p class="fw-bold mb-2" style="white-space:nowrap;font-size:15px;font-size:min(15.5px,4.05cqw)">Túi đã nhận được yêu cầu đặt bàn của Quý khách.</p>
@@ -1148,7 +1152,7 @@
       <div class="lich-dau"><button type="button" onclick="lichDoiThang(-1)" aria-label="Tháng trước">‹</button><b id="lichTieuDe"></b><button type="button" onclick="lichDoiThang(1)" aria-label="Tháng sau">›</button><button type="button" class="lich-dong" onclick="dongLichPopup()" aria-label="Đóng">✕</button></div>
       <div class="lich-tom" id="lichTom"></div>
       <div class="lich-luoi" id="lichLuoi"></div>
-      <div class="lich-chu">Số trên ô = bàn decor còn nhận · <span style="color:#1f7a45">●</span> còn nhiều · <span style="color:#b45309">●</span> sắp hết · <span style="color:#b42318">●</span> đầy · <span style="color:#999">●</span> nghỉ</div>
+      <div class="lich-chu">Số = bàn còn nhận · <span style="color:#1f7a45">●</span> còn · <span style="color:#b45309">●</span> sắp hết · <span style="color:#b42318">●</span> đầy · <span style="color:#999">●</span> nghỉ</div>
     </div>
   </div>
   <script>
@@ -1160,7 +1164,19 @@
       _lichThang = d.getFullYear() + "-" + lichPad_(d.getMonth() + 1);
       document.getElementById("lichPopup").style.display = "flex";
       veLichPopup_();
+      lichTaiTruoc_(1); // tải sẵn tháng sau
     }
+    // Tải sẵn số bàn của tháng (không vẽ) để bấm mở lịch là có số ngay
+    function lichTaiTruoc_(buoc) {
+      var hn = new Date(), p = (_lichThang || (hn.getFullYear() + "-" + lichPad_(hn.getMonth() + 1))).split("-").map(Number), d = new Date(p[0], p[1] - 1 + (buoc || 0), 1);
+      var t = d.getFullYear() + "-" + lichPad_(d.getMonth() + 1);
+      if (_lichDuLieu[t] || _lichDangTai[t]) return;
+      _lichDangTai[t] = 1;
+      google.script.run.withSuccessHandler(function(r) { delete _lichDangTai[t]; if (r && r.success) { _lichDuLieu[t] = r; if (t === _lichThang && document.getElementById("lichPopup").style.display === "flex") veLichPopup_(); } })
+        .withFailureHandler(function() { delete _lichDangTai[t]; }).layLichConNhanDecor(t);
+    }
+    var _lichDangTai = {};
+    document.addEventListener("DOMContentLoaded", function() { setTimeout(function() { lichTaiTruoc_(0); }, 300); });
     function dongLichPopup() { document.getElementById("lichPopup").style.display = "none"; }
     function lichDoiThang(b) {
       var p = _lichThang.split("-").map(Number), d = new Date(p[0], p[1] - 1 + b, 1), hn = new Date();
@@ -1193,10 +1209,10 @@
       }
       luoi.innerHTML = html;
       tom.innerHTML = !du ? "Đang tải số bàn còn nhận…" : du.loi ? '<span style="color:#b42318">' + du.loi + '</span>' : soMo ? ("Còn <b>" + soMo + "</b> ngày nhận bàn decor" + (tongCon ? " · tổng <b>" + tongCon + "</b> bàn" : "")) : "Tháng này đã hết ngày nhận bàn decor";
-      if (!du) {
-        var thang = _lichThang;
-        google.script.run.withSuccessHandler(function(r) { _lichDuLieu[thang] = (r && r.success) ? r : { loi: (r && r.message) || "Chưa tải được, thử lại sau." }; if (thang === _lichThang) veLichPopup_(); })
-          .withFailureHandler(function() { _lichDuLieu[thang] = { loi: "Chưa tải được, vui lòng thử lại." }; if (thang === _lichThang) veLichPopup_(); delete _lichDuLieu[thang]; })
+      if (!du && !_lichDangTai[_lichThang]) {
+        var thang = _lichThang; _lichDangTai[thang] = 1;
+        google.script.run.withSuccessHandler(function(r) { delete _lichDangTai[thang]; _lichDuLieu[thang] = (r && r.success) ? r : { loi: (r && r.message) || "Chưa tải được, thử lại sau." }; if (thang === _lichThang) veLichPopup_(); })
+          .withFailureHandler(function() { delete _lichDangTai[thang]; _lichDuLieu[thang] = { loi: "Chưa tải được, vui lòng thử lại." }; if (thang === _lichThang) veLichPopup_(); delete _lichDuLieu[thang]; })
           .layLichConNhanDecor(thang);
       }
     }
