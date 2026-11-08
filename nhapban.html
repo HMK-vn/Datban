@@ -238,13 +238,12 @@
     .lct-o .so { font-weight: 800; font-size: 14px; }
     .lct-o .con { font-size: 10.5px; font-weight: 700; line-height: 1.1; }
     .lct-o .phu { font-size: 9px; color: #6b5a4c; line-height: 1.1; white-space: nowrap; }
-    .lct-o.mo { background: #e8f7ee; } .lct-o.mo .con { color: #1f7a45; }
-    .lct-o.it { background: #fff3e0; } .lct-o.it .con { color: #b45309; }
-    .lct-o.day { background: #fdecea; } .lct-o.day .con { color: #b42318; }
-    .lct-o.nghi { background: #eee; } .lct-o.nghi .con { color: #888; }
+    .lct-o.mo { background: #1f8a4c; border-color: #1f8a4c; } .lct-o.it { background: #c2570c; border-color: #c2570c; } /* ngày còn bàn: nền đậm chữ trắng cho nổi bật */
+    .lct-o.mo, .lct-o.it, .lct-o.mo .con, .lct-o.it .con, .lct-o.mo .phu, .lct-o.it .phu { color: #fff; }
+    .lct-o.day, .lct-o.nghi { background: #f3f3f3; color: #c4c4c4; } .lct-o.day .con, .lct-o.nghi .con, .lct-o.day .phu, .lct-o.nghi .phu { color: #b3b3b3; } /* ngày đầy / nghỉ: xám chìm */
     .lct-o.qua { opacity: .45; }
-    .lct-o.nay { box-shadow: inset 0 0 0 2px #e8833a; }
-    .lct-o.chon { box-shadow: inset 0 0 0 2px #864c2a; }
+    .lct-o.nay { outline: 2px solid #e8833a; outline-offset: 1px; }
+    .lct-o.chon { outline: 2px solid #864c2a; outline-offset: 1px; }
     .lct-o:hover { filter: brightness(.96); }
     .lct-chan { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; font-size: min(11.5px, 2.8vw); color: #7b6f66; flex-wrap: nowrap; }
     .lct-chan > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
@@ -981,7 +980,7 @@
       n.onclick = function(e) { if (e.target === n) dongLct_(); };
       n.innerHTML = '<div class="lct-hop" role="dialog" aria-label="Chọn ngày"><div class="lct-dau"><button type="button" onclick="lctDoiThang_(-1)" aria-label="Tháng trước">‹</button><b id="lctTieuDe"></b><button type="button" onclick="lctDoiThang_(1)" aria-label="Tháng sau">›</button><button type="button" class="lct-dong" onclick="dongLct_()" aria-label="Đóng">✕</button></div>' +
         '<div class="lct-tom" id="lctTom"></div><div class="lct-luoi" id="lctLuoi"></div>' +
-        '<div class="lct-chan"><span>Số = bàn còn nhận<i style="background:#e8f7ee"></i>còn<i style="background:#fff3e0"></i>sắp hết<i style="background:#fdecea"></i>đầy<i style="background:#eee"></i>nghỉ</span><button type="button" onclick="lctHomNay_()">Hôm nay</button></div></div>';
+        '<div class="lct-chan"><span>Số = bàn còn nhận<i style="background:#1f8a4c"></i>còn<i style="background:#c2570c"></i>sắp hết<i style="background:#d9d9d9"></i>đầy/nghỉ</span><button type="button" onclick="lctHomNay_()">Hôm nay</button></div></div>';
       document.body.appendChild(n);
     }
     function lctSoCon_(o) { return o.conTong != null ? o.conTong : (o.conNho != null && o.conLon != null ? o.conNho + o.conLon : null); }
