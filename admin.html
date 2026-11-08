@@ -680,7 +680,7 @@
     #timelineContainer .card-kv-val { font-size: 1em; font-weight: 600; color: #2b2522 !important; overflow-wrap: anywhere; }
     #timelineContainer .kv-gio-vao { order: -3; } #timelineContainer .kv-so-khach { order: -2; } #timelineContainer .kv-tien-coc { order: -1; }
     #timelineContainer .kv-gio-vao .card-kv-val, #timelineContainer .kv-so-khach .card-kv-val { font-size: 1.35em; font-weight: 800; line-height: 1.1; }
-    #timelineContainer .kv-id .card-kv-val { font-size: .8em; font-weight: 500; color: #9a9188 !important; }
+    #timelineContainer .kv-id { display: none !important; } /* luôn ẩn ID khách trên thẻ */
     #timelineContainer .kv-decor, #timelineContainer .kv-mau-decore, #timelineContainer .kv-mau-decor { grid-column: 1 / -1; }
     #timelineContainer .card-note-box, #timelineContainer .card-dishes-box { grid-column: 1 / -1; font-size: .92em; line-height: 1.4; }
     #timelineContainer .card-note-box .card-kv-title, #timelineContainer .card-dishes-box .card-kv-title { text-transform: none; font-size: 1em; color: #6b625a !important; }
@@ -693,6 +693,11 @@
     #timelineContainer .table-card-header .tk-ten { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #timelineContainer .table-card-header .tk-sdt { flex: 0 0 auto; margin-left: auto; white-space: nowrap; }
     #timelineContainer .kv-id .card-kv-val { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* iPad dọc (768–991px), chế độ "Tất cả": 3 nhóm bàn xếp chồng, mỗi nhóm 2 thẻ/hàng → thẻ đủ rộng cho tên + SĐT 1 dòng */
+    @media (min-width: 768px) and (max-width: 991.98px) {
+      #timelineRow > .timeline-cat-col.col-md-4 { flex: 0 0 auto; width: 100%; max-width: 100%; }
+      #timelineRow > .timeline-cat-col.col-md-4 .t1-card-col-wrap.col-12 { flex: 0 0 auto; width: 50%; max-width: 50%; }
+    }
     @media (max-width: 575.98px) { #timelineContainer .customer-fields-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
   </style>
   <style id="bongDo">
@@ -728,17 +733,18 @@
 </head>
 <body class="pb-5">
   <script>
-    // Giao diện: "gd-a" = kem cam kiểu app (mặc định), "gd-b" = trắng tối giản, "" = màu Chấm công (nhớ trên máy)
-    var GIAO_DIEN = ["gd-a", "gd-b", ""], TEN_GIAO_DIEN = ["Kem cam", "Trắng", "Chấm công"];
+    // Giao diện: "" = màu Chấm công (mặc định mọi thiết bị), "gd-a" = kem cam kiểu app, "gd-b" = trắng tối giản (nhớ trên máy)
+    var GIAO_DIEN = ["", "gd-a", "gd-b"], TEN_GIAO_DIEN = ["Chấm công", "Kem cam", "Trắng"];
     function apGiaoDien_(g) { document.body.classList.remove("gd-a", "gd-b"); if (g) document.body.classList.add(g); }
     function doiGiaoDien() {
       var hien = GIAO_DIEN.indexOf((document.body.className.match(/gd-[ab]/) || [""])[0]), tiep = (hien + 1) % GIAO_DIEN.length;
       apGiaoDien_(GIAO_DIEN[tiep]);
-      try { localStorage.setItem("giao_dien", GIAO_DIEN[tiep]); } catch (e) {}
+      try { localStorage.setItem("giao_dien_v2", GIAO_DIEN[tiep]); } catch (e) {}
       var n = document.getElementById("nutGiaoDien"); if (n) n.title = "Giao diện: " + TEN_GIAO_DIEN[tiep];
       setTimeout(function() { if (window.vuaTenThe_) vuaTenThe_(); }, 80);
     }
-    try { var _gd = localStorage.getItem("giao_dien"); apGiaoDien_(_gd === null ? "gd-a" : _gd); } catch (e) { apGiaoDien_("gd-a"); }
+    // Khoá mới "giao_dien_v2": mọi máy đều về giao diện mặc định một lần, sau đó nhớ lựa chọn riêng
+    try { var _gd = localStorage.getItem("giao_dien_v2"); apGiaoDien_(_gd === null ? "" : _gd); } catch (e) { apGiaoDien_(""); }
   </script>
 
   <datalist id="depositSuggestList">
@@ -1837,22 +1843,13 @@
       for (var i = 0; i < btns.length; i++) btns[i].classList.remove("active");
       if (btnEl) btnEl.classList.add("active");
 
-      var cSmall = document.getElementById("colWrapSmallDecor");
-      var cLarge = document.getElementById("colWrapLargeDecor");
-      var cNorm = document.getElementById("colWrapNormal");
-
       if (cols === 1) {
         currentTab1CardColClass = "col-12";
-        cSmall.className = "col-md-4 timeline-cat-col";
-        cLarge.className = "col-md-4 timeline-cat-col";
-        cNorm.className = "col-md-4 timeline-cat-col";
       } else {
         var bsMap = { 2: "col-md-6", 3: "col-md-4", 4: "col-md-3", 6: "col-md-2" };
         currentTab1CardColClass = bsMap[cols] || "col-md-4";
-        cSmall.className = "col-12 timeline-cat-col";
-        cLarge.className = "col-12 timeline-cat-col";
-        cNorm.className = "col-12 timeline-cat-col";
       }
+      apBoCucNhom_();
 
       var items = document.querySelectorAll("#timelineContainer .t1-card-col-wrap");
       for (var j = 0; j < items.length; j++) {
@@ -1903,7 +1900,9 @@
           var f = it.extraFields[i];
           if (f.colIndex === 2 || f.colIndex === 7) continue;
           if (String(f.value).toLowerCase().indexOf("vat") !== -1) hasVatFlag = true;
-          var fieldCls = "card-kv-row field-col-" + f.colIndex + " kv-" + kvSlug_(f.title);
+          var slugTruong = kvSlug_(f.title);
+          if (slugTruong === "decor" && /^(có|co|x|yes)$/i.test(String(f.value).trim())) continue; // "Decor: Có" không có nội dung, đã có Mẫu decor
+          var fieldCls = "card-kv-row field-col-" + f.colIndex + " kv-" + slugTruong;
 
           if (f.colIndex === 4 && f.value.indexOf("http") === 0) {
             var thumbUrl = it.billThumb || f.value;
@@ -1948,12 +1947,23 @@
 
     var _tlItems = {}; // dữ liệu timeline đang hiển thị, dùng cho in A4
     // Tên khách trên thẻ: luôn cùng dòng với SĐT; thiếu chỗ thì viết tắt dần các chữ đầu (chữ nào đủ chỗ vẫn để nguyên)
+    function vuaTenMot_(el, w) {
+      el.textContent = w.join(" ");
+      for (var k = 1; el.scrollWidth > el.clientWidth + 1 && k < w.length; k++) {
+        el.textContent = w.slice(0, k).map(function(x) { return x.charAt(0) + "."; }).join("") + " " + w.slice(k).join(" ");
+      }
+      return el.scrollWidth <= el.clientWidth + 1;
+    }
     function vuaTenThe_() {
       Array.prototype.forEach.call(document.querySelectorAll("#timelineContainer .tk-ten[data-ten]"), function(el) {
-        var w = el.getAttribute("data-ten").split(/\s+/).filter(Boolean);
-        el.textContent = w.join(" ");
-        for (var k = 1; el.scrollWidth > el.clientWidth + 1 && k < w.length; k++) {
-          el.textContent = w.slice(0, k).map(function(x) { return x.charAt(0) + "."; }).join("") + " " + w.slice(k).join(" ");
+        var w = el.getAttribute("data-ten").split(/\s+/).filter(Boolean), hd = el.parentNode;
+        if (hd) hd.style.removeProperty("font-size");
+        if (vuaTenMot_(el, w) || !hd) return;
+        // Thẻ quá hẹp (vd iPad dọc 3 cột): viết tắt hết vẫn tràn thì thu nhỏ dần cỡ chữ dòng tên + SĐT (tối thiểu 70%)
+        var co = parseFloat(getComputedStyle(hd).fontSize) || 16;
+        for (var t = 0.95; t > 0.69; t -= 0.05) {
+          hd.style.setProperty("font-size", (co * t).toFixed(1) + "px", "important");
+          if (vuaTenMot_(el, w)) break;
         }
       });
     }
@@ -1994,32 +2004,20 @@
       var btns = document.querySelectorAll(".filter-cat-btn");
       for (var i = 0; i < btns.length; i++) btns[i].classList.remove("active");
       if (btnEl) btnEl.classList.add("active");
-
-      var cSmall = document.getElementById("colWrapSmallDecor");
-      var cLarge = document.getElementById("colWrapLargeDecor");
-      var cNorm = document.getElementById("colWrapNormal");
-
-      if (cat === "all") {
-        cSmall.style.display = "block";
-        cLarge.style.display = "block";
-        cNorm.style.display = "block";
-      } else if (cat === "small") {
-        cSmall.style.display = "block"; cSmall.className = "col-12 timeline-cat-col";
-        cLarge.style.display = "none";
-        cNorm.style.display = "none";
-      } else if (cat === "large") {
-        cSmall.style.display = "none";
-        cLarge.style.display = "block"; cLarge.className = "col-12 timeline-cat-col";
-        cNorm.style.display = "none";
-      } else if (cat === "normal") {
-        cSmall.style.display = "none";
-        cLarge.style.display = "none";
-        cNorm.style.display = "block"; cNorm.className = "col-12 timeline-cat-col";
-      } else if (cat === "all_decor") {
-        cSmall.style.display = "block"; cSmall.className = "col-md-6 timeline-cat-col";
-        cLarge.style.display = "block"; cLarge.className = "col-md-6 timeline-cat-col";
-        cNorm.style.display = "none";
-      }
+      _tlLocNhom = cat;
+      apBoCucNhom_();
+    }
+    // Bố cục 3 nhóm bàn theo (nhóm đang lọc × chế độ thẻ): ☰ → nhóm nằm cạnh nhau; lưới 2/3/4/6 hoặc chỉ 1 nhóm → nhóm trọn hàng
+    var _tlLocNhom = "all";
+    function apBoCucNhom_() {
+      var hien = { all: "SLN", all_decor: "SL", small: "S", large: "L", normal: "N" }[_tlLocNhom] || "SLN";
+      var luoi = currentTab1CardColClass !== "col-12";
+      var lop = (luoi || hien.length === 1) ? "col-12" : (hien.length === 2 ? "col-md-6" : "col-md-4");
+      [["S", "colWrapSmallDecor"], ["L", "colWrapLargeDecor"], ["N", "colWrapNormal"]].forEach(function(p) {
+        var el = document.getElementById(p[1]); if (!el) return;
+        el.style.display = hien.indexOf(p[0]) >= 0 ? "block" : "none";
+        el.className = lop + " timeline-cat-col";
+      });
     }
 
     // TAB 6: LỊCH DECOR 12 THÁNG (đọc/ghi qua getCalendarDecorYearData & toggleCalendarDecorLockWeb)
