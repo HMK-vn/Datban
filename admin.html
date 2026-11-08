@@ -3351,7 +3351,7 @@
       var ngay = document.getElementById("mdNgay").value; if (!ngay) return;
       var lan = ++_mdLan, cho = '<div class="md-rong"><span class="spinner-border spinner-border-sm me-1"></span>Đang tải…</div>';
       document.getElementById("mdDsCon").innerHTML = cho; document.getElementById("mdDsDa").innerHTML = cho;
-      google.script.run.withSuccessHandler(function(r) { if (lan === _mdLan) veMauDecorNgay_(r); })
+      adminRun().withSuccessHandler(function(r) { if (lan === _mdLan) veMauDecorNgay_(r); }) // cổng quản trị (có tên + SĐT khách)
         .withFailureHandler(function(e) { if (lan === _mdLan) veMauDecorNgay_({ success: false, message: "Lỗi: " + (e && e.message || e) }); })
         .layMauDecorTheoNgayWeb(ngay);
     }
