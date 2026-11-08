@@ -1635,7 +1635,7 @@
           ds.map(function(d) {
             return '<div class="d-flex flex-wrap align-items-center gap-2 small border-top border-danger-subtle pt-1 mt-1">' +
               '<span class="badge bg-danger">' + escapeHtml(ten[d.trangThai] || d.trangThai) + '</span>' +
-              '<b>' + escapeHtml(d.ten) + '</b> · <a href="tel:' + escapeHtml(d.sdt) + '">' + escapeHtml(d.sdt) + '</a> · ' + escapeHtml(d.ngay) + ' ' + escapeHtml(d.gio) + ' · ' + escapeHtml(String(d.khach)) + ' khách · ' + escapeHtml(d.loai) +
+              '<b>' + escapeHtml(d.ten) + '</b> · <a href="tel:' + escapeHtml(d.sdt) + '">' + escapeHtml(sdtDep_(d.sdt)) + '</a> · ' + escapeHtml(d.ngay) + ' ' + escapeHtml(d.gio) + ' · ' + escapeHtml(String(d.khach)) + ' khách · ' + escapeHtml(d.loai) +
               ' <span class="text-muted">(gửi ' + escapeHtml(d.luc) + (d.ghiChu ? ' · ' + escapeHtml(d.ghiChu) : '') + ')</span>' +
               '<button class="btn btn-sm btn-outline-danger py-0 ms-auto" onclick="xuLyDonWeb(' + d.dong + ', this)">✔ Đã xử lý</button></div>';
           }).join("");
@@ -1658,7 +1658,7 @@
       var meta = [d.ma ? '<span class="dtt-ma">' + escapeHtml(d.ma) + '</span>' : "", '<span>' + escapeHtml(dttNgayHien(d.ngay)) + (d.gio ? " " + escapeHtml(d.gio) : "") + '</span>',
         d.soKhach ? '<span>' + escapeHtml(d.soKhach) + ' khách</span>' : "", d.tienCoc && d.tienCoc !== "0" ? '<span>' + escapeHtml(dttTien(d.tienCoc)) + '</span>' : ""].filter(Boolean).join(" · ");
       var h = '<div class="dtt-card' + (vt ? ' co-vat' : '') + '"' + (mau ? ' style="--mau:' + mau + '"' : '') + '>' + vt +
-        '<div class="dtt-l1"><span class="dtt-ten" title="' + escapeHtml(d.ten || "") + '">' + escapeHtml(d.ten || "(chưa có tên)") + '</span><span class="text-nowrap flex-shrink-0"><a href="tel:' + escapeHtml(d.sdt) + '">' + escapeHtml(d.sdt || "") + '</a>' + (dttLoaiAnh(d) ? '<button class="btn btn-sm p-0 ms-1 dtt-anh-btn" onclick="dttLuuAnh(' + i + ')" title="Lưu ảnh xác nhận trạng thái">📷</button>' : '') + '</span></div>' +
+        '<div class="dtt-l1"><span class="dtt-ten" title="' + escapeHtml(d.ten || "") + '">' + escapeHtml(d.ten || "(chưa có tên)") + '</span><span class="text-nowrap flex-shrink-0"><a href="tel:' + escapeHtml(d.sdt) + '">' + escapeHtml(sdtDep_(d.sdt)) + '</a>' + (dttLoaiAnh(d) ? '<button class="btn btn-sm p-0 ms-1 dtt-anh-btn" onclick="dttLuuAnh(' + i + ')" title="Lưu ảnh xác nhận trạng thái">📷</button>' : '') + '</span></div>' +
         '<div class="dtt-meta">' + meta + '</div>';
       var sub = [];
       if (d.nganHang || d.stk) sub.push('<span class="dtt-tk1" title="' + escapeHtml([d.nganHang, d.stk, d.chuTK].filter(Boolean).join(" · ")) + '">🏦 ' + escapeHtml([d.nganHang, d.stk, d.chuTK].filter(Boolean).join(" · ")) + "</span>");
@@ -1880,6 +1880,15 @@
       return s;
     }
 
+    // Số điện thoại hiển thị dạng dễ đọc: 0904732123 -> 0904 732 123 (11 số: 0904 732 1234); giá trị gốc để gọi / tìm kiếm giữ nguyên
+    function sdtDep_(s) {
+      var t = String(s || "").trim(), d = t.replace(/\D/g, "");
+      if (/^84\d{9}$/.test(d)) d = "0" + d.slice(2);
+      if (d.length === 9 && d.charAt(0) !== "0") d = "0" + d;
+      if (d.length === 10) return d.replace(/^(\d{4})(\d{3})(\d{3})$/, "$1 $2 $3");
+      if (d.length === 11) return d.replace(/^(\d{4})(\d{3})(\d{4})$/, "$1 $2 $3");
+      return t;
+    }
     // "Giờ Vào" -> "gio-vao", "Mẫu decore" -> "mau-decore": dùng để làm nổi bật / sắp xếp từng loại thông tin trên thẻ
     function kvSlug_(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
     // Bỏ tiền tố "Tên:" khách tự gõ trong ô tên
@@ -1968,7 +1977,7 @@
       for (var i = 0; i < items.length; i++) {
         var it = items[i];
         var tenThe = (tenKhachGon_(it.tenKH) || "KHÁCH HÀNG").toUpperCase();
-        var headerTitle = '<span class="tk-ico">👤</span><span class="tk-ten" data-ten="' + escapeHtml(tenThe) + '">' + escapeHtml(tenThe) + '</span>' + (it.sdt ? '<span class="tk-sdt">' + escapeHtml(it.sdt) + '</span>' : '');
+        var headerTitle = '<span class="tk-ico">👤</span><span class="tk-ten" data-ten="' + escapeHtml(tenThe) + '">' + escapeHtml(tenThe) + '</span>' + (it.sdt ? '<span class="tk-sdt">' + escapeHtml(sdtDep_(it.sdt)) + '</span>' : '');
         html += '<div class="' + currentTab1CardColClass + ' t1-card-col-wrap">' +
           '<div class="timeline-card-table ' + typeClass + (loaiVat(it) ? ' co-vat' : '') + '">' + vatTag(it) +
             '<div class="table-card-header">' + headerTitle + '</div>' +
@@ -2620,7 +2629,7 @@
             '<td class="gio">' + e(gio) + '</td>' +
             '<td class="so">' + e(it.soKhach || "") + '<span class="dv">khách</span></td>' +
             '<td class="ban">' + e(it.banSo || "") + '</td>' +
-            '<td class="kh"><div class="tenkh">' + e(tenVuaDong_(tenSach(it.tenKH).toUpperCase(), 251, 20) || "—") + '</div>' + (it.sdt ? '<div class="tenkh">' + e(it.sdt) + '</div>' : '') +
+            '<td class="kh"><div class="tenkh">' + e(tenVuaDong_(tenSach(it.tenKH).toUpperCase(), 251, 20) || "—") + '</div>' + (it.sdt ? '<div class="tenkh">' + e(sdtDep_(it.sdt)) + '</div>' : '') +
               (phu.length || the.length ? '<div class="sdt dc"><span>' + phu.join(" · ") + '</span>' + (the.length ? '<span class="tg">' + the.join(" ") + '</span>' : '') + '</div>' : '') + '</td>' +
             '<td class="ct">' + (ct.join("") || '<span class="mo">—</span>') + '</td>' +
             '<td class="tick"><span class="o"></span></td></tr>';
@@ -2766,7 +2775,7 @@
           if (Number(it.tienCoc)) the.push({ text: "Cọc " + tien(it.tienCoc) + "  ", bold: true });
           if (it.hasVat) the.push({ text: "VAT", bold: true });
           var kh = [{ text: tenVuaDong_(tenSach(it.tenKH).toUpperCase(), 186, 15) || "—", bold: true, fontSize: 15 }];
-          if (it.sdt) kh.push({ text: sach(it.sdt), bold: true, fontSize: 15 });
+          if (it.sdt) kh.push({ text: sdtDep_(sach(it.sdt)), bold: true, fontSize: 15 });
           if (phu.length || the.length) kh.push({ columns: [{ text: phu.join(" · "), fontSize: 10, width: "*" }, { text: the, fontSize: 10, width: "auto" }], columnGap: 4 });
           dongBang.push([
             { text: String(i + 1), alignment: "center", fontSize: 10, id: "r" + k + "_" + i },
@@ -2905,7 +2914,7 @@
       '</td>' +
       '<td>' +
         '<span class="cell-nowrap-line fw-bold text-dark">👤 ' + escapeHtml(r.tenKH) + vatTag(r, true) + '</span>' +
-        '<span class="cell-nowrap-line font-monospace text-secondary">📞 ' + escapeHtml(r.sdt) + '</span>' +
+        '<span class="cell-nowrap-line font-monospace text-secondary">📞 ' + escapeHtml(sdtDep_(r.sdt)) + '</span>' +
       '</td>' +
       '<td>' +
         (dtCheDoNhap ? '<span class="cell-nowrap-line text-success fw-bold">📅 Đến ' + escapeHtml(r.ngay ? r.ngay.split("-").reverse().join("/") : "--") + '</span>' : '') +
@@ -3064,7 +3073,7 @@
             typeClass = (parseInt(it.soKhach, 10) >= 6) ? "decor-large" : "decor-small";
           }
           var tenThe = (tenKhachGon_(it.tenKH) || "KHÁCH HÀNG").toUpperCase();
-        var headerTitle = '<span class="tk-ico">👤</span><span class="tk-ten" data-ten="' + escapeHtml(tenThe) + '">' + escapeHtml(tenThe) + '</span>' + (it.sdt ? '<span class="tk-sdt">' + escapeHtml(it.sdt) + '</span>' : '');
+        var headerTitle = '<span class="tk-ico">👤</span><span class="tk-ten" data-ten="' + escapeHtml(tenThe) + '">' + escapeHtml(tenThe) + '</span>' + (it.sdt ? '<span class="tk-sdt">' + escapeHtml(sdtDep_(it.sdt)) + '</span>' : '');
           html += '<div class="' + currentTab3CardColClass + ' t3-card-col-wrap">' +
             '<div class="timeline-card-table ' + typeClass + (loaiVat(it) ? ' co-vat' : '') + '">' + vatTag(it) +
               '<div class="d-flex justify-content-between align-items-center mb-1">' +
@@ -3122,7 +3131,7 @@
           var m = matches[j];
           html += '<div class="email-suggest-item" onclick="selectEmailCustomerItem(' + m.row + ')">' +
             '<div class="d-flex justify-content-between">' +
-              '<span><b>👤 ' + escapeHtml(m.tenKH || "Khách") + '</b> — <span class="text-primary font-monospace">' + escapeHtml(m.sdt) + '</span></span>' +
+              '<span><b>👤 ' + escapeHtml(m.tenKH || "Khách") + '</b> — <span class="text-primary font-monospace">' + escapeHtml(sdtDep_(m.sdt)) + '</span></span>' +
               '<span class="badge bg-light text-dark border">Dòng ' + m.row + ' • ' + escapeHtml(m.ngay) + '</span>' +
             '</div>' +
             '<div class="small text-muted">' +
