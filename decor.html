@@ -215,6 +215,10 @@
     .lich-dau button { border: 1px solid #e3d3c6; background: #fff; border-radius: 10px; width: 36px; height: 34px; font-size: 18px; line-height: 1; color: #864c2a; }
     .lich-dau .lich-dong { border: 0; font-size: 20px; color: #888; }
     .lich-tom { text-align: center; font-size: 13px; color: #6b5a4c; margin-bottom: 8px; min-height: 18px; }
+    .lich-nhom { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: #6b5a4c; }
+    .lich-nhom button { border: 1px solid #e3d3c6; background: #fff; color: #864c2a; border-radius: 10px; width: 32px; height: 30px; font-size: 18px; font-weight: 700; line-height: 1; padding: 0; }
+    .lich-nhom b { min-width: 22px; text-align: center; font-size: 16px; color: #3d2a1e; }
+    .lich-nhom small { font-weight: 600; color: #9a8a7e; }
     .lich-luoi { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
     .lich-luoi .th { text-align: center; font-size: 11px; font-weight: 700; color: #9a8a7e; padding: 2px 0; }
     .lich-o { border-radius: 10px; padding: 4px 1px; text-align: center; min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border: 1px solid transparent; }
@@ -825,8 +829,18 @@
     });
 
     // ===== Chặn hoàn toàn khi ngày khóa / đủ giới hạn: khóa mọi ô (trừ ngày), ẩn QR + upload cọc =====
-    var _ghNgay = null, _dangKiemNgay = false, _ngayDaKiem = "";
+    var _ghNgay = null, _dangKiemNgay = false, _ngayDaKiem = "", _chiConNhom = "";
+    // Nhóm bàn của khách đã đủ mà nhóm kia còn -> { ten, con } để báo "chỉ còn bàn từ 6 / dưới 6 khách"; null nếu nhóm kia cũng hết
+    function nhomConLai_(c, da, lon) {
+      var khac = !lon, toiDa = khac ? c.lon : c.nho, daBan = (khac ? da.lon : da.nho) || 0;
+      var toiDaK = khac ? c.khachLon : c.khachNho, daK = (khac ? da.khachLon : da.khachNho) || 0;
+      var con = toiDa ? toiDa - daBan : null, conTong = c.tong ? c.tong - (da.nho || 0) - (da.lon || 0) : null;
+      if (conTong != null) con = con == null ? conTong : Math.min(con, conTong);
+      if ((con != null && con <= 0) || (toiDaK && toiDaK - daK < (khac ? 6 : 1))) return null;
+      return { ten: khac ? "từ 6 khách" : "dưới 6 khách", con: con };
+    }
     function lyDoKhoaNgay() {
+      _chiConNhom = "";
       if (NGAY_KHOA.indexOf(document.getElementById("inputNgay").value) !== -1) return "Ngày bạn chọn Túi không nhận khách.";
       if (isCurrentDateLocked) return "Ngày bạn chọn đã khóa nhận đơn decor (FULL DECOR).";
       if (!_ghNgay || !_ghNgay.cauHinh) return "";
@@ -834,7 +848,11 @@
       if (c.khoa) return "Ngày bạn chọn không nhận bàn decor.";
       if (c.tong && (da.nho || 0) + (da.lon || 0) >= c.tong) return "Ngày bạn chọn đã đủ " + c.tong + " bàn decor.";
       var maxBan = lon ? c.lon : c.nho, daBan = (lon ? da.lon : da.nho) || 0;
-      if (maxBan && daBan >= maxBan) return "Ngày bạn chọn đã đủ bàn decor " + (lon ? "từ 6 khách" : "dưới 6 khách") + ".";
+      if (maxBan && daBan >= maxBan) {
+        var cl = nhomConLai_(c, da, lon);
+        if (cl) { _chiConNhom = cl.ten; return "Bàn decor " + (lon ? "từ 6 khách" : "dưới 6 khách") + " ngày này đã đủ, chỉ còn " + (cl.con != null ? cl.con + " " : "") + "bàn cho nhóm " + cl.ten + "."; }
+        return "Ngày bạn chọn đã đủ bàn decor " + (lon ? "từ 6 khách" : "dưới 6 khách") + ".";
+      }
       var maxKhach = lon ? c.khachLon : c.khachNho, daKhach = (lon ? da.khachLon : da.khachNho) || 0;
       if (maxKhach && daKhach + k > maxKhach) return "Bàn decor " + (lon ? "từ 6 khách" : "dưới 6 khách") + " ngày này chỉ còn nhận " + Math.max(0, maxKhach - daKhach) + " khách.";
       return "";
@@ -846,12 +864,12 @@
       var w = document.getElementById("lockWarning");
       w.style.display = khoa ? "block" : "none";
       if (khoa) document.getElementById("lockWarningText").textContent = lyDo + " Vui lòng chọn ngày khác!";
-      document.getElementById("lockWarningTitle").textContent = NGAY_KHOA.indexOf(ngay) !== -1 ? "🔒 NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : "🔒 NGÀY NÀY ĐÃ ĐẦY (FULL DECOR)";
+      document.getElementById("lockWarningTitle").textContent = NGAY_KHOA.indexOf(ngay) !== -1 ? "🔒 NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : (khoa && _chiConNhom) ? "⚠️ NGÀY NÀY CHỈ CÒN BÀN " + _chiConNhom.toUpperCase() : "🔒 NGÀY NÀY ĐÃ ĐẦY (FULL DECOR)";
       var n = document.getElementById("dateCheckNotice");
-      if (n && ngay) n.innerHTML = khoa ? "<span class='text-danger fw-bold'>❌<span class='d-none d-sm-inline'> Hết nhận</span></span>" : "<span class='text-success fw-bold'>🟢<span class='d-none d-sm-inline'> Mở nhận</span></span>";
+      if (n && ngay) n.innerHTML = (khoa && _chiConNhom) ? "<span class='text-danger fw-bold'>⚠️<span class='d-none d-sm-inline'> Chỉ bàn " + (_chiConNhom.indexOf("từ") === 0 ? "≥6" : "&lt;6") + "</span></span>" : khoa ? "<span class='text-danger fw-bold'>❌<span class='d-none d-sm-inline'> Hết nhận</span></span>" : "<span class='text-success fw-bold'>🟢<span class='d-none d-sm-inline'> Mở nhận</span></span>";
       // Khóa mọi ô nhập trừ ô ngày (và số khách để khách thử loại bàn khác khi chỉ hết 1 loại)
       [].forEach.call(f.elements, function(el) {
-        if (el.id === "inputNgay" || el.id === "txtSoKhach" || el.type === "submit") return;
+        if (el.id === "inputNgay" || el.id === "txtSoKhach" || el.type === "submit" || el.classList.contains("lich-phu")) return; // nút mở lịch luôn bấm được để đổi ngày
         el.disabled = khoa;
       });
       // QR + upload cọc chỉ hiện khi ngày mở và đã điền tên + SĐT
@@ -1150,6 +1168,7 @@
   <div id="lichPopup" class="lich-nen" style="display:none" onclick="if (event.target === this) dongLichPopup()">
     <div class="lich-hop" role="dialog" aria-label="Chọn ngày đặt bàn decor">
       <div class="lich-dau"><button type="button" onclick="lichDoiThang(-1)" aria-label="Tháng trước">‹</button><b id="lichTieuDe"></b><button type="button" onclick="lichDoiThang(1)" aria-label="Tháng sau">›</button><button type="button" class="lich-dong" onclick="dongLichPopup()" aria-label="Đóng">✕</button></div>
+      <div class="lich-nhom">Số khách <button type="button" onclick="lichDoiKhach(-1)" aria-label="Bớt 1 khách">−</button><b id="lichSoKhach"></b><button type="button" onclick="lichDoiKhach(1)" aria-label="Thêm 1 khách">+</button><small id="lichTenNhom"></small></div>
       <div class="lich-tom" id="lichTom"></div>
       <div class="lich-luoi" id="lichLuoi"></div>
       <div class="lich-chu">Số = bàn còn nhận · <span style="color:#1f7a45">●</span> còn · <span style="color:#b45309">●</span> sắp hết · <span style="color:#b42318">●</span> đầy · <span style="color:#999">●</span> nghỉ</div>
@@ -1164,15 +1183,16 @@
       _lichThang = d.getFullYear() + "-" + lichPad_(d.getMonth() + 1);
       document.getElementById("lichPopup").style.display = "flex";
       veLichPopup_();
+      var du = _lichDuLieu[_lichThang]; if (du && du._luc && Date.now() - du._luc > 60000) lichTaiTruoc_(0, true); // số bàn cũ hơn 1 phút -> tải lại cho khớp form
       lichTaiTruoc_(1); // tải sẵn tháng sau
     }
     // Tải sẵn số bàn của tháng (không vẽ) để bấm mở lịch là có số ngay
-    function lichTaiTruoc_(buoc) {
+    function lichTaiTruoc_(buoc, lamMoi) {
       var hn = new Date(), p = (_lichThang || (hn.getFullYear() + "-" + lichPad_(hn.getMonth() + 1))).split("-").map(Number), d = new Date(p[0], p[1] - 1 + (buoc || 0), 1);
       var t = d.getFullYear() + "-" + lichPad_(d.getMonth() + 1);
-      if (_lichDuLieu[t] || _lichDangTai[t]) return;
+      if ((_lichDuLieu[t] && !lamMoi) || _lichDangTai[t]) return;
       _lichDangTai[t] = 1;
-      google.script.run.withSuccessHandler(function(r) { delete _lichDangTai[t]; if (r && r.success) { _lichDuLieu[t] = r; if (t === _lichThang && document.getElementById("lichPopup").style.display === "flex") veLichPopup_(); } })
+      google.script.run.withSuccessHandler(function(r) { delete _lichDangTai[t]; if (r && r.success) { r._luc = Date.now(); _lichDuLieu[t] = r; if (t === _lichThang && document.getElementById("lichPopup").style.display === "flex") veLichPopup_(); } })
         .withFailureHandler(function() { delete _lichDangTai[t]; }).layLichConNhanDecor(t);
     }
     var _lichDangTai = {};
@@ -1183,11 +1203,27 @@
       if (d < new Date(hn.getFullYear(), hn.getMonth(), 1)) return;
       _lichThang = d.getFullYear() + "-" + lichPad_(d.getMonth() + 1); veLichPopup_();
     }
-    function lichSoCon_(o) { return o.conTong != null ? o.conTong : (o.conNho != null && o.conLon != null ? o.conNho + o.conLon : null); }
+    // Lịch tính theo đúng Số khách của form (dưới 6 / từ 6 khách) -> khớp kiểm tra của form; đổi số khách ngay trong lịch
+    function lichSoKhach_() { return parseInt(document.getElementById("txtSoKhach").value, 10) || 0; }
+    function lichDoiKhach(b) {
+      var o = document.getElementById("txtSoKhach");
+      o.value = Math.min(99, Math.max(1, lichSoKhach_() + b));
+      o.dispatchEvent(new Event("input", { bubbles: true })); // cập nhật tiền cọc + kiểm tra ngày như khi khách tự gõ
+      veLichPopup_();
+    }
+    // Số bàn còn cho đoàn sk khách; không đủ chỗ khách cũng tính là đầy
+    function lichConNhom_(o, sk) {
+      var lon = sk >= 6, n = lon ? o.conLon : o.conNho, ck = lon ? o.conKhachLon : o.conKhachNho;
+      if (n == null) n = o.conTong; else if (o.conTong != null) n = Math.min(n, o.conTong);
+      if (ck != null && ck < Math.max(sk, 1)) n = 0;
+      return n;
+    }
     function veLichPopup_() {
       var p = _lichThang.split("-").map(Number), luoi = document.getElementById("lichLuoi"), tom = document.getElementById("lichTom");
       document.getElementById("lichTieuDe").innerText = "Tháng " + p[1] + "/" + p[0];
-      var du = _lichDuLieu[_lichThang];
+      var du = _lichDuLieu[_lichThang], sk = lichSoKhach_(), tenNhom = sk >= 6 ? "từ 6 khách" : "dưới 6 khách";
+      document.getElementById("lichSoKhach").textContent = sk || "–";
+      document.getElementById("lichTenNhom").textContent = "· bàn " + tenNhom;
       var dau = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map(function(t) { return '<div class="th">' + t + '</div>'; }).join("");
       var lech = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, soNgay = new Date(p[0], p[1], 0).getDate(), hn = new Date();
       var homNay = hn.getFullYear() + "-" + lichPad_(hn.getMonth() + 1) + "-" + lichPad_(hn.getDate()), dangChon = document.getElementById("inputNgay").value;
@@ -1199,19 +1235,19 @@
         else if (!du) { lop = ""; chu = "…"; }
         else if (!o || o.dong) { lop = (o && o.ly === "Nghỉ") ? "nghi" : "day"; chu = (o && o.ly) || "Đầy"; }
         else {
-          var n = lichSoCon_(o); soMo++;
-          if (n != null) tongCon += n;
-          lop = n == null || n >= 3 ? "mo" : "it"; chu = n == null ? "Còn" : "Còn " + n;
+          var n = lichConNhom_(o, sk);
+          if (n === 0) { lop = "day"; chu = lichConNhom_(o, sk >= 6 ? 1 : 6) !== 0 ? (sk >= 6 ? "Chỉ &lt;6" : "Chỉ ≥6") : "Đầy"; } // nhóm của khách hết, nhóm kia còn
+          else { soMo++; if (n != null) tongCon += n; lop = n == null || n >= 3 ? "mo" : "it"; chu = n == null ? "Còn" : "Còn " + n; }
           tip = (o.conNho != null ? "Bàn dưới 6 khách còn " + o.conNho : "") + (o.conLon != null ? " · Bàn từ 6 khách còn " + o.conLon : "");
         }
         var bam = (lop === "mo" || lop === "it") ? ' onclick="chonNgayLich_(\'' + k + '\')"' : "";
         html += '<div class="lich-o ' + lop + (k === dangChon ? " chon" : "") + '"' + bam + (tip ? ' title="' + tip + '"' : "") + '><span class="so">' + d + '</span>' + (chu ? '<span class="con">' + chu + '</span>' : "") + '</div>';
       }
       luoi.innerHTML = html;
-      tom.innerHTML = !du ? "Đang tải số bàn còn nhận…" : du.loi ? '<span style="color:#b42318">' + du.loi + '</span>' : soMo ? ("Còn <b>" + soMo + "</b> ngày nhận bàn decor" + (tongCon ? " · tổng <b>" + tongCon + "</b> bàn" : "")) : "Tháng này đã hết ngày nhận bàn decor";
+      tom.innerHTML = !du ? "Đang tải số bàn còn nhận…" : du.loi ? '<span style="color:#b42318">' + du.loi + '</span>' : soMo ? ("Còn <b>" + soMo + "</b> ngày nhận" + (tongCon ? " · tổng <b>" + tongCon + "</b> bàn" : "")) : "Tháng này đã hết bàn decor " + tenNhom;
       if (!du && !_lichDangTai[_lichThang]) {
         var thang = _lichThang; _lichDangTai[thang] = 1;
-        google.script.run.withSuccessHandler(function(r) { delete _lichDangTai[thang]; _lichDuLieu[thang] = (r && r.success) ? r : { loi: (r && r.message) || "Chưa tải được, thử lại sau." }; if (thang === _lichThang) veLichPopup_(); })
+        google.script.run.withSuccessHandler(function(r) { delete _lichDangTai[thang]; if (r && r.success) r._luc = Date.now(); _lichDuLieu[thang] = (r && r.success) ? r : { loi: (r && r.message) || "Chưa tải được, thử lại sau." }; if (thang === _lichThang) veLichPopup_(); })
           .withFailureHandler(function() { delete _lichDangTai[thang]; _lichDuLieu[thang] = { loi: "Chưa tải được, vui lòng thử lại." }; if (thang === _lichThang) veLichPopup_(); delete _lichDuLieu[thang]; })
           .layLichConNhanDecor(thang);
       }
