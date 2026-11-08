@@ -1273,9 +1273,9 @@
         else if (!o || o.dong) { lop = (o && o.ly === "Nghỉ") ? "nghi" : "day"; chu = (o && o.ly) || "Đầy"; }
         else {
           var n = lichConNhom_(o, sk);
-          if (n === 0) { lop = "day"; chu = lichConNhom_(o, sk >= 6 ? 1 : 6) !== 0 ? (sk >= 6 ? "Chỉ &lt;6" : "Chỉ ≥6") : "Đầy"; } // nhóm của khách hết, nhóm kia còn
+          if (n === 0) { lop = "day"; chu = "Đầy"; } // chỉ tính nhóm bàn của số khách, không nhắc nhóm kia
           else { soMo++; if (n != null) tongCon += n; lop = n == null || n >= 3 ? "mo" : "it"; chu = n == null ? "Còn" : "Còn " + n; }
-          tip = (o.conNho != null ? "Bàn dưới 6 khách còn " + o.conNho : "") + (o.conLon != null ? " · Bàn từ 6 khách còn " + o.conLon : "");
+          tip = n === 0 ? "Bàn " + tenNhom + " đã đầy" : n == null ? "" : "Bàn " + tenNhom + " còn " + n;
         }
         var bam = (lop === "mo" || lop === "it") ? ' onclick="chonNgayLich_(\'' + k + '\')"' : "";
         html += '<div class="lich-o ' + lop + (k === dangChon ? " chon" : "") + '"' + bam + (tip ? ' title="' + tip + '"' : "") + '><span class="so">' + d + '</span>' + (chu ? '<span class="con">' + chu + '</span>' : "") + '</div>';
