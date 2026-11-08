@@ -211,6 +211,16 @@
     /* Popup lịch tháng: số bàn decor còn nhận từng ngày */
     .nhom-trang-hint { font-size: 13px; color: #6b5a4c; margin: -10px 4px 12px; } /* dòng riêng ngay dưới ô Số khách */
     .nhom-trang-hint.sai { color: #b42318; font-weight: 700; }
+    .ct-nen { position: fixed; inset: 0; z-index: 4100; background: rgba(40,25,15,.5); display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .ct-hop { background: #fff; border-radius: 16px; width: min(400px, 100%); max-height: 92vh; overflow: auto; padding: 20px 18px 16px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+    .ct-ico { font-size: 34px; line-height: 1; }
+    .ct-tieude { color: #b42318; font-weight: 800; font-size: 17px; margin: 8px 0 6px; }
+    .ct-nd { font-size: 15px; color: #3d2a1e; }
+    .ct-ds { background: #fdecea; border-radius: 10px; padding: 8px 10px; margin-top: 8px; color: #7a271a; }
+    .ct-ghi { font-size: 13.5px; color: #6b5a4c; margin: 10px 0 14px; }
+    .ct-hop button { display: block; width: 100%; border-radius: 10px; padding: 10px; font-weight: 700; font-size: 15px; }
+    .ct-khong { background: #864c2a; color: #fff; border: 1px solid #864c2a; margin-bottom: 8px; }
+    .ct-gui { background: #fff; color: #864c2a; border: 1px solid #e3d3c6; }
     .luu-y-mau { background: #fdecea; border: 1px solid #f3c4bf; border-left: 5px solid #b42318; color: #7a271a; border-radius: 10px; padding: 8px 12px; font-size: 14.5px; font-weight: 600; line-height: 1.4; }
     .luu-y-mau .nhan { color: #b42318; font-weight: 800; letter-spacing: .2px; display: inline-block; } /* giữ cụm chữ nhấn liền 1 dòng trên điện thoại */
     .lich-phu { position: absolute; inset: 0; width: 100%; background: transparent; border: 0; cursor: pointer; z-index: 2; }
@@ -1141,7 +1151,7 @@
           document.getElementById("tcMauDaChon").innerHTML = data.mauDecor ? "🎀 Mẫu đã chọn: <b>" + String(data.mauDecor).replace(/</g, "&lt;") + "</b>" : "";
           new bootstrap.Modal(document.getElementById("modalConfirmSuccess")).show();
         } else {
-          alert("Lỗi: " + res.message);
+          if (!res.daHuyTrung) alert("Lỗi: " + res.message); // khách chọn "Không gửi nữa" thì không báo lỗi
         }
       }, function(err) {
         const btn = document.getElementById("btnSubmit");
@@ -1151,6 +1161,17 @@
       });
     }
     // Gửi đơn an toàn: kèm "mã gửi" để máy chủ không tạo đơn trùng; mất mạng thì tự gửi lại tối đa 2 lần
+    // Hệ thống đã có đơn cùng ngày (trùng SĐT hoặc họ tên): hỏi khách trước khi tạo thêm đơn
+    function hoiGuiTrung_(res, vanGui, khong) {
+      var e = function(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function(c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+      var nd = res.trungSdt ? "Số điện thoại này đã có đơn ngày <b>" + e(res.ngayHien) + "</b>:<div class=\"ct-ds\">" + (res.don || []).map(function(d) { return "<div>🕒 <b>" + e(d.gio) + "</b> · " + e(d.khach) + " khách · " + e(d.tt) + "</div>"; }).join("") + "</div>"
+        : "Ngày <b>" + e(res.ngayHien) + "</b> đã có đơn mang tên <b>" + e(res.ten) + "</b>.";
+      var nen = document.createElement("div"); nen.className = "ct-nen";
+      nen.innerHTML = '<div class="ct-hop" role="alertdialog" aria-modal="true"><div class="ct-ico">⚠️</div><div class="ct-tieude">' + (res.trungSdt ? "TÚI ĐÃ CÓ ĐƠN CỦA QUÝ KHÁCH" : "HỆ THỐNG ĐÃ CÓ TÊN NÀY") + '</div><div class="ct-nd">' + nd + '</div><div class="ct-ghi">Nếu Quý khách đã gửi rồi thì không cần gửi lại ạ. Chỉ chọn <b>Vẫn gửi</b> khi muốn đặt thêm bàn.</div><button type="button" class="ct-khong">Không gửi nữa</button><button type="button" class="ct-gui">Vẫn gửi đơn mới</button></div>';
+      document.body.appendChild(nen);
+      nen.querySelector(".ct-khong").onclick = function() { nen.remove(); khong(); };
+      nen.querySelector(".ct-gui").onclick = function() { nen.remove(); vanGui(); };
+    }
     function guiDonWebAnToan(data, khiXong, khiLoi) {
       // Bấm GỬI LẠI cùng thông tin (SĐT + ngày + giờ) → dùng lại mã gửi cũ để không tạo đơn trùng
       var khoa = [data.sdt, data.ngay, data.gioVao].join("|");
@@ -1160,7 +1181,9 @@
       var lan = 0;
       (function gui() {
         lan++;
-        google.script.run.withSuccessHandler(function(res) { if (res && res.success) window._donCho = null; khiXong(res); }).withFailureHandler(function(err) {
+        google.script.run.withSuccessHandler(function(res) { if (res && res.success) window._donCho = null;
+          if (res && res.canhBaoTrung) return hoiGuiTrung_(res, function() { window._donCho = null; data.maGui = ""; data.xacNhanTrung = true; guiDonWebAnToan(data, khiXong, khiLoi); }, function() { window._donCho = null; khiXong({ success: false, daHuyTrung: true, message: "" }); });
+          khiXong(res); }).withFailureHandler(function(err) {
           if (lan < 3) return setTimeout(gui, lan * 2500);
           khiLoi(err);
         }).submitBooking(data);

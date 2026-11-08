@@ -227,6 +227,7 @@
     .dtt-ten { font-weight: 700; font-size: 14px; color: #222; }
     .dtt-l1 a { font-size: 13px; color: #555; text-decoration: none; white-space: nowrap; }
     .dtt-meta { color: #807067; font-size: 12px; margin-top: 2px; }
+    .dtt-trung { background: #fdecea; border: 1px solid #f3c4bf; border-left: 4px solid #b42318; color: #7a271a; border-radius: 8px; padding: 4px 8px; font-size: 12px; font-weight: 600; margin-top: 5px; }
     .dtt-ma { font-family: ui-monospace, Menlo, monospace; font-weight: 700; color: var(--mau, #807067); }
     .dtt-sub { color: #807067; font-size: 11.5px; margin-top: 3px; }
     .dtt-anh { display: flex; gap: 6px; margin-top: 6px; }
@@ -808,6 +809,9 @@
       header.navbar-custom .nhom-nut-dau { flex-wrap: wrap !important; }
       header.navbar-custom .nhom-nut-dau > .btn { flex: 1 1 calc(25% - 4px); }
     }
+    /* Màn vừa (đầu trang chỉ còn biểu tượng): 2 nút Decor vẫn có chữ <6 / ≥6 để phân biệt */
+    .nhan-so { display: none; }
+    @media (min-width: 992px) and (max-width: 1399.98px) { header.navbar-custom .nhan-so { display: inline; font-weight: 800; } }
     @media (max-width: 575.98px) { /* điện thoại: 7 nút gọn 2 hàng — Giao diện, Telegram chỉ còn biểu tượng; các nút giãn đều mỗi hàng */
       header.navbar-custom .nhom-nut-dau > .btn { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; }
       header.navbar-custom .nhom-nut-dau > .chi-icon-dt { flex: 0 0 auto; }
@@ -980,14 +984,14 @@
       <div class="d-flex align-items-center gap-3">
         <img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" style="width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.18);flex:none">
         <div>
-          <h5 class="mb-0 fw-bold admin-title">TÚI NƯỚNG LAVENDER</h5>
+          <h5 class="mb-0 fw-bold admin-title">TÚI NƯỚNG</h5>
           <small class="text-white-50 admin-sub">Timeline Decor • Nhập & Quản Lý DATA_TONG • Tra Cứu • Email • Nhập Đặt Bàn</small>
         </div>
       </div>
       <div class="d-flex align-items-center gap-2 flex-wrap nhom-nut-dau">
         <a href="https://docs.google.com/spreadsheets/d/1cPOeqL8_aN3ktL5p7_NsT_rkrjObzJy7IllOIjGWJeA/edit?gid=999901#gid=999901" class="btn btn-warning btn-sm fw-bold text-dark" target="_blank"><i class="fa-solid fa-table nut-ico"></i><span class="nhan-dai">Sheet DATA_TONG</span><span class="nhan-ngan">Sheet</span></a>
-        <a href="https://hmk-vn.github.io/Datban/decor_duoi6.html" class="btn btn-danger btn-sm fw-bold" target="_blank" title="Mở trang khách đặt bàn decor dưới 6 khách"><i class="fa-solid fa-cake-candles nut-ico"></i><span class="nhan-dai">Decor dưới 6 khách</span><span class="nhan-ngan">Decor &lt;6</span></a>
-        <a href="https://hmk-vn.github.io/Datban/decor_tu6.html" class="btn btn-danger btn-sm fw-bold" target="_blank" title="Mở trang khách đặt bàn decor từ 6 khách"><i class="fa-solid fa-cake-candles nut-ico"></i><span class="nhan-dai">Decor từ 6 khách</span><span class="nhan-ngan">Decor ≥6</span></a>
+        <a href="https://hmk-vn.github.io/Datban/decor_duoi6.html" class="btn btn-danger btn-sm fw-bold" target="_blank" title="Mở trang khách đặt bàn decor dưới 6 khách"><i class="fa-solid fa-cake-candles nut-ico"></i><span class="nhan-dai">Decor dưới 6 khách</span><span class="nhan-ngan">Decor &lt;6</span><span class="nhan-so">&lt;6</span></a>
+        <a href="https://hmk-vn.github.io/Datban/decor_tu6.html" class="btn btn-danger btn-sm fw-bold" target="_blank" title="Mở trang khách đặt bàn decor từ 6 khách"><i class="fa-solid fa-cake-candles nut-ico"></i><span class="nhan-dai">Decor từ 6 khách</span><span class="nhan-ngan">Decor ≥6</span><span class="nhan-so">≥6</span></a>
         <a href="thuong.html" class="btn btn-primary btn-sm fw-bold" target="_blank"><i class="fa-solid fa-utensils nut-ico"></i><span class="nhan-dai">Đặt bàn thường</span><span class="nhan-ngan">Thường</span></a>
         <a href=new URL("tracuu.html", location.href).href class="btn btn-success btn-sm fw-bold" target="_blank"><i class="fa-solid fa-magnifying-glass nut-ico"></i>Tra cứu</a>
         <button type="button" class="btn btn-light btn-sm fw-bold chi-icon-dt" onclick="doiGiaoDien()" title="Đổi giao diện" id="nutGiaoDien"><i class="fa-solid fa-circle-half-stroke nut-ico"></i><span class="nhan-dai">Giao diện</span><span class="nhan-ngan">Giao diện</span></button>
@@ -1683,7 +1687,7 @@
     function updateClock() {
       var now = new Date();
       var el = document.getElementById("clockDisplay");
-      if (el) el.innerText = now.toLocaleTimeString("vi-VN") + " - " + now.toLocaleDateString("vi-VN");
+      if (el) el.innerText = now.toLocaleTimeString("vi-VN") + " - " + now.getDate() + "/" + (now.getMonth() + 1) + "/" + String(now.getFullYear()).slice(-2);
     }
 
     function escapeHtml(str) {
@@ -1900,6 +1904,8 @@
       var t = l === "tm" ? "Xuất VAT · hoàn cọc tiền mặt" : l === "ck" ? "Xuất VAT · hoàn cọc chuyển khoản" : "Xuất VAT";
       return '<span class="vat-tag vat-' + l + (inline ? ' inline' : '') + '" title="' + t + '">' + vatSvg(l) + '</span>';
     }
+    // Đơn có thể trùng khách (cùng ngày, trùng SĐT / họ tên): chữ hiện trên thẻ và khi hỏi lại lúc duyệt
+    function dttTrungDong_(d) { return (d.trung || []).map(function(t) { return "Trùng " + t.ly + ": " + t.ten + " · " + (t.gio || "?") + " · " + (t.khach || "?") + " khách · " + (t.nguon === "DATA_TONG" ? "đã vào DATA_TONG" : "đang ở FORM") + " dòng " + t.dong; }); }
     function dttThe(d, i) {
       var mau = dttMau(d.ma), vt = vatTag(d);
       var meta = [d.ma ? '<span class="dtt-ma">' + escapeHtml(d.ma) + '</span>' : "", '<span>' + escapeHtml(dttNgayHien(d.ngay)) + (d.gio ? " " + escapeHtml(d.gio) : "") + '</span>',
@@ -1907,6 +1913,7 @@
       var h = '<div class="dtt-card' + (vt ? ' co-vat' : '') + '"' + (mau ? ' style="--mau:' + mau + '"' : '') + '>' + vt +
         '<div class="dtt-l1"><span class="dtt-ten" title="' + escapeHtml(d.ten || "") + '">' + escapeHtml(d.ten || "(chưa có tên)") + '</span><span class="text-nowrap flex-shrink-0"><a href="tel:' + escapeHtml(d.sdt) + '">' + escapeHtml(sdtDep_(d.sdt)) + '</a>' + (dttLoaiAnh(d) ? '<button class="btn btn-sm p-0 ms-1 dtt-anh-btn" onclick="dttLuuAnh(' + i + ')" title="Lưu ảnh xác nhận trạng thái">📷</button>' : '') + '</span></div>' +
         '<div class="dtt-meta">' + meta + '</div>';
+      if (d.trung && d.trung.length) h += '<div class="dtt-trung">⚠️ CÓ THỂ TRÙNG<br>' + dttTrungDong_(d).map(escapeHtml).join("<br>") + '</div>';
       var sub = [];
       if (d.nganHang || d.stk) sub.push('<span class="dtt-tk1" title="' + escapeHtml([d.nganHang, d.stk, d.chuTK].filter(Boolean).join(" · ")) + '">🏦 ' + escapeHtml([d.nganHang, d.stk, d.chuTK].filter(Boolean).join(" · ")) + "</span>");
       var tt = [];
@@ -2020,7 +2027,9 @@
       document.getElementById("dttCapNhat").textContent = "Cập nhật " + String(_dtt.capNhat || "").slice(0, 5);
     }
     function datTrangThaiDtt(i, tt, btn) {
-      var d = _dtt._the[i]; btn.disabled = true;
+      var d = _dtt._the[i];
+      if (tt === "XÁC NHẬN" && d.trung && d.trung.length && !confirm("⚠️ ĐƠN CÓ THỂ TRÙNG\n" + d.ten + " · " + (d.gio || "") + "\n\n" + dttTrungDong_(d).join("\n") + "\n\nVẫn xác nhận đơn này?")) return;
+      btn.disabled = true;
       adminRun().withSuccessHandler(function() {
         ["choDuyet", "xacNhan", "choHoan", "daHoan"].forEach(function(k) { _dtt[k] = _dtt[k].filter(function(x) { return x !== d; }); });
         d.tt = tt;
@@ -2053,7 +2062,8 @@
       if (!confirm("Xử lý FORM booking (không gửi email, khách xem ở trang tra cứu):\n" +
         (a ? "• " + a + " đơn XÁC NHẬN → chuyển sang DATA_TONG\n" : "") +
         (b ? "• " + b + " đơn CHỜ HOÀN CỌC → ghi chờ hoàn cọc ở HOAN_COC\n" : "") +
-        (c ? "• " + c + " đơn ĐÃ HOÀN CỌC → ghi Đã hoàn cọc ở HOAN_COC\n" : "") + "\nTiếp tục?")) return;
+        (c ? "• " + c + " đơn ĐÃ HOÀN CỌC → ghi Đã hoàn cọc ở HOAN_COC\n" : "") +
+        (function() { var tr = _dtt.xacNhan.filter(function(d) { return d.nguon === "FORM" && d.tt === "XÁC NHẬN" && d.trung && d.trung.length; }); return tr.length ? "\n⚠️ " + tr.length + " đơn có thể trùng:\n" + tr.map(function(d) { return "• " + d.ten + " (" + (d.gio || "") + ")"; }).join("\n") + "\n" : ""; })() + "\nTiếp tục?")) return;
       var btn = document.getElementById("dttXuLy"); btn.disabled = true;
       adminRun().withSuccessHandler(function(kq) { btn.disabled = false; alert(kq.msg); taiDuyetTrangThai(); })
         .withFailureHandler(function(e) { btn.disabled = false; alert("❌ " + (e && e.message || e)); })

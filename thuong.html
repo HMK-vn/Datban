@@ -146,6 +146,16 @@
   
   <style>
     .tc-ok { text-align: center; }
+    .ct-nen { position: fixed; inset: 0; z-index: 4100; background: rgba(40,25,15,.5); display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .ct-hop { background: #fff; border-radius: 16px; width: min(400px, 100%); max-height: 92vh; overflow: auto; padding: 20px 18px 16px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+    .ct-ico { font-size: 34px; line-height: 1; }
+    .ct-tieude { color: #b42318; font-weight: 800; font-size: 17px; margin: 8px 0 6px; }
+    .ct-nd { font-size: 15px; color: #3d2a1e; }
+    .ct-ds { background: #fdecea; border-radius: 10px; padding: 8px 10px; margin-top: 8px; color: #7a271a; }
+    .ct-ghi { font-size: 13.5px; color: #6b5a4c; margin: 10px 0 14px; }
+    .ct-hop button { display: block; width: 100%; border-radius: 10px; padding: 10px; font-weight: 700; font-size: 15px; }
+    .ct-khong { background: #864c2a; color: #fff; border: 1px solid #864c2a; margin-bottom: 8px; }
+    .ct-gui { background: #fff; color: #864c2a; border: 1px solid #e3d3c6; }
     .tc-buoc { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; position: relative; }
     .tc-buoc div { font-size: 12.5px; font-weight: 600; color: #7b6a5f; background: #faf5f3; border-radius: 10px; padding: 9px 2px 8px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tc-buoc svg { display: block; width: 22px; height: 22px; margin: 0 auto 5px; color: #b9957e; }
@@ -429,7 +439,7 @@
           msg.className = "alert alert-light border mt-3 p-0 overflow-hidden";
           msg.innerHTML = res.success === false ? "" : '<div class="d-flex align-items-center gap-3 text-start text-white p-3" style="background:linear-gradient(135deg,#b4703f,#c98a5b);border-radius:8px 8px 0 0"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src=\'https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png\'" style="width:58px;height:58px;width:min(58px,13vw);height:min(58px,13vw);border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.2);background:#fff"><div><div class="fw-bold text-nowrap" style="font-size:16px;font-size:min(16px,3.5vw);letter-spacing:.3px"><span style="display:inline-block;width:1.5em">🎉</span>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div><div class="text-nowrap" style="font-size:12.5px;font-size:min(12.5px,3.3vw);opacity:.85;padding-left:min(24px,5.25vw);margin-top:2px">Túi Nướng Lavender · Đặt bàn ăn tiêu chuẩn</div></div></div><div class="p-3">' + document.getElementById("tplThanhCong").innerHTML + '</div>';
           if (res.success === false) { msg.className = "alert alert-danger mt-3 text-center"; msg.innerText = res.message; }
-          msg.style.display = "block";
+          msg.style.display = res.daHuyTrung ? "none" : "block"; // khách chọn "Không gửi nữa" thì không báo gì thêm
           if (res.success !== false) { form.reset(); apDungKhoaGio(); }
           btn.disabled = false;
           btn.innerText = "GỬI YÊU CẦU ĐẶT BÀN";
@@ -443,6 +453,17 @@
         });
     }
     // Gửi đơn an toàn: kèm "mã gửi" để máy chủ không tạo đơn trùng; mất mạng thì tự gửi lại tối đa 2 lần
+    // Hệ thống đã có đơn cùng ngày (trùng SĐT hoặc họ tên): hỏi khách trước khi tạo thêm đơn
+    function hoiGuiTrung_(res, vanGui, khong) {
+      var e = function(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function(c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+      var nd = res.trungSdt ? "Số điện thoại này đã có đơn ngày <b>" + e(res.ngayHien) + "</b>:<div class=\"ct-ds\">" + (res.don || []).map(function(d) { return "<div>🕒 <b>" + e(d.gio) + "</b> · " + e(d.khach) + " khách · " + e(d.tt) + "</div>"; }).join("") + "</div>"
+        : "Ngày <b>" + e(res.ngayHien) + "</b> đã có đơn mang tên <b>" + e(res.ten) + "</b>.";
+      var nen = document.createElement("div"); nen.className = "ct-nen";
+      nen.innerHTML = '<div class="ct-hop" role="alertdialog" aria-modal="true"><div class="ct-ico">⚠️</div><div class="ct-tieude">' + (res.trungSdt ? "TÚI ĐÃ CÓ ĐƠN CỦA QUÝ KHÁCH" : "HỆ THỐNG ĐÃ CÓ TÊN NÀY") + '</div><div class="ct-nd">' + nd + '</div><div class="ct-ghi">Nếu Quý khách đã gửi rồi thì không cần gửi lại ạ. Chỉ chọn <b>Vẫn gửi</b> khi muốn đặt thêm bàn.</div><button type="button" class="ct-khong">Không gửi nữa</button><button type="button" class="ct-gui">Vẫn gửi đơn mới</button></div>';
+      document.body.appendChild(nen);
+      nen.querySelector(".ct-khong").onclick = function() { nen.remove(); khong(); };
+      nen.querySelector(".ct-gui").onclick = function() { nen.remove(); vanGui(); };
+    }
     function guiDonWebAnToan(data, khiXong, khiLoi) {
       // Bấm GỬI LẠI cùng thông tin (SĐT + ngày + giờ) → dùng lại mã gửi cũ để không tạo đơn trùng
       var khoa = [data.sdt, data.ngay, data.gioVao].join("|");
@@ -452,7 +473,9 @@
       var lan = 0;
       (function gui() {
         lan++;
-        google.script.run.withSuccessHandler(function(res) { if (res && res.success) window._donCho = null; khiXong(res); }).withFailureHandler(function(err) {
+        google.script.run.withSuccessHandler(function(res) { if (res && res.success) window._donCho = null;
+          if (res && res.canhBaoTrung) return hoiGuiTrung_(res, function() { window._donCho = null; data.maGui = ""; data.xacNhanTrung = true; guiDonWebAnToan(data, khiXong, khiLoi); }, function() { window._donCho = null; khiXong({ success: false, daHuyTrung: true, message: "" }); });
+          khiXong(res); }).withFailureHandler(function(err) {
           if (lan < 3) return setTimeout(gui, lan * 2500);
           khiLoi(err);
         }).submitBooking(data);
