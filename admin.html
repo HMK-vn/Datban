@@ -730,6 +730,86 @@
     body.gd-b #timelineContainer { background: #f4f4f4 !important; }
     html:has(body.gd-b), body.gd-b { background: #ededed !important; }
   </style>
+  <style id="mauDecorNgay">
+    /* Tab Mẫu decor: còn trống / đã đặt theo ngày */
+    #tab9 .md-thanh { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-bottom: 12px; }
+    #tab9 .md-tieude { font-weight: 800; letter-spacing: .2px; }
+    #tab9 .md-thanh .input-group { width: auto; flex-wrap: nowrap; }
+    #tab9 .md-thanh input[type=date] { width: 10.5em; font-weight: 700; }
+    #tab9 .md-tom { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+    #tab9 .md-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: .9em; white-space: nowrap; }
+    #tab9 .md-chip.con { background: #e8f7ee; color: #1f7a45; }
+    #tab9 .md-chip.da { background: #f1eeeb; color: #8a817a; }
+    #tab9 .md-chip.ban { background: #f3ecff; color: #6d28d9; }
+    #tab9 .md-bao { border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; font-weight: 600; font-size: .92em; }
+    #tab9 .md-bao.khoa { background: #fff4e5; color: #9a3412; border: 1px solid #fed7aa; }
+    #tab9 .md-bao.gh { background: #f8f5f1; color: #4b3b2f; border: 1px solid #eadfd4; }
+    #tab9 .md-khung { background: #fff; border-radius: 14px; padding: 12px; box-shadow: 0 2px 12px rgba(60,40,20,.07); height: 100%; }
+    #tab9 .md-tieu { font-weight: 800; font-size: 1em; margin: 0 0 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(70,45,25,.08); }
+    #tab9 .md-tieu.con { color: #1f7a45; } #tab9 .md-tieu.da { color: #9a918a; }
+    #tab9 .md-luoi { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+    #tab9 .md-o { border: 1px solid #eee4da; border-left: 4px solid #3a9d6a; border-radius: 10px; padding: 7px 10px; background: #fff; min-width: 0; }
+    /* Mẫu đã đặt hiển thị mờ (xám nhạt) để mẫu còn trống nổi bật; trùng mẫu vẫn báo đỏ */
+    #tab9 .md-o.da { border-color: #eee9e4; border-left-color: #d6cec7; background: #faf8f6; color: #a39a93; margin-bottom: 8px; }
+    #tab9 .md-o.da .md-ma, #tab9 .md-o.da .md-ten { color: #9a918a; }
+    #tab9 .md-o.da .md-kh { border-top-color: #eee8e2; }
+    #tab9 .md-o.da .md-kh b, #tab9 .md-o.da .md-sdt { color: #8f867f; }
+    #tab9 .md-o.da .md-the { background: #f3efe9; color: #9a8a6a; }
+    #tab9 .md-o.da.trung { border-left-color: #e05252; background: #fff7f7; }
+    #tab9 .md-ma { font-weight: 800; margin-right: 6px; white-space: nowrap; }
+    #tab9 .md-ten { font-weight: 600; }
+    #tab9 .md-cd { display: block; color: #7b6f66; font-size: .82em; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #tab9 .md-kh { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin-top: 5px; padding-top: 5px; border-top: 1px dashed #efe6dc; font-size: .92em; }
+    #tab9 .md-kh b { text-transform: uppercase; }
+    #tab9 .md-sdt { font-weight: 700; white-space: nowrap; }
+    #tab9 .md-the { font-size: .75em; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: #fff3cd; color: #8a5a00; white-space: nowrap; margin-left: 6px; }
+    #tab9 .md-canh { font-size: .78em; font-weight: 800; color: #b42318; margin-left: 6px; white-space: nowrap; }
+    #tab9 .md-rong { color: #8a7f76; font-style: italic; padding: 6px 2px; }
+    @media (max-width: 575.98px) {
+      #tab9 .md-luoi { grid-template-columns: 1fr 1fr; gap: 6px; }
+      /* Điện thoại: 1 hàng = icon + chọn ngày + Hôm nay (icon) + số bàn decor; "Còn/Đã đặt" đã có ở tiêu đề 2 cột */
+      #tab9 .md-thanh { gap: 6px; flex-wrap: nowrap; }
+      #tab9 .md-thanh .btn .md-chu, #tab9 .md-chip.con, #tab9 .md-chip.da { display: none; }
+      #tab9 .md-thanh input[type=date] { width: 8.6em; padding-left: 6px; padding-right: 4px; }
+      #tab9 .md-thanh .input-group .btn { padding-left: 8px; padding-right: 8px; }
+      #tab9 .md-chip { padding: 4px 8px; }
+      #tab9 .md-o { padding: 6px 8px; }
+    }
+    body.gd-a #mainTab #tab9-tab .menu-ico, body.gd-a #mainTab #tab9-tab.active .menu-ico { color: #db2777 !important; }
+    /* Máy tính (chữ trang x1,5): thanh đầu tab gọn, không chiếm nhiều bề ngang */
+    @media (min-width: 992px) {
+      #tab9 .md-thanh { gap: 8px 12px; }
+      #tab9 .md-tieude { font-size: .8rem; }
+      #tab9 .md-tieude .md-i { font-size: 1.3em; }
+      #tab9 .md-thanh .input-group-sm > .form-control, #tab9 .md-thanh .input-group-sm > .btn, #tab9 .md-thanh > .btn-sm { font-size: .7rem; padding: .2rem .5rem; }
+      #tab9 .md-thanh input[type=date] { width: 8.4em; }
+      #tab9 .md-chip { font-size: .7rem; padding: 3px 10px; }
+    }
+    /* Màn vừa (iPad, khung hẹp): ẩn chữ tiêu đề, ô đếm chỉ icon + số → thanh đầu tab 1 hàng */
+    @media (max-width: 991.98px) {
+      #tab9 .md-tieude .md-chu, #tab9 .md-chip .md-chu { display: none; }
+      #tab9 .md-tieude .md-i { margin-right: 0; }
+      #tab9 .md-chip i { margin-right: 2px; }
+    }
+    /* Icon Font Awesome nâu, to giống thanh menu dưới */
+    header.navbar-custom .nut-ico { font-size: 1.3em; color: #8a5a3c; margin-right: 6px; width: 1.15em; text-align: center; vertical-align: -.16em; }
+    #tab9 .md-i { font-size: 1.15em; margin-right: 7px; width: 1.2em; text-align: center; }
+    #tab9 .md-tieude .md-i { color: #8a5a3c; font-size: 1.35em; vertical-align: -.12em; }
+    #tab9 .md-thanh .btn i { font-size: 1.05em; }
+    #tab9 .md-chip i { font-size: 1.1em; }
+    /* Dòng khách đã đặt: các cột thẳng hàng giữa mọi dòng */
+    /* Tên khách 1 dòng riêng; dòng dưới SĐT | giờ | khách | trạng thái thẳng cột giữa mọi khách */
+    #tab9 .md-kh { display: grid !important; grid-template-columns: 8em 4.6em 3.4em minmax(0, 1fr); align-items: center; column-gap: 10px; row-gap: 3px; }
+    #tab9 .md-kh .k-ten { grid-column: 1 / -1; }
+    #tab9 .md-kh > span { white-space: nowrap; min-width: 0; }
+    #tab9 .md-kh .k-ten { overflow: hidden; text-overflow: ellipsis; }
+    #tab9 .md-kh i { color: #a8826a; margin-right: 6px; width: 1.05em; text-align: center; }
+    #tab9 .md-kh .k-sdt, #tab9 .md-kh .k-gio, #tab9 .md-kh .k-khach { font-variant-numeric: tabular-nums; }
+    #tab9 .md-kh .k-sdt { font-weight: 700; }
+    #tab9 .md-kh .md-the { margin-left: 0; }
+    #tab9 .md-o.da > .md-ma { display: inline-block; min-width: 4.4em; }
+    @media (max-width: 575.98px) { #tab9 .md-kh { grid-template-columns: 7.7em 4.5em 3.2em minmax(0, 1fr); } }
+  </style>
 </head>
 <body class="pb-5">
   <script>
@@ -779,13 +859,13 @@
         </div>
       </div>
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <a href="https://docs.google.com/spreadsheets/d/1cPOeqL8_aN3ktL5p7_NsT_rkrjObzJy7IllOIjGWJeA/edit?gid=999901#gid=999901" class="btn btn-warning btn-sm fw-bold text-dark" target="_blank"><i class="fa-solid fa-file-excel me-1"></i><span class="nhan-dai">📊 Sheet DATA_TONG</span><span class="nhan-ngan">Sheet</span></a>
-        <a href="decor.html" class="btn btn-danger btn-sm fw-bold" target="_blank">🎀 <span class="nhan-dai">Đặt bàn decor</span><span class="nhan-ngan">Decor</span></a>
-        <a href="thuong.html" class="btn btn-primary btn-sm fw-bold" target="_blank">🍲 <span class="nhan-dai">Đặt bàn thường</span><span class="nhan-ngan">Thường</span></a>
-        <a href=new URL("tracuu.html", location.href).href class="btn btn-success btn-sm fw-bold" target="_blank">🔍 Tra cứu</a>
-        <button type="button" class="btn btn-light btn-sm fw-bold" onclick="doiGiaoDien()" title="Đổi giao diện" id="nutGiaoDien">🎨 <span class="nhan-dai">Giao diện</span><span class="nhan-ngan">Giao diện</span></button>
-        <button type="button" class="btn btn-light btn-sm fw-bold" onclick="caiTelegram()" title="Báo đơn mới / hoàn cọc về nhóm Telegram">🔔 Telegram</button>
-        <span class="badge bg-light text-dark py-2 px-3 ms-1"><i class="fa-solid fa-clock me-1"></i> <span id="clockDisplay"></span></span>
+        <a href="https://docs.google.com/spreadsheets/d/1cPOeqL8_aN3ktL5p7_NsT_rkrjObzJy7IllOIjGWJeA/edit?gid=999901#gid=999901" class="btn btn-warning btn-sm fw-bold text-dark" target="_blank"><i class="fa-solid fa-table nut-ico"></i><span class="nhan-dai">Sheet DATA_TONG</span><span class="nhan-ngan">Sheet</span></a>
+        <a href="decor.html" class="btn btn-danger btn-sm fw-bold" target="_blank"><i class="fa-solid fa-cake-candles nut-ico"></i><span class="nhan-dai">Đặt bàn decor</span><span class="nhan-ngan">Decor</span></a>
+        <a href="thuong.html" class="btn btn-primary btn-sm fw-bold" target="_blank"><i class="fa-solid fa-utensils nut-ico"></i><span class="nhan-dai">Đặt bàn thường</span><span class="nhan-ngan">Thường</span></a>
+        <a href=new URL("tracuu.html", location.href).href class="btn btn-success btn-sm fw-bold" target="_blank"><i class="fa-solid fa-magnifying-glass nut-ico"></i>Tra cứu</a>
+        <button type="button" class="btn btn-light btn-sm fw-bold" onclick="doiGiaoDien()" title="Đổi giao diện" id="nutGiaoDien"><i class="fa-solid fa-circle-half-stroke nut-ico"></i><span class="nhan-dai">Giao diện</span><span class="nhan-ngan">Giao diện</span></button>
+        <button type="button" class="btn btn-light btn-sm fw-bold" onclick="caiTelegram()" title="Báo đơn mới / hoàn cọc về nhóm Telegram"><i class="fa-brands fa-telegram nut-ico"></i>Telegram</button>
+        <span class="badge bg-light text-dark py-2 px-3 ms-1"><i class="fa-solid fa-clock nut-ico"></i><span id="clockDisplay"></span></span>
       </div>
     </div>
   </header>
@@ -804,6 +884,7 @@
       <li class="nav-item d-none"><button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button"><i class="fa-solid fa-magnifying-glass me-1 text-danger"></i> 4. Email Xác Nhận</button></li>
       <li class="nav-item"><button class="nav-link tab-highlight " id="tab5-tab" title="Nhập đặt bàn" data-bs-toggle="tab" data-bs-target="#tab5" type="button"><i class="fa-solid fa-circle-plus me-1 menu-ico"></i> <span class="nd">Nhập đặt bàn</span><span class="nn">Thêm đơn</span></button></li>
       <li class="nav-item"><button class="nav-link" id="tab6-tab" title="Lịch decor" data-bs-toggle="tab" data-bs-target="#tab6" type="button" onclick="loadCalendarYearTab6()"><i class="fa-solid fa-calendar-days me-1 menu-ico"></i> Lịch decor</button></li>
+      <li class="nav-item"><button class="nav-link" id="tab9-tab" title="Mẫu decor" data-bs-toggle="tab" data-bs-target="#tab9" type="button"><i class="fa-solid fa-palette me-1 menu-ico"></i> Mẫu decor</button></li>
       <li class="nav-item"><button class="nav-link" id="tab7-tab" title="Phân tích" aria-label="Phân tích" data-bs-toggle="tab" data-bs-target="#tab7" type="button"><i class="fa-solid fa-chart-column me-1 menu-ico"></i> Phân tích</button></li>
       <li class="nav-item"><button class="nav-link" id="tab8-tab" title="Tiền cọc" data-bs-toggle="tab" data-bs-target="#tab8" type="button"><i class="fa-solid fa-sack-dollar me-1 menu-ico"></i> Tiền cọc</button></li>
     </ul>
@@ -1153,6 +1234,24 @@
 
       <!-- TAB 7: PHÂN TÍCH KHÁCH (TỈNH THÀNH, ĐỘ TUỔI, BÀN LỚN, KÊNH, SO SÁNH THÁNG/NĂM) -->
       <!-- TAB 8: LỊCH NĂM - TIỀN CỌC THEO NGÀY NHẬP DỮ LIỆU (CỘT Q DATA_TONG) -->
+      <div class="tab-pane fade" id="tab9" role="tabpanel">
+        <div class="md-thanh">
+          <span class="md-tieude" title="Mẫu decor ngày"><i class="fa-solid fa-palette md-i"></i><span class="md-chu">MẪU DECOR NGÀY</span></span>
+          <div class="input-group input-group-sm">
+            <button class="btn btn-outline-secondary" type="button" onclick="mdDoiNgay(-1)" title="Ngày trước" aria-label="Ngày trước"><i class="fa-solid fa-chevron-left"></i></button>
+            <input type="date" id="mdNgay" class="form-control" onchange="taiMauDecorNgay()">
+            <button class="btn btn-outline-secondary" type="button" onclick="mdDoiNgay(1)" title="Ngày sau" aria-label="Ngày sau"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          <button class="btn btn-sm btn-outline-secondary" type="button" onclick="mdDoiNgay(0)" title="Hôm nay" aria-label="Hôm nay"><i class="fa-solid fa-calendar-day"></i><span class="md-chu ms-1">Hôm nay</span></button>
+          <span class="md-tom" id="mdTomTat"></span>
+        </div>
+        <div id="mdBao"></div>
+        <div class="row g-3">
+          <div class="col-lg-6"><div class="md-khung"><h6 class="md-tieu con"><i class="fa-solid fa-circle-check md-i"></i>CÒN TRỐNG (<span id="mdSoCon">0</span>)</h6><div id="mdDsCon" class="md-luoi"></div></div></div>
+          <div class="col-lg-6"><div class="md-khung"><h6 class="md-tieu da"><i class="fa-solid fa-calendar-check md-i"></i>ĐÃ ĐẶT (<span id="mdSoDa">0</span>)</h6><div id="mdDsDa"></div></div></div>
+        </div>
+        <div class="small text-muted mt-2">Nguồn: DANH_MUC_DECOR · DATA_TONG · FORM booking (đơn web chờ duyệt)</div>
+      </div>
       <div class="tab-pane fade" id="tab8" role="tabpanel">
         <div class="card-box p-4">
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
@@ -1272,7 +1371,7 @@
   <script>
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
+    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","layMauDecorTheoNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
     // 🔔 Khung cài / thử thông báo Telegram (khung trên trang, không dùng hộp prompt vì vài trình duyệt chặn)
     function caiTelegram() {
       var k = document.getElementById("tgKhung");
@@ -3238,6 +3337,78 @@
 
 
 
+  </script>
+  <script>
+    // 🎀 Tab "Mẫu decor": mẫu còn trống / đã đặt của 1 ngày (nguồn: DANH_MUC_DECOR, DATA_TONG, FORM booking)
+    function mdNgayKey_(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+    function mdDoiNgay(buoc) {
+      var o = document.getElementById("mdNgay"), d;
+      if (!buoc || !o.value) d = new Date(); else { var p = o.value.split("-").map(Number); d = new Date(p[0], p[1] - 1, p[2] + buoc); }
+      o.value = mdNgayKey_(d); taiMauDecorNgay();
+    }
+    var _mdLan = 0, _mdTl = "";
+    function taiMauDecorNgay() {
+      var ngay = document.getElementById("mdNgay").value; if (!ngay) return;
+      var lan = ++_mdLan, cho = '<div class="md-rong"><span class="spinner-border spinner-border-sm me-1"></span>Đang tải…</div>';
+      document.getElementById("mdDsCon").innerHTML = cho; document.getElementById("mdDsDa").innerHTML = cho;
+      google.script.run.withSuccessHandler(function(r) { if (lan === _mdLan) veMauDecorNgay_(r); })
+        .withFailureHandler(function(e) { if (lan === _mdLan) veMauDecorNgay_({ success: false, message: "Lỗi: " + (e && e.message || e) }); })
+        .layMauDecorTheoNgayWeb(ngay);
+    }
+    function mdTachTen_(t) { t = String(t || ""); var i = t.indexOf(" - "); return i > 0 ? [t.slice(0, i), t.slice(i + 3)] : ["", t]; }
+    function mdDongKhach_(k) {
+      return '<div class="md-kh"><span class="k-ten"><i class="fa-solid fa-user"></i><b>' + escapeHtml(tenKhachGon_(k.ten) || "Khách") + '</b></span>' +
+        '<span class="k-sdt">' + (k.sdt ? escapeHtml(sdtDep_(k.sdt)) : '') + '</span>' +
+        '<span class="k-gio">' + (k.gio ? '<i class="fa-solid fa-clock"></i>' + escapeHtml(k.gio) : '') + '</span>' +
+        '<span class="k-khach">' + (k.khach ? '<i class="fa-solid fa-users"></i>' + escapeHtml(k.khach) : '') + '</span>' +
+        '<span class="k-tt">' + (k.cho ? '<span class="md-the">Chờ duyệt</span>' : '') + '</span></div>';
+    }
+    function veMauDecorNgay_(r) {
+      var con = document.getElementById("mdDsCon"), da = document.getElementById("mdDsDa"), bao = document.getElementById("mdBao");
+      if (!r || !r.success) { con.innerHTML = ""; bao.innerHTML = ""; document.getElementById("mdTomTat").innerHTML = ""; document.getElementById("mdSoCon").innerText = "0"; document.getElementById("mdSoDa").innerText = "0"; da.innerHTML = '<div class="md-rong text-danger">' + escapeHtml((r && r.message) || "Không tải được dữ liệu") + '</div>'; return; }
+      var dsCon = [], dsDa = [], soBan = (r.chuaMau || []).length;
+      (r.mau || []).forEach(function(m) { if (m.khach.length) { dsDa.push(m); soBan += m.khach.length; } else if (!m.ngoaiDanhMuc) dsCon.push(m); });
+      document.getElementById("mdSoCon").innerText = dsCon.length;
+      document.getElementById("mdSoDa").innerText = dsDa.length;
+      document.getElementById("mdTomTat").innerHTML = '<span class="md-chip con" title="Mẫu còn trống"><i class="fa-solid fa-circle-check"></i><span class="md-chu">Còn </span>' + dsCon.length + '<span class="md-chu"> mẫu</span></span>' +
+        '<span class="md-chip da" title="Mẫu đã đặt"><i class="fa-solid fa-calendar-check"></i><span class="md-chu">Đã đặt </span>' + dsDa.length + '</span>' +
+        '<span class="md-chip ban" title="Bàn decor trong ngày"><i class="fa-solid fa-cake-candles"></i>' + soBan + '<span class="md-chu2"> bàn decor</span></span>';
+      var b = [], gh = r.gioiHan || {}, c = gh.cauHinh || {}, dd = gh.daDat || { nho: 0, lon: 0, khachNho: 0, khachLon: 0 };
+      if (r.khoaDecor) b.push('<div class="md-bao khoa"><i class="fa-solid fa-lock md-i"></i>Ngày này đã khoá nhận decor trên lịch (FULL DECOR) — khách không đặt được mẫu nào.</div>');
+      if (r.anChonMau) b.push('<div class="md-bao khoa"><i class="fa-solid fa-eye-slash md-i"></i>Web khách đang ẩn mục chọn mẫu (DATA_TONG!H1).</div>');
+      if (c.khoa) b.push('<div class="md-bao khoa"><i class="fa-solid fa-lock md-i"></i>Ngày này không nhận bàn decor (giới hạn theo ngày).</div>');
+      else if (c.tong || c.nho || c.lon || c.khachNho || c.khachLon) {
+        var p = [];
+        if (c.tong) p.push("Tổng " + (dd.nho + dd.lon) + "/" + c.tong + " bàn");
+        if (c.nho) p.push("Dưới 6 khách " + dd.nho + "/" + c.nho + " bàn");
+        if (c.lon) p.push("Từ 6 khách " + dd.lon + "/" + c.lon + " bàn");
+        if (c.khachNho) p.push("Khách bàn dưới 6: " + dd.khachNho + "/" + c.khachNho);
+        if (c.khachLon) p.push("Khách bàn từ 6: " + dd.khachLon + "/" + c.khachLon);
+        b.push('<div class="md-bao gh"><i class="fa-solid fa-chart-simple md-i"></i>Giới hạn ngày: ' + p.join(" · ") + '</div>');
+      }
+      bao.innerHTML = b.join("");
+      con.innerHTML = dsCon.length ? dsCon.map(function(m) {
+        var t = mdTachTen_(m.ten);
+        return '<div class="md-o"><span class="md-ma">' + escapeHtml(t[0]) + '</span><span class="md-ten">' + escapeHtml(t[1]) + '</span>' +
+          (m.chuDe ? '<small class="md-cd" title="' + escapeHtml(m.chuDe) + '">' + escapeHtml(m.chuDe) + '</small>' : '') + '</div>';
+      }).join("") : '<div class="md-rong">Đã hết mẫu trống trong ngày này.</div>';
+      var html = dsDa.map(function(m) {
+        var t = mdTachTen_(m.ten), trung = m.khach.length > 1;
+        return '<div class="md-o da' + (trung ? ' trung' : '') + '"><span class="md-ma">' + escapeHtml(t[0]) + '</span><span class="md-ten">' + escapeHtml(t[1]) + '</span>' +
+          (trung ? '<span class="md-canh"><i class="fa-solid fa-triangle-exclamation me-1"></i>' + m.khach.length + ' đơn trùng mẫu</span>' : '') + (m.ngoaiDanhMuc ? '<span class="md-the">Ngoài danh mục</span>' : '') +
+          m.khach.map(mdDongKhach_).join("") + '</div>';
+      }).join("");
+      if ((r.chuaMau || []).length) html += '<div class="md-o da"><span class="md-ma">Chưa ghi mẫu</span><span class="md-ten">(' + r.chuaMau.length + ' bàn decor)</span>' + r.chuaMau.map(mdDongKhach_).join("") + '</div>';
+      da.innerHTML = html || '<div class="md-rong">Chưa có mẫu nào được đặt.</div>';
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      var t = document.getElementById("tab9-tab");
+      if (t) t.addEventListener("shown.bs.tab", function() {
+        var o = document.getElementById("mdNgay"), tl = document.getElementById("timelineDateInput"), tlv = (tl && tl.value) || "";
+        if (!o.value || (tlv && tlv !== _mdTl)) o.value = tlv || mdNgayKey_(new Date()); // theo ngày đang xem ở Timeline
+        _mdTl = tlv; taiMauDecorNgay();
+      });
+    });
   </script>
 </body>
 </html>

@@ -540,7 +540,10 @@
     });
 
     // 2. KỊCH BẢN KHÓA CHẶT GIỜ THỨ 6 & THỨ 7 (14:00 - 18:30) CHỐNG NHẬP PHÚT TRƯỚC GIỜ SAU
+    // Luật riêng T6/T7 (14:00–18:30 + đếm ngược khoá trong ngày) — TẮT từ 08/11/2026: mọi ngày chỉ còn khung giờ khoá (tab 6)
+    var LUAT_RIENG_T67 = false;
     function isWeekendFriSat() {
+      if (!LUAT_RIENG_T67) return false;
       const val = document.getElementById("inputNgay").value;
       if (!val) return false;
       const parts = val.split("-").map(Number);
@@ -854,7 +857,7 @@
       const selectedDate = new Date(parts[0], parts[1] - 1, parts[2]);
       const dayOfWeek = selectedDate.getDay();
 
-      if (dayOfWeek === 5 || dayOfWeek === 6) {
+      if (LUAT_RIENG_T67 && (dayOfWeek === 5 || dayOfWeek === 6)) {
         let selectedMinutes = 0;
         if (selectGio && selectGio.value) {
           const tParts = selectGio.value.split(":").map(Number);

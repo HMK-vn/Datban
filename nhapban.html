@@ -375,9 +375,10 @@
       document.getElementById('badgeTargetRow').innerText = "Vị trí lưu DATA_TONG dòng " + targetLine + " (Tổng " + tagList.length + " đơn)";
     }
 
-    // Luật giống web đặt bàn: Thứ 6 & Thứ 7 khóa decor từ 18h31 (giờ đón hoặc thời điểm nhập)
+    // Luật riêng Thứ 6 & Thứ 7 (khóa decor từ 18h31) — TẮT từ 08/11/2026, giống máy chủ (LUAT_RIENG_T67_)
+    var LUAT_RIENG_T67 = false;
     function khoaGioDecor(dateStr, gioStr) {
-      if (!dateStr) return "";
+      if (!dateStr || !LUAT_RIENG_T67) return "";
       var parts = dateStr.split("-").map(Number);
       if (parts.length < 3) return "";
       var day = new Date(parts[0], parts[1] - 1, parts[2]).getDay();
