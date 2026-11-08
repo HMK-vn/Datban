@@ -1147,6 +1147,7 @@
         if (res.success) {
           window._sdtVuaDat = data.sdt;
           window._daGuiDon = true; capNhatBuoc();
+          document.getElementById("bookingForm").reset(); // gửi xong xoá sạch thông tin để không gửi lại được (đóng bảng sẽ tải lại trang)
           document.getElementById("tcLuuYMau").style.display = data.mauDecor ? "" : "none"; // lưu ý mẫu chỉ hiện khi khách có chọn mẫu
           document.getElementById("tcMauDaChon").innerHTML = data.mauDecor ? "🎀 Mẫu đã chọn: <b>" + String(data.mauDecor).replace(/</g, "&lt;") + "</b>" : "";
           new bootstrap.Modal(document.getElementById("modalConfirmSuccess")).show();
@@ -1161,18 +1162,25 @@
       });
     }
     // Gửi đơn an toàn: kèm "mã gửi" để máy chủ không tạo đơn trùng; mất mạng thì tự gửi lại tối đa 2 lần
+    window.addEventListener("pageshow", function(e) { if (e.persisted) location.reload(); }); // quay lại bằng nút Back: tải trang mới, không giữ thông tin đã gửi
     // Hệ thống đã có đơn cùng ngày (trùng SĐT hoặc họ tên): hỏi khách trước khi tạo thêm đơn
     function hoiGuiTrung_(res, vanGui, khong) {
       var e = function(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function(c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
       var nd = res.trungSdt ? "Số điện thoại này đã có đơn ngày <b>" + e(res.ngayHien) + "</b>:<div class=\"ct-ds\">" + (res.don || []).map(function(d) { return "<div>🕒 <b>" + e(d.gio) + "</b> · " + e(d.khach) + " khách · " + e(d.tt) + "</div>"; }).join("") + "</div>"
         : "Ngày <b>" + e(res.ngayHien) + "</b> đã có đơn mang tên <b>" + e(res.ten) + "</b>.";
       var nen = document.createElement("div"); nen.className = "ct-nen";
-      nen.innerHTML = '<div class="ct-hop" role="alertdialog" aria-modal="true"><div class="ct-ico">⚠️</div><div class="ct-tieude">' + (res.trungSdt ? "TÚI ĐÃ CÓ ĐƠN CỦA QUÝ KHÁCH" : "HỆ THỐNG ĐÃ CÓ TÊN NÀY") + '</div><div class="ct-nd">' + nd + '</div><div class="ct-ghi">Nếu Quý khách đã gửi rồi thì không cần gửi lại ạ. Chỉ chọn <b>Vẫn gửi</b> khi muốn đặt thêm bàn.</div><button type="button" class="ct-khong">Không gửi nữa</button><button type="button" class="ct-gui">Vẫn gửi đơn mới</button></div>';
+      nen.innerHTML = '<div class="ct-hop" role="alertdialog" aria-modal="true"><div class="ct-ico">⚠️</div><div class="ct-tieude">' + (res.chanHan ? "TÚI ĐÃ NHẬN ĐƠN NÀY RỒI" : res.trungSdt ? "TÚI ĐÃ CÓ ĐƠN CỦA QUÝ KHÁCH" : "HỆ THỐNG ĐÃ CÓ TÊN NÀY") + '</div><div class="ct-nd">' + nd + '</div><div class="ct-ghi">' + (res.chanHan ? 'Quý khách không cần gửi lại ạ. Cần đổi thông tin, vui lòng gọi hotline <b>0911 588 138</b>.' : 'Nếu Quý khách đã gửi rồi thì không cần gửi lại ạ. Chỉ chọn <b>Vẫn gửi</b> khi muốn đặt thêm bàn.') + '</div>' + (res.chanHan ? '<button type="button" class="ct-khong">Đã hiểu</button>' : '<button type="button" class="ct-khong">Không gửi nữa</button><button type="button" class="ct-gui">Vẫn gửi đơn mới</button>') + '</div>';
       document.body.appendChild(nen);
-      nen.querySelector(".ct-khong").onclick = function() { nen.remove(); khong(); };
-      nen.querySelector(".ct-gui").onclick = function() { nen.remove(); vanGui(); };
+      nen.querySelector(".ct-khong").onclick = function() {
+        nen.remove(); khong();
+        if (res.chanHan) { var f = document.getElementById("bookingForm"); if (f) f.reset(); location.reload(); } // đơn đã có rồi: xoá sạch để không gửi lại
+      };
+      var nutGui = nen.querySelector(".ct-gui"); if (nutGui) nutGui.onclick = function() { nen.remove(); vanGui(); };
     }
     function guiDonWebAnToan(data, khiXong, khiLoi) {
+      // Gửi lại đúng thông tin vừa bị từ chối (trong 5 phút): báo lại ngay, không gửi lên máy chủ
+      var khoaTC = [data.sdt, data.ngay, data.gioVao, data.soKhach, data.mauDecor || ""].join("|");
+      if (window._tuChoi && window._tuChoi.khoa === khoaTC && Date.now() - window._tuChoi.luc < 300000) return khiXong({ success: false, message: window._tuChoi.msg });
       // Bấm GỬI LẠI cùng thông tin (SĐT + ngày + giờ) → dùng lại mã gửi cũ để không tạo đơn trùng
       var khoa = [data.sdt, data.ngay, data.gioVao].join("|");
       if (window._donCho && window._donCho.khoa === khoa) data.maGui = window._donCho.ma;
@@ -1182,6 +1190,7 @@
       (function gui() {
         lan++;
         google.script.run.withSuccessHandler(function(res) { if (res && res.success) window._donCho = null;
+          if (res && res.success === false && !res.canhBaoTrung && !/bận|đang được xử lý|^Lỗi/.test(res.message || "")) window._tuChoi = { khoa: khoaTC, msg: res.message, luc: Date.now() };
           if (res && res.canhBaoTrung) return hoiGuiTrung_(res, function() { window._donCho = null; data.maGui = ""; data.xacNhanTrung = true; guiDonWebAnToan(data, khiXong, khiLoi); }, function() { window._donCho = null; khiXong({ success: false, daHuyTrung: true, message: "" }); });
           khiXong(res); }).withFailureHandler(function(err) {
           if (lan < 3) return setTimeout(gui, lan * 2500);
