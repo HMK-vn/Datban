@@ -289,7 +289,100 @@
     .timeline-card-table { font-size: 16px !important; line-height: 1.5; }
     .table-card-header { font-size: 17px !important; }
     .card-note-box, .card-dishes-box { font-size: 15px !important; }
-  </style>
+      .chip-tk { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 9px; white-space: nowrap; font-size: .85rem; }
+    .chip-tk b { font-size: 1rem; }
+    .hang-ngay h5 { font-size: 1.05rem; }
+    @media (min-width: 992px) { .hang-ngay { flex-wrap: nowrap !important; } .hang-ngay > * { flex-shrink: 0; } .hang-ngay > .ms-auto { flex-wrap: nowrap !important; gap: 4px !important; } }
+    .hang-ngay .btn, .hang-ngay .form-control, .hang-ngay .input-group-text { padding-top: .25rem; padding-bottom: .25rem; }
+  
+    /* Điện thoại: bố cục gọn, thẳng hàng */
+    .nn { display: none; }
+    @media (max-width: 991.98px) {
+      header.navbar-custom .nhan-dai { display: none; }
+      header.navbar-custom .nhan-ngan { display: inline; }
+    }
+    @media (max-width: 575.98px) {
+      /* Chữ gọn hơn để thấy được nhiều thông tin, nhập liệu dễ */
+      html { font-size: 14px; }
+      body { font-size: 14px; }
+      .main-container.px-3 { padding-left: 8px !important; padding-right: 8px !important; }
+      .card-box, #timelineContainer { padding: 10px !important; }
+      .timeline-card-table { font-size: 14px !important; padding: 8px 10px 20px !important; }
+      .table-card-header { font-size: 14.5px !important; }
+      .card-note-box, .card-dishes-box { font-size: 13px !important; }
+      header.navbar-custom { padding: 6px 8px !important; }
+      header.navbar-custom .btn-sm { font-size: 12px; padding: 3px 7px; }
+      .admin-title { font-size: 15px !important; }
+      .form-control, .form-select { font-size: 15px; }
+      header.navbar-custom .badge { display: none; }
+      .hang-ngay { display: grid !important; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px !important; }
+      .hang-ngay > h5 { grid-column: 1 / -1; font-size: 1rem; }
+      .hang-ngay > .input-group { width: 100% !important; }
+      .hang-ngay > .input-group .form-control { width: 100% !important; min-width: 0; }
+      .hang-ngay > .ms-auto { grid-column: 1 / -1; display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 6px !important; margin: 0 !important; }
+      .hang-ngay .chip-tk { justify-content: center; font-size: .82rem; padding: 6px 4px; }
+      .thanh-cong-cu, .thanh-cong-cu > div { width: 100%; flex-wrap: nowrap !important; gap: 6px !important; }
+      .thanh-cong-cu { flex-direction: column; align-items: stretch !important; }
+      .thanh-cong-cu .btn-group { width: 100%; display: flex; }
+      .thanh-cong-cu .btn-group > .btn { flex: 1 1 0; white-space: nowrap; padding: .35rem .2rem; font-size: .8rem; }
+      .thanh-cong-cu [data-cot] { display: none !important; }
+      .thanh-cong-cu > div:last-child > .btn { flex: 1 1 0; padding: .35rem .2rem; font-size: .8rem; white-space: nowrap; }
+      .nd { display: none; }
+      .nn { display: inline; }
+      #mainTab .nav-link { white-space: nowrap !important; }
+    }
+    /* Nút ẩn/hiện thông tin: biểu tượng to, có chữ chú thích dưới */
+    .cc-btn { display: inline-flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 1px; line-height: 1.05; padding: .2rem .3rem !important; }
+    .cc-btn i { font-size: 1.45em; }
+    .cc-btn .cc-nhan { font-size: .58rem !important; font-weight: 600; white-space: nowrap; }
+    /* Tiêu đề thẻ: tên + SĐT trên 1 dòng */
+    .table-card-header { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+    .table-card-header .tk-ten { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .table-card-header .tk-sdt { flex: 0 0 auto; font-weight: 700; opacity: .85; font-size: .82em; }
+    @media (min-width: 992px) { .table-card-header { font-size: 19px !important; } .cc-btn { padding: .15rem .22rem !important; } .cc-btn .cc-nhan { font-size: .5rem !important; } }
+    #dtSoDongNhom .btn.active { background: #934c22; border-color: #934c22; color: #fff; }
+      #mainTab .menu-ico { width: 1.4em; text-align: center; font-size: 1.15em; color: #8a5a3c; }
+    #mainTab .nav-link.active .menu-ico { color: #0b7a4e; }
+      /* Nút In / PDF chỉ biểu tượng, gọn */
+    .nut-icon { display: inline-flex !important; align-items: center; justify-content: center; gap: 2px; padding: .3rem .45rem !important; line-height: 1; border-radius: 10px !important; }
+    .nut-icon i { font-size: 1.15rem; }
+    .nut-icon.dropdown-toggle::after { margin-left: 2px; border-top-width: .28em; border-left-width: .24em; border-right-width: .24em; vertical-align: middle; }
+      /* Hàng ngày / in / PDF / tổng: luôn 1 dòng trên máy tính, tự thu gọn theo bề ngang */
+    @media (min-width: 992px) {
+      .hang-ngay { gap: 8px !important; }
+      .hang-ngay h5 { font-size: 1rem !important; }
+      .hang-ngay .form-control { font-size: .95rem; width: 8.8em !important; padding: .25rem .45rem; }
+      .hang-ngay .input-group-text { padding: .25rem .5rem; }
+      .hang-ngay .chip-tk { font-size: .78rem; padding: 4px 8px; }
+      .hang-ngay .chip-tk b { font-size: .92rem; }
+    }
+    @media (min-width: 992px) and (max-width: 1499.98px) {
+      .hang-ngay .chip-tk i { display: none; }
+      .hang-ngay .chip-tk { font-size: .7rem; padding: 3px 7px; }
+      .hang-ngay .chip-tk b { font-size: .85rem; }
+      .hang-ngay h5 { font-size: .9rem !important; }
+      .hang-ngay .form-control { font-size: .85rem; width: 8.2em !important; }
+    }
+    /* Đầu trang trên màn hình vừa: nút chỉ còn biểu tượng, ẩn đồng hồ để tên quán không bị đè */
+    @media (min-width: 992px) and (max-width: 1399.98px) {
+      header.navbar-custom .nhan-ngan { display: none !important; }
+      header.navbar-custom .badge { display: none !important; }
+      .thanh-cong-cu .nd { display: none; }
+      .thanh-cong-cu .nn { display: inline; }
+    }
+    /* Màn hình 992–1279px: menu trái thu gọn chỉ còn biểu tượng (rê chuột để xem tên) */
+    @media (min-width: 992px) and (max-width: 1279.98px) {
+      html body #mainTab { width: 64px !important; padding: 10px 6px !important; }
+      html body #mainTab .nav-link, html body #mainTab .nav-link span { font-size: 0 !important; text-align: center !important; padding: 10px 0 !important; text-overflow: clip !important; }
+      .hang-ngay { gap: 6px !important; }
+      .hang-ngay .form-control { width: 7.6em !important; }
+      .hang-ngay h5 { font-size: .82rem !important; }
+      html body #mainTab .nav-link .menu-ico { font-size: 1.25rem !important; margin: 0 !important; width: auto; }
+      .main-container.px-3:has(> #mainTab:not([style*="display:none"])) { margin-left: 64px !important; }
+      .thanh-cong-cu .cc-nhan { display: none !important; }
+    }
+    @media (min-width: 992px) { header.navbar-custom .admin-title { flex-shrink: 0; } header.navbar-custom .main-container > div:first-child { flex-shrink: 0; } }
+</style>
   <style>
     /* Canh chữ chung mọi nền tảng: tiêu đề cân dòng, đoạn văn không để chữ lẻ, nút nhỏ / nhãn / SĐT không tách dòng */
     h1, h2, h3, h4, h5, h6, .modal-title, .card-title { text-wrap: balance; }
@@ -300,8 +393,297 @@
     a[href^="mailto:"], .email, [class*="email"] { overflow-wrap: anywhere; }
     @media (max-width: 576px) { h4 { font-size: clamp(1.05rem, 5vw, 1.4rem); } h5 { font-size: clamp(1rem, 4.4vw, 1.2rem); } }
   </style>
+  <style id="chuTo15">
+    /* Màn hình máy tính: chữ toàn trang to gấp 1,5 lần (điện thoại giữ nguyên) */
+    @media (min-width: 992px) {
+      html { font-size: 150%; }
+      /* Menu dọc bên trái như trang Chấm công; nội dung tràn hết bề ngang còn lại */
+      header.navbar-custom { position: sticky; top: 0; z-index: 30; }
+      header.navbar-custom .main-container { max-width: none; }
+      #mainTab { position: fixed; left: 0; top: var(--cao-dau, 60px); bottom: 0; width: 250px; z-index: 20; display: flex; flex-direction: column; flex-wrap: nowrap;
+        margin: 0 !important; padding: 10px 8px; border: 0; border-right: 1px solid #ecdccf; background: #faf4ef; overflow-y: auto; }
+      #mainTab .nav-item { flex: 0 0 auto; }
+      #mainTab .nav-link { width: 100%; text-align: left; border: 0 !important; border-radius: 9px; padding: 10px 12px; margin: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: none; font-size: .9rem !important; }
+      #mainTab .nav-link:hover { background: #f3e3d6; }
+      #mainTab .nav-link.active { background: #f0dccd; color: #864c2a; font-weight: 700; }
+      .main-container.px-3:has(> #mainTab:not([style*="display:none"])) { max-width: none; margin-left: 250px; }
+      .thanh-cong-cu, .thanh-cong-cu > div { flex-wrap: nowrap !important; }
+      .thanh-cong-cu { overflow-x: auto; }
+      .thanh-cong-cu .btn-group, .thanh-cong-cu .btn, .thanh-cong-cu h5 { flex-shrink: 0; white-space: nowrap; }
+      .thanh-cong-cu .btn-group-sm > .btn, .thanh-cong-cu .btn-sm { padding: .2rem .3rem; font-size: .72rem; }
+      .thanh-cong-cu, .thanh-cong-cu > div { gap: 4px !important; }
+      .thanh-cong-cu h5 { font-size: 1.05rem; }
+    }
+    @media (min-width: 992px) and (max-width: 1399.98px) {
+      .thanh-cong-cu .btn-group-sm > .btn, .thanh-cong-cu .btn-sm { font-size: .66rem; padding: .2rem .25rem; }
+    }
+    @media (min-width: 992px) {
+      /* Tiêu đề và các nút đầu trang trên cùng 1 dòng */
+      header.navbar-custom .main-container { flex-wrap: nowrap !important; }
+      header.navbar-custom .main-container > div { flex-wrap: nowrap !important; white-space: nowrap; min-width: 0; }
+      header.navbar-custom .btn-sm, header.navbar-custom .badge { font-size: .75rem; padding: .25rem .45rem; }
+      header.navbar-custom .main-container > div { gap: 6px !important; }
+      header.navbar-custom .nhan-dai { display: none; }
+      .admin-title { font-size: 1.15rem; }
+    }
+    .nhan-ngan { display: none; }
+    @media (min-width: 992px) { header.navbar-custom .nhan-ngan { display: inline; } }
+    /* Điện thoại / máy tính bảng: menu thành thanh dưới đáy như trang Chấm công */
+    @media (max-width: 991.98px) {
+      #mainTab { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: flex; flex-wrap: nowrap; overflow-x: auto; margin: 0 !important;
+        background: #faf4ef; border: 0; border-top: 1px solid #ecdccf; padding: 4px; }
+      #mainTab .nav-link { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10.5px !important; padding: 6px 8px !important; min-width: 64px; border: 0 !important; border-radius: 8px; white-space: normal; text-align: center; }
+      #mainTab .nav-link i { font-size: 18px; margin: 0 !important; }
+      #mainTab .nav-link.active { background: #f0dccd; color: #864c2a; }
+      body:has(#mainTab:not([style*="display:none"])) { padding-bottom: 72px; }
+    }
+    @media (min-width: 992px) {
+      .nav-tabs .nav-link{font-size:19.5px}
+      .timeline-card-table{font-size:19.5px}
+      .table-card-header{font-size:20.2px}
+      .card-note-box{font-size:18px}
+      .card-dishes-box{font-size:18px}
+      .vat-corner-ticker{font-size:15.8px}
+      .deposit-chip{font-size:16.5px}
+      .dishes-wide-textarea{font-size:19.5px !important}
+      .dt-nhap-tag{font-size:17.2px}
+      .dt-smart-table th{font-size:18px}
+      .dt-smart-table td{font-size:18.8px}
+      .cell-Clamp-box{font-size:17.2px}
+      #billAnchoredPopover .btn-close-pop{font-size:18px}
+      .email-suggest-item{font-size:19.5px}
+      .gh-mini{font-size:15.8px}
+      .dtt-col-h{font-size:20.2px}
+      .dtt-col-h .so{font-size:18px}
+      .dtt-card{font-size:19.5px}
+      .dtt-ten{font-size:21px}
+      .dtt-l1 a{font-size:19.5px}
+      .dtt-meta{font-size:18px}
+      .dtt-sub{font-size:17.2px}
+      .dtt-anh span{font-size:15px}
+      .dtt-nut .btn{font-size:17.2px}
+      .dtt-anh-btn{font-size:22.5px}
+      .dtt-ngay{font-size:18px}
+      .dtt-them{font-size:18px}
+      .dtt-rong{font-size:18px}
+      .timeline-card-table{font-size:24px !important}
+      .table-card-header{font-size:25.5px !important}
+      .card-note-box, .card-dishes-box{font-size:22.5px !important}
+    }
+  </style>
+  <style id="mauChamCong">
+    /* Đồng bộ màu với trang Chấm công: nền nâu đất loang, thanh trên da cam nhạt dạng kính, menu kính trắng */
+    html, body { background: #e7ded3 fixed !important; background-image: radial-gradient(900px 600px at 6% -10%, #f1e3d1 0, transparent 60%), radial-gradient(800px 600px at 105% 8%, #ddcfc0 0, transparent 60%), radial-gradient(900px 700px at 40% 115%, #d8c8b6 0, transparent 62%) !important; }
+    header.navbar-custom { background: rgba(243,217,198,.68) !important; -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%); color: #5a3420 !important; border-bottom: 1px solid rgba(255,255,255,.55) !important; }
+    header.navbar-custom .admin-title { color: #5a3420 !important; }
+    header.navbar-custom .btn-sm, header.navbar-custom .badge { background: rgba(255,255,255,.6) !important; color: #5a3420 !important; border: 1px solid rgba(90,52,32,.16) !important; }
+    #mainTab { background: rgba(255,255,255,.62) !important; -webkit-backdrop-filter: blur(18px) saturate(150%); backdrop-filter: blur(18px) saturate(150%); border-color: rgba(255,255,255,.6) !important; }
+    #mainTab .nav-link { color: #344054; }
+    #mainTab .nav-link:hover { background: rgba(255,255,255,.7) !important; }
+    #mainTab .nav-link.active { background: #e7f6ef !important; color: #0b7a4e !important; font-weight: 600; }
+    @media (max-width: 991.98px) { #mainTab { background: rgba(250,245,238,.95) !important; } }
+    .card-box, #timelineContainer { background: #fff !important; border: 1px solid #e4e7ec; }
+  </style>
+  <style id="giaoDienA">
+    /* Giao diện điện thoại kiểu app: nền kem, thẻ bo tròn lớn, thanh menu tối với nút giữa màu cam */
+    @media (max-width: 575.98px) {
+      body.gd-a { background: #f3efe9 !important; background-image: none !important; }
+      body.gd-a header.navbar-custom { background: #f3efe9 !important; backdrop-filter: none; border: 0 !important; }
+      body.gd-a header.navbar-custom .btn-sm { background: #fff !important; border: 0 !important; border-radius: 14px !important; box-shadow: 0 2px 8px rgba(60,40,20,.06); }
+      body.gd-a .card-box, body.gd-a #timelineContainer { border: 0 !important; border-radius: 22px !important; box-shadow: 0 4px 16px rgba(60,40,20,.06) !important; }
+      body.gd-a #timelineContainer { background: transparent !important; box-shadow: none !important; padding: 0 !important; }
+      body.gd-a .hang-ngay h5 { font-size: 15px !important; font-weight: 700; color: #2b2522 !important; }
+      body.gd-a .hang-ngay .input-group-text, body.gd-a .hang-ngay .form-control { border-radius: 14px !important; border-color: #ece5dc !important; }
+      body.gd-a .hang-ngay .input-group-text { background: #f79a62 !important; border-color: #f79a62 !important; }
+      body.gd-a .hang-ngay .btn-primary { background: #2b2522 !important; border-color: #2b2522 !important; border-radius: 14px !important; }
+      body.gd-a .hang-ngay .btn-danger { background: #f79a62 !important; border-color: #f79a62 !important; border-radius: 14px !important; }
+      body.gd-a .hang-ngay .chip-tk { flex-direction: column; gap: 0; border-radius: 18px !important; background: #faf6f1 !important; color: #8a8178 !important; border: 0 !important; padding: 8px 4px !important; font-size: 12px !important; }
+      body.gd-a .hang-ngay .chip-tk i { display: none; }
+      body.gd-a .hang-ngay .chip-tk b { font-size: 22px !important; color: #2b2522; line-height: 1.1; }
+      body.gd-a #statDeposit { font-size: 17px !important; }
+      /* Thanh lọc thành các viên tròn */
+      body.gd-a .thanh-cong-cu { background: #fff; border-radius: 22px; padding: 10px !important; box-shadow: 0 4px 16px rgba(60,40,20,.06); border: 0 !important; margin-bottom: 12px !important; }
+      body.gd-a .thanh-cong-cu .btn-group { gap: 6px; }
+      body.gd-a .thanh-cong-cu .btn-group > .btn { border-radius: 14px !important; border: 0 !important; background: #f6f1eb; color: #6b625a; margin: 0 !important; }
+      body.gd-a .thanh-cong-cu .btn-group > .btn.active, body.gd-a .thanh-cong-cu .tool-icon-btn.active { background: #f79a62 !important; color: #fff !important; }
+      body.gd-a .thanh-cong-cu .cc-btn { border: 0 !important; border-radius: 14px !important; background: #f6f1eb; color: #6b625a; }
+      /* Nhóm bàn và thẻ đơn */
+      body.gd-a .timeline-cat-col > div, body.gd-a #colWrapSmallDecor > div, body.gd-a #colWrapLargeDecor > div, body.gd-a #colWrapNormal > div { border: 0 !important; background: transparent !important; box-shadow: none !important; }
+      body.gd-a .timeline-card-table { border: 0 !important; border-radius: 22px !important; background: #fff !important; box-shadow: 0 4px 16px rgba(60,40,20,.07) !important; padding: 14px 14px 16px !important; }
+      body.gd-a .timeline-card-table.decor-small, body.gd-a .timeline-card-table.decor-large, body.gd-a .timeline-card-table.normal { border-left: 0 !important; }
+      body.gd-a .timeline-card-table::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: #f79a62; vertical-align: middle; }
+      body.gd-a .timeline-card-table.decor-large::before { background: #e8566a; }
+      body.gd-a .timeline-card-table.normal::before { background: #5aa0d8; }
+      body.gd-a .table-card-header { color: #2b2522 !important; font-size: 16px !important; display: inline-flex !important; width: calc(100% - 16px); }
+      body.gd-a .table-card-header .tk-sdt { color: #f08a4b; opacity: 1; }
+      body.gd-a .table-card-divider { border-color: #f1ebe4 !important; opacity: 1; margin: 8px 0 !important; }
+      body.gd-a .customer-fields-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 8px 10px !important; }
+      body.gd-a .card-kv-row { display: flex; flex-direction: column; min-width: 0; }
+      body.gd-a .card-kv-title { font-size: 11.5px; font-weight: 500 !important; color: #9a9188 !important; }
+      body.gd-a .card-kv-val { font-size: 14.5px; font-weight: 700; color: #2b2522 !important; overflow-wrap: anywhere; }
+      body.gd-a .card-note-box, body.gd-a .card-dishes-box { grid-column: 1 / -1; background: #faf6f1 !important; border-radius: 14px !important; color: #4a423c !important; }
+      /* Thanh menu tối dưới đáy, nút "Nhập đặt bàn" màu cam ở giữa */
+      body.gd-a #mainTab { background: #2b2522 !important; border: 0 !important; border-radius: 26px 26px 0 0; padding: 8px 6px calc(8px + env(safe-area-inset-bottom)) !important; justify-content: space-around; overflow-x: visible !important; }
+      body.gd-a #mainTab .nav-item { flex: 1 1 0; display: flex; justify-content: center; }
+      body.gd-a #mainTab .nav-link { color: #bdb3aa !important; min-width: 0 !important; font-size: 9.5px !important; padding: 6px 2px !important; background: none !important; }
+      body.gd-a #mainTab .nav-link .menu-ico { color: #f3ede6 !important; font-size: 19px; }
+      body.gd-a #mainTab .nav-link.active, body.gd-a #mainTab .nav-link.active .menu-ico { color: #f79a62 !important; }
+      body.gd-a #mainTab #tab5-tab { background: #f79a62 !important; color: #fff !important; border-radius: 18px; padding: 10px 6px !important; margin-top: -18px; box-shadow: 0 6px 16px rgba(247,154,98,.45); }
+      body.gd-a #mainTab #tab5-tab .menu-ico { color: #fff !important; }
+    }
+  </style>
+  <style id="giaoDienB">
+    /* Giao diện B: trắng tối giản, viên tròn, điểm nhấn đỏ */
+    @media (max-width: 575.98px) {
+      body.gd-b { background: #fff !important; background-image: none !important; }
+      body.gd-b header.navbar-custom { background: #fff !important; backdrop-filter: none; border-bottom: 1px solid #f0f0f0 !important; }
+      body.gd-b header.navbar-custom .btn-sm { background: #f5f5f5 !important; border: 0 !important; border-radius: 999px !important; color: #222 !important; }
+      body.gd-b .card-box, body.gd-b .thanh-cong-cu { border: 1px solid #efefef !important; border-radius: 16px !important; box-shadow: none !important; background: #fff !important; padding: 10px !important; }
+      body.gd-b #timelineContainer { background: transparent !important; border: 0 !important; padding: 0 !important; }
+      body.gd-b .thanh-cong-cu .btn-group { gap: 6px; }
+      body.gd-b .thanh-cong-cu .btn-group > .btn { border-radius: 999px !important; border: 0 !important; background: #f2f2f2 !important; color: #222 !important; margin: 0 !important; }
+      body.gd-b .thanh-cong-cu .btn-group > .btn.active, body.gd-b .thanh-cong-cu .tool-icon-btn.active { background: #111 !important; color: #fff !important; }
+      body.gd-b .thanh-cong-cu .cc-btn { border: 0 !important; border-radius: 14px !important; background: #f2f2f2 !important; color: #444 !important; }
+      body.gd-b .hang-ngay .input-group-text { background: #e60023 !important; border-color: #e60023 !important; border-radius: 999px 0 0 999px !important; }
+      body.gd-b .hang-ngay .form-control { border-radius: 0 999px 999px 0 !important; }
+      body.gd-b .hang-ngay .btn-primary { background: #111 !important; border-color: #111 !important; border-radius: 999px !important; }
+      body.gd-b .hang-ngay .btn-danger { background: #e60023 !important; border-color: #e60023 !important; border-radius: 999px !important; }
+      body.gd-b .hang-ngay .chip-tk { flex-direction: column; gap: 0; background: #f5f5f5 !important; color: #767676 !important; border: 0 !important; border-radius: 16px !important; padding: 8px 4px !important; font-size: 12px !important; }
+      body.gd-b .hang-ngay .chip-tk i { display: none; }
+      body.gd-b .hang-ngay .chip-tk b { font-size: 22px !important; color: #111; line-height: 1.1; }
+      body.gd-b .timeline-card-table { border: 1px solid #efefef !important; border-left: 0 !important; border-radius: 16px !important; box-shadow: none !important; background: #fff !important; }
+      body.gd-b .table-card-header { color: #111 !important; font-size: 16px !important; }
+      body.gd-b .table-card-header .tk-sdt { color: #e60023; opacity: 1; }
+      body.gd-b .customer-fields-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 8px 10px !important; }
+      body.gd-b .card-kv-row { display: flex; flex-direction: column; min-width: 0; }
+      body.gd-b .card-kv-title { font-size: 11.5px; font-weight: 500 !important; color: #767676 !important; }
+      body.gd-b .card-kv-val { font-size: 14.5px; font-weight: 700; color: #111 !important; }
+      body.gd-b .card-note-box, body.gd-b .card-dishes-box { grid-column: 1 / -1; background: #f7f7f7 !important; border-radius: 12px !important; }
+      body.gd-b #mainTab { background: #fff !important; border-top: 1px solid #eee !important; border-radius: 0; }
+      body.gd-b #mainTab .nav-link, body.gd-b #mainTab .nav-link .menu-ico { color: #767676 !important; background: none !important; }
+      body.gd-b #mainTab .nav-link.active, body.gd-b #mainTab .nav-link.active .menu-ico { color: #111 !important; }
+      body.gd-b #mainTab #tab5-tab .menu-ico { color: #e60023 !important; }
+    }
+  </style>
+  <style id="giaoDienWeb">
+    /* Màu A / B cho máy tính và máy tính bảng */
+    @media (min-width: 576px) {
+      body.gd-a header.navbar-custom { background: #f3efe9 !important; border-bottom: 0 !important; backdrop-filter: none; }
+      body.gd-a .card-box, body.gd-a #timelineContainer, body.gd-a .timeline-card-table { border: 0 !important; border-radius: 22px !important; box-shadow: 0 4px 16px rgba(60,40,20,.07) !important; }
+      body.gd-a .timeline-card-table { border-left: 0 !important; }
+      body.gd-a #mainTab { background: #f3efe9 !important; border-right: 0 !important; backdrop-filter: none; }
+      body.gd-a #mainTab .nav-link { color: #5a4a3e !important; }
+      body.gd-a #mainTab .menu-ico { color: #c07a4c !important; }
+      body.gd-a #mainTab .nav-link:hover { background: #f5ece3 !important; }
+      body.gd-a #mainTab .nav-link.active { background: #f79a62 !important; color: #fff !important; }
+      body.gd-a #mainTab .nav-link.active .menu-ico { color: #fff !important; }
+      body.gd-a .filter-cat-btn.active, body.gd-a .tool-icon-btn.active { background: #f79a62 !important; border-color: #f79a62 !important; }
+      body.gd-a .table-card-header .tk-sdt { color: #f08a4b; }
+      body.gd-b { background: #fff !important; background-image: none !important; }
+      body.gd-b header.navbar-custom { background: rgba(255,255,255,.95) !important; border-bottom: 1px solid #f0f0f0 !important; }
+      body.gd-b .card-box, body.gd-b #timelineContainer, body.gd-b .timeline-card-table { border: 1px solid #efefef !important; border-radius: 16px !important; box-shadow: none !important; }
+      body.gd-b .timeline-card-table { border-left: 1px solid #efefef !important; }
+      body.gd-b #mainTab { background: #fff !important; border-right: 1px solid #f0f0f0 !important; }
+      body.gd-b #mainTab .nav-link, body.gd-b #mainTab .menu-ico { color: #444 !important; }
+      body.gd-b #mainTab .nav-link.active { background: #111 !important; color: #fff !important; border-radius: 999px; }
+      body.gd-b #mainTab .nav-link.active .menu-ico { color: #fff !important; }
+      body.gd-b .filter-cat-btn, body.gd-b .tool-icon-btn { border-radius: 999px !important; }
+      body.gd-b .filter-cat-btn.active, body.gd-b .tool-icon-btn.active { background: #111 !important; border-color: #111 !important; }
+      body.gd-b .table-card-header .tk-sdt { color: #e60023; }
+    }
+  </style>
+  <style id="nenLienMach">
+    /* Nền liền mạch cả trang (kể cả phần dưới nội dung) theo giao diện đang chọn */
+    html:has(body.gd-a), body.gd-a { background: #f3efe9 !important; background-image: none !important; }
+    html:has(body.gd-b), body.gd-b { background: #ffffff !important; background-image: none !important; }
+    body.gd-a, body.gd-b { min-height: 100vh; }
+  </style>
+  <style id="donGianA">
+    /* Kiểu kem cam: tối giản màu — nền kem, thẻ trắng, chữ nâu đậm, chỉ một màu nhấn cam cho mục đang chọn */
+    body.gd-a { --chu: #2b2522; --phu: #8a8178; --vien: #ebe3d9; --nhan: #f08a4b; }
+    body.gd-a, body.gd-a .admin-title, body.gd-a h5, body.gd-a h6 { color: var(--chu) !important; }
+    body.gd-a header.navbar-custom .btn-sm, body.gd-a header.navbar-custom .badge { background: #fff !important; color: var(--chu) !important; border: 1px solid var(--vien) !important; box-shadow: none !important; }
+    body.gd-a header.navbar-custom .btn-sm, body.gd-a .thanh-cong-cu, body.gd-a .timeline-cat-col h6, body.gd-a .table-card-header, body.gd-a #mainTab { filter: none; }
+    body.gd-a .timeline-cat-col h6 { color: var(--chu) !important; border-color: var(--vien) !important; }
+    body.gd-a .timeline-cat-col h6 span { color: var(--phu); }
+    /* Ô ngày, nút In, PDF, các ô tổng: trắng viền mảnh, chữ đậm */
+    body.gd-a .hang-ngay .input-group-text { background: #fff !important; color: var(--chu) !important; border-color: var(--vien) !important; }
+    body.gd-a .hang-ngay .form-control { border-color: var(--vien) !important; color: var(--chu) !important; }
+    body.gd-a .hang-ngay .btn-primary, body.gd-a .hang-ngay .btn-danger { background: #fff !important; color: var(--chu) !important; border: 1px solid var(--vien) !important; box-shadow: none !important; }
+    body.gd-a .hang-ngay .chip-tk { background: #fff !important; color: var(--phu) !important; border: 1px solid var(--vien) !important; }
+    body.gd-a .hang-ngay .chip-tk b, body.gd-a .hang-ngay .chip-tk i { color: var(--chu) !important; }
+    /* Thanh lọc và nút ẩn/hiện: trắng, mục đang chọn màu nhấn */
+    body.gd-a .thanh-cong-cu .btn { background: #fff !important; color: var(--chu) !important; border-color: var(--vien) !important; }
+    body.gd-a .thanh-cong-cu .btn.active { background: var(--nhan) !important; color: #fff !important; border-color: var(--nhan) !important; }
+    /* Thẻ đơn: chữ nâu đậm, SĐT xám, bỏ chấm màu và viền màu */
+    body.gd-a .timeline-card-table { border: 1px solid var(--vien) !important; border-left: 1px solid var(--vien) !important; box-shadow: none !important; }
+    body.gd-a .timeline-card-table::before { display: none !important; }
+    body.gd-a .table-card-header { color: var(--chu) !important; }
+    body.gd-a .table-card-header .tk-sdt { color: var(--phu) !important; }
+    body.gd-a .table-card-divider { border-color: var(--vien) !important; }
+    body.gd-a .card-kv-title { color: var(--phu) !important; }
+    body.gd-a .card-kv-val { color: var(--chu) !important; }
+    body.gd-a .card-note-box, body.gd-a .card-dishes-box { background: #faf6f1 !important; color: var(--chu) !important; }
+    body.gd-a .text-primary, body.gd-a .text-danger, body.gd-a .text-success, body.gd-a .text-purple { color: var(--chu) !important; }
+    /* Menu: biểu tượng xám nâu, mục đang mở màu nhấn */
+    body.gd-a #mainTab .menu-ico { color: var(--phu) !important; }
+    @media (min-width: 576px) {
+      body.gd-a #mainTab .nav-link { color: var(--chu) !important; }
+      body.gd-a #mainTab .nav-link.active { background: var(--nhan) !important; color: #fff !important; }
+      body.gd-a #mainTab .nav-link.active .menu-ico { color: #fff !important; }
+    }
+    /* Điện thoại: thanh menu đáy màu trắng cho hài hoà, chỉ nút "Thêm đơn" và mục đang mở có màu nhấn */
+    @media (max-width: 575.98px) {
+      body.gd-a #mainTab { background: #fff !important; border-top: 1px solid var(--vien) !important; box-shadow: 0 -4px 14px rgba(60,40,20,.05); }
+      body.gd-a #mainTab .nav-link { color: var(--phu) !important; }
+      body.gd-a #mainTab .nav-link .menu-ico { color: var(--phu) !important; }
+      body.gd-a #mainTab .nav-link.active, body.gd-a #mainTab .nav-link.active .menu-ico { color: var(--nhan) !important; }
+      body.gd-a #mainTab #tab5-tab, body.gd-a #mainTab #tab5-tab .menu-ico { color: #fff !important; }
+    }
+    /* Biểu tượng menu và nút có màu riêng, dễ nhận ra; chữ vẫn nâu đậm */
+    body.gd-a #mainTab #tab1-tab .menu-ico { color: #f08a4b !important; }
+    body.gd-a #mainTab #tab2-tab .menu-ico { color: #3a9d6a !important; }
+    body.gd-a #mainTab #tab3-tab .menu-ico { color: #2b9fa3 !important; }
+    body.gd-a #mainTab #tab5-tab .menu-ico { color: #e8566a !important; }
+    body.gd-a #mainTab #tab6-tab .menu-ico { color: #8b5cf6 !important; }
+    body.gd-a #mainTab #tab7-tab .menu-ico { color: #3b82f6 !important; }
+    body.gd-a #mainTab #tab8-tab .menu-ico { color: #d49a12 !important; }
+    @media (min-width: 576px) {
+      body.gd-a #mainTab .nav-link.active { background: #fff !important; color: var(--chu) !important; font-weight: 700; box-shadow: 0 2px 10px rgba(60,40,20,.08); }
+      body.gd-a #mainTab .nav-link.active .menu-ico { color: inherit; }
+      body.gd-a #mainTab #tab1-tab.active .menu-ico { color: #f08a4b !important; } body.gd-a #mainTab #tab2-tab.active .menu-ico { color: #3a9d6a !important; }
+      body.gd-a #mainTab #tab3-tab.active .menu-ico { color: #2b9fa3 !important; } body.gd-a #mainTab #tab5-tab.active .menu-ico { color: #e8566a !important; }
+      body.gd-a #mainTab #tab6-tab.active .menu-ico { color: #8b5cf6 !important; } body.gd-a #mainTab #tab7-tab.active .menu-ico { color: #3b82f6 !important; }
+      body.gd-a #mainTab #tab8-tab.active .menu-ico { color: #d49a12 !important; }
+    }
+    @media (max-width: 575.98px) {
+      body.gd-a #mainTab .nav-link.active { color: var(--chu) !important; font-weight: 700; }
+      body.gd-a #mainTab #tab5-tab { background: #e8566a !important; }
+      body.gd-a #mainTab #tab5-tab, body.gd-a #mainTab #tab5-tab .menu-ico { color: #fff !important; }
+    }
+    body.gd-a .cc-btn .fa-globe { color: #3b82f6; } body.gd-a .cc-btn .fa-clock-rotate-left { color: #2b9fa3; }
+    body.gd-a .cc-btn .fa-envelope { color: #e8566a; } body.gd-a .cc-btn .fa-venus-mars { color: #8b5cf6; }
+    body.gd-a .cc-btn .fa-location-dot { color: #3a9d6a; } body.gd-a .cc-btn .fa-user { color: #d49a12; }
+    body.gd-a .cc-btn.active i { color: #fff !important; }
+    body.gd-a .hang-ngay .input-group-text i { color: #f08a4b; }
+    body.gd-a .hang-ngay .btn-primary i { color: #3b82f6; }
+    body.gd-a .hang-ngay .btn-danger i { color: #e8566a; }
+    body.gd-a .hang-ngay .chip-tk .fa-chair { color: #3b82f6 !important; } body.gd-a .hang-ngay .chip-tk .fa-users { color: #3a9d6a !important; } body.gd-a .hang-ngay .chip-tk .fa-coins { color: #d49a12 !important; }
+  </style>
 </head>
 <body class="pb-5">
+  <script>
+    // Giao diện: "gd-a" = kem cam kiểu app (mặc định), "gd-b" = trắng tối giản, "" = màu Chấm công (nhớ trên máy)
+    var GIAO_DIEN = ["gd-a", "gd-b", ""], TEN_GIAO_DIEN = ["Kem cam", "Trắng", "Chấm công"];
+    function apGiaoDien_(g) { document.body.classList.remove("gd-a", "gd-b"); if (g) document.body.classList.add(g); }
+    function doiGiaoDien() {
+      var hien = GIAO_DIEN.indexOf((document.body.className.match(/gd-[ab]/) || [""])[0]), tiep = (hien + 1) % GIAO_DIEN.length;
+      apGiaoDien_(GIAO_DIEN[tiep]);
+      try { localStorage.setItem("giao_dien", GIAO_DIEN[tiep]); } catch (e) {}
+      var n = document.getElementById("nutGiaoDien"); if (n) n.title = "Giao diện: " + TEN_GIAO_DIEN[tiep];
+    }
+    try { var _gd = localStorage.getItem("giao_dien"); apGiaoDien_(_gd === null ? "gd-a" : _gd); } catch (e) { apGiaoDien_("gd-a"); }
+  </script>
 
   <datalist id="depositSuggestList">
     <option value="0">Không cọc (0đ)</option>
@@ -328,33 +710,40 @@
   <header class="navbar-custom py-2 px-4 shadow-sm mb-3" style="">
     <div class="main-container d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-3">
-        <span class="fs-4">🍽️</span>
+        <img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_256.png?v=1" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" style="width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.18);flex:none">
         <div>
-          <h5 class="mb-0 fw-bold admin-title">TÚI NƯỚNG LAVENDER • <span class="d-none d-xxl-inline">BẢNG ĐIỀU KHIỂN </span>QUẢN TRỊ</h5>
+          <h5 class="mb-0 fw-bold admin-title">TÚI NƯỚNG LAVENDER</h5>
           <small class="text-white-50 admin-sub">Timeline Decor • Nhập & Quản Lý DATA_TONG • Tra Cứu • Email • Nhập Đặt Bàn</small>
         </div>
       </div>
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <a href="https://docs.google.com/spreadsheets/d/1cPOeqL8_aN3ktL5p7_NsT_rkrjObzJy7IllOIjGWJeA/edit?gid=999901#gid=999901" class="btn btn-warning btn-sm fw-bold text-dark" target="_blank"><i class="fa-solid fa-file-excel me-1"></i>📊 Sheet DATA_TONG</a>
-        <a href="decor.html" class="btn btn-danger btn-sm fw-bold" target="_blank">🎀 Đặt bàn decor</a>
-        <a href="thuong.html" class="btn btn-primary btn-sm fw-bold" target="_blank">🍲 Đặt bàn thường</a>
+        <a href="https://docs.google.com/spreadsheets/d/1cPOeqL8_aN3ktL5p7_NsT_rkrjObzJy7IllOIjGWJeA/edit?gid=999901#gid=999901" class="btn btn-warning btn-sm fw-bold text-dark" target="_blank"><i class="fa-solid fa-file-excel me-1"></i><span class="nhan-dai">📊 Sheet DATA_TONG</span><span class="nhan-ngan">Sheet</span></a>
+        <a href="decor.html" class="btn btn-danger btn-sm fw-bold" target="_blank">🎀 <span class="nhan-dai">Đặt bàn decor</span><span class="nhan-ngan">Decor</span></a>
+        <a href="thuong.html" class="btn btn-primary btn-sm fw-bold" target="_blank">🍲 <span class="nhan-dai">Đặt bàn thường</span><span class="nhan-ngan">Thường</span></a>
         <a href=new URL("tracuu.html", location.href).href class="btn btn-success btn-sm fw-bold" target="_blank">🔍 Tra cứu</a>
+        <button type="button" class="btn btn-light btn-sm fw-bold" onclick="doiGiaoDien()" title="Đổi giao diện" id="nutGiaoDien">🎨 <span class="nhan-dai">Giao diện</span><span class="nhan-ngan">Giao diện</span></button>
         <button type="button" class="btn btn-light btn-sm fw-bold" onclick="caiTelegram()" title="Báo đơn mới / hoàn cọc về nhóm Telegram">🔔 Telegram</button>
         <span class="badge bg-light text-dark py-2 px-3 ms-1"><i class="fa-solid fa-clock me-1"></i> <span id="clockDisplay"></span></span>
       </div>
     </div>
   </header>
+  <script>
+    (function() {
+      function doDau() { var h = document.querySelector("header.navbar-custom"); document.documentElement.style.setProperty("--cao-dau", (h ? h.offsetHeight : 0) + "px"); }
+      doDau(); window.addEventListener("resize", doDau); window.addEventListener("load", doDau);
+    })();
+  </script>
 
   <div class="main-container px-3">
    <ul class="nav nav-tabs mb-4" id="mainTab" role="tablist" style="">
-      <li class="nav-item"><button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button"><i class="fa-solid fa-calendar-day me-1 text-primary"></i> 1. Timeline Decor</button></li>
-      <li class="nav-item"><button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button"><i class="fa-solid fa-table-list me-1 text-success"></i> 2. Nhập & Quản Lý DATA_TONG</button></li>
-      <li class="nav-item"><button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button"><i class="fa-solid fa-clipboard-check me-1 text-warning"></i> 3. Xác nhận</button></li>
-      <li class="nav-item"><button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button"><i class="fa-solid fa-magnifying-glass me-1 text-danger"></i> 4. Email Xác Nhận</button></li>
-      <li class="nav-item"><button class="nav-link tab-highlight " id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button" style="color: #934c22;"><i class="fa-solid fa-wand-magic-sparkles me-1 text-purple"></i> 5. Nhập Đặt Bàn</button></li>
-      <li class="nav-item"><button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button" onclick="loadCalendarYearTab6()"><i class="fa-solid fa-toggle-on me-1 text-success"></i> 6. Lịch Decor</button></li>
-      <li class="nav-item"><button class="nav-link" id="tab7-tab" data-bs-toggle="tab" data-bs-target="#tab7" type="button"><i class="fa-solid fa-chart-line me-1 text-primary"></i> 7. Phân Tích</button></li>
-      <li class="nav-item"><button class="nav-link" id="tab8-tab" data-bs-toggle="tab" data-bs-target="#tab8" type="button"><i class="fa-solid fa-coins me-1 text-warning"></i> 8. Lịch Tiền Cọc</button></li>
+      <li class="nav-item"><button class="nav-link active" id="tab1-tab" title="Timeline" data-bs-toggle="tab" data-bs-target="#tab1" type="button"><i class="fa-solid fa-calendar-day me-1 menu-ico"></i> Timeline</button></li>
+      <li class="nav-item"><button class="nav-link" id="tab2-tab" title="Nhập & Quản Lý" data-bs-toggle="tab" data-bs-target="#tab2" type="button"><i class="fa-solid fa-table-list me-1 menu-ico"></i> <span class="nd">Nhập &amp; Quản Lý</span><span class="nn">Quản lý</span></button></li>
+      <li class="nav-item"><button class="nav-link" id="tab3-tab" title="Xác nhận" data-bs-toggle="tab" data-bs-target="#tab3" type="button"><i class="fa-solid fa-circle-check me-1 menu-ico"></i> Xác nhận</button></li>
+      <li class="nav-item d-none"><button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button"><i class="fa-solid fa-magnifying-glass me-1 text-danger"></i> 4. Email Xác Nhận</button></li>
+      <li class="nav-item"><button class="nav-link tab-highlight " id="tab5-tab" title="Nhập đặt bàn" data-bs-toggle="tab" data-bs-target="#tab5" type="button"><i class="fa-solid fa-circle-plus me-1 menu-ico"></i> <span class="nd">Nhập đặt bàn</span><span class="nn">Thêm đơn</span></button></li>
+      <li class="nav-item"><button class="nav-link" id="tab6-tab" title="Lịch decor" data-bs-toggle="tab" data-bs-target="#tab6" type="button" onclick="loadCalendarYearTab6()"><i class="fa-solid fa-calendar-days me-1 menu-ico"></i> Lịch decor</button></li>
+      <li class="nav-item"><button class="nav-link" id="tab7-tab" title="Phân tích" aria-label="Phân tích" data-bs-toggle="tab" data-bs-target="#tab7" type="button"><i class="fa-solid fa-chart-column me-1 menu-ico"></i> Phân tích</button></li>
+      <li class="nav-item"><button class="nav-link" id="tab8-tab" title="Tiền cọc" data-bs-toggle="tab" data-bs-target="#tab8" type="button"><i class="fa-solid fa-sack-dollar me-1 menu-ico"></i> Tiền cọc</button></li>
     </ul>
     <!-- Cảnh báo đơn web cần kiểm tra (NHAT_KY_WEB: lỗi / nghi / treo) -->
     <div id="donWebNghi" class="alert alert-danger py-2 px-3 mt-2 mb-0" style="display:none"></div>
@@ -363,17 +752,15 @@
 
       <!-- TAB 1: TIMELINE DECOR -->
       <div class="tab-pane fade show active" id="tab1" role="tabpanel">
-           <div class="card-box p-3 mb-3">
-      <div class="row align-items-center g-2">
-        <div class="col-lg-3 col-md-4">
-          <div class="input-group">
-            <span class="input-group-text bg-primary text-white fw-bold"><i class="fa-regular fa-calendar-check"></i></span>
-            <input type="date" id="timelineDateInput" class="form-control fw-bold border-primary" onchange="loadTimeline()">
-          </div>
+           <div class="card-box p-2 px-3 mb-3">
+      <div class="d-flex flex-wrap align-items-center gap-2 hang-ngay">
+        <h5 class="fw-bold text-purple mb-0 text-nowrap">ĐẶT BÀN NGÀY <span id="displayTimelineDate" class="d-none"></span></h5>
+        <div class="input-group flex-nowrap" style="width:auto">
+          <span class="input-group-text bg-primary text-white fw-bold"><i class="fa-regular fa-calendar-check"></i></span>
+          <input type="date" id="timelineDateInput" class="form-control fw-bold border-primary" style="width:10.5em" onchange="loadTimeline()">
         </div>
-        <div class="col-lg-2 col-md-2">
-          <div class="dropdown w-100">
-            <button class="btn btn-primary w-100 fw-bold dropdown-toggle" id="btnPrintTimeline" data-bs-toggle="dropdown" type="button"><i class="fa-solid fa-print me-1"></i> In Đặt Bàn (A4)</button>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle nut-icon" id="btnPrintTimeline" title="In đặt bàn (máy in, khổ A4)" aria-label="In đặt bàn" data-bs-toggle="dropdown" type="button"><i class="fa-solid fa-print"></i></button>
             <ul class="dropdown-menu shadow">
               <li><a class="dropdown-item" href="#" onclick="inTimelineA4('all'); return false;">🖨️ In đủ 3 phân loại bàn</a></li>
               <li><a class="dropdown-item" href="#" onclick="inTimelineA4('decor'); return false;">✨ Chỉ bàn decor (&lt; 6 và ≥ 6)</a></li>
@@ -382,58 +769,65 @@
               <li><a class="dropdown-item" href="#" onclick="inTimelineA4('normal'); return false;">🍽️ Chỉ bàn ăn thường</a></li>
             </ul>
           </div>
-        </div>
-        <div class="col-lg-7 col-md-6">
-          <div class="row g-2">
-            <div class="col-4"><div class="stat-card stat-blue py-2 px-3"><div><div class="small opacity-75" style="font-size:11px;">TỔNG BÀN</div><h5 class="mb-0 fw-bold" id="statTables">0</h5></div><i class="fa-solid fa-chair fs-4 opacity-50"></i></div></div>
-            <div class="col-4"><div class="stat-card stat-purple py-2 px-3"><div><div class="small opacity-75" style="font-size:11px;">TỔNG KHÁCH</div><h5 class="mb-0 fw-bold" id="statGuests">0</h5></div><i class="fa-solid fa-users fs-4 opacity-50"></i></div></div>
-            <div class="col-4"><div class="stat-card stat-orange py-2 px-3"><div><div class="small opacity-75" style="font-size:11px;">TỔNG TIỀN CỌC</div><h5 class="mb-0 fw-bold" id="statDeposit">0</h5></div><i class="fa-solid fa-coins fs-4 opacity-50"></i></div></div>
+          <div class="dropdown">
+            <button class="btn btn-danger dropdown-toggle nut-icon" id="btnPdfTimeline" data-bs-toggle="dropdown" type="button" title="Tải file PDF (giống bản in A4)" aria-label="Tải PDF"><i class="fa-solid fa-file-pdf"></i></button>
+            <ul class="dropdown-menu dropdown-menu-end shadow">
+              <li><a class="dropdown-item" href="#" onclick="taiPdfTimelineA4('all'); return false;">📄 PDF đủ 3 phân loại bàn</a></li>
+              <li><a class="dropdown-item" href="#" onclick="taiPdfTimelineA4('decor'); return false;">✨ Chỉ bàn decor (&lt; 6 và ≥ 6)</a></li>
+              <li><a class="dropdown-item" href="#" onclick="taiPdfTimelineA4('large'); return false;">🎉 Chỉ bàn decor ≥ 6 khách</a></li>
+              <li><a class="dropdown-item" href="#" onclick="taiPdfTimelineA4('small'); return false;">🎀 Chỉ bàn decor &lt; 6 khách</a></li>
+              <li><a class="dropdown-item" href="#" onclick="taiPdfTimelineA4('normal'); return false;">🍽️ Chỉ bàn ăn thường</a></li>
+            </ul>
           </div>
+        <div class="d-flex flex-wrap gap-2 ms-auto">
+          <span class="stat-card stat-blue chip-tk" title="Tổng bàn"><i class="fa-solid fa-chair"></i> <b id="statTables">0</b> bàn</span>
+          <span class="stat-card stat-purple chip-tk" title="Tổng khách"><i class="fa-solid fa-users"></i> <b id="statGuests">0</b> khách</span>
+          <span class="stat-card stat-orange chip-tk" title="Tổng tiền cọc"><i class="fa-solid fa-coins"></i> Cọc <b id="statDeposit">0</b></span>
         </div>
       </div>
     </div>
 
         <div id="timelineContainer" class="p-3 bg-white rounded-3 shadow-sm smart-2col-mode hide-col-kenh hide-col-time hide-col-email hide-col-tuoi hide-col-gioitinh hide-col-tinh">
-          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 border-bottom pb-2">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 border-bottom pb-2 thanh-cong-cu">
             <div class="d-flex align-items-center flex-wrap gap-2">
-              <h5 class="fw-bold text-purple mb-0 me-2">LỊCH ĐẶT BÀN NGÀY: <span id="displayTimelineDate" class="text-primary"></span></h5>
+              
               <div class="btn-group btn-group-sm" role="group">
             <button type="button" class="btn btn-outline-secondary fw-bold filter-cat-btn active" onclick="filterTimelineCategory('all', this)">Tất cả</button>
-            <button type="button" class="btn btn-outline-secondary fw-bold filter-cat-btn" onclick="filterTimelineCategory('all_decor', this)" title="Hiển thị toàn bộ Bàn Decor (&lt;6 và &gt;=6)"><i class="fa-solid fa-wand-magic-sparkles text-danger me-1"></i>Bàn Decor</button>
-            <button type="button" class="btn btn-outline-secondary fw-bold filter-cat-btn" onclick="filterTimelineCategory('small', this)">🎀 Decor &lt; 6</button>
-            <button type="button" class="btn btn-outline-secondary fw-bold filter-cat-btn" onclick="filterTimelineCategory('large', this)">🎉 Decor &ge; 6</button>
-            <button type="button" class="btn btn-outline-secondary fw-bold filter-cat-btn" onclick="filterTimelineCategory('normal', this)">🍽️ Bàn thường</button>
+            <button type="button" class="btn btn-outline-secondary fw-bold filter-cat-btn" onclick="filterTimelineCategory('all_decor', this)" title="Hiển thị toàn bộ Bàn Decor (&lt;6 và &gt;=6)"><span class="nd">Bàn </span>Decor</button>
+            <button type="button" class="btn btn-outline-secondary fw-bold filter-cat-btn" onclick="filterTimelineCategory('small', this)"><span class="nd">Decor </span>&lt; 6</button>
+            <button type="button" class="btn btn-outline-secondary fw-bold filter-cat-btn" onclick="filterTimelineCategory('large', this)"><span class="nd">Decor </span>&ge; 6</button>
+            <button type="button" class="btn btn-outline-secondary fw-bold filter-cat-btn" onclick="filterTimelineCategory('normal', this)"><span class="nd">Bàn thường</span><span class="nn">Thường</span></button>
           </div>
             </div>
 
             <div class="d-flex align-items-center flex-wrap gap-1">
-              <div class="btn-group btn-group-sm me-1" role="group" title="Chọn số cột hiển thị">
+              <div class="btn-group btn-group-sm me-1" role="group" title="Chọn số cột hiển thị" data-cot="1">
                 <button type="button" class="btn btn-outline-secondary tool-icon-btn t1-col-btn active" onclick="setTab1GridCols(1, this)" title="Mặc định 3 nhóm"><i class="fa-solid fa-bars"></i></button>
                 <button type="button" class="btn btn-outline-secondary tool-icon-btn t1-col-btn" onclick="setTab1GridCols(2, this)" title="Layout 2 cột"><i class="fa-solid fa-table-columns"></i> 2</button>
                 <button type="button" class="btn btn-outline-secondary tool-icon-btn t1-col-btn" onclick="setTab1GridCols(3, this)" title="Layout 3 cột"><i class="fa-solid fa-table-cells-large"></i> 3</button>
                 <button type="button" class="btn btn-outline-secondary tool-icon-btn t1-col-btn" onclick="setTab1GridCols(4, this)" title="Layout 4 cột"><i class="fa-solid fa-table-cells"></i> 4</button>
                 <button type="button" class="btn btn-outline-secondary tool-icon-btn t1-col-btn" onclick="setTab1GridCols(6, this)" title="Layout 6 cột"><i class="fa-solid fa-grip"></i> 6</button>
               </div>
-              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn active" id="btnT1Smart2Col" onclick="toggleSmart2ColMode('timelineContainer', this)" title="Bố cục 2 cột thông minh trong mỗi ô khách">
-                <i class="fa-solid fa-columns"></i> 2 cột/ô
+              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn active cc-btn" id="btnT1Smart2Col" onclick="toggleSmart2ColMode('timelineContainer', this)" title="Bố cục 2 cột thông minh trong mỗi ô khách">
+                <i class="fa-solid fa-columns"></i><span class="cc-nhan">2 cột/ô</span>
               </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-kenh', this)" title="Ẩn/Hiện Kênh/Nguồn">
-                <i class="fa-solid fa-bullhorn"></i>
+              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn cc-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-kenh', this)" title="Ẩn/Hiện Kênh/Nguồn">
+                <i class="fa-solid fa-globe"></i><span class="cc-nhan">Nguồn</span>
               </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-time', this)" title="Ẩn/Hiện Thời gian nhập">
-                <i class="fa-regular fa-clock"></i>
+              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn cc-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-time', this)" title="Ẩn/Hiện Thời gian nhập">
+                <i class="fa-solid fa-clock-rotate-left"></i><span class="cc-nhan">Giờ nhập</span>
               </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-email', this)" title="Ẩn/Hiện Email">
-                <i class="fa-regular fa-envelope"></i>
+              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn cc-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-email', this)" title="Ẩn/Hiện Email">
+                <i class="fa-solid fa-envelope"></i><span class="cc-nhan">Email</span>
               </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-gioitinh', this)" title="Ẩn/Hiện Giới tính">
-                <i class="fa-solid fa-venus-mars"></i>
+              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn cc-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-gioitinh', this)" title="Ẩn/Hiện Giới tính">
+                <i class="fa-solid fa-venus-mars"></i><span class="cc-nhan">Giới tính</span>
               </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-tinh', this)" title="Ẩn/Hiện Tỉnh - Thành phố">
-                <i class="fa-solid fa-location-dot"></i>
+              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn cc-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-tinh', this)" title="Ẩn/Hiện Tỉnh - Thành phố">
+                <i class="fa-solid fa-location-dot"></i><span class="cc-nhan">Tỉnh</span>
               </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-tuoi', this)" title="Ẩn/Hiện Độ tuổi">
-                <i class="fa-solid fa-cake-candles"></i>
+              <button type="button" class="btn btn-sm btn-outline-secondary tool-icon-btn cc-btn" onclick="toggleHideFieldClass('timelineContainer', 'hide-col-tuoi', this)" title="Ẩn/Hiện Độ tuổi">
+                <i class="fa-solid fa-user"></i><span class="cc-nhan">Tuổi</span>
               </button>
             </div>
           </div>
@@ -491,6 +885,20 @@
             <div class="col-md-3"><button class="btn btn-outline-warning w-100 fw-bold text-dark" onclick="document.getElementById('dtSearchNhap').value='';dtLocTheoNgayNhap()"><i class="fa-solid fa-clock-rotate-left me-1"></i> Mới nhập gần nhất</button></div>
           </div>
           <div id="dtCheDoLoc" class="small fw-bold mb-2"></div>
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-2 dt-phan-trang">
+            <span class="small fw-bold text-muted">Hiển thị</span>
+            <div class="btn-group btn-group-sm" role="group" id="dtSoDongNhom">
+              <button type="button" class="btn btn-outline-secondary fw-bold" data-so="10" onclick="dtChonSoDong(10)">10</button>
+              <button type="button" class="btn btn-outline-secondary fw-bold" data-so="20" onclick="dtChonSoDong(20)">20</button>
+              <button type="button" class="btn btn-outline-secondary fw-bold" data-so="0" onclick="dtChonSoDong(0)">Tất cả</button>
+            </div>
+            <span class="small fw-bold text-muted">dòng</span>
+            <div class="ms-auto d-flex align-items-center gap-1">
+              <button type="button" class="btn btn-sm btn-outline-secondary fw-bold" onclick="dtSangTrang(-1)" title="Trang trước">‹</button>
+              <span class="small fw-bold text-nowrap" id="dtTrangHien">Trang 1/1</span>
+              <button type="button" class="btn btn-sm btn-outline-secondary fw-bold" onclick="dtSangTrang(1)" title="Trang sau">›</button>
+            </div>
+          </div>
 
          <div class="table-responsive">
         <table id="dtMainTable" class="table table-hover align-middle small table-bordered dt-smart-table hide-dt-row hide-dt-email">
@@ -1457,8 +1865,8 @@
       adminRun().withSuccessHandler(function(res) {
         if (!res.success) { alert("Lỗi: " + res.message); return; }
         var d = res.data;
-        document.getElementById("statTables").innerText = d.totalTables + " bàn";
-        document.getElementById("statGuests").innerText = d.totalGuests + " khách";
+        document.getElementById("statTables").innerText = d.totalTables;
+        document.getElementById("statGuests").innerText = d.totalGuests;
         document.getElementById("statDeposit").innerText = d.totalDeposit.toLocaleString("vi-VN") + " đ";
         document.getElementById("countSmallDecor").innerText = d.decorSmall.length;
         document.getElementById("countLargeDecor").innerText = d.decorLarge.length;
@@ -1480,7 +1888,7 @@
       var html = "";
       for (var i = 0; i < items.length; i++) {
         var it = items[i];
-        var headerTitle = '【 👤 ' + escapeHtml((it.tenKH || "KHÁCH HÀNG").toUpperCase()) + (it.sdt ? (' - ' + escapeHtml(it.sdt)) : '') + ' 】';
+        var headerTitle = '<span class="tk-ten">👤 ' + escapeHtml((it.tenKH || "KHÁCH HÀNG").toUpperCase()) + '</span>' + (it.sdt ? '<span class="tk-sdt">' + escapeHtml(it.sdt) + '</span>' : '');
         html += '<div class="' + currentTab1CardColClass + ' t1-card-col-wrap">' +
           '<div class="timeline-card-table ' + typeClass + (loaiVat(it) ? ' co-vat' : '') + '">' + vatTag(it) +
             '<div class="table-card-header">' + headerTitle + '</div>' +
@@ -2031,12 +2439,52 @@
     }
 
     // In timeline khổ A4 dọc: mỗi phân loại 1 bảng (sắp theo giờ, tô nền theo khung giờ), chữ tự xuống dòng - không cắt nội dung
+    // Tên khách không vừa 1 dòng thì viết tắt dần 1, 2, 3 chữ đầu (giữ 2 chữ cuối): NGUYỄN THỊ MINH NGUYỆT -> N. THỊ MINH NGUYỆT -> N.T. MINH NGUYỆT
+    var _doChu;
+    function tenVuaDong_(ten, rong, coChu) {
+      var w = String(ten || "").split(/\s+/).filter(Boolean);
+      try { _doChu = _doChu || document.createElement("canvas").getContext("2d"); _doChu.font = "bold " + coChu + "px 'Times New Roman', Tinos, Times, serif"; } catch (e) { return w.join(" "); }
+      var thu = w.join(" ");
+      for (var k = 1; _doChu.measureText(thu).width > rong && k <= Math.min(3, w.length - 2); k++) {
+        thu = w.slice(0, k).map(function(x) { return x.charAt(0) + "."; }).join("") + " " + w.slice(k).join(" ");
+      }
+      return thu;
+    }
+    // Chạy trong cửa sổ in: đo chiều cao từng hàng, tự tách bảng theo trang (A4 ngang) để đầu mỗi trang ghi "#9–16 / 18 bàn"
+    function chiaTrangIn_() {
+      var H = (210 - 4 - 6) * 96 / 25.4 * 0.97;
+      Array.prototype.forEach.call(document.querySelectorAll("section.nhom"), function(sec) {
+        var tb = sec.querySelector("table"); if (!tb) return;
+        var dau = tb.tHead, dauGoc = dau.cloneNode(true), hang = Array.prototype.slice.call(tb.tBodies[0].rows), caoDau = dau.getBoundingClientRect().height;
+        var tomTat = sec.parentNode.querySelector(".tomtat"), cum = [[]], cao = caoDau + (tomTat ? tomTat.getBoundingClientRect().height : 0);
+        hang.forEach(function(r) {
+          var h = r.getBoundingClientRect().height;
+          if (cum[cum.length - 1].length && cao + h > H) { cum.push([]); cao = caoDau; }
+          cum[cum.length - 1].push(r); cao += h;
+        });
+        if (cum.length < 2) return;
+        var stt = 1;
+        cum.forEach(function(ds, ci) {
+          var t = tb;
+          if (ci) {
+            t = tb.cloneNode(false);
+            t.appendChild(tb.querySelector("colgroup").cloneNode(true));
+            t.appendChild(dauGoc.cloneNode(true));
+            var than = document.createElement("tbody"); t.appendChild(than);
+            ds.forEach(function(r) { than.appendChild(r); });
+            var vo = document.createElement("div"); vo.className = "trangmoi"; vo.appendChild(t); sec.appendChild(vo);
+          }
+          t.querySelector(".dem").insertAdjacentHTML("afterbegin", "<b>STT " + stt + " → " + (stt + ds.length - 1) + "</b> &nbsp;│&nbsp; ");
+          stt += ds.length;
+        });
+      });
+    }
     function taoTrangInA4_(mode, dateVal, nguon) {
       var ngayHien = dateVal ? dateVal.split("-").reverse().join("/") : "";
       var NHOM = {
-        small: { ten: "BÀN DECOR DƯỚI 6 KHÁCH", ico: "🎀", mau: "#a45527", nen: "#fdf9f6", items: nguon.listSmallDecor || [] },
-        large: { ten: "BÀN DECOR TỪ 6 KHÁCH", ico: "🎉", mau: "#e11d48", nen: "#fff1f2", items: nguon.listLargeDecor || [] },
-        normal: { ten: "BÀN ĂN THƯỜNG", ico: "🍽️", mau: "#0284c7", nen: "#f0f9ff", items: nguon.listNormal || [] }
+        small: { ten: "BÀN DECOR DƯỚI 6 KHÁCH", ico: "🎀", mau: "#000", nen: "#fff", items: nguon.listSmallDecor || [] },
+        large: { ten: "BÀN DECOR TỪ 6 KHÁCH", ico: "🎉", mau: "#000", nen: "#fff", items: nguon.listLargeDecor || [] },
+        normal: { ten: "BÀN ĂN THƯỜNG", ico: "🍽️", mau: "#000", nen: "#fff", items: nguon.listNormal || [] }
       };
       var TEN_MODE = { all: "Đủ 3 phân loại bàn", decor: "Bàn decor (< 6 và ≥ 6)", large: "Bàn decor ≥ 6 khách", small: "Bàn decor < 6 khách", normal: "Bàn ăn thường" };
       var chon = { all: ["small", "large", "normal"], decor: ["small", "large"], large: ["large"], small: ["small"], normal: ["normal"] }[mode] || ["small", "large", "normal"];
@@ -2052,7 +2500,7 @@
         if (!a) return b;
         if (!b || b === a || b.indexOf(a) !== -1) return b || a;
         if (a.indexOf(b) !== -1) return a;
-        return a + "\n" + b;
+        return a + " — " + b;
       }
       var tongBan = 0, tongKhach = 0, tongCoc = 0;
       chon.forEach(function(k) { NHOM[k].items.forEach(function(it) { tongBan++; tongKhach += parseInt(it.soKhach, 10) || 0; tongCoc += Number(it.tienCoc) || 0; }); });
@@ -2060,6 +2508,9 @@
 
       var tomTat = '<div class="tomtat"><div><b>ĐẶT BÀN NGÀY ' + e(ngayHien) + '</b> · ' + e(TEN_MODE[mode] || TEN_MODE.all) + '</div>' +
         '<div>' + tongBan + ' bàn · ' + tongKhach + ' khách' + (tongCoc ? ' · Cọc ' + tien(tongCoc) : '') + ' · In lúc ' + e(gioIn) + '</div></div>';
+      // Dòng tóm tắt in ở chân trang (lề dưới), không chiếm chỗ của bảng
+      var chanTrang = ("Đặt bàn ngày " + ngayHien + " · " + (TEN_MODE[mode] || TEN_MODE.all) + " · " + tongBan + " bàn · " + tongKhach + " khách" +
+        (tongCoc ? " · Cọc " + tien(tongCoc) : "") + " · In lúc " + gioIn).replace(/["\\]/g, "");
 
       // Mỗi phân loại bàn là 1 tờ A4 riêng, tự co giãn vừa tờ của nó
       var phan = chon.map(function(k, idx) {
@@ -2078,7 +2529,6 @@
           if (it.datMon) ct.push('<div class="dong"><span class="nhan">Món</span><span class="nd">' + nhieuDong(it.datMon) + '</span></div>');
           if (it.ghiChu && it.ghiChu !== it.datMon) ct.push('<div class="dong"><span class="nhan">Ghi chú</span><span class="nd note">' + nhieuDong(it.ghiChu) + '</span></div>');
           var phu = [];
-          if (it.sdt) phu.push(e(it.sdt));
           if (it.banhHoa) phu.push('<span class="ma">' + e(it.banhHoa) + '</span>');
           if (it.kenhNguon && !/^[A-Z]{2,4}\d{6}$/.test(it.kenhNguon) && String(it.banhHoa || "").indexOf(it.kenhNguon) !== 0) phu.push(e(it.kenhNguon));
           var the = [];
@@ -2087,43 +2537,42 @@
           return '<tr class="' + (chan ? "k1" : "k2") + (moiKhung && i ? " khung" : "") + '">' +
             '<td class="stt">' + (i + 1) + '</td>' +
             '<td class="gio">' + e(gio) + '</td>' +
-            '<td class="so">' + e(it.soKhach || "") + '</td>' +
+            '<td class="so">' + e(it.soKhach || "") + '<span class="dv">khách</span></td>' +
             '<td class="ban">' + e(it.banSo || "") + '</td>' +
-            '<td class="kh"><div class="tenkh">' + e(tenSach(it.tenKH).toUpperCase() || "—") + '</div>' +
-              (phu.length || the.length ? '<div class="sdt">' + phu.join(" · ") + (the.length ? " " + the.join(" ") : "") + '</div>' : '') + '</td>' +
+            '<td class="kh"><div class="tenkh">' + e(tenVuaDong_(tenSach(it.tenKH).toUpperCase(), 251, 20) || "—") + '</div>' + (it.sdt ? '<div class="tenkh">' + e(it.sdt) + '</div>' : '') +
+              (phu.length || the.length ? '<div class="sdt dc"><span>' + phu.join(" · ") + '</span>' + (the.length ? '<span class="tg">' + the.join(" ") + '</span>' : '') + '</div>' : '') + '</td>' +
             '<td class="ct">' + (ct.join("") || '<span class="mo">—</span>') + '</td>' +
             '<td class="tick"><span class="o"></span></td></tr>';
         }).join("");
         // Tiêu đề nhóm nằm trong <thead> nên khi bảng tràn sang trang sau, trình duyệt tự in lại tiêu đề + hàng tên cột
-        var tieuDe = '<div class="head"><div class="ten">' + g.ico + ' ' + g.ten + '</div>' +
-          '<div class="dem"><b>' + rows.length + '</b> bàn · <b>' + khach + '</b> khách</div></div>' +
-          '<div class="phu">Túi Nướng Lavender · Ngày <b>' + e(ngayHien) + '</b></div>';
-        return '<div class="vo' + (idx ? ' trangmoi' : '') + '"><div class="giay">' + tomTat + '<section class="nhom" style="--mau:' + g.mau + ';--nen:' + g.nen + '">' +
-          (rows.length ? '<table><colgroup><col style="width:5%"><col style="width:10%"><col style="width:7%"><col style="width:8%"><col style="width:' + (coDecor ? 22 : 30) + '%"><col><col style="width:5%"></colgroup>' +
+        var tieuDe = '<div class="head"><div class="ten">' + g.ico + ' ' + g.ten + ' <span class="phu">(Túi Nướng Lavender · Ngày <b>' + e(ngayHien) + '</b>)</span></div>' +
+          '<div class="dem">Tổng <b>' + rows.length + '</b> bàn · <b>' + khach + '</b> khách</div></div>';
+        return '<div class="vo' + (idx ? ' trangmoi' : '') + '"><div class="giay"><section class="nhom" style="--mau:' + g.mau + ';--nen:' + g.nen + '">' +
+          (rows.length ? '<table><colgroup><col style="width:7mm"><col style="width:17mm"><col style="width:14mm"><col style="width:14mm"><col style="width:68mm"><col><col style="width:8mm"></colgroup>' +
             '<thead><tr class="tde"><th colspan="7">' + tieuDe + '</th></tr>' +
-            '<tr class="cot"><th>#</th><th>Giờ</th><th>Khách</th><th>Bàn</th><th>Khách hàng</th><th>' + (coDecor ? "Decor · Món · Ghi chú" : "Món · Ghi chú") + '</th><th>Đến</th></tr></thead>' +
+            '<tr class="cot"><th>#</th><th>Giờ</th><th>Số khách</th><th>Bàn số</th><th>Khách hàng</th><th>' + (coDecor ? "Decor · Món · Ghi chú" : "Món · Ghi chú") + '</th><th>Đến</th></tr></thead>' +
             '<tbody>' + body + '</tbody></table>' : tieuDe + '<p class="trong">Không có bàn nào trong ngày.</p>') +
           '</section></div></div>';
       }).join("");
 
 
       return '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>In đặt bàn ' + e(ngayHien) + '</title><style>' +
-        '@page{size:A4 portrait;margin:9mm 8mm 11mm}' +
-        '@page{@bottom-right{content:"Trang " counter(page) "/" counter(pages);font:10px Arial;color:#777}}' +
+        '@page{size:A4 landscape;margin:4mm 4mm 6mm}' +
+        '@page{@bottom-right{content:"' + chanTrang + ' · Trang " counter(page) "/" counter(pages);font:9px Arial;color:#000;white-space:nowrap}}' +
         '*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
         'body{font-family:"Times New Roman",Times,serif;color:#111;margin:0;font-size:15pt}' +
-        '.vo{width:194mm;margin:0 auto}.giay{width:194mm;transform-origin:top left}' +
-        '@media screen{body{background:#e5e5e5;padding:16px}.vo{background:#fff;padding:0;box-shadow:0 0 0 9mm #fff,0 2px 24px 9mm rgba(0,0,0,.12);margin:9mm auto}}' +
+        '.vo{width:289mm;margin:0 auto}.giay{width:289mm;transform-origin:top left}' +
+        '@media screen{body{background:#e5e5e5;padding:16px}.vo{background:#fff;padding:0;box-shadow:0 0 0 4mm #fff,0 2px 24px 4mm rgba(0,0,0,.12);margin:4mm auto}}' +
         '.trangmoi{break-before:page;page-break-before:always}' +
         '.tomtat{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;font-size:11pt;color:#444;border-bottom:1px solid #ccc;padding-bottom:4px;margin-bottom:8px}' +
         'tr.tde th{background:none;border:none;padding:0 0 2px;color:#111;font-weight:normal;text-align:left}' +
         '.head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-left:7px solid var(--mau);background:var(--nen);padding:6px 10px}' +
         '.ten{font-size:18pt;font-weight:bold;color:var(--mau)}.dem{font-size:13pt;white-space:nowrap}.dem b{font-size:15pt}' +
-        '.phu{font-size:11pt;color:#555;margin:3px 0 6px 2px}' +
+        '.phu{font-size:15.5pt;font-weight:normal;color:#000}.head{margin-bottom:4px}' +
         'table{width:100%;border-collapse:collapse;table-layout:fixed}' +
         'thead{display:table-header-group}' +
-        'th{background:var(--mau);color:#fff;font-size:12pt;text-align:left;padding:5px 5px;border:1px solid var(--mau)}' +
-        'td{border:1px solid #bbb;padding:3px 5px;vertical-align:top;line-height:1.27;overflow-wrap:anywhere;word-break:break-word}' +
+        'th{background:var(--mau);color:#fff;font-size:10pt;text-align:left;padding:4px 2px;border:1px solid var(--mau)}' +
+        'td{border:1px solid #bbb;padding:2px 3px;vertical-align:top;line-height:1.15;overflow-wrap:anywhere;word-break:break-word}' +
         'tr{break-inside:avoid;page-break-inside:avoid}' +
         'tr.k1 td{background:#fff}tr.k2 td{background:var(--nen)}tr.khung td{border-top:2px solid var(--mau)}' +
         '.stt{text-align:center;color:#666;font-size:11pt}' +
@@ -2132,13 +2581,16 @@
         '.ban{font-size:15pt;font-weight:bold;text-align:center}' +
         '.tenkh{font-size:15pt;font-weight:bold}.sdt{font-size:12pt;color:#333;margin-top:1px}.ma{font-size:11pt}' +
         '.the{display:inline-block;font-size:10.5pt;font-weight:bold;border:1px solid #999;border-radius:3px;padding:0 3px;line-height:1.25}.coc{color:#15803d;border-color:#86efac}.vat{color:#b45309;border-color:#fcd34d}' +
-        '.ct{font-size:15pt}.dong{display:flex;gap:6px}.dong+.dong{margin-top:2px;padding-top:2px;border-top:1px dashed #ccc}' +
-        '.nhan{flex:0 0 58px;font-size:10pt;font-weight:bold;text-transform:uppercase;color:var(--mau);padding-top:2px}.nd{flex:1;min-width:0}.decor{font-weight:bold}.note{font-style:italic}' +
+        '.ct{font-size:15pt}.dong{display:flex;gap:6px}.dong+.dong{margin-top:1px;padding-top:1px;border-top:1px dashed #ccc}' +
+        '.nhan{flex:0 0 62px;white-space:nowrap;font-size:10pt;font-weight:bold;text-transform:uppercase;color:var(--mau);padding-top:2px}.nd{flex:1;min-width:0}.decor{font-weight:bold}.note{font-style:italic}' +
         '.mo{color:#aaa}.tick{text-align:center}.o{display:inline-block;width:15px;height:15px;border:1.5px solid #666;border-radius:3px;margin-top:1px}' +
+        '*{color:#000!important}th{background:none!important;border:1px solid #000!important;border-bottom:2px solid #000!important}tr.k1 td,tr.k2 td{background:#fff!important}td{border-color:#000!important}tr.khung td{border-top:2px solid #000!important}.head{background:none!important}.the{border-color:#000!important}' +
+        '.dc{display:flex;justify-content:space-between;align-items:flex-end;gap:4px}.tg{white-space:nowrap;margin-left:auto}' +
+        '.dv{display:block;font-size:8.5pt;font-weight:normal;line-height:1}td.ban{border-left:2px solid #000!important}th{line-height:1.1}' +
         '.trong{font-size:15pt;color:#666;padding:10px}' +
         '</style></head><body>' + phan +
         // Cỡ chữ cố định (Times New Roman 15) — không co giãn; bảng dài tự sang trang, tiêu đề phân loại bàn lặp lại đầu mỗi trang
-        '<script>window.onload=function(){setTimeout(function(){window.print();},350);};<\/script></body></html>';
+        '<script>' + chiaTrangIn_.toString() + 'window.onload=function(){chiaTrangIn_();setTimeout(function(){window.print();},350);};<\/script></body></html>';
     }
 
     // Co/giãn nội dung cho vừa đúng 1 trang A4 (194 x 277 mm vùng in). Nếu phải co nhỏ hơn 60% thì chữ quá bé:
@@ -2160,6 +2612,140 @@
       });
     }
 
+    // PDF giống bản in A4 (Times New Roman ~ Tinos 15): tạo ngay trên trình duyệt bằng pdfmake, tiêu đề phân loại bàn lặp lại mỗi trang
+    var FONT_TINOS_ = "https://fonts.gstatic.com/s/tinos/v26/";
+    function taiPdfMake_(xong) {
+      if (window.pdfMake) return xong();
+      var s = document.createElement("script");
+      s.src = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/pdfmake.min.js";
+      s.onload = function() {
+        pdfMake.fonts = { Tinos: { normal: FONT_TINOS_ + "buE4poGnedXvwgX8.ttf", bold: FONT_TINOS_ + "buE1poGnedXvwj1AW0Fp.ttf",
+          italics: FONT_TINOS_ + "buE2poGnedXvwjX-fmE.ttf", bolditalics: FONT_TINOS_ + "buEzpoGnedXvwjX-Rt1s0Co.ttf" } };
+        xong();
+      };
+      s.onerror = function() { alert("Chưa tải được bộ tạo PDF. Vui lòng kiểm tra mạng rồi thử lại."); };
+      document.head.appendChild(s);
+    }
+    function taoPdfA4_(mode, dateVal, nguon, chiaTrang) {
+      var ngayHien = dateVal ? dateVal.split("-").reverse().join("/") : "";
+      var NHOM = {
+        small: { ten: "BÀN DECOR DƯỚI 6 KHÁCH", mau: "#000000", nen: undefined, items: nguon.listSmallDecor || [] },
+        large: { ten: "BÀN DECOR TỪ 6 KHÁCH", mau: "#000000", nen: undefined, items: nguon.listLargeDecor || [] },
+        normal: { ten: "BÀN ĂN THƯỜNG", mau: "#000000", nen: undefined, items: nguon.listNormal || [] }
+      };
+      var TEN_MODE = { all: "Đủ 3 phân loại bàn", decor: "Bàn decor (< 6 và ≥ 6)", large: "Bàn decor ≥ 6 khách", small: "Bàn decor < 6 khách", normal: "Bàn ăn thường" };
+      var chon = { all: ["small", "large", "normal"], decor: ["small", "large"], large: ["large"], small: ["small"], normal: ["normal"] }[mode] || ["small", "large", "normal"];
+      function sach(s) { return String(s === undefined || s === null ? "" : s).replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\uFE0F\u200D]/gu, "").replace(/\r/g, "").replace(/[ \t]+\n/g, "\n").replace(/\n[ \t]+/g, "\n").trim(); }
+      function gioSo(g) { var m = String(g || "").match(/(\d{1,2})\s*(?:[h:g.]\s*(\d{0,2}))?/i); return m ? (+m[1]) * 60 + (+m[2] || 0) : 9999; }
+      function gioDep(g) { var n = gioSo(g); if (n === 9999) return String(g || "--"); return ("0" + Math.floor(n / 60)).slice(-2) + ":" + ("0" + n % 60).slice(-2); }
+      function tenSach(s) { return sach(s).replace(/^\s*(tên|ten|họ tên|họ & tên)\s*[:：]\s*/i, ""); }
+      function tien(n) { return Number(n || 0).toLocaleString("vi-VN") + "đ"; }
+      function decorGop(it) {
+        var a = sach(it.mauDecor), b = sach(it.decor);
+        if (/^(không|khong|có|co|x)$/i.test(b)) b = "";
+        if (!a) return b;
+        if (!b || b === a || b.indexOf(a) !== -1) return b || a;
+        if (a.indexOf(b) !== -1) return a;
+        return a + " — " + b;
+      }
+      var tongBan = 0, tongKhach = 0, tongCoc = 0;
+      chon.forEach(function(k) { NHOM[k].items.forEach(function(it) { tongBan++; tongKhach += parseInt(it.soKhach, 10) || 0; tongCoc += Number(it.tienCoc) || 0; }); });
+      var gioIn = new Date().toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit", year: "numeric" });
+      var noiDung = [];
+      chon.forEach(function(k, idx) {
+        var g = NHOM[k], coDecor = k !== "normal";
+        var rows = g.items.slice().sort(function(a, b) { return gioSo(a.gioVao) - gioSo(b.gioVao) || String(a.banSo).localeCompare(String(b.banSo), "vi", { numeric: true }); });
+        var khach = rows.reduce(function(s, it) { return s + (parseInt(it.soKhach, 10) || 0); }, 0);
+        if (idx) noiDung.push({ text: "", pageBreak: "before" });
+        function tieuDeBang(khoang) {
+          return { colSpan: 7, border: [false, false, false, false], stack: [
+            { columns: [{ text: [g.ten + " ", { text: "(Túi Nướng Lavender · Ngày ", fontSize: 15.5, bold: false }, { text: ngayHien, fontSize: 15.5 }, { text: ")", fontSize: 15.5, bold: false }], fontSize: 18, bold: true, color: g.mau },
+              { text: (khoang ? [{ text: "STT " + khoang, bold: true, fontSize: 15 }, "   │   "] : []).concat(["Tổng ", { text: String(rows.length), bold: true, fontSize: 15 }, " bàn · ", { text: String(khach), bold: true, fontSize: 15 }, " khách"]), fontSize: 13, alignment: "right", width: "auto" }] },
+            { text: "", margin: [0, 0, 0, 3] }
+          ] };
+        }
+        if (!rows.length) { var trong = tieuDeBang(""); noiDung.push(trong.stack[0], trong.stack[1], { text: "Không có bàn nào trong ngày.", fontSize: 15, color: "#000", margin: [0, 8, 0, 0] }); return; }
+        var th = function(t, canh) { return { text: t, bold: true, fontSize: 10, alignment: canh || "left" }; };
+        var hangCot = function() { return [th("#", "center"), th("Giờ"), th("Số khách", "center"), th("Bàn số", "center"), th("Khách hàng"), th(coDecor ? "Decor · Món · Ghi chú" : "Món · Ghi chú"), th("Đến", "center")]; };
+        var dongBang = [], moiKhung = [], gioTruoc = null;
+        rows.forEach(function(it, i) {
+          var gio = gioDep(it.gioVao);
+          moiKhung.push(i > 0 && gio !== gioTruoc); gioTruoc = gio;
+          var dong = function(nhan, chu, kieu) {
+            return { columns: [{ text: nhan, width: 44, fontSize: 9, bold: true, color: g.mau, margin: [0, 2, 0, 0] }, Object.assign({ text: chu, fontSize: 15 }, kieu || {})], columnGap: 4, margin: [0, 0, 0, 1] };
+          };
+          var ct = [], dc = decorGop(it), mon = sach(it.datMon), gc = sach(it.ghiChu);
+          if (dc) ct.push(dong("DECOR", dc, { bold: true }));
+          if (mon) ct.push(dong("MÓN", mon));
+          if (gc && gc !== mon) ct.push(dong("GHI CHÚ", gc, { italics: true }));
+          var phu = [];
+          if (it.banhHoa) phu.push(sach(it.banhHoa));
+          if (it.kenhNguon && !/^[A-Z]{2,4}\d{6}$/.test(it.kenhNguon) && String(it.banhHoa || "").indexOf(it.kenhNguon) !== 0) phu.push(sach(it.kenhNguon));
+          var the = [];
+          if (Number(it.tienCoc)) the.push({ text: "Cọc " + tien(it.tienCoc) + "  ", bold: true });
+          if (it.hasVat) the.push({ text: "VAT", bold: true });
+          var kh = [{ text: tenVuaDong_(tenSach(it.tenKH).toUpperCase(), 186, 15) || "—", bold: true, fontSize: 15 }];
+          if (it.sdt) kh.push({ text: sach(it.sdt), bold: true, fontSize: 15 });
+          if (phu.length || the.length) kh.push({ columns: [{ text: phu.join(" · "), fontSize: 10, width: "*" }, { text: the, fontSize: 10, width: "auto" }], columnGap: 4 });
+          dongBang.push([
+            { text: String(i + 1), alignment: "center", fontSize: 10, id: "r" + k + "_" + i },
+            { text: gio, bold: true, fontSize: 16 },
+            { stack: [{ text: String(it.soKhach || ""), bold: true, fontSize: 16 }, { text: "khách", fontSize: 8 }], alignment: "center" },
+            { text: sach(it.banSo), bold: true, fontSize: 15, alignment: "center" },
+            { stack: kh },
+            ct.length ? { stack: ct } : { text: "—" },
+            { canvas: [{ type: "rect", x: 4, y: 3, w: 12, h: 12, r: 2, lineColor: "#000", lineWidth: 1 }] }
+          ]);
+        });
+        // Lần đo đầu chưa biết trang: 1 bảng. Lần sau tách bảng theo trang đã đo để đầu mỗi trang ghi "#9–16 / 18 bàn"
+        var cum = [], trCu = null;
+        rows.forEach(function(it, i) {
+          var tr = chiaTrang ? chiaTrang[k + "_" + i] : 0;
+          if (!cum.length || tr !== trCu) { cum.push([]); trCu = tr; }
+          cum[cum.length - 1].push(i);
+        });
+        cum.forEach(function(ds, ci) {
+          var body = [[tieuDeBang(cum.length > 1 ? (ds[0] + 1) + " → " + (ds[ds.length - 1] + 1) : ""), "", "", "", "", "", ""], hangCot()], khung = {};
+          ds.forEach(function(i, j) { if (j && moiKhung[i]) khung[body.length] = 1; body.push(dongBang[i]); });
+          noiDung.push({ table: { headerRows: 2, dontBreakRows: true, widths: [16, 46, 36, 36, 190, "*", 22], body: body }, pageBreak: ci ? "before" : undefined,
+            layout: {
+              hLineWidth: function(i) { return i < 1 ? 0 : (i === 2 || khung[i] ? 1.6 : 0.6); },
+              vLineWidth: function(i) { return i === 3 ? 1.6 : 0.6; },
+              hLineColor: function() { return "#000"; },
+              vLineColor: function() { return "#000"; },
+              paddingLeft: function() { return 2; }, paddingRight: function() { return 2; },
+              paddingTop: function() { return 2; }, paddingBottom: function() { return 2; }
+            } });
+        });
+      });
+      return {
+        pageSize: "A4", pageOrientation: "landscape", pageMargins: [10, 10, 10, 16],
+        defaultStyle: { font: "Tinos", fontSize: 15, lineHeight: 1.05 },
+        info: { title: "Đặt bàn " + ngayHien + " - Túi Nướng Lavender" },
+        // Dòng tóm tắt nằm ở chân trang, không chiếm chỗ của bảng
+        footer: function(trang, tong) { return { text: "Đặt bàn ngày " + ngayHien + " · " + (TEN_MODE[mode] || TEN_MODE.all) + " · " + tongBan + " bàn · " + tongKhach + " khách" +
+          (tongCoc ? " · Cọc " + tien(tongCoc) : "") + " · In lúc " + gioIn + " · Trang " + trang + "/" + tong, alignment: "right", fontSize: 9, margin: [10, 3, 10, 0] }; },
+        content: noiDung
+      };
+    }
+    function taiPdfTimelineA4(mode) {
+      var dateVal = document.getElementById("timelineDateInput").value || "";
+      if (!_tlItems.listSmallDecor && !_tlItems.listLargeDecor && !_tlItems.listNormal) { alert("Chưa tải dữ liệu ngày này. Vui lòng chọn ngày và đợi tải xong rồi bấm tải PDF."); return; }
+      var nut = document.getElementById("btnPdfTimeline"), cu = nut.innerHTML;
+      nut.disabled = true; nut.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+      taiPdfMake_(function() {
+        try {
+          // Lần 1 đo xem mỗi bàn rơi vào trang nào, lần 2 tạo file có ghi khoảng số thứ tự ở đầu mỗi trang
+          var trang = {}, dd1 = taoPdfA4_(mode, dateVal, _tlItems);
+          dd1.pageBreakBefore = function(n) { if (n.id && n.id.charAt(0) === "r" && n.startPosition) trang[n.id.slice(1)] = n.startPosition.pageNumber; return false; };
+          pdfMake.createPdf(dd1).getBuffer(function() {
+          pdfMake.createPdf(taoPdfA4_(mode, dateVal, _tlItems, trang)).download("Dat_ban_" + (dateVal ? dateVal.split("-").reverse().join("-") : "") + ".pdf", function() { nut.disabled = false; nut.innerHTML = cu; });
+          });
+        } catch (err) { nut.disabled = false; nut.innerHTML = cu; alert("Chưa tạo được PDF: " + (err && err.message || err)); }
+      });
+      setTimeout(function() { nut.disabled = false; nut.innerHTML = cu; }, 20000);
+    }
+
     function inTimelineA4(mode) {
       var dateVal = document.getElementById("timelineDateInput").value || "";
       if (!_tlItems.listSmallDecor && !_tlItems.listLargeDecor && !_tlItems.listNormal) { alert("Chưa tải dữ liệu ngày này. Vui lòng chọn ngày và đợi tải xong rồi bấm in."); return; }
@@ -2178,7 +2764,23 @@
       taiAnhTrangThai("xacnhan", { ten: r.tenKH, sdt: r.sdt, ma: r.id, ngay: r.ngay, gio: r.gioVao, soKhach: r.soKhach, tienCoc: r.tienCoc,
         mauDecor: r.mauDecor, ndDecor: r.decor, banSo: r.banSo });
     }
-    function renderDataTongTableRows_(list) {
+    // Phân trang bảng DATA_TONG: 10 / 20 / tất cả dòng (nhớ lựa chọn trên máy)
+    var _dtDs = [], _dtTrang = 1, _dtSoDong = 10;
+    try { var _luuSoDong = localStorage.getItem("dt_so_dong"); if (_luuSoDong !== null) _dtSoDong = parseInt(_luuSoDong, 10) || 0; } catch (e) {}
+    function renderDataTongTableRows_(list) { _dtDs = list || []; _dtTrang = 1; dtHienTrang_(); }
+    function dtChonSoDong(n) { _dtSoDong = n; _dtTrang = 1; try { localStorage.setItem("dt_so_dong", String(n)); } catch (e) {} dtHienTrang_(); }
+    function dtSangTrang(buoc) { _dtTrang += buoc; dtHienTrang_(); }
+    function dtHienTrang_() {
+      var tong = _dtDs.length, soTrang = _dtSoDong ? Math.max(1, Math.ceil(tong / _dtSoDong)) : 1;
+      _dtTrang = Math.min(Math.max(1, _dtTrang), soTrang);
+      var dau = _dtSoDong ? (_dtTrang - 1) * _dtSoDong : 0;
+      veDongDataTong_(_dtSoDong ? _dtDs.slice(dau, dau + _dtSoDong) : _dtDs, dau);
+      var o = document.getElementById("dtTrangHien");
+      if (o) o.innerText = tong ? "Trang " + _dtTrang + "/" + soTrang + " · " + tong + " đơn" : "0 đơn";
+      Array.prototype.forEach.call(document.querySelectorAll("#dtSoDongNhom .btn"), function(b) { b.classList.toggle("active", +b.getAttribute("data-so") === _dtSoDong); });
+    }
+    function veDongDataTong_(list, dauDt) {
+  dauDt = dauDt || 0;
   var tbody = document.getElementById("dataTongTableBody");
   if (!list || list.length === 0) {
     tbody.innerHTML = '<tr><td colspan="10" class="text-center py-3 text-muted">Không tìm thấy đơn nào.</td></tr>';
@@ -2233,7 +2835,7 @@
       '<td class="text-center">' + billHtml + '</td>' +
       '<td><div class="cell-Clamp-box" style="max-width:360px; max-height:75px;">' + (combinedBlocks.join("") || '<span class="text-muted">-</span>') + '</div></td>' +
       '<td class="col-dt-email text-nowrap"><small>' + escapeHtml(r.email || "") + '</small></td>' +
-      '<td class="text-center"><button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="editDataTongRow(' + i + ')"><i class="fa-solid fa-pen-to-square"></i></button> <button class="btn btn-sm btn-outline-secondary py-0 px-2 mt-1" onclick="luuAnhDt(' + i + ')" title="Lưu ảnh xác nhận đặt bàn">📷</button></td>' +
+      '<td class="text-center"><button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="editDataTongRow(' + (dauDt + i) + ')"><i class="fa-solid fa-pen-to-square"></i></button> <button class="btn btn-sm btn-outline-secondary py-0 px-2 mt-1" onclick="luuAnhDt(' + (dauDt + i) + ')" title="Lưu ảnh xác nhận đặt bàn">📷</button></td>' +
     '</tr>';
   }
   tbody.innerHTML = html;
@@ -2380,7 +2982,7 @@
           if (upperNhom.indexOf("DECOR") !== -1 || it.mauDecor) {
             typeClass = (parseInt(it.soKhach, 10) >= 6) ? "decor-large" : "decor-small";
           }
-          var headerTitle = '【 👤 ' + escapeHtml((it.tenKH || "KHÁCH HÀNG").toUpperCase()) + (it.sdt ? (' - ' + escapeHtml(it.sdt)) : '') + ' 】';
+          var headerTitle = '<span class="tk-ten">👤 ' + escapeHtml((it.tenKH || "KHÁCH HÀNG").toUpperCase()) + '</span>' + (it.sdt ? '<span class="tk-sdt">' + escapeHtml(it.sdt) + '</span>' : '');
           html += '<div class="' + currentTab3CardColClass + ' t3-card-col-wrap">' +
             '<div class="timeline-card-table ' + typeClass + (loaiVat(it) ? ' co-vat' : '') + '">' + vatTag(it) +
               '<div class="d-flex justify-content-between align-items-center mb-1">' +
