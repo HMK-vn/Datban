@@ -798,6 +798,22 @@
       header.navbar-custom .nhom-nut-dau { flex-wrap: nowrap !important; }
       header.navbar-custom .nhom-nut-dau > .btn { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
     }
+    /* 7 nút đầu trang (thêm Decor <6 / ≥6): thu khoảng cách cho vừa 1 hàng; máy tính bảng nhỏ (<768px) xuống 2 hàng 4 + 3 nút */
+    @media (min-width: 576px) and (max-width: 991.98px) {
+      header.navbar-custom .nhom-nut-dau { gap: 4px !important; }
+      header.navbar-custom .nhom-nut-dau > .btn { padding-left: 4px; padding-right: 4px; min-width: 0; }
+      header.navbar-custom .nhom-nut-dau .nut-ico { margin-right: 3px !important; }
+    }
+    @media (min-width: 576px) and (max-width: 767.98px) {
+      header.navbar-custom .nhom-nut-dau { flex-wrap: wrap !important; }
+      header.navbar-custom .nhom-nut-dau > .btn { flex: 1 1 calc(25% - 4px); }
+    }
+    @media (max-width: 575.98px) { /* điện thoại: 7 nút gọn 2 hàng — Giao diện, Telegram chỉ còn biểu tượng; các nút giãn đều mỗi hàng */
+      header.navbar-custom .nhom-nut-dau > .btn { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; }
+      header.navbar-custom .nhom-nut-dau > .chi-icon-dt { flex: 0 0 auto; }
+      header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-dai, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-ngan, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .chu-nut { display: none !important; }
+      header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nut-ico { margin-right: 0 !important; }
+    }
     /* Ô khoá giờ: 2 dòng Bàn decor / Bàn thường thẳng cột */
     .kg-luoi { display: grid; grid-template-columns: max-content max-content 7.5em max-content 7.5em; align-items: center; gap: 6px 8px; }
     .kg-luoi .kg-tieude, .kg-luoi .kg-luu { grid-column: 1 / -1; }
@@ -971,11 +987,12 @@
       </div>
       <div class="d-flex align-items-center gap-2 flex-wrap nhom-nut-dau">
         <a href="https://docs.google.com/spreadsheets/d/1cPOeqL8_aN3ktL5p7_NsT_rkrjObzJy7IllOIjGWJeA/edit?gid=999901#gid=999901" class="btn btn-warning btn-sm fw-bold text-dark" target="_blank"><i class="fa-solid fa-table nut-ico"></i><span class="nhan-dai">Sheet DATA_TONG</span><span class="nhan-ngan">Sheet</span></a>
-        <a href="decor.html" class="btn btn-danger btn-sm fw-bold" target="_blank"><i class="fa-solid fa-cake-candles nut-ico"></i><span class="nhan-dai">Đặt bàn decor</span><span class="nhan-ngan">Decor</span></a>
+        <a href="https://hmk-vn.github.io/Datban/decor_duoi6.html" class="btn btn-danger btn-sm fw-bold" target="_blank" title="Mở trang khách đặt bàn decor dưới 6 khách"><i class="fa-solid fa-cake-candles nut-ico"></i><span class="nhan-dai">Decor dưới 6 khách</span><span class="nhan-ngan">Decor &lt;6</span></a>
+        <a href="https://hmk-vn.github.io/Datban/decor_tu6.html" class="btn btn-danger btn-sm fw-bold" target="_blank" title="Mở trang khách đặt bàn decor từ 6 khách"><i class="fa-solid fa-cake-candles nut-ico"></i><span class="nhan-dai">Decor từ 6 khách</span><span class="nhan-ngan">Decor ≥6</span></a>
         <a href="thuong.html" class="btn btn-primary btn-sm fw-bold" target="_blank"><i class="fa-solid fa-utensils nut-ico"></i><span class="nhan-dai">Đặt bàn thường</span><span class="nhan-ngan">Thường</span></a>
         <a href=new URL("tracuu.html", location.href).href class="btn btn-success btn-sm fw-bold" target="_blank"><i class="fa-solid fa-magnifying-glass nut-ico"></i>Tra cứu</a>
-        <button type="button" class="btn btn-light btn-sm fw-bold" onclick="doiGiaoDien()" title="Đổi giao diện" id="nutGiaoDien"><i class="fa-solid fa-circle-half-stroke nut-ico"></i><span class="nhan-dai">Giao diện</span><span class="nhan-ngan">Giao diện</span></button>
-        <button type="button" class="btn btn-light btn-sm fw-bold" onclick="caiTelegram()" title="Báo đơn mới / hoàn cọc về nhóm Telegram"><i class="fa-brands fa-telegram nut-ico"></i>Telegram</button>
+        <button type="button" class="btn btn-light btn-sm fw-bold chi-icon-dt" onclick="doiGiaoDien()" title="Đổi giao diện" id="nutGiaoDien"><i class="fa-solid fa-circle-half-stroke nut-ico"></i><span class="nhan-dai">Giao diện</span><span class="nhan-ngan">Giao diện</span></button>
+        <button type="button" class="btn btn-light btn-sm fw-bold chi-icon-dt" onclick="caiTelegram()" title="Báo đơn mới / hoàn cọc về nhóm Telegram"><i class="fa-brands fa-telegram nut-ico"></i><span class="chu-nut">Telegram</span></button>
       </div>
       <span class="badge bg-light text-dark py-2 px-3 gio-dau"><i class="fa-solid fa-clock nut-ico"></i><span id="clockDisplay"></span></span>
     </div>

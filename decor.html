@@ -181,11 +181,12 @@
   </style>
   <style>
     .tc-ok { text-align: center; }
-    .tc-buoc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; position: relative; }
-    .tc-buoc div { font-size: 11.5px; color: #807067; background: #faf5f3; border-radius: 10px; padding: 8px 4px; line-height: 1.25; }
-    .tc-buoc div span { display: block; font-size: 20px; margin-bottom: 3px; }
-    .tc-buoc div.xong { background: #f8eee8; color: #6f432a; font-weight: 700; }
-    @media (max-width: 380px) { .tc-buoc { grid-template-columns: repeat(2, 1fr); } }
+    .tc-buoc { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; position: relative; }
+    .tc-buoc div { font-size: 12.5px; font-weight: 600; color: #7b6a5f; background: #faf5f3; border-radius: 10px; padding: 9px 2px 8px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tc-buoc svg { display: block; width: 22px; height: 22px; margin: 0 auto 5px; color: #b9957e; }
+    .tc-buoc div.xong { background: #f3e3d8; color: #6f432a; font-weight: 800; }
+    .tc-buoc div.xong svg { color: #864c2a; }
+    @media (max-width: 420px) { .tc-buoc { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tc-buoc div { font-size: 13px; } }
   </style>
   <style>
     /* Canh chữ chung mọi nền tảng: tiêu đề cân dòng, đoạn văn không để chữ lẻ, nút nhỏ / nhãn / SĐT không tách dòng */
@@ -207,6 +208,10 @@
   </style>
   <style>
     /* Popup lịch tháng: số bàn decor còn nhận từng ngày */
+    .nhom-trang-hint { font-size: 13px; color: #6b5a4c; margin: -10px 4px 12px; } /* dòng riêng ngay dưới ô Số khách */ .nhom-trang-hint a { font-weight: 700; color: #864c2a; }
+    .nhom-trang-hint.sai { color: #b42318; font-weight: 700; } .nhom-trang-hint.sai a { color: #b42318; }
+    .luu-y-mau { background: #fdecea; border: 1px solid #f3c4bf; border-left: 5px solid #b42318; color: #7a271a; border-radius: 10px; padding: 8px 12px; font-size: 14.5px; font-weight: 600; line-height: 1.4; }
+    .luu-y-mau .nhan { color: #b42318; font-weight: 800; letter-spacing: .2px; display: inline-block; } /* giữ cụm chữ nhấn liền 1 dòng trên điện thoại */
     .lich-phu { position: absolute; inset: 0; width: 100%; background: transparent; border: 0; cursor: pointer; z-index: 2; }
     .lich-nen { position: fixed; inset: 0; z-index: 4000; background: rgba(40,25,15,.45); display: flex; align-items: center; justify-content: center; padding: 12px; }
     .lich-hop { background: #fff; border-radius: 16px; width: min(420px, 100%); max-height: 94vh; overflow: auto; padding: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
@@ -421,6 +426,7 @@
               </select>
             </div>
           </div>
+          <div id="nhomTrangHint" class="nhom-trang-hint an-khi-day-han" style="display:none"></div>
 
           <!-- MỤC CHỌN MẪU DECOR -->
           <div class="p-3 mb-3 bg-white rounded border" id="decorSectionBox">
@@ -428,6 +434,7 @@
             <select name="mauDecor" id="selectMauDecor" class="form-select mb-2">
               <option value="">-- Đang nạp danh sách mẫu... --</option>
             </select>
+            <div class="luu-y-mau mb-2" role="note">⚠️ <b>Lưu ý:</b> Mẫu quý khách <b class="nhan">ĐÃ CHỌN KHÔNG THỂ THAY ĐỔI</b></div>
             <input type="text" name="noiDungBang" class="form-control form-control-sm" placeholder="Nội dung ghi bảng tiệc (Ví dụ: Happy Birthday Vy iu ❤️, tone hồng nơ...)">
           </div>
 
@@ -542,13 +549,14 @@
         <div class="modal-body p-4 text-center">
           <div class="tc-ok">
             <p class="fw-bold mb-2" style="white-space:nowrap;font-size:15px;font-size:min(15.5px,4.05cqw)">Túi đã nhận được yêu cầu đặt bàn của Quý khách.</p>
+            <div class="luu-y-mau text-start mb-3" id="tcLuuYMau">⚠️ <b>Lưu ý:</b> Mẫu quý khách <b class="nhan">ĐÃ CHỌN KHÔNG THỂ THAY ĐỔI</b><div class="fw-normal mt-1" id="tcMauDaChon"></div></div>
             <a href="https://hmk-vn.github.io/Datban/tracuu.html" class="btn fw-bold px-4 mb-2 text-white nut-nhay" style="background:#864c2a" onclick="try{sessionStorage.setItem('tracuu_q', window._sdtVuaDat || '')}catch(e){}">🔎 Tra cứu đơn đặt bàn</a>
             <p class="small text-muted mb-3">Quý khách vui lòng kiểm tra trạng thái bằng số điện thoại hoặc email.</p>
             <div class="tc-buoc">
-              <div class="xong"><span>📝</span>Gửi yêu cầu</div>
-              <div><span>🔎</span>Túi kiểm tra & xác nhận</div>
-              <div><span>📱</span>Tra cứu bằng SĐT / email</div>
-              <div><span>🍽️</span>Đến quán dùng bữa</div>
+              <div class="xong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>Gửi yêu cầu</div>
+              <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>Túi xác nhận</div>
+              <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Tra cứu đơn</div>
+              <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Đến dùng bữa</div>
             </div>
             <div class="small mt-3">Cần hỗ trợ, Quý khách vui lòng gọi hotline: <a href="tel:0911588138" class="fw-bold text-danger text-decoration-none text-nowrap">0911 588 138</a></div>
           </div>
@@ -829,6 +837,30 @@
     });
 
     // ===== Chặn hoàn toàn khi ngày khóa / đủ giới hạn: khóa mọi ô (trừ ngày), ẩn QR + upload cọc =====
+    // 🎀 Trang tách theo nhóm bàn (08/11/2026): decor_duoi6.html -> NHOM_TRANG = "nho" (1–5 khách), decor_tu6.html -> "lon" (từ 6 khách); decor.html là trang chung
+    var NHOM_TRANG = window.NHOM_TRANG || "", URL_TRANG_NHOM = { nho: "https://hmk-vn.github.io/Datban/decor_duoi6.html", lon: "https://hmk-vn.github.io/Datban/decor_tu6.html" };
+    function gioiHanKhachTrang_() { return NHOM_TRANG === "nho" ? { min: 1, max: 5 } : NHOM_TRANG === "lon" ? { min: 6, max: 99 } : { min: 1, max: 99 }; }
+    function kepKhachTrang_(k) { var g = gioiHanKhachTrang_(); return Math.min(g.max, Math.max(g.min, k || g.min)); }
+    // Số khách để tính nhóm bàn: trang tách nhóm luôn tính theo nhóm của trang (khách gõ lệch nhóm thì báo, không tự đổi số khách)
+    function soKhachTinhNhom_() { var k = parseInt(document.getElementById("txtSoKhach").value, 10) || 0; return NHOM_TRANG ? kepKhachTrang_(k) : k; }
+    function kiemSoKhachTrang_() {
+      if (!NHOM_TRANG) return true;
+      var o = document.getElementById("txtSoKhach"), g = gioiHanKhachTrang_(), k = parseInt(o.value, 10) || 0, dung = !o.value || (k >= g.min && k <= g.max);
+      var h = document.getElementById("nhomTrangHint"); if (h) h.classList.toggle("sai", !dung);
+      o.setCustomValidity(dung ? "" : (NHOM_TRANG === "nho" ? "Trang này nhận đoàn dưới 6 khách. Đoàn từ 6 khách vui lòng bấm \"đặt tại đây\" bên dưới." : "Trang này nhận đoàn từ 6 khách. Dưới 6 khách vui lòng bấm \"đặt tại đây\" bên dưới."));
+      return dung;
+    }
+    function apDungNhomTrang_() {
+      if (!NHOM_TRANG) return;
+      var lon = NHOM_TRANG === "lon", o = document.getElementById("txtSoKhach"), g = gioiHanKhachTrang_();
+      document.title = "Đặt Bàn Decor " + (lon ? "Từ 6 Khách" : "Dưới 6 Khách") + " - Túi Nướng Lavender";
+      var t = document.querySelector(".hd-title"); if (t) t.textContent = "ĐẶT BÀN DECOR " + (lon ? "TỪ 6 KHÁCH" : "DƯỚI 6 KHÁCH");
+      o.min = g.min; if (g.max < 99) o.max = g.max; o.value = lon ? 6 : 4; o.placeholder = String(g.min);
+      var h = document.getElementById("nhomTrangHint");
+      if (h) { h.style.display = ""; h.innerHTML = "🎀 Trang dành cho <b>đoàn " + (lon ? "từ 6 khách" : "dưới 6 khách") + "</b> · " + (lon ? "Dưới 6 khách" : "Đoàn từ 6 khách") + ': <a href="' + URL_TRANG_NHOM[lon ? "nho" : "lon"] + '">đặt tại đây</a>'; }
+      kiemSoKhachTrang_();
+    }
+    document.addEventListener("input", function(e) { if (e.target && e.target.id === "txtSoKhach") kiemSoKhachTrang_(); });
     var _ghNgay = null, _dangKiemNgay = false, _ngayDaKiem = "", _chiConNhom = "";
     // Nhóm bàn của khách đã đủ mà nhóm kia còn -> { ten, con } để báo "chỉ còn bàn từ 6 / dưới 6 khách"; null nếu nhóm kia cũng hết
     function nhomConLai_(c, da, lon) {
@@ -844,7 +876,7 @@
       if (NGAY_KHOA.indexOf(document.getElementById("inputNgay").value) !== -1) return "Ngày bạn chọn Túi không nhận khách.";
       if (isCurrentDateLocked) return "Ngày bạn chọn đã khóa nhận đơn decor (FULL DECOR).";
       if (!_ghNgay || !_ghNgay.cauHinh) return "";
-      var c = _ghNgay.cauHinh, da = _ghNgay.daDat || {}, k = parseInt(document.getElementById("txtSoKhach").value, 10) || 0, lon = k >= 6;
+      var c = _ghNgay.cauHinh, da = _ghNgay.daDat || {}, k = soKhachTinhNhom_(), lon = k >= 6;
       if (c.khoa) return "Ngày bạn chọn không nhận bàn decor.";
       if (c.tong && (da.nho || 0) + (da.lon || 0) >= c.tong) return "Ngày bạn chọn đã đủ " + c.tong + " bàn decor.";
       var maxBan = lon ? c.lon : c.nho, daBan = (lon ? da.lon : da.nho) || 0;
@@ -1023,6 +1055,7 @@
       _dangKiemNgay = true; _ngayDaKiem = ""; capNhatKhoaForm();
 
       google.script.run.withSuccessHandler(function(res) {
+        if (d !== document.getElementById("inputNgay").value) return; // kết quả của ngày cũ về muộn (VD lần kiểm tra hôm nay lúc mở trang) -> bỏ, không ghi đè ngày khách vừa chọn
         _anChonMau = !!res.hideDecor; // hiện/ẩn ô chọn mẫu do capNhatKhoaForm quyết định (ẩn cả khi ngày full/khoá)
         isCurrentDateLocked = res.isDecorLocked;
         _ghNgay = res.gioiHan || null;
@@ -1104,6 +1137,8 @@
         if (res.success) {
           window._sdtVuaDat = data.sdt;
           window._daGuiDon = true; capNhatBuoc();
+          document.getElementById("tcLuuYMau").style.display = data.mauDecor ? "" : "none"; // lưu ý mẫu chỉ hiện khi khách có chọn mẫu
+          document.getElementById("tcMauDaChon").innerHTML = data.mauDecor ? "🎀 Mẫu đã chọn: <b>" + String(data.mauDecor).replace(/</g, "&lt;") + "</b>" : "";
           new bootstrap.Modal(document.getElementById("modalConfirmSuccess")).show();
         } else {
           alert("Lỗi: " + res.message);
@@ -1134,7 +1169,8 @@
 
 
     window.addEventListener("DOMContentLoaded", function() {
-      document.getElementById("inputNgay").value = new Date().toISOString().split("T")[0];
+      var hn = new Date(); document.getElementById("inputNgay").value = hn.getFullYear() + "-" + ("0" + (hn.getMonth() + 1)).slice(-2) + "-" + ("0" + hn.getDate()).slice(-2); // ngày theo giờ máy khách (toISOString là giờ UTC: trước 7h sáng ra ngày hôm qua)
+      apDungNhomTrang_(); // trang decor dưới 6 / từ 6 khách: đặt sẵn số khách + tiêu đề
       updateDepositCalculation();
       taiCaiDatCoc();
       rebuildHourMinSelectors();
@@ -1204,10 +1240,10 @@
       _lichThang = d.getFullYear() + "-" + lichPad_(d.getMonth() + 1); veLichPopup_();
     }
     // Lịch tính theo đúng Số khách của form (dưới 6 / từ 6 khách) -> khớp kiểm tra của form; đổi số khách ngay trong lịch
-    function lichSoKhach_() { return parseInt(document.getElementById("txtSoKhach").value, 10) || 0; }
+    function lichSoKhach_() { return soKhachTinhNhom_(); }
     function lichDoiKhach(b) {
       var o = document.getElementById("txtSoKhach");
-      o.value = Math.min(99, Math.max(1, lichSoKhach_() + b));
+      o.value = NHOM_TRANG ? kepKhachTrang_(lichSoKhach_() + b) : Math.min(99, Math.max(1, lichSoKhach_() + b)); // trang tách nhóm: giữ trong nhóm của trang
       o.dispatchEvent(new Event("input", { bubbles: true })); // cập nhật tiền cọc + kiểm tra ngày như khi khách tự gõ
       veLichPopup_();
     }

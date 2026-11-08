@@ -113,7 +113,7 @@
   <script>
     (function () {
       var q = new URLSearchParams(location.search), t = (q.get("type") || q.get("page") || "").toLowerCase();
-      var map = { thuong: "thuong.html", decor: "decor.html", tracuu: "tracuu.html", tra_cuu: "tracuu.html", hoancoc: "hoancoc.html", admin: "admin.html", nhapdatban: "nhapban.html" };
+      var map = { thuong: "thuong.html", decor: "decor.html", decor_duoi6: "decor_duoi6.html", decor_tu6: "decor_tu6.html", tracuu: "tracuu.html", tra_cuu: "tracuu.html", hoancoc: "hoancoc.html", admin: "admin.html", nhapdatban: "nhapban.html" };
       if (q.get("sdt")) t = "tracuu";
       if (map[t]) { q.delete("type"); q.delete("page"); location.replace(map[t] + (q.toString() ? "?" + q.toString() : "")); }
     })();
@@ -124,7 +124,8 @@
     </div>
     <div class="body">
       <a class="btn" href="thuong.html"><span class="ico">🍽️</span><span><div class="t">Đặt bàn ăn</div><div class="s">Đặt bàn nhanh, không cần cọc</div></span></a>
-      <a class="btn" href="decor.html"><span class="ico"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" alt="" style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;border:2px solid rgba(255,255,255,.85);box-shadow:0 1px 4px rgba(0,0,0,.2);margin-right:0"></span><span><div class="t">Đặt bàn tiệc decor</div><div class="s">Sinh nhật, kỷ niệm, cầu hôn...</div></span></a>
+      <a class="btn" href="decor_duoi6.html"><span class="ico"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" alt="" style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;border:2px solid rgba(255,255,255,.85);box-shadow:0 1px 4px rgba(0,0,0,.2);margin-right:0"></span><span><div class="t">Đặt bàn decor dưới 6 khách</div><div class="s">Sinh nhật, kỷ niệm, cầu hôn · 1–5 khách</div></span></a>
+      <a class="btn" href="decor_tu6.html"><span class="ico"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" alt="" style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;border:2px solid rgba(255,255,255,.85);box-shadow:0 1px 4px rgba(0,0,0,.2);margin-right:0"></span><span><div class="t">Đặt bàn decor từ 6 khách</div><div class="s">Tiệc nhóm, gia đình, công ty · từ 6 khách</div></span></a>
       <a class="btn" href="tracuu.html"><span class="ico">🔎</span><span><div class="t">Tra cứu đơn đặt bàn</div><div class="s">Xem lại đơn bằng số điện thoại</div></span></a>
     </div>
     <div class="foot">Hotline hỗ trợ: <b>0911.588.138</b></div>
