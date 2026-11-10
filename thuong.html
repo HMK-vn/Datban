@@ -357,7 +357,7 @@
     checkRushHour();
 
     // Khung giờ khóa bàn thường cài ở tab 6 web quản trị (giờ + các thứ áp dụng); chưa tải xong thì chưa khoá
-    var KHOA_GIO = { bat: false, tu: "18:00", den: "20:30", thu: [5, 6] }, NGAY_KHOA = [];
+    var KHOA_GIO = { bat: false, tu: "18:00", den: "20:30", thu: [5, 6] }, NGAY_KHOA = [], NGAY_RIENG = {};
     function khoaGioHomChonT_() {
       if (!KHOA_GIO.bat) return false;
       var v = document.getElementById("txtNgayT").value; if (!v) return false;
@@ -375,19 +375,21 @@
     var OPT_GIO = [].slice.call(document.getElementById("selectGioVao").options);
     function apDungKhoaGio() {
       const sel = document.getElementById("selectGioVao"), hint = document.getElementById("khoaGioHintT"), truoc = sel.value, khoa = khoaGioHomChonT_();
-      const con = OPT_GIO.filter(function(o) { return !(khoa && o.value >= KHOA_GIO.tu && o.value <= KHOA_GIO.den); });
+      const ngay = document.getElementById("txtNgayT").value, rieng = ((NGAY_RIENG || {})[ngay] || {}).thuong; // ngày khoá riêng: khoá 1 khung giờ bàn thường
+      const biKhoa = function(v) { return (khoa && v >= KHOA_GIO.tu && v <= KHOA_GIO.den) || (rieng && v >= rieng.tu && v <= rieng.den); };
+      const con = OPT_GIO.filter(function(o) { return !biKhoa(o.value); });
       sel.innerHTML = "";
       con.forEach(function(o) { sel.appendChild(o); });
-      const giuLai = con.some(function(o) { return o.value === truoc; });
-      const sat = con.filter(function(o) { return o.value < KHOA_GIO.tu; }).pop() || con[0];
+      const giuLai = con.some(function(o) { return o.value === truoc; }), moc = rieng ? rieng.tu : KHOA_GIO.tu;
+      const sat = con.filter(function(o) { return o.value < moc; }).pop() || con[0];
       if (giuLai) sel.value = truoc; else if (sat) sel.value = sat.value;
-      hint.style.display = KHOA_GIO.bat && (KHOA_GIO.thu || []).length ? "block" : "none";
-      hint.innerText = "* " + tenThuKhoaT_() + ": tạm khóa nhận khách " + KHOA_GIO.tu + "–" + KHOA_GIO.den;
+      if (rieng) { hint.style.display = "block"; hint.innerText = "* Ngày " + ngay.slice(8, 10) + "/" + ngay.slice(5, 7) + ": Túi " + (rieng.den >= "22:00" ? "chỉ nhận bàn trước " + rieng.tu : "tạm khóa nhận khách " + rieng.tu + "–" + rieng.den); }
+      else { hint.style.display = KHOA_GIO.bat && (KHOA_GIO.thu || []).length ? "block" : "none"; hint.innerText = "* " + tenThuKhoaT_() + ": tạm khóa nhận khách " + KHOA_GIO.tu + "–" + KHOA_GIO.den; }
       checkRushHour();
     }
     apDungKhoaGio();
     google.script.run.withSuccessHandler(function(k) {
-      if (k && k.thuong) { KHOA_GIO = k.thuong; NGAY_KHOA = k.ngayKhoa || []; apDungKhoaGio(); kiemNgayKhoa(); }
+      if (k && k.thuong) { KHOA_GIO = k.thuong; NGAY_KHOA = k.ngayKhoa || []; NGAY_RIENG = k.ngayRieng || {}; apDungKhoaGio(); kiemNgayKhoa(); }
     }).withFailureHandler(function() {}).layKhoaGio();
 
     function addDishRowT() {

@@ -905,7 +905,7 @@
       var w = document.getElementById("lockWarning");
       w.style.display = khoa ? "block" : "none";
       if (khoa) document.getElementById("lockWarningText").textContent = lyDo + " Vui lòng chọn ngày khác!";
-      document.getElementById("lockWarningTitle").textContent = NGAY_KHOA.indexOf(ngay) !== -1 ? "🔒 NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : (khoa && _chiConNhom) ? "⚠️ NGÀY NÀY CHỈ CÒN BÀN " + _chiConNhom.toUpperCase() : "🔒 NGÀY NÀY ĐÃ ĐẦY (FULL DECOR)";
+      document.getElementById("lockWarningTitle").textContent = NGAY_KHOA.indexOf(ngay) !== -1 ? "🔒 NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : (khoa && _chiConNhom) ? "⚠️ NGÀY NÀY CHỈ CÒN BÀN " + _chiConNhom.toUpperCase() : (khoa && _ghNgay && _ghNgay.cauHinh && _ghNgay.cauHinh.khoa) ? "🔒 NGÀY NÀY KHÔNG NHẬN BÀN DECOR" : "🔒 NGÀY NÀY ĐÃ ĐẦY (FULL DECOR)";
       var n = document.getElementById("dateCheckNotice");
       if (n && ngay) n.innerHTML = (khoa && _chiConNhom) ? "<span class='text-danger fw-bold'>⚠️<span class='d-none d-sm-inline'> Chỉ bàn " + (_chiConNhom.indexOf("từ") === 0 ? "≥6" : "&lt;6") + "</span></span>" : khoa ? "<span class='text-danger fw-bold'>❌<span class='d-none d-sm-inline'> Hết nhận</span></span>" : "<span class='text-success fw-bold'>🟢<span class='d-none d-sm-inline'> Mở nhận</span></span>";
       // Khóa mọi ô nhập trừ ô ngày (và số khách để khách thử loại bàn khác khi chỉ hết 1 loại)

@@ -1317,6 +1317,17 @@
             <button class="btn btn-sm fw-bold" style="background:#f3e3d6;color:#864c2a" onclick="themNgayKhoa()">➕ Thêm ngày</button>
             <div class="w-100 d-flex flex-wrap gap-1" id="kgNgayList"></div>
           </div>
+          <div class="w-100 d-flex flex-wrap align-items-center gap-1 pt-2 border-top">
+            <b style="color:#864c2a">📅 Ngày khoá riêng</b><small class="text-muted">· chỉ nghỉ decor và / hoặc khoá giờ bàn thường</small>
+            <div class="w-100 d-flex flex-wrap align-items-center gap-2">
+              <input type="date" id="nkrNgay" class="form-control form-control-sm w-auto">
+              <label class="mb-0 fw-bold text-nowrap"><input type="checkbox" id="nkrDecor" checked> 🎀 Nghỉ decor</label>
+              <label class="mb-0 fw-bold text-nowrap"><input type="checkbox" id="nkrThuong" checked> 🍽️ Bàn thường khoá</label>
+              <span class="d-inline-flex align-items-center gap-1"><input type="time" step="900" id="nkrTu" class="form-control form-control-sm w-auto" value="18:00">–<input type="time" step="900" id="nkrDen" class="form-control form-control-sm w-auto" value="22:30"></span>
+              <button class="btn btn-sm fw-bold" style="background:#f3e3d6;color:#864c2a" onclick="themNgayKhoaRieng()">➕ Thêm</button>
+            </div>
+            <div class="w-100 d-flex flex-wrap gap-1" id="nkrList"></div>
+          </div>
         </div>
         <!-- Giới hạn decor theo từng thứ -->
         <details class="mb-2 p-2 rounded-3 gh-box" style="background:#faf4ef;border:1px solid #ecdccf">
@@ -1517,7 +1528,7 @@
   <script>
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","layMauDecorTheoNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
+    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","luuNgayKhoaRiengWeb","layMauDecorTheoNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
     // 🔔 Khung cài / thử thông báo Telegram (khung trên trang, không dùng hộp prompt vì vài trình duyệt chặn)
     function caiTelegram() {
       var k = document.getElementById("tgKhung");
@@ -2481,9 +2492,40 @@
       if (!confirm("Mở lại nhận khách ngày " + n.split("-").reverse().join("/") + "?")) return;
       luuNgayKhoa_(_ngayKhoa.filter(function(x) { return x !== n; }));
     }
+    // 📅 Ngày khoá riêng: nghỉ decor và / hoặc khoá 1 khung giờ bàn thường (ưu tiên hơn ngày nghỉ cả ngày)
+    var _ngayRieng = {};
+    function chuNgayRieng_(n, r) { return n.slice(8, 10) + "/" + n.slice(5, 7) + (r.decor ? " · 🎀 nghỉ decor" : "") + (r.thuong ? " · 🍽️ khoá " + r.thuong.tu + "–" + r.thuong.den : ""); }
+    function veNgayKhoaRieng_() {
+      document.getElementById("nkrList").innerHTML = Object.keys(_ngayRieng).sort().map(function(n) {
+        return '<span class="badge fw-bold d-inline-flex align-items-center gap-1" style="background:#fff3e0;color:#8a4b0f;font-size:13px">' + escapeHtml(chuNgayRieng_(n, _ngayRieng[n])) +
+          ' <a href="#" class="text-decoration-none" style="color:#8a4b0f" title="Bỏ khoá riêng ngày này" onclick="boNgayKhoaRieng(\'' + n + '\');return false">✕</a></span>';
+      }).join("") || '<small class="text-muted">Chưa có ngày nào</small>';
+    }
+    function luuNgayKhoaRieng_(map) {
+      var tt = document.getElementById("kgTrangThai"); tt.innerText = "Đang lưu...";
+      adminRun().withSuccessHandler(function(k) { veKhoaGioAdmin_(k); tt.innerText = "✅ Đã lưu"; })
+        .withFailureHandler(function(err) { tt.innerText = ""; alert("Chưa lưu được: " + (err && err.message || err)); })
+        .luuNgayKhoaRiengWeb(map);
+    }
+    function themNgayKhoaRieng() {
+      var n = document.getElementById("nkrNgay").value, d = document.getElementById("nkrDecor").checked, t = document.getElementById("nkrThuong").checked;
+      var tu = document.getElementById("nkrTu").value, den = document.getElementById("nkrDen").value;
+      if (!n) return alert("Vui lòng chọn ngày.");
+      if (!d && !t) return alert("Chọn ít nhất 1 loại khoá.");
+      if (t && (!tu || !den || tu > den)) return alert("Giờ khoá bàn thường chưa đúng.");
+      var r = { decor: d, thuong: t ? { tu: tu, den: den } : null };
+      if (!confirm("Lưu khoá riêng " + chuNgayRieng_(n, r) + "?" + (_ngayKhoa.indexOf(n) !== -1 ? "\n(Ngày này sẽ bỏ khỏi danh sách nghỉ cả ngày)" : ""))) return;
+      var m = Object.assign({}, _ngayRieng); m[n] = r; luuNgayKhoaRieng_(m);
+      document.getElementById("nkrNgay").value = "";
+    }
+    function boNgayKhoaRieng(n) {
+      if (!confirm("Bỏ khoá riêng ngày " + n.split("-").reverse().join("/") + "? Ngày này sẽ nhận khách bình thường.")) return;
+      var m = Object.assign({}, _ngayRieng); delete m[n]; luuNgayKhoaRieng_(m);
+    }
     function veKhoaGioAdmin_(k) {
       _ngayKhoa = k.ngayKhoa || [];
       veNgayKhoa_();
+      _ngayRieng = k.ngayRieng || {}; veNgayKhoaRieng_();
       ["Decor", "Thuong"].forEach(function(t) {
         var d = k[t.toLowerCase()] || {}, thu = d.thu || [5, 6];
         document.getElementById("kg" + t + "Bat").checked = !!d.bat; document.getElementById("kg" + t + "Tu").value = d.tu || "18:00"; document.getElementById("kg" + t + "Den").value = d.den || "20:30";
