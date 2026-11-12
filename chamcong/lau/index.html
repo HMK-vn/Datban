@@ -1,7 +1,22 @@
 <!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Chấm công – LẨU GÀ RAU LỖ BÌNH</title></head><body style="margin:0;background:#e7ded3;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif"><p id="t" style="text-align:center;margin-top:42vh;color:#5a3420">Đang tải trang chấm công…</p>
 <script>
-// File nạp: lấy toàn bộ giao diện chấm công từ máy chủ Apps Script rồi hiển thị (đăng nhập Google chạy trên địa chỉ này)
-fetch("https://script.google.com/macros/s/AKfycbzVxi6iqrCJ0Hz5yF1yW3gi9H1IIcTBON5srHgTzm9IgnntAZF6S0xpq9dJawEsPyLY/exec",{method:"POST",redirect:"follow",credentials:"omit",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn:"giaoDienTinh",args:["lau"]})})
-  .then(function(r){return r.json();}).then(function(x){if(!x.ok)throw new Error(x.error);document.open();document.write(x.result);document.close();})
-  .catch(function(e){document.getElementById("t").textContent="Không tải được trang ("+e.message+"). Kiểm tra mạng rồi tải lại.";});
+// File nạp: lấy giao diện chấm công từ máy chủ Apps Script rồi hiển thị (đăng nhập Google chạy trên địa chỉ này).
+// Mở nhanh: máy đã lưu bản giao diện (cc_ui_lau) thì hiện ngay; giao diện tự tải ngầm bản mới cho lần mở sau và báo khi có bản mới.
+// Thêm ?moi=1 vào link để luôn tải bản mới từ máy chủ.
+(function () {
+  var API = "https://script.google.com/macros/s/AKfycbzVxi6iqrCJ0Hz5yF1yW3gi9H1IIcTBON5srHgTzm9IgnntAZF6S0xpq9dJawEsPyLY/exec", KEY = "cc_ui_lau";
+  function hien(html, tuCache) {
+    if (tuCache) html = html.replace(/<head([^>]*)>/i, function (m) { return m + "<script>window.CC_TU_CACHE=1<\/script>"; });
+    document.open(); document.write(html); document.close();
+  }
+  function tai() {
+    return fetch(API, { method: "POST", redirect: "follow", credentials: "omit", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: "giaoDienTinh", args: ["lau"] }) })
+      .then(function (r) { return r.json(); }).then(function (x) { if (!x.ok) throw new Error(x.error); return x.result; });
+  }
+  var cu = null;
+  try { if (!/[?&]moi=1/.test(location.search)) cu = localStorage.getItem(KEY); } catch (e) {}
+  if (cu && cu.length > 10000) return hien(cu, true);
+  tai().then(function (h) { try { localStorage.setItem(KEY, h); } catch (e) {} hien(h, false); })
+    .catch(function (e) { document.getElementById("t").textContent = "Không tải được trang (" + e.message + "). Kiểm tra mạng rồi tải lại."; });
+})();
 </script></body></html>
