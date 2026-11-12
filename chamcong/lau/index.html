@@ -7,7 +7,10 @@
   var API = "https://script.google.com/macros/s/AKfycbzVxi6iqrCJ0Hz5yF1yW3gi9H1IIcTBON5srHgTzm9IgnntAZF6S0xpq9dJawEsPyLY/exec", KEY = "cc_ui_lau";
   function hien(html, tuCache) {
     if (tuCache) html = html.replace(/<head([^>]*)>/i, function (m) { return m + "<script>window.CC_TU_CACHE=1<\/script>"; });
-    document.open(); document.write(html); document.close();
+    var viet = function () { document.open(); document.write(html); document.close(); };
+    // Chỉ thay trang sau khi trình duyệt đọc xong file nạp (ghi giữa chừng sẽ bị chèn thêm thay vì thay thế)
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(viet, 0); });
+    else viet();
   }
   function tai() {
     return fetch(API, { method: "POST", redirect: "follow", credentials: "omit", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: "giaoDienTinh", args: ["lau"] }) })
