@@ -132,7 +132,7 @@
     function tien(v) { var s = String(v || "").trim(); return /^\d+$/.test(s) ? Number(s).toLocaleString("vi-VN") + " VNĐ" : s; }
     var TT = {
       choduyet: ["⏳ Đang chờ Túi xác nhận", "⏳ Túi đang kiểm tra, tra cứu lại sau ít phút."],
-      xacnhan: ["✅ Đã xác nhận", "⏱ Giữ bàn 15-20 phút · Đổi giờ báo trước 2h."],
+      xacnhan: ["✅ Đã xác nhận", "⏰ Vui lòng đến đúng giờ · Quá giờ Túi không giữ bàn · Đổi giờ báo trước 2h."],
       chohoan: ["⚠ Ngày đã đủ bàn decor", "☎ Gọi hotline đổi ngày, hoặc nhận lại cọc."],
       dahoan: ["💸 Đã hoàn tiền cọc", "💸 Sau 24h chưa nhận, vui lòng gọi hotline."]
     };

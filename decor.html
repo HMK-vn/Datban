@@ -220,6 +220,7 @@
     .ct-hop button { display: block; width: 100%; border-radius: 10px; padding: 10px; font-weight: 700; font-size: 15px; }
     .ct-khong { background: #864c2a; color: #fff; border: 1px solid #864c2a; margin-bottom: 8px; }
     .ct-gui { background: #fff; color: #864c2a; border: 1px solid #e3d3c6; }
+    @media (max-width: 767.98px) { #khoaGioHintT, #weekendTimeHint { margin-left: calc(-100% - 12px) !important; } } /* điện thoại: dòng ghi chú giờ bắt đầu từ cột ngày, không lẹm mép trái */
     .luu-y-mau { background: #fdecea; border: 1px solid #f3c4bf; border-left: 5px solid #b42318; color: #7a271a; border-radius: 10px; padding: 8px 12px; font-size: 14.5px; font-weight: 600; line-height: 1.4; }
     .luu-y-mau .nhan { color: #b42318; font-weight: 800; letter-spacing: .2px; display: inline-block; } /* giữ cụm chữ nhấn liền 1 dòng trên điện thoại */
     .lich-phu { position: absolute; inset: 0; width: 100%; background: transparent; border: 0; cursor: pointer; z-index: 2; }
@@ -413,7 +414,7 @@
                 <span class="input-group-text fw-bold">:</span>
                 <select id="selectMinDecor" class="form-select fw-bold" required onchange="onHourMinDecorChange('min')"></select>
               </div>
-              <small id="weekendTimeHint" class="text-danger fw-bold" style="font-size:10.5px; display:none; white-space:nowrap; text-align:right; margin-left:-220px; position:relative; z-index:1;">* T6 & T7: Chỉ nhận từ 14:00 đến 18:30</small>
+              <small id="weekendTimeHint" class="text-danger fw-bold" style="font-size:10.5px; display:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:right; margin-left:-220px; position:relative; z-index:1;">* T6 & T7: Chỉ nhận từ 14:00 đến 18:30</small>
             </div>
           </div>
 
@@ -541,7 +542,7 @@
 
           <!-- LƯU Ý CAO ĐIỂM -->
           <div class="alert alert-warning py-2 px-3 small mb-3 an-khi-day">
-            ⚠️ <b>Lưu ý:</b> Đơn chỉ thành công khi tra cứu báo <b>"Đã xác nhận"</b>.<br>Giờ cao điểm nếu hết bàn/mẫu decor, <b>Túi xin hoàn đủ cọc</b> cho Quý khách ạ.
+            ⚠️ <b>Lưu ý:</b> Đơn chỉ thành công khi tra cứu báo <b>"Đã xác nhận"</b>.<br>Giờ cao điểm nếu hết bàn/mẫu decor, <b>Túi xin hoàn đủ cọc</b> cho Quý khách ạ.<br>⏰ Quý khách vui lòng <b>đến đúng giờ đã đặt</b>.<br>Quá giờ hẹn, Túi xin phép không giữ bàn và sẽ xếp bàn thường theo bàn trống lúc đó.<br>Rất mong Quý khách thông cảm!
           </div>
 
           <button type="submit" id="btnSubmit" class="btn btn-submit w-100">GỬI YÊU CẦU ĐẶT TIỆC DECOR</button>
@@ -643,6 +644,17 @@
       var p = v.split("-").map(Number);
       return (KHOA_GIO.thu || [5, 6]).indexOf(new Date(p[0], p[1] - 1, p[2]).getDay()) !== -1;
     }
+    // Mốc khoá theo nhóm bàn: bàn từ 6 khách có mốc riêng (tuLon), trống thì dùng chung tu
+    function tuKhoaNhom_() { return soKhachTinhNhom_() >= 6 && KHOA_GIO.tuLon ? KHOA_GIO.tuLon : KHOA_GIO.tu; }
+    // Dòng ghi chú giờ luôn 1 hàng: chữ tự nhỏ lại cho vừa (tối thiểu 8px), quá nữa thì cắt bằng dấu …
+    function vuaMotHang_(el) {
+      if (!el || el.style.display === "none") return;
+      var fs = 10.5; el.style.fontSize = fs + "px";
+      while (el.scrollWidth > el.clientWidth + 1 && fs > 8) { fs -= 0.5; el.style.fontSize = fs + "px"; }
+    }
+    window.addEventListener("resize", function() { vuaMotHang_(document.getElementById("weekendTimeHint")); });
+    function chuNhanToiC_(tu) { var m = String(tu || "").match(/^(\d\d):(\d\d)$/); if (!m || +m[2] % 15 !== 1) return "trước " + tu; var p = +m[1] * 60 + +m[2] - 1; return "tới " + ("0" + Math.floor(p / 60)).slice(-2) + ":" + ("0" + p % 60).slice(-2); }
+    document.addEventListener("input", function(e) { if (e.target && e.target.id === "txtSoKhach") { rebuildHourMinSelectors(); onHourMinDecorChange(); } }); // đổi số khách: giờ được chọn theo nhóm bàn
     function tenThuKhoa_() { return (KHOA_GIO.thu || [5, 6]).map(function(n) { return ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][n]; }).join(", "); }
     function taiKhoaGio() {
       google.script.run.withSuccessHandler(function(k) {
@@ -651,15 +663,16 @@
     }
     // Mốc khóa decor Thứ 6/Thứ 7: khung khóa bắt đầu sớm hơn 18:30 thì theo khung khóa, không thì 18:31
     function mocT67() {
-      const som = KHOA_GIO.bat && KHOA_GIO.tu <= "18:30";
-      const khoa = som ? KHOA_GIO.tu : "18:31", p = khoa.split(":").map(Number);
+      const tu = tuKhoaNhom_(), som = KHOA_GIO.bat && tu <= "18:30";
+      const khoa = som ? tu : "18:31", p = khoa.split(":").map(Number);
       const gio = ["14", "15", "16", "17", "18"].filter(h => phutChoGio(h, true).length), cuoi = gio[gio.length - 1];
-      return { truoc: som ? KHOA_GIO.tu : "18:30", khoa: khoa, h: p[0], m: p[1], cuoi: cuoi ? cuoi + ":" + phutChoGio(cuoi, true).slice(-1)[0] : "18:30" };
+      return { truoc: som ? tu : "18:30", khoa: khoa, h: p[0], m: p[1], cuoi: cuoi ? cuoi + ":" + phutChoGio(cuoi, true).slice(-1)[0] : "18:30" };
     }
     function phutChoGio(h, weekend) {
       const mins = ((weekend && h === "18") || (!weekend && h === "21")) ? ["00", "15", "30"] : ["00", "15", "30", "45"];
       const khoa = khoaGioHomChon_();
-      return mins.filter(m => { const g = h + ":" + m; return !(khoa && g >= KHOA_GIO.tu && g <= KHOA_GIO.den); });
+      const tu = tuKhoaNhom_();
+      return mins.filter(m => { const g = h + ":" + m; return !(khoa && g >= tu && g < KHOA_GIO.den); }); // tới giờ kết thúc khoá là nhận lại
     }
 
     function rebuildHourMinSelectors() {
@@ -680,7 +693,8 @@
         hint.style.display = (weekend || KHOA_GIO.bat) ? "block" : "none";
         hint.innerText = !dau ? "* Ngày này tạm khóa nhận khách" : weekend
           ? "* T6 & T7: Chỉ nhận từ " + dau + ":" + phutChoGio(dau, true)[0] + " đến " + cuoi + ":" + phutChoGio(cuoi, true).slice(-1)[0]
-          : "* " + tenThuKhoa_() + ": tạm khóa nhận khách " + KHOA_GIO.tu + "–" + KHOA_GIO.den;
+          : "* " + tenThuKhoa_() + ": bàn " + (soKhachTinhNhom_() >= 6 ? "từ 6 khách" : "dưới 6 khách") + " nhận " + chuNhanToiC_(tuKhoaNhom_());
+        vuaMotHang_(hint);
       }
 
       syncMinutesForSelectedHour(prevM);
