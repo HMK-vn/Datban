@@ -319,8 +319,8 @@
       .admin-title { font-size: 15px !important; }
       .form-control, .form-select { font-size: 15px; }
       header.navbar-custom .badge { display: none; }
-      .hang-ngay { display: grid !important; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px !important; }
-      .hang-ngay > h5 { grid-column: 1 / -1; font-size: 1rem; }
+      .hang-ngay { display: grid !important; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 6px !important; align-items: center; } /* 15/11/2026: "Ngày đặt" cùng dòng ô ngày */
+      .hang-ngay > h5 { font-size: 1rem; }
       .hang-ngay > .input-group { width: 100% !important; }
       .hang-ngay > .input-group .form-control { width: 100% !important; min-width: 0; }
       .hang-ngay > .ms-auto { grid-column: 1 / -1; display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 6px !important; margin: 0 !important; }
@@ -440,6 +440,18 @@
       #mainTab .nav-link i { font-size: 18px; margin: 0 !important; }
       #mainTab .nav-link.active { background: #f0dccd; color: #864c2a; }
       body:has(#mainTab:not([style*="display:none"])) { padding-bottom: 72px; }
+    }
+    .nhan-ngan-dt { display: none; }
+    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: 8 mục menu dưới hiện đủ, không phải vuốt */
+      #mainTab { overflow-x: visible; padding: 3px 2px; }
+      #mainTab .nav-item { flex: 1 1 0; min-width: 0; }
+      #mainTab .nav-link { min-width: 0 !important; width: 100%; padding: 6px 0 !important; font-size: 9.5px !important; letter-spacing: -.2px; white-space: nowrap !important; overflow: hidden; }
+      #mainTab .nav-link i { font-size: 17px; }
+      .nhan-dai-dt { display: none; } .nhan-ngan-dt { display: inline; }
+      .kg-hop input[type=date] { width: 7.4em !important; font-size: 14px; padding: 4px 6px; }
+      .kg-hop input[type=date]::-webkit-calendar-picker-indicator, .kg-hop input[type=time]::-webkit-calendar-picker-indicator { display: none; }
+      #nkrTu, #nkrDen, .kg-lon input[type=time] { width: 4.4em !important; font-size: 14px; padding: 4px 6px; }
+      .kg-hop .btn-sm { padding: 3px 8px; }
     }
     @media (min-width: 992px) {
       .nav-tabs .nav-link{font-size:19.5px}
@@ -830,14 +842,32 @@
     .kg-luoi .kg-goi { color: #1f7a45; font-weight: 600; }
     .kg-luoi .kg-dau { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; } /* nút Lưu cùng dòng tiêu đề */
     .kg-luoi #kgThuDecor { padding-bottom: 6px; border-bottom: 1px dashed #ecdccf; } /* tách nhóm decor / bàn thường */
-    @media (max-width: 575.98px) { .kg-luoi { grid-template-columns: max-content auto minmax(0, 1fr) auto minmax(0, 1fr); } }
+    @media (max-width: 575.98px) { .kg-luoi { grid-template-columns: max-content auto minmax(0, 1fr) auto minmax(0, 1fr); }
+      .kg-luoi .kg-thu { flex-wrap: nowrap; gap: 4px; } .kg-thu label span { min-width: 0; padding: 2px 6px; font-size: .8em; } /* 15/11/2026: T2–CN 1 dòng trên điện thoại */
+      .kg-luoi input[type=time] { padding-left: 6px; padding-right: 4px; } .kg-luoi input[type=time]::-webkit-calendar-picker-indicator { display: none; } /* giờ không bị cắt chữ */
+    }
+    .kg-hop-boc { container-type: inline-size; }
+    @container (min-width: 900px) { /* 15/11/2026 chủ quán: bảng cài đặt 2 cột khi khung rộng từ 900px; hẹp hơn (tablet dọc, điện thoại) xếp 1 cột như cũ */
+      div.kg-hop { display: grid !important; grid-template-columns: max-content minmax(0, 1fr); align-items: start !important; column-gap: 1.25rem; }
+      div.kg-hop .kg-luoi > .kg-tieude, div.kg-hop .kg-luoi > .kg-thu, div.kg-hop .kg-luoi > .kg-lon { width: 0; min-width: 100%; } /* dòng trải ngang (chữ xanh dài) không kéo giãn cột trái */
+      div.kg-hop > .kg-cot-phai { border-left: 1px solid #ecdccf; padding-left: 1.25rem; align-self: stretch; }
+      div.kg-hop > .kg-cot-phai > div:first-child { border-top: 0 !important; padding-top: 0 !important; }
+      div.kg-hop .kg-luoi { grid-template-columns: max-content max-content 5.4em max-content 5.4em; } /* ô giờ gọn để cột phải đủ rộng, mỗi hàng 1 dòng */
+      div.kg-hop .kg-lon input[type=time] { width: 5.2em !important; } div.kg-hop #nkrTu, div.kg-hop #nkrDen { width: 5.9em !important; }
+    }
     /* Chú thích màu lịch decor (chữ nhỏ, không phải nút) */
     .chu-thich-lich { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: .78em; color: #7b6f66; }
     .chu-thich-lich span { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
     .chu-thich-lich i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; }
+    .nk-nam { font-size: 12px; color: #864c2a; } #kgNgayList > .nk-dau:not(:first-child) { margin-left: 8px; } /* năm của ngày không nhận khách */
+    @media (max-width: 575.98px) { /* 15/11/2026: hàng chọn xem lịch 1 dòng trên điện thoại */
+      .dk-lich { display: flex !important; flex-wrap: nowrap; width: 100%; gap: 6px !important; }
+      .dk-lich .form-select { flex: 1 1 auto; min-width: 0; font-size: 13px; padding: 4px 22px 4px 8px; background-position: right 6px center; }
+      .dk-lich .btn { flex: 0 0 auto; padding: 4px 9px; } .dk-lich .chu-lam-moi { display: none; } .dk-lich .btn i { margin-right: 0 !important; }
+    }
     /* Tab Mẫu decor: bảng giới hạn ngày (thứ + Bàn/Khách theo nhóm, đủ/vượt tô đỏ) */
     #tab9 .md-gh-khung { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; background: #fff; border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(60,40,20,.07); }
-    #tab9 .md-gh-dau { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    #tab9 .md-gh-dau { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-width: 0; } /* 15/11/2026 chủ quán: ngày + Sửa giới hạn 1 dòng */
     #tab9 .md-gh-dau b { font-size: 1.08em; color: #3d2a1e; }
     #tab9 .md-tt { font-size: .85em; font-weight: 700; padding: 2px 10px; border-radius: 999px; align-self: flex-start; white-space: nowrap; }
     #tab9 .md-tt.khoa { background: #fdecea; color: #b42318; }
@@ -864,7 +894,7 @@
       #tab9 .md-thu { font-size: .85rem; }
       #tab9 .md-chon-ngay input[type=date] { width: 8.4em; }
     }
-    @media (max-width: 575.98px) { #tab9 .md-ngay-hang .md-chu { display: none; } #tab9 .md-chon-ngay input[type=date] { width: 8.8em; } }
+    @media (max-width: 575.98px) { #tab9 .md-ngay-hang .md-chu { display: none; } #tab9 .md-chon-ngay input[type=date] { width: 8.8em; } #tab9 .md-nut-sua .md-chu-sua { display: none; } #tab9 .md-nut-sua i { margin: 0 !important; } #tab9 .md-thu { min-width: 0; } }
     /* Danh sách đã đặt: đủ rộng thì tên | SĐT | giờ | khách | trạng thái chung 1 hàng theo cột */
     #tab9 #mdDsDa { container-type: inline-size; }
     @container (min-width: 600px) {
@@ -1016,10 +1046,10 @@
       <li class="nav-item"><button class="nav-link" id="tab3-tab" title="Xác nhận" data-bs-toggle="tab" data-bs-target="#tab3" type="button"><i class="fa-solid fa-circle-check me-1 menu-ico"></i> Xác nhận</button></li>
       <li class="nav-item d-none"><button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button"><i class="fa-solid fa-magnifying-glass me-1 text-danger"></i> 4. Email Xác Nhận</button></li>
       <li class="nav-item"><button class="nav-link tab-highlight " id="tab5-tab" title="Nhập đặt bàn" data-bs-toggle="tab" data-bs-target="#tab5" type="button"><i class="fa-solid fa-circle-plus me-1 menu-ico"></i> <span class="nd">Nhập đặt bàn</span><span class="nn">Thêm đơn</span></button></li>
-      <li class="nav-item"><button class="nav-link" id="tab6-tab" title="Lịch decor" data-bs-toggle="tab" data-bs-target="#tab6" type="button" onclick="loadCalendarYearTab6()"><i class="fa-solid fa-calendar-days me-1 menu-ico"></i> Lịch decor</button></li>
-      <li class="nav-item"><button class="nav-link" id="tab9-tab" title="Mẫu decor" data-bs-toggle="tab" data-bs-target="#tab9" type="button"><i class="fa-solid fa-palette me-1 menu-ico"></i> Mẫu decor</button></li>
-      <li class="nav-item"><button class="nav-link" id="tab7-tab" title="Phân tích" aria-label="Phân tích" data-bs-toggle="tab" data-bs-target="#tab7" type="button"><i class="fa-solid fa-chart-column me-1 menu-ico"></i> Phân tích</button></li>
-      <li class="nav-item"><button class="nav-link" id="tab8-tab" title="Tiền cọc" data-bs-toggle="tab" data-bs-target="#tab8" type="button"><i class="fa-solid fa-sack-dollar me-1 menu-ico"></i> Tiền cọc</button></li>
+      <li class="nav-item"><button class="nav-link" id="tab6-tab" title="Lịch decor" data-bs-toggle="tab" data-bs-target="#tab6" type="button" onclick="loadCalendarYearTab6()"><i class="fa-solid fa-calendar-days me-1 menu-ico"></i> <span class="nhan-dai-dt">Lịch decor</span><span class="nhan-ngan-dt">Lịch</span></button></li>
+      <li class="nav-item"><button class="nav-link" id="tab9-tab" title="Mẫu decor" data-bs-toggle="tab" data-bs-target="#tab9" type="button"><i class="fa-solid fa-palette me-1 menu-ico"></i> <span class="nhan-dai-dt">Mẫu decor</span><span class="nhan-ngan-dt">Mẫu</span></button></li>
+      <li class="nav-item"><button class="nav-link" id="tab7-tab" title="Phân tích" aria-label="Phân tích" data-bs-toggle="tab" data-bs-target="#tab7" type="button"><i class="fa-solid fa-chart-column me-1 menu-ico"></i> <span class="nhan-dai-dt">Phân tích</span><span class="nhan-ngan-dt">Số liệu</span></button></li>
+      <li class="nav-item"><button class="nav-link" id="tab8-tab" title="Tiền cọc" data-bs-toggle="tab" data-bs-target="#tab8" type="button"><i class="fa-solid fa-sack-dollar me-1 menu-ico"></i> <span class="nhan-dai-dt">Tiền cọc</span><span class="nhan-ngan-dt">Cọc</span></button></li>
     </ul>
     <!-- Cảnh báo đơn web cần kiểm tra (NHAT_KY_WEB: lỗi / nghi / treo) -->
     <div id="donWebNghi" class="alert alert-danger py-2 px-3 mt-2 mb-0" style="display:none"></div>
@@ -1136,7 +1166,6 @@
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
             <div>
               <h5 class="fw-bold mb-0 text-success"><i class="fa-solid fa-table me-2"></i>Nhập & Quản Lý DATA_TONG</h5>
-              <small class="text-muted">Hiển thị trực quan: Dòng • Ngày (Tháng-Ngày) • Nhóm bàn • KH/SĐT • Giờ/Khách/Bàn • Cọc • Bill Bank (Popup) • ID • Đặt món • Decor • Note • Email</small>
             </div>
             <!-- Nút tùy chọn hiển thị Dòng & Email trên thanh tiêu đề Tab 2 -->
             <div class="d-flex align-items-center flex-wrap gap-2">
@@ -1149,15 +1178,15 @@
 
           <div class="row g-2 mb-3">
             <div class="col-md-4"><input type="text" id="dtSearchKey" class="form-control" placeholder="Tìm theo tên KH, SĐT, mẫu decor, ghi chú..." onkeypress="if(event.key==='Enter') loadDataTongRecords()"></div>
-            <div class="col-md-3"><div class="input-group"><span class="input-group-text fw-bold text-success" title="Ngày khách đến nhận bàn">📅 Ngày đến</span><input type="date" id="dtSearchDate" class="form-control" onchange="dtLocTheoNgayDen()"></div></div>
-            <div class="col-md-2"><button class="btn btn-outline-success w-100 fw-bold" onclick="dtLocTheoNgayDen()"><i class="fa-solid fa-filter me-1"></i> Lọc ngày đến</button></div>
-            <div class="col-md-3"><button class="btn btn-outline-secondary w-100 fw-bold" onclick="dtXemTatCa()"><i class="fa-solid fa-list me-1"></i> Xem tất cả ngày</button></div>
+            <div class="col-9 col-md-3"><div class="input-group flex-nowrap"><span class="input-group-text fw-bold text-success" title="Ngày khách đến nhận bàn">📅 Ngày đến</span><input type="date" id="dtSearchDate" class="form-control" onchange="dtLocTheoNgayDen()"></div></div>
+            <div class="col-3 col-md-2"><button class="btn btn-outline-success w-100 fw-bold text-nowrap" title="Lọc theo ngày đến" onclick="dtLocTheoNgayDen()"><i class="fa-solid fa-filter me-1"></i>Lọc</button></div>
+            <div class="col-12 col-md-3"><button class="btn btn-outline-secondary w-100 fw-bold text-nowrap" onclick="dtXemTatCa()"><i class="fa-solid fa-list me-1"></i>Tất cả ngày</button></div>
           </div>
           <div class="row g-2 mb-3 p-2 rounded dt-nhap-box">
-            <div class="col-md-4 d-flex align-items-center fw-bold" style="color:#b45309;">✍️ Lọc theo NGÀY NHẬP LIỆU <span class="small fw-normal text-muted ms-1">(đơn nhập mới nhất lên đầu)</span></div>
-            <div class="col-md-3"><div class="input-group"><span class="input-group-text fw-bold" style="color:#b45309;background:#fffbeb;">✍️ Ngày nhập</span><input type="date" id="dtSearchNhap" class="form-control" onchange="dtLocTheoNgayNhap()"></div></div>
-            <div class="col-md-2"><button class="btn btn-warning w-100 fw-bold" onclick="dtLocTheoNgayNhap()"><i class="fa-solid fa-pen-to-square me-1"></i> Lọc ngày nhập</button></div>
-            <div class="col-md-3"><button class="btn btn-outline-warning w-100 fw-bold text-dark" onclick="document.getElementById('dtSearchNhap').value='';dtLocTheoNgayNhap()"><i class="fa-solid fa-clock-rotate-left me-1"></i> Mới nhập gần nhất</button></div>
+            <div class="col-md-4 d-flex align-items-center fw-bold text-nowrap" style="color:#b45309;" title="Đơn nhập mới nhất lên đầu">✍️ Lọc theo ngày nhập <span class="small fw-normal text-muted ms-1">· mới nhất trước</span></div>
+            <div class="col-9 col-md-3"><div class="input-group flex-nowrap"><span class="input-group-text fw-bold" style="color:#b45309;background:#fffbeb;">✍️ Ngày nhập</span><input type="date" id="dtSearchNhap" class="form-control" onchange="dtLocTheoNgayNhap()"></div></div>
+            <div class="col-3 col-md-2"><button class="btn btn-warning w-100 fw-bold text-nowrap" title="Lọc theo ngày nhập" onclick="dtLocTheoNgayNhap()"><i class="fa-solid fa-pen-to-square me-1"></i>Lọc</button></div>
+            <div class="col-12 col-md-3"><button class="btn btn-outline-warning w-100 fw-bold text-dark text-nowrap" title="Đơn mới nhập gần nhất" onclick="document.getElementById('dtSearchNhap').value='';dtLocTheoNgayNhap()"><i class="fa-solid fa-clock-rotate-left me-1"></i>Mới nhập</button></div>
           </div>
           <div id="dtCheDoLoc" class="small fw-bold mb-2"></div>
           <div class="d-flex flex-wrap align-items-center gap-2 mb-2 dt-phan-trang">
@@ -1286,53 +1315,56 @@
       <div class="card-box p-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
           <div>
-            <h5 class="fw-bold mb-0 text-purple"><i class="fa-solid fa-toggle-on me-2 text-success"></i>Lịch Quản Lý & Khóa Nhận Decor 12 Tháng (Đồng Bộ Calender-Booking)</h5>
-            <small class="text-muted">Nhấp trực tiếp vào từng ngày trên lịch để <b>Bật / Tắt Khóa Full Decor</b> • Tự động tích/bỏ tích 2 chiều với tab <b>Calender-Booking</b> trên Google Sheet</small>
+            <h5 class="fw-bold mb-0 text-purple"><i class="fa-solid fa-toggle-on me-2 text-success"></i>Lịch &amp; khoá decor 12 tháng</h5><!-- 15/11/2026 chủ quán: nội dung ngắn gọn 1 dòng -->
           </div>
           <div class="d-flex align-items-center flex-wrap gap-2">
             <span class="chu-thich-lich" title="Chú thích màu ô ngày. Bấm vào từng ô ngày trong lịch để khoá / mở / sửa giới hạn">Chú thích:
-              <span><i style="background:#dc3545"></i>Đã khoá FULL</span><span><i style="background:#f5ebe5;border:1px solid #d8ac93"></i>Có đơn decor</span><span><i style="background:#f8f9fa;border:1px solid #dee2e6"></i>Đang mở</span></span>
+              <span><i style="background:#dc3545"></i>Khoá Full</span><span><i style="background:#f5ebe5;border:1px solid #d8ac93"></i>Có đơn</span><span><i style="background:#f8f9fa;border:1px solid #dee2e6"></i>Đang mở</span></span>
+            <span class="dk-lich d-inline-flex align-items-center gap-2"><!-- 15/11/2026: nhóm chọn xem lịch, điện thoại 1 dòng -->
             <select id="calViewMode" class="form-select form-select-sm w-auto fw-bold" onchange="doiKieuXemTab6_()">
               <option value="thang" selected>Theo tháng</option><option value="quy">Theo quý</option><option value="nam">Cả năm</option>
             </select>
             <select id="calPeriod" class="form-select form-select-sm w-auto fw-bold" style="display:none" onchange="veLichTab6_(parseInt(document.getElementById('calYearSelect').value, 10))"></select>
             <select id="calYearSelect" class="form-select form-select-sm w-auto fw-bold border-primary" onchange="loadCalendarYearTab6()">
-              <option value="2025">Năm 2025</option>
-              <option value="2026" selected>Năm 2026</option>
-              <option value="2027">Năm 2027</option>
+              <option value="2025">2025</option>
+              <option value="2026" selected>2026</option>
+              <option value="2027">2027</option>
             </select>
-            <button class="btn btn-sm btn-outline-primary fw-bold" onclick="loadCalendarYearTab6()"><i class="fa-solid fa-rotate me-1"></i> Làm mới</button>
+            <button class="btn btn-sm btn-outline-primary fw-bold" title="Làm mới" onclick="loadCalendarYearTab6()"><i class="fa-solid fa-rotate me-1"></i><span class="chu-lam-moi">Làm mới</span></button>
+            </span>
           </div>
         </div>
         <!-- Khóa khung giờ đặt bàn trên web khách -->
-        <div class="mb-2 p-2 rounded-3 d-flex flex-wrap align-items-center gap-2 gap-md-3" style="background:#faf4ef;border:1px solid #ecdccf">
+        <div class="kg-hop-boc"><div class="mb-2 p-2 rounded-3 d-flex flex-wrap align-items-center gap-2 gap-md-3 kg-hop" style="background:#faf4ef;border:1px solid #ecdccf">
           <div class="kg-luoi">
-            <div class="kg-tieude kg-dau"><b style="color:#864c2a">⏰ Khóa khung giờ đặt bàn (web khách)</b><span class="d-inline-flex align-items-center gap-2"><small class="text-muted" id="kgTrangThai"></small><button class="btn btn-sm fw-bold text-white" style="background:#864c2a" onclick="luuKhoaGioAdmin()">💾 Lưu giờ khóa</button></span></div>
+            <div class="kg-tieude kg-dau"><b style="color:#864c2a">⏰ Khoá giờ đặt bàn<span class="d-none d-sm-inline"> (web khách)</span></b><span class="d-inline-flex align-items-center gap-2"><small class="text-muted" id="kgTrangThai"></small><button class="btn btn-sm fw-bold text-white" style="background:#864c2a" title="Lưu giờ khoá" onclick="luuKhoaGioAdmin()">💾 Lưu</button></span></div>
             <label class="d-inline-flex align-items-center gap-1 fw-bold mb-0 text-nowrap"><input type="checkbox" id="kgDecorBat" checked> 🎀 Bàn decor</label><span>từ</span><input type="time" step="900" id="kgDecorTu" class="form-control form-control-sm"><span>đến</span><input type="time" step="900" id="kgDecorDen" class="form-control form-control-sm">
             <div class="kg-thu" id="kgThuDecor"><span class="text-muted small">Áp dụng:</span><label><input type="checkbox" class="kg-thu-o" value="1"><span>T2</span></label><label><input type="checkbox" class="kg-thu-o" value="2"><span>T3</span></label><label><input type="checkbox" class="kg-thu-o" value="3"><span>T4</span></label><label><input type="checkbox" class="kg-thu-o" value="4"><span>T5</span></label><label><input type="checkbox" class="kg-thu-o" value="5"><span>T6</span></label><label><input type="checkbox" class="kg-thu-o" value="6"><span>T7</span></label><label><input type="checkbox" class="kg-thu-o" value="0"><span>CN</span></label></div>
-            <div class="kg-lon"><span class="text-muted small">Bàn từ 6 khách khoá từ</span><input type="time" id="kgDecorTuLon" class="form-control form-control-sm w-auto"><small class="kg-goi" id="kgDecorGoi"></small></div>
+            <div class="kg-lon"><span class="text-muted small" title="Bàn từ 6 khách khoá từ giờ này">≥6 từ</span><input type="time" id="kgDecorTuLon" class="form-control form-control-sm w-auto"><small class="kg-goi" id="kgDecorGoi"></small></div>
             <label class="d-inline-flex align-items-center gap-1 fw-bold mb-0 text-nowrap"><input type="checkbox" id="kgThuongBat"> 🍽️ Bàn thường</label><span>từ</span><input type="time" step="900" id="kgThuongTu" class="form-control form-control-sm"><span>đến</span><input type="time" step="900" id="kgThuongDen" class="form-control form-control-sm">
             <div class="kg-thu" id="kgThuThuong"><span class="text-muted small">Áp dụng:</span><label><input type="checkbox" class="kg-thu-o" value="1"><span>T2</span></label><label><input type="checkbox" class="kg-thu-o" value="2"><span>T3</span></label><label><input type="checkbox" class="kg-thu-o" value="3"><span>T4</span></label><label><input type="checkbox" class="kg-thu-o" value="4"><span>T5</span></label><label><input type="checkbox" class="kg-thu-o" value="5"><span>T6</span></label><label><input type="checkbox" class="kg-thu-o" value="6"><span>T7</span></label><label><input type="checkbox" class="kg-thu-o" value="0"><span>CN</span></label></div>
-            <div class="kg-lon"><span class="text-muted small">Bàn từ 6 khách khoá từ</span><input type="time" id="kgThuongTuLon" class="form-control form-control-sm w-auto"><small class="kg-goi" id="kgThuongGoi"></small></div>
+            <div class="kg-lon"><span class="text-muted small" title="Bàn từ 6 khách khoá từ giờ này">≥6 từ</span><input type="time" id="kgThuongTuLon" class="form-control form-control-sm w-auto"><small class="kg-goi" id="kgThuongGoi"></small></div>
           </div>
-          <div class="w-100 d-flex flex-wrap align-items-center gap-1 pt-2 border-top">
-            <b style="color:#864c2a">🚫 Ngày không nhận khách (cả bàn decor và bàn thường)</b>
+          <div class="kg-cot-phai w-100"><!-- 15/11/2026 chủ quán: bảng cài đặt 2 cột (máy tính); cột phải = ngày không nhận khách + ngày khoá riêng -->
+          <div class="w-100 d-flex flex-wrap align-items-center gap-2 pt-2 border-top">
+            <b style="color:#864c2a" title="Nghỉ cả bàn decor và bàn thường">🚫 Không nhận khách</b>
             <input type="date" id="kgNgayMoi" class="form-control form-control-sm w-auto">
-            <button class="btn btn-sm fw-bold" style="background:#f3e3d6;color:#864c2a" onclick="themNgayKhoa()">➕ Thêm ngày</button>
+            <button class="btn btn-sm fw-bold" style="background:#f3e3d6;color:#864c2a" title="Thêm ngày" onclick="themNgayKhoa()">➕<span class="d-none d-sm-inline"> Thêm</span></button>
             <div class="w-100 d-flex flex-wrap gap-1" id="kgNgayList"></div>
           </div>
-          <div class="w-100 d-flex flex-wrap align-items-center gap-1 pt-2 border-top">
-            <b style="color:#864c2a">📅 Ngày khoá riêng</b><small class="text-muted">· chỉ nghỉ decor và / hoặc khoá giờ bàn thường</small>
+          <div class="w-100 d-flex flex-wrap align-items-center gap-2 pt-2 border-top">
+            <b style="color:#864c2a" title="Nghỉ decor và / hoặc khoá giờ bàn thường">📅 Khoá riêng</b>
+            <input type="date" id="nkrNgay" class="form-control form-control-sm w-auto">
+            <label class="mb-0 fw-bold text-nowrap"><input type="checkbox" id="nkrDecor" checked> 🎀 Nghỉ decor</label>
             <div class="w-100 d-flex flex-wrap align-items-center gap-2">
-              <input type="date" id="nkrNgay" class="form-control form-control-sm w-auto">
-              <label class="mb-0 fw-bold text-nowrap"><input type="checkbox" id="nkrDecor" checked> 🎀 Nghỉ decor</label>
-              <label class="mb-0 fw-bold text-nowrap"><input type="checkbox" id="nkrThuong" checked> 🍽️ Bàn thường khoá</label>
+              <label class="mb-0 fw-bold text-nowrap"><input type="checkbox" id="nkrThuong" checked> 🍽️ <span class="d-none d-sm-inline">Bàn thường</span><span class="d-sm-none">Khoá</span></label>
               <span class="d-inline-flex align-items-center gap-1"><input type="time" step="900" id="nkrTu" class="form-control form-control-sm w-auto" value="18:00">–<input type="time" step="900" id="nkrDen" class="form-control form-control-sm w-auto" value="22:30"></span>
-              <button class="btn btn-sm fw-bold" style="background:#f3e3d6;color:#864c2a" onclick="themNgayKhoaRieng()">➕ Thêm</button>
+              <button class="btn btn-sm fw-bold" style="background:#f3e3d6;color:#864c2a" title="Thêm" onclick="themNgayKhoaRieng()">➕<span class="d-none d-sm-inline"> Thêm</span></button>
             </div>
             <div class="w-100 d-flex flex-wrap gap-1" id="nkrList"></div>
           </div>
-        </div>
+          </div>
+        </div></div>
         <!-- Giới hạn decor theo từng thứ -->
         <details class="mb-2 p-2 rounded-3 gh-box" style="background:#faf4ef;border:1px solid #ecdccf">
           <summary class="d-flex align-items-center flex-wrap gap-2" style="cursor:pointer;list-style:none">
@@ -1392,7 +1424,7 @@
               </div>
               <button class="btn btn-sm btn-outline-secondary" type="button" onclick="mdDoiNgay(0)" title="Hôm nay" aria-label="Hôm nay"><i class="fa-solid fa-calendar-day"></i><span class="md-chu ms-1">Hôm nay</span></button>
             </div>
-            <div class="md-tt-hang"><span id="mdTT"></span><button type="button" class="btn btn-sm md-nut-sua" onclick="mdSuaGioiHan()" title="Sửa giới hạn decor ngày này"><i class="fa-solid fa-pen-to-square me-1"></i>Sửa giới hạn</button></div>
+            <div class="md-tt-hang"><span id="mdTT"></span><button type="button" class="btn btn-sm md-nut-sua" onclick="mdSuaGioiHan()" title="Sửa giới hạn decor ngày này"><i class="fa-solid fa-pen-to-square me-1"></i><span class="md-chu-sua">Sửa giới hạn</span></button></div>
           </div>
           <div id="mdBang"></div>
         </div>
@@ -1406,8 +1438,7 @@
         <div class="card-box p-4">
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
             <div>
-              <h5 class="fw-bold mb-0 text-purple"><i class="fa-solid fa-coins me-2 text-warning"></i>Lịch Tiền Cọc Theo Ngày Nhập</h5>
-              <small class="text-muted">Mỗi ô = tổng tiền cọc của các đơn được nhập vào DATA_TONG trong ngày đó (theo cột Thời gian nhập)</small>
+              <h5 class="fw-bold mb-0 text-purple text-nowrap" title="Mỗi ô = tổng tiền cọc các đơn nhập vào DATA_TONG trong ngày (cột Thời gian nhập)"><i class="fa-solid fa-coins me-2 text-warning"></i>Tiền cọc theo ngày nhập <small class="text-muted fw-normal fs-6">· tổng cọc mỗi ngày</small></h5>
             </div>
             <div class="d-flex align-items-center flex-wrap gap-2">
               <span class="badge bg-warning text-dark px-3 py-2 fs-6 text-wrap text-start" id="lcTongNam">Tổng năm: ...</span>
@@ -2473,10 +2504,14 @@
     }
 
     var _ngayKhoa = [];
-    function veNgayKhoa_() {
-      document.getElementById("kgNgayList").innerHTML = _ngayKhoa.map(function(n) {
-        return '<span class="badge fw-bold d-inline-flex align-items-center gap-1" style="background:#fbe9e7;color:#b4231b;font-size:13px" title="' + n.split("-").reverse().join("/") + '">' + n.slice(8, 10) + "/" + n.slice(5, 7) + "/" + n.slice(2, 4) +
+    function veNgayKhoa_() { // 15/11/2026 chủ quán: gom theo năm, năm ghi riêng 1 lần, ô chỉ còn ngày/tháng
+      var theoNam = {}, chip = function(n) {
+        return '<span class="badge fw-bold d-inline-flex align-items-center gap-1" style="background:#fbe9e7;color:#b4231b;font-size:13px" title="' + n.split("-").reverse().join("/") + '">' + n.slice(8, 10) + "/" + n.slice(5, 7) +
           ' <a href="#" class="text-decoration-none" style="color:#b4231b" title="Mở lại ngày này" onclick="boNgayKhoa(\'' + n + '\');return false">✕</a></span>';
+      };
+      _ngayKhoa.slice().sort().forEach(function(n) { (theoNam[n.slice(0, 4)] = theoNam[n.slice(0, 4)] || []).push(n); });
+      document.getElementById("kgNgayList").innerHTML = Object.keys(theoNam).sort().map(function(y) {
+        return '<span class="d-inline-flex align-items-center gap-1 text-nowrap nk-dau"><b class="nk-nam">' + y + '</b>' + chip(theoNam[y][0]) + '</span>' + theoNam[y].slice(1).map(chip).join(""); // năm luôn đi cùng ngày đầu, không bị lẻ cuối dòng
       }).join("") || '<small class="text-muted">Chưa có ngày nào</small>';
     }
     function luuNgayKhoa_(ds) {
@@ -2542,7 +2577,8 @@
     function veTomTatKhoa_() {
       ["Decor", "Thuong"].forEach(function(t) {
         var g = function(x) { return document.getElementById("kg" + t + x).value; }, el = document.getElementById("kg" + t + "Goi");
-        if (el) el.textContent = "→ dưới 6 khách nhận " + chuNhanToiA_(g("Tu")) + " · từ 6 khách " + chuNhanToiA_(g("TuLon") || g("Tu")) + (g("Den") >= "22:00" ? " · sau đó không nhận" : " · nhận lại từ " + g("Den"));
+        if (el) { var a = chuNhanToiA_(g("Tu")), b = chuNhanToiA_(g("TuLon") || g("Tu")), sau = g("Den") >= "22:00"; // 15/11/2026: ngắn gọn 1 dòng; điện thoại bỏ chữ "tới"
+          el.textContent = "→ <6 " + a.replace("tới ", "") + " · ≥6 " + b.replace("tới ", "") + (sau ? " · nghỉ" : " · mở " + g("Den")); el.title = "Dưới 6 khách nhận " + a + " · từ 6 khách " + b + (sau ? " · sau đó không nhận" : " · nhận lại từ " + g("Den")); }
       });
     }
     document.addEventListener("input", function(e) { if (e.target && /^kg(Decor|Thuong)(Tu|TuLon|Den)$/.test(e.target.id)) veTomTatKhoa_(); });
