@@ -830,6 +830,12 @@
       header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-dai, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-ngan, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .chu-nut { display: none !important; }
       header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nut-ico { margin-right: 0 !important; }
     }
+    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: 7 nút đầu trang 1 hàng — biểu tượng trên, chữ ngắn dưới */
+      header.navbar-custom .nhom-nut-dau { display: grid !important; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px !important; }
+      header.navbar-custom .nhom-nut-dau > .btn { display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 0; padding: 5px 0 4px !important; font-size: 9.5px !important; line-height: 1.15; letter-spacing: -.1px; white-space: nowrap; overflow: hidden; }
+      header.navbar-custom .nhom-nut-dau .nut-ico { font-size: 15px; margin: 0 !important; }
+      header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-ngan, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .chu-nut { display: inline !important; }
+    }
     /* Ô khoá giờ: 2 dòng Bàn decor / Bàn thường thẳng cột */
     .kg-luoi { display: grid; grid-template-columns: max-content max-content 7.5em max-content 7.5em; align-items: center; gap: 6px 8px; }
     .kg-luoi .kg-tieude, .kg-luoi .kg-luu { grid-column: 1 / -1; }
