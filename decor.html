@@ -419,7 +419,7 @@
     .nut-vao-trang.sai { color: #b42318; border-color: #f1aeb5; background: #fff5f5; }
     /* ô số khách trong lịch: để trống, có chữ hướng dẫn, nhấp nháy khi chưa điền; bỏ nút − + và mũi tên của ô số */
     .lich-sk .fa-users { color: #864c2a; }
-    #lichSoKhachO { width: 120px; height: 32px; border: 1px solid #e3d3c6; border-radius: 8px; padding: 2px 8px; font-size: 16px; font-weight: 700; color: #3d2a1e; background: #fff; }
+    #lichSoKhachO { width: 134px; height: 32px; border: 1px solid #e3d3c6; border-radius: 8px; padding: 2px 8px; font-size: 16px; font-weight: 700; color: #3d2a1e; background: #fff; }
     #lichSoKhachO::placeholder { font-weight: 500; font-size: 13px; color: #9a8a7e; opacity: 1; }
     #lichSoKhachO:focus { outline: none; border-color: #d27a2c; box-shadow: 0 0 0 2px rgba(210,122,44,.2); }
     #lichSoKhachO.trong { animation: oNgayTrong 1.4s ease-in-out infinite; border-color: #e9a23b; }
@@ -455,7 +455,7 @@
     .o-cot-gio.gio-trong .o-gio > .input-group-text, .o-cot-gio.gio-trong #selectMinDecor { display: none; }
     .o-cot-gio.gio-trong #selectHourDecor.fw-bold { width: 100%; color: #9a8a7e; font-weight: 500 !important; font-size: 14px; }
     #selectHourDecor option, #selectMinDecor option { color: #212529; font-weight: 400; }
-    #txtSoKhach::placeholder { color: #9a8a7e; font-size: 14px; opacity: 1; }
+    #txtSoKhach::placeholder { color: #9a8a7e; font-size: 13px; opacity: 1; }
     /* nút nền tảng chỉ còn biểu tượng */
     .nt-btn { padding: 5px 9px; } .nt-btn img, .nt-btn .nt-khac { width: 18px; height: 18px; line-height: 18px; }
     /* ô chờ QR + lưu ý cuối gộp 1 khung, giữ 2 màu nền */
@@ -1155,7 +1155,7 @@
       var lon = NHOM_TRANG === "lon", o = document.getElementById("txtSoKhach"), g = gioiHanKhachTrang_();
       document.title = "Đặt Bàn Decor " + (lon ? "Từ 6 Khách" : "Dưới 6 Khách") + " - Túi Nướng Lavender";
       var t = document.querySelector(".hd-title"); if (t) t.textContent = "ĐẶT BÀN DECOR " + (lon ? "TỪ 6 KHÁCH" : "DƯỚI 6 KHÁCH");
-      o.min = g.min; if (g.max < 99) o.max = g.max; o.value = ""; o.placeholder = "Số khách"; var tipK = o.closest("[data-tip]"); if (tipK) tipK.setAttribute("data-tip", lon ? "Số khách (từ 6 khách)" : "Số khách (dưới 6 khách)"); // 15/11/2026: để trống, khách tự nhập
+      o.min = g.min; if (g.max < 99) o.max = g.max; o.value = ""; o.placeholder = lon ? "≥ 6 khách" : "1–5 khách"; var oL = document.getElementById("lichSoKhachO"); if (oL) oL.placeholder = lon ? "Từ 6 khách trở lên" : "Từ 1 đến 5 khách"; // 15/11/2026 chủ quán: ô số khách ghi rõ số khách cho phép của trang var tipK = o.closest("[data-tip]"); if (tipK) tipK.setAttribute("data-tip", lon ? "Số khách (từ 6 khách)" : "Số khách (dưới 6 khách)"); // 15/11/2026: để trống, khách tự nhập
       // 15/11/2026 chủ quán: bỏ dòng "🎀 Trang dành cho đoàn ..." (tiêu đề đã ghi rõ dưới / từ 6 khách)
       kiemSoKhachTrang_();
     }
@@ -1796,18 +1796,12 @@
     function khachLichHopLe_() { var o = document.getElementById("txtSoKhach"); return !!o.value && parseInt(o.value, 10) > 0 && o.checkValidity(); }
     function loiKhachLich_() { return NHOM_TRANG === "lon" ? "Trang này nhận đoàn từ 6 khách" : NHOM_TRANG === "nho" ? "Trang này nhận đoàn dưới 6 khách" : "Số khách từ 1 đến 99"; }
     function ngayNgan_(k) { return k ? k.slice(8, 10) + "/" + k.slice(5, 7) : ""; }
-    function thieuVaoTrang_() {
-      var f = document.getElementById("bookingForm"), t = [];
-      if (!f.hoTen.value.trim()) t.push("tên");
-      if (!f.gioiTinh.value) t.push("giới tính");
-      if (!khachLichHopLe_()) t.push("số khách");
-      return t;
-    }
+    function thieuVaoTrang_() { return khachLichHopLe_() ? [] : ["số khách"]; } // 15/11/2026 chủ quán: tên, giới tính không bắt buộc ở trang vào (điền sau trong form)
     function capNhatVaoTrang_(nhan) {
       var nut = document.getElementById("nutVaoTrang"); if (!nut || !document.body.classList.contains("dang-chon-ngay")) return;
       var t = thieuVaoTrang_(), sk = document.getElementById("txtSoKhach"), saiNhom = !!sk.value && !khachLichHopLe_(), thieu = t.concat(_ngayCho ? [] : ["ngày"]);
       nut.classList.toggle("san-sang", !thieu.length); nut.classList.toggle("sai", saiNhom);
-      var ktt = document.querySelector(".khung-tt"); if (ktt) ktt.classList.toggle("tt-nhay", t.indexOf("tên") !== -1 || t.indexOf("giới tính") !== -1);
+      var ktt = document.querySelector(".khung-tt"); if (ktt) var fT = document.getElementById("bookingForm"); ktt.classList.toggle("tt-nhay", !fT.hoTen.value.trim() || !fT.gioiTinh.value); // vẫn nháy nhắc điền, nhưng không chặn vào form
       nut.innerHTML = saiNhom ? '<i class="fa-solid fa-triangle-exclamation me-1" aria-hidden="true"></i>' + loiKhachLich_()
         : !thieu.length ? 'TIẾP TỤC · NGÀY ' + ngayNgan_(_ngayCho) + (_mauCho && _mauChoNgay === _ngayCho ? ' · ' + rutTenMau_(_mauCho) : '') + ' <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i>'
         : '<i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>Còn thiếu: ' + thieu.join(", ");
