@@ -684,8 +684,8 @@
       const prevH = hourSel.value || (weekend ? "17" : "18");
       const prevM = minSel.value || "00";
 
-      // Thứ 6 & Thứ 7 chỉ từ 14h (2h chiều) đến 18h; Ngày thường từ 11h đến 20h
-      const allowedHours = (weekend ? ["14", "15", "16", "17", "18"] : ["11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"]).filter(h => phutChoGio(h, weekend).length);
+      // Quán mở từ 14h (14/11/2026 chủ quán). Thứ 6 & Thứ 7 từ 14h đến 18h; ngày thường từ 14h đến 21h30
+      const allowedHours = (weekend ? ["14", "15", "16", "17", "18"] : ["14", "15", "16", "17", "18", "19", "20", "21"]).filter(h => phutChoGio(h, weekend).length);
       hourSel.innerHTML = allowedHours.map(h => `<option value="${h}">${h}</option>`).join("");
       hourSel.value = allowedHours.includes(prevH) ? prevH : (allowedHours.filter(h => h <= "18").pop() || allowedHours[0] || "");
       if (hint) {
