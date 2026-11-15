@@ -665,7 +665,7 @@ const emailDomains = ['gmail.com', 'yahoo.com', 'icloud.com', 'outlook.com', 'ho
       var v = inp.value, m = v.match(/(\S*)$/), cuoi = m ? m[1] : "", truoc = v.slice(0, v.length - cuoi.length), soChu = truoc.trim() ? truoc.trim().split(/\s+/).length : 0;
       box.textContent = "";
       if (!cuoi || /[0-9@]/.test(cuoi)) { box.style.display = "none"; return; }
-      var q = boDau_(cuoi), nguon = soChu === 0 ? HO_VN.concat(DEM_VN, TEN_VN) : soChu === 1 ? DEM_VN.concat(TEN_VN, HO_VN) : TEN_VN.concat(DEM_VN), chon = [], da = {};
+      var q = boDau_(cuoi), nguon = soChu === 0 ? HO_VN : soChu === 1 ? DEM_VN.concat(TEN_VN) : TEN_VN.concat(DEM_VN) /* 15/11/2026 chủ quán: từ đầu là họ (chỉ gợi ý họ); từ thứ 2 ưu tiên tên đệm rồi tới tên; từ thứ 3 trở đi ưu tiên tên */, chon = [], da = {};
       nguon.forEach(function(t) { if (chon.length < 6 && !da[t] && t !== cuoi && boDau_(t).indexOf(q) === 0) { da[t] = 1; chon.push(t); } });
       if (!chon.length) { box.style.display = "none"; return; }
       chon.forEach(function(t) {
