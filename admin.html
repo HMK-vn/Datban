@@ -159,7 +159,8 @@
     .dt-nhap-tag { display: inline-block; margin-top: 3px; padding: 1px 7px; border-radius: 6px; background: #fef3c7; color: #92400e; font-weight: 700; font-size: 11.5px; }
     .dt-smart-table th { white-space: nowrap; font-size: 12px; background: #f1f3f9; color: #2c3e50; vertical-align: middle; }
     .dt-smart-table td { vertical-align: middle; font-size: 12.5px; }
-    #dtMainTable thead th i { font-size: 1.1em; color: #864c2a; } /* icon tiêu đề cột cùng cỡ, cùng màu */
+    #dtMainTable thead th i { font-size: 1.5em; color: #864c2a; } /* icon tiêu đề cột to, cùng cỡ, cùng màu */
+    #dtMainTable thead th .nhan-cot { display: block; margin-top: 2px; font-size: 10px; font-weight: 700; color: #864c2a; line-height: 1.1; } /* 15/11/2026 chủ quán: chữ ngắn dưới icon, nhìn vào là hiểu */
     .ico-nhom { font-size: 1.5em; vertical-align: -.18em; } /* 15/11/2026 chủ quán: icon loại bàn to gấp 1,5 */
     .cell-nowrap-line { white-space: nowrap; display: block; line-height: 1.35; }
     .cell-Clamp-box { max-width: 210px; max-height: 54px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; font-size: 11.5px; line-height: 1.35; }
@@ -1238,8 +1239,8 @@
             <div class="col-auto col-md-3"><button class="btn btn-outline-secondary w-100 fw-bold text-nowrap" title="Xem tất cả ngày" onclick="dtXemTatCa()" aria-label="Tất cả ngày"><i class="fa-solid fa-calendar-xmark"></i><span class="d-none d-md-inline ms-1">Tất cả ngày</span></button></div>
           </div>
           <div class="row g-2 mb-3 p-2 rounded dt-nhap-box">
-            <div class="col-md-4 d-none d-md-flex align-items-center fw-bold text-nowrap" style="color:#b45309;" title="Đơn nhập mới nhất lên đầu"><i class="fa-solid fa-keyboard"></i>&nbsp;Lọc theo ngày nhập <span class="small fw-normal text-muted ms-1">· mới nhất trước</span></div>
-            <div class="col col-md-3" style="min-width:0"><div class="input-group flex-nowrap"><span class="input-group-text fw-bold" style="color:#b45309;background:#fffbeb;" title="Lọc theo ngày nhập (mới nhất trước)"><i class="fa-solid fa-keyboard"></i><span class="ms-1">Ngày nhập</span></span><input type="date" id="dtSearchNhap" class="form-control" onchange="dtLocTheoNgayNhap()"></div></div>
+            <div class="col-md-4 d-none d-md-flex align-items-center fw-bold text-nowrap" style="color:#b45309;" title="Đơn nhập mới nhất lên đầu"><i class="fa-solid fa-calendar-plus"></i>&nbsp;Lọc theo ngày nhập <span class="small fw-normal text-muted ms-1">· mới nhất trước</span></div>
+            <div class="col col-md-3" style="min-width:0"><div class="input-group flex-nowrap"><span class="input-group-text fw-bold" style="color:#b45309;background:#fffbeb;" title="Lọc theo ngày nhập (mới nhất trước)"><i class="fa-solid fa-calendar-plus"></i><span class="ms-1">Ngày nhập</span></span><input type="date" id="dtSearchNhap" class="form-control" onchange="dtLocTheoNgayNhap()"></div></div>
             <div class="d-none d-md-block col-md-2"><button class="btn btn-warning w-100 fw-bold text-nowrap" title="Lọc theo ngày nhập" onclick="dtLocTheoNgayNhap()"><i class="fa-solid fa-filter me-1"></i>Lọc</button></div>
             <div class="col-auto col-md-3"><button class="btn btn-outline-warning w-100 fw-bold text-dark text-nowrap" title="Đơn mới nhập gần nhất" aria-label="Mới nhập" onclick="document.getElementById('dtSearchNhap').value='';dtLocTheoNgayNhap()"><i class="fa-solid fa-clock-rotate-left"></i><span class="d-none d-md-inline ms-1">Mới nhập</span></button></div>
           </div>
@@ -1263,15 +1264,15 @@
         <table id="dtMainTable" class="table table-hover align-middle small table-bordered dt-smart-table hide-dt-row hide-dt-email">
           <thead>
             <tr>
-              <th class="col-dt-row text-center" title="Dòng"><i class="fa-solid fa-hashtag" aria-label="Dòng"></i></th><!-- 15/11/2026 chủ quán: tiêu đề cột bằng icon đồng bộ, rê chuột xem tên -->
-              <th class="text-center" title="ID / Nhóm bàn"><i class="fa-solid fa-id-badge" aria-label="ID / Nhóm bàn"></i></th>
-              <th class="text-center" title="Khách hàng / SĐT"><i class="fa-solid fa-user" aria-label="Khách hàng / SĐT"></i></th>
-              <th class="text-center" title="Giờ / Khách / Bàn"><i class="fa-solid fa-clock" aria-label="Giờ / Khách / Bàn"></i></th>
-              <th class="text-center" title="Tiền cọc"><i class="fa-solid fa-sack-dollar" aria-label="Tiền cọc"></i></th>
-              <th class="text-center" title="Bill bank"><i class="fa-solid fa-receipt" aria-label="Bill bank"></i></th>
-              <th class="text-center" title="Decor • Đặt món • Note"><i class="fa-solid fa-note-sticky" aria-label="Decor, đặt món, ghi chú"></i></th>
-              <th class="col-dt-email text-center" title="Email"><i class="fa-solid fa-envelope" aria-label="Email"></i></th>
-              <th class="text-center" title="Sửa / Lưu ảnh"><i class="fa-solid fa-pen-to-square" aria-label="Sửa"></i></th>
+              <th class="col-dt-row text-center" title="Dòng"><i class="fa-solid fa-hashtag" aria-hidden="true" data-x="Dòng"></i><span class="nhan-cot">Dòng</span></th><!-- 15/11/2026 chủ quán: tiêu đề cột bằng icon đồng bộ, rê chuột xem tên -->
+              <th class="text-center" title="Thời gian nhập / Nhóm bàn"><i class="fa-solid fa-calendar-plus" aria-hidden="true" data-x="Thời gian nhập, nhóm bàn"></i><span class="nhan-cot">Nhập</span></th>
+              <th class="text-center" title="Khách hàng / SĐT"><i class="fa-solid fa-user" aria-hidden="true" data-x="Khách hàng / SĐT"></i><span class="nhan-cot">Khách</span></th>
+              <th class="text-center" title="Giờ / Khách / Bàn"><i class="fa-solid fa-clock" aria-hidden="true" data-x="Giờ / Khách / Bàn"></i><span class="nhan-cot">Giờ đến</span></th>
+              <th class="text-center" title="Tiền cọc"><i class="fa-solid fa-sack-dollar" aria-hidden="true" data-x="Tiền cọc"></i><span class="nhan-cot">Cọc</span></th>
+              <th class="text-center" title="Bill bank"><i class="fa-solid fa-receipt" aria-hidden="true" data-x="Bill bank"></i><span class="nhan-cot">Bill</span></th>
+              <th class="text-center" title="Decor • Đặt món • Note"><i class="fa-solid fa-note-sticky" aria-hidden="true" data-x="Decor, đặt món, ghi chú"></i><span class="nhan-cot">Ghi chú</span></th>
+              <th class="col-dt-email text-center" title="Email"><i class="fa-solid fa-envelope" aria-hidden="true" data-x="Email"></i><span class="nhan-cot">Email</span></th>
+              <th class="text-center" title="Sửa / Lưu ảnh"><i class="fa-solid fa-pen-to-square" aria-hidden="true" data-x="Sửa"></i><span class="nhan-cot">Sửa</span></th>
             </tr>
           </thead>
           <tbody id="dataTongTableBody"></tbody>
@@ -3321,9 +3322,8 @@
     html += '<tr class="' + rowPastelClass + '">' +
       '<td class="col-dt-row text-center"><b>' + r.row + '</b></td>' +
       '<td class="text-nowrap">' +
-        (r.id ? '<div class="fw-bold font-monospace text-dark lh-sm" title="ID: ' + escapeHtml(r.id) + '">' + idGon_(r.id).split(" ").map(escapeHtml).join("<br>") + '</div>' : '<div class="small text-muted font-monospace">#Dòng ' + r.row + '</div>') +
+        oNhap_(r) +
         '<span class="badge mt-1" style="' + badgeStyle + '" title="' + escapeHtml(r.nhomBan || "Bàn thường") + '">' + nhomIcon_(r.nhomBan) + '</span>' +
-        (dtCheDoNhap ? '<div class="dt-nhap-tag"><i class="fa-solid fa-keyboard"></i> Nhập ' + escapeHtml(r.nhapHien || r.thoiGianNhap || "--") + '</div>' : '') +
       '</td>' +
       '<td>' +
         '<span class="cell-nowrap-line fw-bold text-dark"><span class="chu-ten" data-ten="' + escapeHtml(r.tenKH) + '">' + escapeHtml(r.tenKH) + '</span>' + vatTag(r, true) + '</span>' +
@@ -3347,6 +3347,11 @@
 // 15/11/2026 chủ quán: cột ID / Nhóm bàn ngắn gọn — "tháng 11-15 17:14" -> "15/11 17:14"; "Bàn decor: < 6 khách" -> "Decor <6"
 function soCoc_(v) { return Number(String(v == null ? "" : v).replace(/[^\d]/g, "")) || 0; }
 function cocGon_(v) { var n = soCoc_(v); if (!n) return "0"; return n >= 1e6 ? String(Math.round(n / 1e5) / 10).replace(".", ",") + "tr" : Math.round(n / 1000) + "k"; } // 15/11/2026 chủ quán: cọc ghi gọn 300k / 500k
+function nhapGon_(r) { var m = String(r.nhapHien || "").match(/^(\d{1,2}:\d{2})\s+(\d{1,2})\/(\d{1,2})\//); if (m) return [("0" + m[2]).slice(-2) + "/" + ("0" + m[3]).slice(-2), m[1]]; var g = idGon_(r.id).split(" "); return g.length === 2 && /\d+\/\d+/.test(g[0]) ? g : null; }
+// 15/11/2026 chủ quán: cột đầu = thời gian nhập (ngày trên, giờ dưới) cho mọi đơn; mã ID xem khi rê chuột; bỏ thẻ cam "Nhập …" vì trùng
+function oNhap_(r) { var ng = nhapGon_(r), t = (r.nhapHien || r.thoiGianNhap ? "Nhập " + (r.nhapHien || r.thoiGianNhap) : "") + (r.id ? (r.nhapHien || r.thoiGianNhap ? " · " : "") + "ID " + r.id : "");
+  return ng ? '<div class="fw-bold font-monospace text-dark lh-sm" title="' + escapeHtml(t) + '">' + ng.map(escapeHtml).join("<br>") + '</div>' : (r.id ? '<div class="fw-bold font-monospace text-dark small" title="' + escapeHtml(t) + '">' + escapeHtml(r.id) + '</div>' : '<div class="small text-muted font-monospace">#Dòng ' + r.row + '</div>'); }
+function nhapHai_(t) { var m = String(t).match(/^(\d{1,2}:\d{2})\s+(.+)$/); return '<i class="fa-solid fa-calendar-plus"></i> Nhập ' + (m ? escapeHtml(m[1]) + '<br>' + escapeHtml(m[2]) : escapeHtml(t)); } // 15/11/2026 chủ quán: thẻ Nhập 2 dòng (giờ / ngày)
 function idGon_(id) { var m = String(id || "").match(/(\d{1,2})-(\d{1,2})\s+(\d{1,2}:\d{2})/); return m ? ("0" + m[2]).slice(-2) + "/" + ("0" + m[1]).slice(-2) + " " + m[3] : String(id || ""); }
 function nhomIcon_(n) { var g = nhomGon_(n); return g === "Thường" ? '<i class="fa-solid fa-utensils ico-nhom"></i>' : '<i class="fa-solid fa-cake-candles ico-nhom"></i>' + (g === "Decor" ? '' : ' ' + escapeHtml(g.replace("Decor ", ""))); } // 15/11/2026 chủ quán: loại bàn bằng icon + số (🍴 thường, 🎂 <6 / ≥6)
 function nhomGon_(n) { var t = String(n || "").toLowerCase(); if (t.indexOf("decor") === -1) return "Thường"; return /≥|>=|> *=|từ *6|tu *6/.test(t) ? "Decor ≥6" : /<|dưới|duoi/.test(t) ? "Decor <6" : "Decor"; }
@@ -3379,7 +3384,7 @@ function rutTenKhach_(goc) {
       var den = document.getElementById("dtSearchDate").value, nhap = document.getElementById("dtSearchNhap").value;
       var vn = function(d) { return d.split("-").reverse().join("/"); };
       document.getElementById("dtCheDoLoc").innerHTML = dtCheDoNhap
-        ? '<span class="dt-che-do nhap"><i class="fa-solid fa-keyboard"></i> Lọc ngày nhập' + (nhap ? ' ' + vn(nhap) : ': mọi ngày') + ' · mới nhất trước · ' + soDon + ' đơn</span>'
+        ? '<span class="dt-che-do nhap"><i class="fa-solid fa-calendar-plus"></i> Lọc ngày nhập' + (nhap ? ' ' + vn(nhap) : ': mọi ngày') + ' · mới nhất trước · ' + soDon + ' đơn</span>'
         : '<span class="dt-che-do den"><i class="fa-solid fa-calendar-day"></i> Lọc ngày đến' + (den ? ' ' + vn(den) : ': mọi ngày') + ' · ' + soDon + ' đơn</span>';
     }
 
