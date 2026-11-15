@@ -57,7 +57,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
-    body { background-color: #f0f4f8; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #fdf9f7; /* 15/11/2026: đồng bộ nền kem với trang decor */ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     .card { border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); border: none; }
     .header-bar { background: linear-gradient(135deg, #b4703f, #c98a5b); color: white; border-radius: 14px 14px 0 0; padding: 18px 16px; }
     .btn-submit { background-color: #b4703f; color: white; border-radius: 8px; font-weight: 700; padding: 13px; font-size: 16px; border: none; }
@@ -131,9 +131,9 @@
     .hd-wrap{display:flex;align-items:center;justify-content:flex-start;padding-left:8px;gap:18px;text-align:left}
     .hd-logo{width:100px;height:100px;border-radius:50%;object-fit:cover;flex:none;border:3px solid rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(0,0,0,.22);background:#fff}
     .hd-txt{min-width:0}
-    .hd-brand{font-size:23px;font-weight:800;letter-spacing:.6px;line-height:1.15;margin:0}
-    .hd-title{font-size:15px;font-weight:700;letter-spacing:1.2px;margin-top:3px;opacity:.95}
-    .hd-sub{font-size:12.5px;margin-top:8px;opacity:.85;letter-spacing:.3px}
+    .hd-brand{font-size:23px;font-weight:800;letter-spacing:.6px;line-height:1.1;margin:0}
+    .hd-title{font-size:15px;font-weight:700;letter-spacing:1.2px;margin-top:2px;line-height:1.2;opacity:.95}
+    .hd-sub{font-size:12.5px;margin-top:3px;line-height:1.3;opacity:.85;letter-spacing:.3px} /* 15/11/2026: giảm giãn dòng */
     @media (max-width:480px){label[for^=coTreEm]{font-size:14px}.hd-wrap{gap:12px}.hd-logo{width:80px;height:80px}.hd-brand{font-size:18px}.hd-title{font-size:13px;letter-spacing:.8px}.hd-sub{font-size:12px}}
   
     .o-thieu{border-color:#dc3545 !important;border-radius:8px;animation:oThieu 1s ease-in-out infinite}
@@ -177,7 +177,128 @@
     #selectHourDecor, #selectMinDecor, #selectGioVao { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none !important;
       padding-left: .3rem !important; padding-right: .3rem !important; text-align: center; text-align-last: center; font-size: .9rem !important; font-weight: 600; cursor: pointer; }
     .input-group > #selectHourDecor, .input-group > #selectMinDecor { min-width: 0; }
+    /* 15/11/2026 chủ quán: biểu tượng thay chữ nhãn, cột trái cùng độ rộng, màu vừa phải (giống trang decor) */
+    :root { --rong-tuoi: 6rem; }
+    .o-icon { position: relative; padding: 0 7px; background: #fbf3ec; color: #934c22; }
+    .o-ngay, .o-tinh { flex-wrap: nowrap; } .o-tinh .form-select { min-width: 0; } .o-ngay .form-control { padding-left: 8px; }
+    .o-tuoi .input-group { width: var(--rong-tuoi); flex-wrap: nowrap; } .o-tuoi .form-select { flex: 1 1 auto; min-width: 0; padding-left: 6px; padding-right: 1.4rem; background-position: right .35rem center; }
+    .o-gt .btn-group, .o-cot-gio #selectGioVao { width: var(--rong-tuoi) !important; }
+    .o-cot-gio { flex: 0 0 auto; width: calc(var(--rong-tuoi) + var(--bs-gutter-x, 1.5rem)); }
+    .o-cot-gio #selectGioVao { text-align: center; text-align-last: center; padding-left: 4px; padding-right: 4px; }
+    .o-cot-gio #khoaGioHintT { margin-left: 0 !important; text-align: left !important; }
+    .hang-o > [class*="col"] { margin-bottom: 8px !important; }
+    .gt-nut { display: inline-flex; align-items: center; justify-content: center; padding-top: 4px; padding-bottom: 4px; }
+    .gt-nam { color: #2f6fbf; border-color: #9db8dd; } .gt-nam:hover { background: #eaf1fb; color: #2f6fbf; border-color: #9db8dd; }
+    .gt-nu { color: #d14b7f; border-color: #e7a9c1; } .gt-nu:hover { background: #fcebf2; color: #d14b7f; border-color: #e7a9c1; }
+    .btn-check:checked + .gt-nam { background: #2f6fbf !important; border-color: #2f6fbf !important; color: #fff !important; }
+    .btn-check:checked + .gt-nu { background: #d14b7f !important; border-color: #d14b7f !important; color: #fff !important; }
+    .form-control, .form-select, .input-group-text { border-color: #e3d6cb; }
+    .form-control:focus, .form-select:focus { border-color: #c98a5e; box-shadow: 0 0 0 .2rem rgba(147,76,34,.15); }
+    .hop-khach { padding: 8px 14px !important; gap: 8px 16px !important; margin-bottom: 10px !important; background: #fff !important; border-color: #eadfd6 !important; }
+    .hop-khach .form-control { padding-top: 4px; padding-bottom: 4px; }
+    /* 15/11/2026 chủ quán: Số khách + Có trẻ em cùng bố cục ô có biểu tượng như SĐT */
+    .o-cot-khach .input-group { width: var(--rong-tuoi); flex-wrap: nowrap; } .o-cot-khach .form-control { min-width: 0; }
+    .o-tre-em { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; min-height: 38px; padding: 3px 10px; border: 1px solid #e3d6cb; border-radius: .375rem; background: #fff; }
+    .o-tre-em label { color: #934c22; font-weight: 700; white-space: nowrap; } .o-tre-em #kidsBox, .o-tre-em #kidsBoxT { width: auto !important; }
+    .nhom-trang-hint { margin: -4px 4px 8px !important; }
+    /* 15/11/2026 chủ quán: cột trái hẹp hơn (♂♀, tuổi, tỉnh, giờ, số khách) — biểu tượng + chữ nhỏ lại; tỉnh chọn xong hiện tên ngắn */
+    .o-tinh-trai .input-group { width: var(--rong-tuoi); }
+    .o-tuoi .o-icon, .o-tinh-trai .o-icon, .o-cot-khach .o-icon { padding: 0 4px; }
+    .o-tuoi .o-icon svg, .o-tinh-trai .o-icon svg, .o-cot-khach .o-icon svg { width: 16px; height: 16px; }
+    .o-tuoi .form-select, .o-tinh-trai .form-select { font-size: .9rem; padding-left: 4px; padding-right: 1rem; background-position: right .2rem center; background-size: 11px 9px; }
+    .o-cot-khach .form-control { padding-left: 6px; padding-right: 4px; }
+    /* 15/11/2026 chủ quán: 4 hàng thông tin khách gộp 1 khung, kẻ mảnh giữa các ô (giống khung mẫu decor) */
+    .khung-tt { border: 1px solid #e3d6cb; border-radius: .6rem; background: #fff; margin-bottom: 4px; }
+    .khung-tt > .row { --bs-gutter-x: 0; margin: 0; flex-wrap: nowrap; }
+    .khung-tt > .row + .row { border-top: 1px solid #efe6de; }
+    .khung-tt > .row > [class*="col"] { margin-bottom: 0 !important; padding: 0; }
+    .khung-tt > .row > [class*="col"] + [class*="col"] { border-left: 1px solid #efe6de; }
+    .khung-tt .form-control, .khung-tt .form-select, .khung-tt .input-group-text, .khung-tt .btn-group > .btn { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background-color: transparent; }
+    .khung-tt .btn-group > .btn + .btn { border-left: 1px solid #efe6de !important; }
+    .khung-tt .btn-check:checked + .gt-nam { background: #2f6fbf !important; } .khung-tt .btn-check:checked + .gt-nu { background: #d14b7f !important; }
+    .khung-tt > .row:first-child .btn-group > .btn:first-child { border-top-left-radius: .55rem !important; }
+    .khung-tt .form-control:focus, .khung-tt .form-select:focus { background-color: #fffaf6; }
+    .khung-tt .o-icon { background: transparent !important; }
+    #weekendTimeHint.ngoai-khung, #khoaGioHintT.ngoai-khung { margin: 0 4px 8px !important; text-align: left !important; }
+    .o-tuoi .form-select, .o-tinh-trai .form-select { font-size: .85rem; } .o-gt .btn { padding-left: 6px; padding-right: 6px; } /* cột trái 88px */
+    /* 15/11/2026 chủ quán: chữ đỏ giờ T6/T7 nằm trong ô ngày (dưới ngày, nội dung ngắn); tỉnh không mũi tên; các khung sát nhau hơn */
+    .o-cot-ngay { position: relative; }
+    .o-cot-ngay.co-goi-y .o-ngay .form-control { padding-top: 0; padding-bottom: 12px; }
+    #weekendTimeHint.trong-o-ngay, #khoaGioHintT.trong-o-ngay { position: absolute !important; left: 40px !important; right: 28px !important; bottom: 3px !important; margin: 0 !important; width: auto !important; text-align: left !important; line-height: 1.1; pointer-events: none; }
+    .o-tinh-trai .form-select { background-image: none !important; padding-right: 4px !important; }
+    #bookingForm .mb-3 { margin-bottom: .5rem !important; } .step-box { margin-bottom: .5rem !important; } .khung-tt { margin-bottom: 8px; }
+    /* 15/11/2026 chủ quán: bỏ biểu tượng lịch nhỏ cuối ô ngày (bấm vào ô vẫn mở lịch); ngày canh trái; "Có trẻ em" + số bé 1 dòng */
+    .o-ngay input[type=date]::-webkit-calendar-picker-indicator { display: none; }
+    .o-ngay input[type=date]::-webkit-date-and-time-value { text-align: left; }
+    #weekendTimeHint.trong-o-ngay, #khoaGioHintT.trong-o-ngay { right: 6px !important; }
+    .o-tre-em { flex-wrap: nowrap; gap: 6px; padding-right: 6px; } .o-tre-em label { font-size: .88rem; }
+    .o-tre-em .form-select-sm { padding: 2px 1.3rem 2px 6px; font-size: .85rem; background-position: right .3rem center; }
+    /* 15/11/2026 chủ quán: điện thoại giảm lề 2 bên (6px ngoài + 10px trong khung) — vẫn chừa viền thoáng */
+    @media (max-width: 576px) { .container { padding-left: 6px !important; padding-right: 6px !important; } .card-body.p-4 { padding: 12px 10px !important; } }
+    /* ngày + chữ đỏ cùng 1 dòng: chữ đỏ canh phải trong ô ngày */
+    .o-cot-ngay.co-goi-y .o-ngay .form-control { padding-top: .375rem !important; padding-bottom: .375rem !important; }
+    #weekendTimeHint.trong-o-ngay, #khoaGioHintT.trong-o-ngay { left: auto !important; right: 8px !important; top: 50% !important; bottom: auto !important; transform: translateY(-50%); max-width: 56%; text-align: right !important; }
+    /* 15/11/2026 chủ quán: bỏ chấm trạng thái ngày (khung đỏ đã báo ngày đầy/khoá); ♂ ♀ chưa chọn thì mờ */
+    #dateCheckNotice { display: none !important; }
+    .gt-nut { opacity: .38; transition: opacity .15s; } .gt-nut:hover { opacity: .7; } .btn-check:checked + .gt-nut { opacity: 1; }
+    /* 15/11/2026 chủ quán: ngày không nhận khách → khung ô ngày nhấp nháy nhẹ (nhắc chọn ngày khác) */
+    @keyframes ngayNhay { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,122,69,0); } 50% { box-shadow: 0 0 0 4px rgba(201,122,69,.28); } }
+    .khung-tt.ngay-nhay { animation: ngayNhay 1.6s ease-in-out infinite; }
+    /* 15/11/2026 chủ quán: điện thoại lề 2 bên tối đa (3px + 7px) và khoảng cách giữa các khung 6px */
+    @media (max-width: 576px) {
+      .container { padding-left: 3px !important; padding-right: 3px !important; } .card-body.p-4 { padding: 8px 7px !important; }
+      .header-bar { padding: 12px 10px !important; } .step-box { padding: 6px 4px !important; }
+      #bookingForm .mb-3, #bookingForm .mb-2, .step-box, .khung-tt, .khung-mau { margin-bottom: 6px !important; }
+      .hang-o > [class*="col"] { margin-bottom: 6px !important; } .khung-tt > .row > [class*="col"] { margin-bottom: 0 !important; }
+    }
+    /* 15/11/2026 chủ quán: biểu tượng Font Awesome đồng bộ trang quản trị */
+    .o-icon i { font-size: 14px; width: 16px; text-align: center; } .gt-nut i { font-size: 19px; }
+    #lockWarningTitle i, #luuYMauForm i { margin-right: 4px; }
+    /* 15/11/2026 chủ quán: rê chuột vào ô điền form → sáng đậm hơn + chú thích hiện ngay (chỉ máy có chuột) */
+    @media (hover: hover) {
+      [data-tip] { position: relative; }
+      [data-tip]:hover::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 5px); transform: translateX(-50%); background: #4a2a17; color: #fff; font-size: 11.5px; font-weight: 600; line-height: 1.3; padding: 3px 8px; border-radius: 6px; white-space: nowrap; z-index: 30; pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+      .khung-tt > .row > [class*="col"]:hover, .o-cot-khach .input-group:hover, .o-tre-em:hover, .khung-mau > .input-group:hover { background-color: #fbeee3; }
+      .khung-tt > .row > [class*="col"]:hover .o-icon, .input-group:hover .o-icon { color: #6e3412 !important; }
+      .input-group:hover > .form-control, .input-group:hover > .form-select { border-color: #c98a5e; }
+    }
+    .lich-mau-pop { position: fixed; z-index: 3000; display: none; max-width: 270px; background: #fff; border: 1px solid #e3d6cb; border-radius: 10px; box-shadow: 0 6px 20px rgba(74,42,23,.18); padding: 8px 10px; font-size: 12px; color: #3d2a1e; pointer-events: none; }
+    .lich-mau-pop .td { font-weight: 800; color: #864c2a; margin-bottom: 3px; } .lich-mau-pop ul { margin: 0; padding-left: 16px; } .lich-mau-pop li { line-height: 1.35; }
+    /* ♂ ♀ đồng bộ: đang chọn = biểu tượng màu đậm trên nền nhạt cùng màu; chưa chọn = mờ */
+    .khung-tt .btn-check:checked + .gt-nam { background: #e6effb !important; color: #2f6fbf !important; }
+    .khung-tt .btn-check:checked + .gt-nu { background: #fbe7f0 !important; color: #d14b7f !important; }
+    .email-suggest-box { z-index: 40; }
+    .o-tuoi .form-select { background-image: none !important; padding-right: 4px !important; } /* ô tuổi bỏ mũi tên cho vừa "26-35" */
+    /* 15/11/2026 chủ quán: đầu trang + sơ đồ gọn chiều cao (logo nhỏ, bớt lề, số bước cùng dòng tên bước) */
+    .header-bar { padding: 10px 14px !important; } .hd-logo { width: 72px !important; height: 72px !important; } .hd-wrap { gap: 12px !important; }
+    @media (max-width: 576px) { .header-bar { padding: 8px 10px !important; } .hd-logo { width: 56px !important; height: 56px !important; border-width: 2px !important; } .hd-brand { font-size: 17px !important; } .hd-title { font-size: 12.5px !important; } .hd-sub { font-size: 11.5px !important; } }
+    /* điền đủ thông tin → nút gửi nhấp nháy chậm */
+    @keyframes nutCham { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(147,76,34,.45); } 50% { transform: scale(1.02); box-shadow: 0 0 0 9px rgba(147,76,34,0); } }
+    .btn-submit.san-sang, #btnSubmitT.san-sang { animation: nutCham 2.4s ease-in-out infinite; }
+    /* 15/11/2026 chủ quán: công tắc + nút chọn dùng màu cam sáng (thay xanh dương / xanh lá của Bootstrap) */
+    .form-check-input:checked { background-color: #f28c28 !important; border-color: #f28c28 !important; }
+    .form-check-input:focus { border-color: #f6b26b !important; box-shadow: 0 0 0 .2rem rgba(242,140,40,.25) !important; }
+    .form-switch .form-check-input:focus:not(:checked) { background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-4 -4 8 8%27%3e%3ccircle r=%273%27 fill=%27%23f6b26b%27/%3e%3c/svg%3e"); }
+    #hoanCocChon .btn-outline-success, #hoanCocChon .btn-outline-primary { color: #d9711a !important; border-color: #f2a65a !important; background: #fff !important; }
+    #hoanCocChon .btn-check:checked + .btn-outline-success, #hoanCocChon .btn-check:checked + .btn-outline-primary { color: #fff !important; background: #f28c28 !important; border-color: #f28c28 !important; }
+    #hoanCocChon .btn-outline-success:hover, #hoanCocChon .btn-outline-primary:hover { background: #fff3e6 !important; }
+    /* 15/11/2026 chủ quán: cam trầm hơn, chữ nút giữ màu nâu như "Ghi chú thêm" */
+    .form-check-input:checked { background-color: #d27a2c !important; border-color: #d27a2c !important; }
+    #hoanCocChon .btn-outline-success, #hoanCocChon .btn-outline-primary { color: #934c22 !important; border-color: #d9a273 !important; background: #fff !important; }
+    #hoanCocChon .btn-check:checked + .btn-outline-success, #hoanCocChon .btn-check:checked + .btn-outline-primary { color: #6b3511 !important; background: #efc49b !important; border-color: #c8752f !important; }
+    #hoanCocChon .btn-outline-success:hover, #hoanCocChon .btn-outline-primary:hover { background: #fbeee2 !important; }
+    /* 15/11/2026 chủ quán: Số khách + Có trẻ em (+ Ghi chú thêm) 1 hàng 1 khung */
+    .khung-sk { display: flex; align-items: stretch; border: 1px solid #e3d6cb; border-radius: .5rem; background: #fff; margin-bottom: 6px; }
+    .khung-sk > * { display: flex; align-items: center; min-width: 0; } .khung-sk > * + * { border-left: 1px solid #efe6de; }
+    .khung-sk > .o-cot-khach { flex: 0 0 var(--rong-tuoi); } .khung-sk .o-cot-khach .input-group { width: 100% !important; }
+    .khung-sk .o-cot-khach .input-group > * { border: 0 !important; border-radius: 0 !important; background-color: transparent !important; box-shadow: none !important; }
+    .khung-sk > .o-tre-em { flex: 1 1 0; border: 0 !important; border-radius: 0 !important; background: transparent !important; padding: 3px 8px !important; min-height: 38px; flex-wrap: wrap; }
+    .khung-sk > .o-gc { flex: 1 1 0; padding: 3px 8px; white-space: nowrap; }
+    .khung-sk .form-check { margin: 0; } .khung-sk .form-check-label { font-size: .82rem; color: #934c22; font-weight: 700; white-space: nowrap; }
+    .khung-sk > .o-tre-em { flex-wrap: nowrap !important; } .khung-sk .o-tre-em:has(.form-check-input:checked) .nhan-tre { display: none; } /* bật trẻ em: chỉ còn icon + ô số bé, vẫn 1 hàng */
+    .khung-sk #kidsBox, .khung-sk #kidsBoxT { flex: none; }
 </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="py-4">
   <div class="container" style="max-width: 650px;">
@@ -187,41 +308,38 @@
       </div>
       <div class="card-body p-4">
         <form id="bookingForm" onsubmit="handleFormSubmit(event)">
-          <div class="row">
-            <div class="col-md-5 mb-3">
-              <label class="form-label fw-bold">Khách hàng *</label>
-              <input type="text" name="hoTen" class="form-control" required placeholder="Nguyễn Văn A">
-            </div>
-            <div class="col-md-4 col-7 mb-3">
-              <label class="form-label fw-bold">Số Điện Thoại *</label>
-              <input type="tel" name="sdt" class="form-control" required placeholder="09xxx">
-            </div>
-            <div class="col-md-3 col-5 mb-3">
-              <label class="form-label fw-bold">Giới tính *</label>
+          <!-- 15/11/2026 chủ quán: khối thông tin khách dùng biểu tượng (♂♀ + tên · 🎂 tuổi + SĐT · tỉnh + email · giờ + ngày) thay chữ nhãn (giống trang decor). Cột trái = --rong-tuoi, cột phải thẳng mép -->
+          <div class="khung-tt">
+          <div class="row hang-o">
+            <div class="col-auto o-gt">
               <div class="btn-group w-100">
                 <input type="radio" class="btn-check" name="gioiTinh" id="genderMaleT" value="Nam">
-                <label class="btn btn-outline-secondary" for="genderMaleT">Nam</label>
+                <label class="btn btn-outline-secondary gt-nut gt-nam" for="genderMaleT" data-tip="Nam"><i class="fa-solid fa-mars" aria-hidden="true"></i><span class="visually-hidden">Nam</span></label>
                 <input type="radio" class="btn-check" name="gioiTinh" id="genderFemaleT" value="Nữ" checked>
-                <label class="btn btn-outline-secondary" for="genderFemaleT">Nữ</label>
+                <label class="btn btn-outline-secondary gt-nut gt-nu" for="genderFemaleT" data-tip="Nữ"><i class="fa-solid fa-venus" aria-hidden="true"></i><span class="visually-hidden">Nữ</span></label>
               </div>
             </div>
+            <div class="col position-relative" style="min-width:0"><div class="input-group" data-tip="Họ và tên"><span class="input-group-text o-icon"><i class="fa-solid fa-user" aria-hidden="true"></i></span><input type="text" name="hoTen" autocomplete="off" oninput="goiYTen_(this, 'goiYTen')" onblur="vietHoaTen_(this)" class="form-control" required placeholder="Họ và tên" aria-label="Họ và tên"></div><div id="goiYTen" class="email-suggest-box" style="display:none;"></div></div>
           </div>
-          <!-- ĐỘ TUỔI, TỈNH THÀNH -->
-          <div class="row">
-            <div class="col-md-5 col-5 mb-3">
-              <label class="form-label fw-bold">Độ tuổi *</label>
-              <select name="doTuoi" class="form-select" required>
-                <option value="" disabled selected>Chọn</option>
+          <div class="row hang-o">
+            <div class="col-auto o-tuoi">
+              <div class="input-group" data-tip="Độ tuổi"><span class="input-group-text o-icon"><i class="fa-solid fa-cake-candles" aria-hidden="true"></i></span>
+              <select name="doTuoi" class="form-select" required aria-label="Độ tuổi">
+                <option value="" disabled selected>Tuổi</option>
                 <option value="Dưới 18">Dưới 18</option>
                 <option value="18 - 25">18 - 25</option>
                 <option value="26 - 35">26 - 35</option>
                 <option value="36 - 50">36 - 50</option>
                 <option value="Trên 50">Trên 50</option>
               </select>
+              </div>
             </div>
-            <div class="col-md-7 col-7 mb-3">
-              <label class="form-label fw-bold text-nowrap"><span class="d-none d-sm-inline">Tỉnh / Thành phố đang sinh sống</span><span class="d-sm-none">Tỉnh / TP sinh sống</span> *</label>
-              <select name="tinhThanh" class="form-select" required>
+            <div class="col" style="min-width:0"><div class="input-group" data-tip="Số điện thoại"><span class="input-group-text o-icon"><i class="fa-solid fa-phone" aria-hidden="true"></i></span><input type="tel" name="sdt" class="form-control" required placeholder="Số điện thoại" aria-label="Số điện thoại"></div></div>
+          </div>
+          <div class="row hang-o">
+            <div class="col-auto o-tinh-trai"><div class="input-group o-tinh" data-tip="Tỉnh / Thành phố đang sống"><span class="input-group-text o-icon"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></span>
+              <select name="tinhThanh" class="form-select" required aria-label="Tỉnh / Thành phố đang sống">
+                <option value="" disabled selected>Tỉnh</option>
                 <!-- 34 tỉnh/thành sau sáp nhập (từ 01/07/2025); trong ngoặc là tỉnh cũ đã gộp -->
                 <option value="Lâm Đồng (Đà Lạt)">Lâm Đồng (Đà Lạt, Đắk Nông, Bình Thuận)</option>
                 <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh (Bình Dương, Bà Rịa - Vũng Tàu)</option>
@@ -259,23 +377,16 @@
                 <option value="Vĩnh Long">Vĩnh Long (Bến Tre, Trà Vinh)</option>
                 <option value="Khác">Nước ngoài / khác...</option>
               </select>
-            </div>
-          </div>
-
-
-          <div class="row">
-            <div class="col-md-5 mb-3 position-relative">
-              <label class="form-label fw-bold">Email <span class="fw-normal text-muted" style="font-size:11px">(không bắt buộc)</span></label>
-              <input type="email" id="emailInputThuong" name="email" class="form-control" autocomplete="off" placeholder="tui@gmail.com" oninput="handleEmailInput(this, 'emailSuggestThuong')">
+            </div></div>
+            <div class="col position-relative" style="min-width:0">
+              <div class="input-group" data-tip="Email (không bắt buộc)"><span class="input-group-text o-icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></span><input type="email" id="emailInputThuong" name="email" class="form-control" autocomplete="off" placeholder="Email (nếu có)" aria-label="Email (không bắt buộc)" oninput="handleEmailInput(this, 'emailSuggestThuong')"></div>
               <div id="emailSuggestThuong" class="email-suggest-box" style="display:none;"></div>
             </div>
-            <div class="col-md-4 col-6 mb-3">
-              <label class="form-label fw-bold">Ngày đặt bàn *</label>
-              <input type="date" name="ngay" id="txtNgayT" class="form-control" required>
-            </div>
-            <div class="col-md-3 col-6 mb-3">
-              <label class="form-label fw-bold">Giờ đến *</label>
-              <select name="gioVao" id="selectGioVao" class="form-select" required onchange="checkRushHour()">
+          </div>
+          <!-- GIỜ (trước) + NGÀY; dòng T6/T7 nằm ngay dưới khung -->
+          <div class="row hang-o">
+            <div class="col-auto o-cot-gio">
+              <select name="gioVao" id="selectGioVao" class="form-select" required aria-label="Giờ đến" data-tip="Giờ đến" onchange="checkRushHour()">
                 <option value="14:00">14:00</option>
                 <option value="14:30">14:30</option>
                 <option value="15:00">15:00</option>
@@ -293,42 +404,37 @@
                 <option value="21:00">21:00</option>
                 <option value="21:30">21:30</option>
               </select>
-              <small id="khoaGioHintT" class="text-danger fw-bold" style="font-size:10.5px; display:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:right; margin-left:-220px; position:relative; z-index:1;"></small>
+            </div>
+            <div class="col o-cot-ngay" style="min-width:0"><div class="input-group o-ngay" data-tip="Ngày đặt bàn"><span class="input-group-text o-icon"><i class="fa-solid fa-calendar-day" aria-hidden="true"></i></span><input type="date" name="ngay" id="txtNgayT" class="form-control" required aria-label="Ngày đặt bàn" onclick="try { this.showPicker(); } catch (e) {}"></div>
+              <small id="khoaGioHintT" class="trong-o-ngay text-danger fw-bold" style="font-size:10.5px; display:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:right; margin-left:-220px; position:relative; z-index:1;"></small>
             </div>
           </div>
+          </div>
 
-          <div id="ngayKhoaT" class="rush-hour-box" style="display:none; padding:8px 12px; color:#b4231b; font-size:13px; font-weight:600">🔒 Ngày bạn chọn Túi không nhận khách. Vui lòng chọn ngày khác!</div>
+          <div id="ngayKhoaT" class="rush-hour-box" style="display:none; padding:8px 12px; color:#b4231b; font-size:13px; font-weight:600"><i class="fa-solid fa-lock me-1" aria-hidden="true"></i>Ngày bạn chọn Túi không nhận khách. Vui lòng chọn ngày khác!</div>
 
           <!-- LƯU Ý GIỜ ĐẾN (luôn hiện) -->
           <div id="rushHourNotice" class="rush-hour-box" style="display: block; padding: 8px 12px;">
-            <div class="alert-cao-diem" style="font-size:13px;font-weight:600;line-height:1.45;color:#b4231b;text-align:left">⏰ Quý khách vui lòng đến đúng giờ đã đặt.<br>Quá giờ hẹn, Túi xin phép không giữ bàn và sẽ xếp bàn thường theo bàn trống lúc đó.<br>Rất mong Quý khách thông cảm!</div>
+            <div class="alert-cao-diem" style="font-size:13px;font-weight:600;line-height:1.45;color:#b4231b;text-align:left"><i class="fa-solid fa-clock me-1" aria-hidden="true"></i><b>Quý khách vui lòng đến đúng giờ đã đặt.</b><br>Quá giờ hẹn, Túi xin phép không giữ bàn và sẽ xếp bàn thường theo bàn trống lúc đó.<br>Rất mong Quý khách thông cảm!</div>
           </div>
 
-          <div class="p-3 mb-3 bg-light rounded border d-flex flex-wrap align-items-center gap-3">
-            <div class="d-flex align-items-center gap-2">
-              <label class="fw-bold mb-0 text-nowrap" for="txtSoKhachT">Số khách *</label>
-              <input type="number" id="txtSoKhachT" name="soKhach" min="1" class="form-control" style="width:88px" required placeholder="2" value="2">
+          <!-- 15/11/2026 chủ quán: Số khách + Có trẻ em + Ghi chú thêm: 1 hàng 1 khung -->
+          <div class="khung-sk">
+            <div class="o-cot-khach"><div class="input-group" data-tip="Số khách"><span class="input-group-text o-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span><input type="number" id="txtSoKhachT" name="soKhach" min="1" class="form-control" required aria-label="Số khách" placeholder="2" value="2"></div></div>
+            <div class="o-tre-em">
+              <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" id="coTreEmCheckT" onchange="document.getElementById('kidsBoxT').style.display=this.checked?'block':'none'"><label class="form-check-label fw-bold text-nowrap" for="coTreEmCheckT"><i class="fa-solid fa-baby me-1" aria-hidden="true"></i><span class="nhan-tre">Có trẻ em</span></label></div>
+              <div id="kidsBoxT" style="display:none; width:110px;">
+                <select class="form-select form-select-sm" id="childQuantitySelectT">
+                  <option value="1 bé">1 bé</option>
+                  <option value="2 bé">2 bé</option>
+                  <option value="3+ bé">3+ bé</option>
+                </select>
+              </div>
             </div>
-            <div class="form-check form-switch mb-0">
-              <input class="form-check-input" type="checkbox" id="coTreEmCheckT" onchange="document.getElementById('kidsBoxT').style.display=this.checked?'block':'none'">
-              <label class="form-check-label fw-bold text-nowrap" for="coTreEmCheckT" style="color:#a0602f;">👶 Có trẻ em</label>
-            </div>
-            <div id="kidsBoxT" style="display:none; width:110px;">
-              <select class="form-select form-select-sm" id="childQuantitySelectT">
-                <option value="1 bé">1 bé</option>
-                <option value="2 bé">2 bé</option>
-                <option value="3+ bé">3+ bé</option>
-              </select>
-            </div>
+            <div class="o-gc"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="coGhiChu" onchange="var t=document.getElementById('oGhiChu');t.style.display=this.checked?'block':'none';if(this.checked)t.focus();else t.value='';"><label class="form-check-label fw-bold" for="coGhiChu"><i class="fa-solid fa-pen-to-square me-1" aria-hidden="true"></i>Ghi chú</label></div></div>
           </div>
+          <div class="mb-3"><textarea name="ghiChu" id="oGhiChu" class="form-control" rows="2" style="display:none" placeholder="Chỗ ngồi, không gian…"></textarea></div>
 
-          <div class="mb-3">
-            <div class="form-check form-switch mb-1">
-              <input class="form-check-input" type="checkbox" id="coGhiChu" onchange="var t=document.getElementById('oGhiChu');t.style.display=this.checked?'block':'none';if(this.checked)t.focus();else t.value='';">
-              <label class="form-check-label fw-bold" for="coGhiChu">📝 Ghi chú thêm</label>
-            </div>
-            <textarea name="ghiChu" id="oGhiChu" class="form-control" rows="2" style="display:none" placeholder="Chỗ ngồi, không gian…"></textarea>
-          </div>
 
           <button type="submit" id="btnSubmitT" class="btn btn-submit w-100">GỬI YÊU CẦU ĐẶT BÀN</button>
         </form>
@@ -373,12 +479,52 @@
       var fs = 10.5; el.style.fontSize = fs + "px";
       while (el.scrollWidth > el.clientWidth + 1 && fs > 8) { fs -= 0.5; el.style.fontSize = fs + "px"; }
     }
-    window.addEventListener("resize", function() { vuaMotHang_(document.getElementById("khoaGioHintT")); });
+    document.addEventListener("change", function() { setTimeout(function() { if (window._rutTinhLai) window._rutTinhLai(); }, 0); });
+    function nutSanSang_() { var f = document.getElementById("bookingForm"), n = document.getElementById("btnSubmitT"); if (f && n) n.classList.toggle("san-sang", f.checkValidity() && !n.disabled); } // đủ thông tin → nút gửi nháy chậm
+    document.addEventListener("input", function() { setTimeout(nutSanSang_, 0); }); document.addEventListener("change", function() { setTimeout(nutSanSang_, 0); }); setInterval(nutSanSang_, 1500);
+    function rongGoiYGio_() { var h = document.getElementById("khoaGioHintT"); if (!h) return; var o = h.closest(".o-cot-ngay"); if (o) o.classList.toggle("co-goi-y", h.style.display !== "none"); }
+    window.addEventListener("resize", function() { rongGoiYGio_(); vuaMotHang_(document.getElementById("khoaGioHintT")); });
+    // Tỉnh / TP ở cột hẹp: bấm chọn thì hiện đủ tên, chọn xong hiện tên ngắn (giá trị gửi đi giữ nguyên value)
+    function rutTenTinh_() {
+      var sel = document.querySelector('select[name="tinhThanh"]'); if (!sel || sel._rut) return; sel._rut = true;
+      [].forEach.call(sel.options, function(o) { o.dataset.day = o.text; });
+      var cv = document.createElement("canvas").getContext("2d");
+      function rong() { var cs = getComputedStyle(sel); cv.font = cs.font; return sel.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2; }
+      function ngan(o) {
+        var s = (o.value === "Khác" ? "Khác" : String(o.value || o.dataset.day).replace(/\s*\(.*?\)\s*$/, "")).replace(/Hồ Chí Minh/i, "HCM").trim(), max = rong();
+        var vua = function(t) { return cv.measureText(t).width <= max; }, w = s.replace(/^TP\.\s*/, "").split(" ");
+        if (vua(s)) return s;
+        if (w.length === 1) return w[0]; // "TP. HCM" → "HCM"
+        var dau = w.slice(0, -1).map(function(x) { return x.charAt(0) + "."; }).join(""), cuoi = w[w.length - 1];
+        if (vua(dau + " " + cuoi)) return dau + " " + cuoi; // "L. Đồng"
+        if (vua(dau + cuoi)) return dau + cuoi; // "T.Nguyên"
+        return cuoi; // vẫn chật: hiện đủ chữ cuối ("Nguyên"), không viết tắt thành chữ cái đầu
+      }
+      function hienDu() { [].forEach.call(sel.options, function(x) { x.text = x.dataset.day; }); }
+      function hienNgan() { if (!sel.offsetParent || rong() <= 0) return; hienDu(); var o = sel.options[sel.selectedIndex]; if (o && o.value) o.text = ngan(o); } // ô đang ẩn thì đợi hiện ra mới tính
+      window._rutTinhLai = function() { if (document.activeElement !== sel) hienNgan(); };
+      sel.addEventListener("mousedown", hienDu); sel.addEventListener("touchstart", hienDu, { passive: true }); sel.addEventListener("focus", hienDu);
+      sel.addEventListener("change", function() { setTimeout(hienNgan, 0); }); sel.addEventListener("blur", hienNgan);
+      window.addEventListener("resize", hienNgan); hienNgan();
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", rutTenTinh_); else rutTenTinh_();
+    // Ô tuổi ở cột hẹp: chọn xong hiện gọn "<18", "18-25", ">50"; bấm vào thì hiện đủ (giá trị gửi đi giữ nguyên)
+    function rutTuoi_() {
+      var sel = document.querySelector('select[name="doTuoi"]'); if (!sel || sel._rut) return; sel._rut = true;
+      [].forEach.call(sel.options, function(o) { o.dataset.day = o.text; });
+      function ngan(o) { var v = String(o.value || ""); return /^Dưới/i.test(v) ? "<" + v.replace(/\D+/g, "") : /^Trên/i.test(v) ? ">" + v.replace(/\D+/g, "") : v.replace(/\s+/g, ""); }
+      function hienDu() { [].forEach.call(sel.options, function(x) { x.text = x.dataset.day; }); }
+      function hienNgan() { hienDu(); var o = sel.options[sel.selectedIndex]; if (o && o.value) o.text = ngan(o); }
+      sel.addEventListener("mousedown", hienDu); sel.addEventListener("touchstart", hienDu, { passive: true }); sel.addEventListener("focus", hienDu);
+      sel.addEventListener("change", function() { setTimeout(hienNgan, 0); }); sel.addEventListener("blur", hienNgan); hienNgan();
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", rutTuoi_); else rutTuoi_();
     function chuNhanToiT_(tu) { var m = String(tu || "").match(/^(\d\d):(\d\d)$/); if (!m || +m[2] % 15 !== 1) return "trước " + tu; var p = +m[1] * 60 + +m[2] - 1; return "tới " + ("0" + Math.floor(p / 60)).slice(-2) + ":" + ("0" + p % 60).slice(-2); }
     function tenThuKhoaT_() { return (KHOA_GIO.thu || []).map(function(n) { return ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][n]; }).join(", "); }
     function kiemNgayKhoa() {
       const khoa = NGAY_KHOA.indexOf(document.getElementById("txtNgayT").value) !== -1, btn = document.getElementById("btnSubmitT");
       document.getElementById("ngayKhoaT").style.display = khoa ? "block" : "none";
+      var ktt = document.querySelector(".khung-tt"); if (ktt) ktt.classList.toggle("ngay-nhay", !!khoa); // ngày khoá: khung ngày nháy nhẹ
       btn.disabled = khoa;
       btn.innerText = khoa ? "NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : "GỬI YÊU CẦU ĐẶT BÀN";
     }
@@ -395,9 +541,9 @@
       const giuLai = con.some(function(o) { return o.value === truoc; }), moc = rieng ? rieng.tu : tuK;
       const sat = con.filter(function(o) { return o.value < moc; }).pop() || con[0];
       if (giuLai) sel.value = truoc; else if (sat) sel.value = sat.value;
-      if (rieng) { hint.style.display = "block"; hint.innerText = "* Ngày " + ngay.slice(8, 10) + "/" + ngay.slice(5, 7) + ": Túi " + (rieng.den >= "22:00" ? "chỉ nhận bàn trước " + rieng.tu : "tạm khóa nhận khách " + rieng.tu + "–" + rieng.den); }
-      else { hint.style.display = KHOA_GIO.bat && (KHOA_GIO.thu || []).length ? "block" : "none"; hint.innerText = "* " + tenThuKhoaT_() + ": dưới 6 khách " + chuNhanToiT_(KHOA_GIO.tu) + (KHOA_GIO.tuLon ? " · từ 6 khách " + chuNhanToiT_(KHOA_GIO.tuLon) : ""); }
-      vuaMotHang_(hint);
+      if (rieng) { hint.style.display = "block"; hint.innerText = "Ngày " + ngay.slice(8, 10) + "/" + ngay.slice(5, 7) + ": " + (rieng.den >= "22:00" ? "chỉ nhận trước " + rieng.tu : "khoá " + rieng.tu + "–" + rieng.den); }
+      else { hint.style.display = KHOA_GIO.bat && (KHOA_GIO.thu || []).length ? "block" : "none"; hint.innerText = tenThuKhoaT_() + " nhận " + chuNhanToiT_(typeof tuK !== "undefined" ? tuK : KHOA_GIO.tu); } // 15/11/2026: theo số khách đang gõ, ngắn gọn trong ô ngày
+      rongGoiYGio_(); vuaMotHang_(hint);
       checkRushHour();
     }
     apDungKhoaGio();
@@ -453,7 +599,7 @@
       guiDonWebAnToan(data, function(res) {
           window._sdtVuaDat = data.sdt;
           msg.className = "alert alert-light border mt-3 p-0 overflow-hidden";
-          msg.innerHTML = res.success === false ? "" : '<div class="d-flex align-items-center gap-3 text-start text-white p-3" style="background:linear-gradient(135deg,#b4703f,#c98a5b);border-radius:8px 8px 0 0"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src=\'https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png\'" style="width:58px;height:58px;width:min(58px,13vw);height:min(58px,13vw);border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.2);background:#fff"><div><div class="fw-bold text-nowrap" style="font-size:16px;font-size:min(16px,3.5vw);letter-spacing:.3px"><span style="display:inline-block;width:1.5em">🎉</span>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div><div class="text-nowrap" style="font-size:12.5px;font-size:min(12.5px,3.3vw);opacity:.85;padding-left:min(24px,5.25vw);margin-top:2px">Túi Nướng Lavender · Đặt bàn ăn tiêu chuẩn</div></div></div><div class="p-3">' + document.getElementById("tplThanhCong").innerHTML + '</div>';
+          msg.innerHTML = res.success === false ? "" : '<div class="d-flex align-items-center gap-3 text-start text-white p-3" style="background:linear-gradient(135deg,#b4703f,#c98a5b);border-radius:8px 8px 0 0"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src=\'https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png\'" style="width:58px;height:58px;width:min(58px,13vw);height:min(58px,13vw);border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.2);background:#fff"><div><div class="fw-bold text-nowrap" style="font-size:16px;font-size:min(16px,3.5vw);letter-spacing:.3px"><span style="display:inline-block;width:1.5em"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>TIẾP NHẬN YÊU CẦU THÀNH CÔNG</div><div class="text-nowrap" style="font-size:12.5px;font-size:min(12.5px,3.3vw);opacity:.85;padding-left:min(24px,5.25vw);margin-top:2px">Túi Nướng Lavender · Đặt bàn ăn tiêu chuẩn</div></div></div><div class="p-3">' + document.getElementById("tplThanhCong").innerHTML + '</div>';
           if (res.success === false) { msg.className = "alert alert-danger mt-3 text-center"; msg.innerText = res.message; }
           msg.style.display = res.daHuyTrung ? "none" : "block"; // khách chọn "Không gửi nữa" thì không báo gì thêm
           if (res.success !== false) { form.reset(); apDungKhoaGio(); }
@@ -473,10 +619,10 @@
     // Hệ thống đã có đơn cùng ngày (trùng SĐT hoặc họ tên): hỏi khách trước khi tạo thêm đơn
     function hoiGuiTrung_(res, vanGui, khong) {
       var e = function(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function(c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
-      var nd = res.trungSdt ? "Số điện thoại này đã có đơn ngày <b>" + e(res.ngayHien) + "</b>:<div class=\"ct-ds\">" + (res.don || []).map(function(d) { return "<div>🕒 <b>" + e(d.gio) + "</b> · " + e(d.khach) + " khách · " + e(d.tt) + "</div>"; }).join("") + "</div>"
+      var nd = res.trungSdt ? "Số điện thoại này đã có đơn ngày <b>" + e(res.ngayHien) + "</b>:<div class=\"ct-ds\">" + (res.don || []).map(function(d) { return "<div><i class='fa-solid fa-clock me-1' aria-hidden='true'></i><b>" + e(d.gio) + "</b> · " + e(d.khach) + " khách · " + e(d.tt) + "</div>"; }).join("") + "</div>"
         : "Ngày <b>" + e(res.ngayHien) + "</b> đã có đơn mang tên <b>" + e(res.ten) + "</b>.";
       var nen = document.createElement("div"); nen.className = "ct-nen";
-      nen.innerHTML = '<div class="ct-hop" role="alertdialog" aria-modal="true"><div class="ct-ico">⚠️</div><div class="ct-tieude">' + (res.chanHan ? "TÚI ĐÃ NHẬN ĐƠN NÀY RỒI" : res.trungSdt ? "TÚI ĐÃ CÓ ĐƠN CỦA QUÝ KHÁCH" : "HỆ THỐNG ĐÃ CÓ TÊN NÀY") + '</div><div class="ct-nd">' + nd + '</div><div class="ct-ghi">' + (res.chanHan ? 'Quý khách không cần gửi lại ạ. Cần đổi thông tin, vui lòng gọi hotline <b>0911 588 138</b>.' : 'Nếu Quý khách đã gửi rồi thì không cần gửi lại ạ. Chỉ chọn <b>Vẫn gửi</b> khi muốn đặt thêm bàn.') + '</div>' + (res.chanHan ? '<button type="button" class="ct-khong">Đã hiểu</button>' : '<button type="button" class="ct-khong">Không gửi nữa</button><button type="button" class="ct-gui">Vẫn gửi đơn mới</button>') + '</div>';
+      nen.innerHTML = '<div class="ct-hop" role="alertdialog" aria-modal="true"><div class="ct-ico"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div><div class="ct-tieude">' + (res.chanHan ? "TÚI ĐÃ NHẬN ĐƠN NÀY RỒI" : res.trungSdt ? "TÚI ĐÃ CÓ ĐƠN CỦA QUÝ KHÁCH" : "HỆ THỐNG ĐÃ CÓ TÊN NÀY") + '</div><div class="ct-nd">' + nd + '</div><div class="ct-ghi">' + (res.chanHan ? 'Quý khách không cần gửi lại ạ. Cần đổi thông tin, vui lòng gọi hotline <b>0911 588 138</b>.' : 'Nếu Quý khách đã gửi rồi thì không cần gửi lại ạ. Chỉ chọn <b>Vẫn gửi</b> khi muốn đặt thêm bàn.') + '</div>' + (res.chanHan ? '<button type="button" class="ct-khong">Đã hiểu</button>' : '<button type="button" class="ct-khong">Không gửi nữa</button><button type="button" class="ct-gui">Vẫn gửi đơn mới</button>') + '</div>';
       document.body.appendChild(nen);
       nen.querySelector(".ct-khong").onclick = function() {
         nen.remove(); khong();
@@ -509,29 +655,47 @@
     // 1. Gợi ý Email thông minh
 const emailDomains = ['gmail.com', 'yahoo.com', 'icloud.com', 'outlook.com', 'hotmail.com'];
 
-function handleEmailInput(inputElem, containerId) {
-  const val = inputElem.value;
-  let suggestBox = document.getElementById(containerId);
-  if (!suggestBox) return;
-
-  const atIndex = val.indexOf('@');
-  if (atIndex !== -1) {
-    const userPart = val.substring(0, atIndex);
-    const domainPart = val.substring(atIndex + 1).toLowerCase();
-    const matched = emailDomains.filter(d => d.startsWith(domainPart));
-
-    if (matched.length > 0 && userPart.length > 0) {
-      suggestBox.innerHTML = matched.map(d => 
-        `<div class="email-suggest-item" onclick="selectEmail('${userPart}@${d}', '${inputElem.id}', '${containerId}')">${userPart}@<b>${d}</b></div>`
-      ).join('');
-      suggestBox.style.display = 'block';
-      return;
+// 15/11/2026 chủ quán: gợi ý tên người Việt khi gõ — chữ đầu ưu tiên họ, chữ 2 ưu tiên tên đệm, chữ sau ưu tiên tên; gõ không dấu vẫn ra
+    var HO_VN = ["Nguyễn","Trần","Lê","Phạm","Hoàng","Huỳnh","Phan","Vũ","Võ","Đặng","Bùi","Đỗ","Hồ","Ngô","Dương","Lý","Đinh","Trương","Lâm","Mai","Tô","Hà","Cao","Đoàn","Lương","Trịnh","Đào","Châu","Tạ","Quách","Thái","Kiều","Từ","La","Lưu","Tăng","Âu","Văn","Triệu","Mạc","Thân","Diệp","Phùng","Vương","Giang","Khúc","Doãn","Lục","Nghiêm","Tiêu","Kha","Hứa","Ông","Chu","Cù","Lại","Thạch"];
+    var DEM_VN = ["Thị","Văn","Ngọc","Minh","Thanh","Hữu","Đức","Hoàng","Quốc","Gia","Bảo","Anh","Thu","Kim","Xuân","Phương","Mỹ","Hồng","Như","Khánh","Tuấn","Thành","Công","Quang","Trọng","Nhật","Thùy","Thúy","Diệu","Bích","Cẩm","Huyền","Hoài","Tường","Trúc","Uyên","Hải","Duy","Tấn","Thái","Trung","Đình","Hoàn","Kiều","Lan","Mai","Thảo","Ánh","Tú","Phúc","Thiên","Đăng","Khắc","Bá"];
+    var TEN_VN = ["Anh","Linh","Ngọc","Trang","Huyền","Hương","Hà","Thảo","Vy","Nhi","My","Uyên","Phương","Quỳnh","Hân","Nga","Ngân","Lan","Mai","Thu","Hằng","Hạnh","Nhung","Tâm","Tiên","Yến","Duyên","Hiền","Trinh","Thủy","Châu","Như","Khánh","Hoa","Diệp","Ly","Loan","Dung","Thư","Giang","Trâm","Thy","Hồng","Oanh","Liên","Nhàn","Thanh","Xuân","Vân","Kiều","Diễm","Hậu","Lam","Quyên","Thoa","Tuyết","Ngà","Nguyệt","Trúc","Minh","Tuấn","Hùng","Dũng","Nam","Long","Huy","Hoàng","Khang","Phúc","Bảo","Quân","Đạt","Tài","Thắng","Sơn","Hải","Trung","Đức","Hiếu","Khoa","Nghĩa","Thành","Tùng","Vinh","Phong","Hưng","Kiên","Lộc","Tú","Trí","Nhân","Thịnh","Tín","Duy","Hào","Vũ","Toàn","Quang","Lâm","An","Khôi","Khải","Hiển","Tiến","Thông","Cường","Hiệp","Hòa","Lực","Mạnh","Nhật","Phát","Quý","Sang","Tân","Thái","Thiện","Thuận","Trọng","Tường","Việt","Vương","Nghị","Hoà","Ngôn","Nguyên","Ngữ"];
+    function boDau_(s) { return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase(); }
+    function goiYTen_(inp, boxId) {
+      var box = document.getElementById(boxId); if (!box) return;
+      var v = inp.value, m = v.match(/(\S*)$/), cuoi = m ? m[1] : "", truoc = v.slice(0, v.length - cuoi.length), soChu = truoc.trim() ? truoc.trim().split(/\s+/).length : 0;
+      box.textContent = "";
+      if (!cuoi || /[0-9@]/.test(cuoi)) { box.style.display = "none"; return; }
+      var q = boDau_(cuoi), nguon = soChu === 0 ? HO_VN.concat(DEM_VN, TEN_VN) : soChu === 1 ? DEM_VN.concat(TEN_VN, HO_VN) : TEN_VN.concat(DEM_VN), chon = [], da = {};
+      nguon.forEach(function(t) { if (chon.length < 6 && !da[t] && t !== cuoi && boDau_(t).indexOf(q) === 0) { da[t] = 1; chon.push(t); } });
+      if (!chon.length) { box.style.display = "none"; return; }
+      chon.forEach(function(t) {
+        var it = document.createElement("div"); it.className = "email-suggest-item"; it.textContent = (truoc + t).trim();
+        it.addEventListener("mousedown", function(e) { e.preventDefault(); inp.value = truoc + t + " "; box.style.display = "none"; inp.focus(); });
+        box.appendChild(it);
+      });
+      box.style.display = "block";
     }
-  }
-  suggestBox.style.display = 'none';
-}
+    function vietHoaTen_(inp) { var b = document.getElementById("goiYTen"); if (b) setTimeout(function() { b.style.display = "none"; }, 150); inp.value = inp.value.replace(/\s+/g, " ").trim().split(" ").map(function(w) { return w ? w.charAt(0).toUpperCase() + w.slice(1) : w; }).join(" "); }
+    function handleEmailInput(inputElem, containerId) { // 15/11/2026 chủ quán: gõ phần tên là hiện ngay danh sách đuôi email (tự điền @), chọn 1 chạm
+      const val = inputElem.value.trim();
+      const suggestBox = document.getElementById(containerId);
+      if (!suggestBox) return;
+      const atIndex = val.indexOf("@");
+      const userPart = atIndex === -1 ? val : val.substring(0, atIndex);
+      const domainPart = atIndex === -1 ? "" : val.substring(atIndex + 1).toLowerCase();
+      const matched = userPart && !/\s/.test(userPart) ? emailDomains.filter(function(d) { return d.indexOf(domainPart) === 0 && d !== domainPart; }) : [];
+      suggestBox.textContent = "";
+      if (!matched.length) { suggestBox.style.display = "none"; return; }
+      matched.forEach(function(d) {
+        const item = document.createElement("div"); item.className = "email-suggest-item";
+        item.appendChild(document.createTextNode(userPart + "@")); const b = document.createElement("b"); b.textContent = d; item.appendChild(b);
+        item.addEventListener("mousedown", function(e) { e.preventDefault(); selectEmail(userPart + "@" + d, inputElem.id, containerId); });
+        suggestBox.appendChild(item);
+      });
+      suggestBox.style.display = "block";
+    }
 
-function selectEmail(fullEmail, inputId, containerId) {
+    function selectEmail(fullEmail, inputId, containerId) {
   const input = document.getElementById(inputId);
   if (input) input.value = fullEmail;
   const box = document.getElementById(containerId);
@@ -562,7 +726,7 @@ function validateBookingTime(selectedDateStr, hourVal, minuteVal) {
   </script>
   <template id="tplThanhCong"><div class="tc-ok">
             <p class="fw-bold mb-2" style="white-space:nowrap;font-size:15px;font-size:min(15.5px,4.05cqw)">Túi đã nhận được yêu cầu đặt bàn của Quý khách.</p>
-            <a href="https://hmk-vn.github.io/Datban/tracuu.html" class="btn fw-bold px-4 mb-2 text-white nut-nhay" style="background:#864c2a" onclick="try{sessionStorage.setItem('tracuu_q', window._sdtVuaDat || '')}catch(e){}">🔎 Tra cứu đơn đặt bàn</a>
+            <a href="https://hmk-vn.github.io/Datban/tracuu.html" class="btn fw-bold px-4 mb-2 text-white nut-nhay" style="background:#864c2a" onclick="try{sessionStorage.setItem('tracuu_q', window._sdtVuaDat || '')}catch(e){}"><i class="fa-solid fa-magnifying-glass me-1" aria-hidden="true"></i>Tra cứu đơn đặt bàn</a>
             <p class="small text-muted mb-3">Quý khách vui lòng kiểm tra trạng thái bằng số điện thoại hoặc email.</p>
             <div class="tc-buoc">
               <div class="xong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>Gửi yêu cầu</div>
