@@ -337,7 +337,7 @@
       .khung-tt > .row > [class*="col"]:hover .o-icon, .input-group:hover .o-icon { color: #6e3412 !important; }
       .input-group:hover > .form-control, .input-group:hover > .form-select { border-color: #c98a5e; }
     }
-    .lich-mau-pop { position: fixed; z-index: 4500; display: none; max-width: 270px; background: #fff; border: 1px solid #e3d6cb; border-radius: 10px; box-shadow: 0 6px 20px rgba(74,42,23,.18); padding: 8px 10px; font-size: 12px; color: #3d2a1e; pointer-events: none; }
+    .lich-mau-pop { position: fixed; z-index: 4500; display: none; max-width: 270px; background: #fff; border: 1px solid #e3d6cb; border-radius: 10px; box-shadow: 0 6px 20px rgba(74,42,23,.18); padding: 8px 10px; font-size: 12px; color: #3d2a1e; pointer-events: auto; } /* 15/11/2026: khung mẫu bấm được (Chọn mẫu, Xác nhận) */
     .lich-mau-pop .td { font-weight: 800; color: #864c2a; margin-bottom: 3px; } .lich-mau-pop ul { margin: 0; padding-left: 16px; } .lich-mau-pop li { line-height: 1.35; }
     /* XUẤT VAT + Ghi chú thêm: 2 ô ngang nhau, luôn 1 hàng */
     .hang-tuy-chon { display: flex; gap: 6px; margin-bottom: 6px; }
@@ -1738,7 +1738,7 @@
         else { dong.textContent = "Mẫu còn trống (" + ds.length + "):"; var ul = document.createElement("ul"); ds.forEach(function(t) { var li = document.createElement("li"), ic = document.createElement("i"); ic.className = "fa-regular fa-circle"; ic.setAttribute("aria-hidden", "true"); li.appendChild(ic); li.appendChild(document.createTextNode(rutTenMau_(t))); li.title = t; li._ten = t; ul.appendChild(li); }); pop.appendChild(dong); pop.appendChild(ul); var gc = document.createElement("div"); gc.className = "gc"; gc.textContent = "SN: sinh nhật · KN: kỷ niệm"; pop.appendChild(gc); themNutChonMau_(pop, ul, k); dat(); return; }
         pop.appendChild(dong); dat();
       }
-      function dat() { pop.style.display = "block"; var r = o.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight, x = Math.max(6, Math.min(innerWidth - w - 6, r.left + r.width / 2 - w / 2)), y = r.bottom + 6 + h > innerHeight - 6 ? r.top - h - 6 : r.bottom + 6; pop.style.left = x + "px"; pop.style.top = Math.max(6, y) + "px"; }
+      function dat() { pop.style.display = "block"; var r = o.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight, x = Math.max(6, Math.min(innerWidth - w - 6, r.left + r.width / 2 - w / 2)), y = r.bottom + 2 + h > innerHeight - 6 ? r.top - h - 2 : r.bottom + 2 /* sát ô ngày: rê chuột xuống không lướt qua ô ngày khác */; pop.style.left = x + "px"; pop.style.top = Math.max(6, y) + "px"; }
       var ds0 = mauTuDuLieuThang_(k); if (ds0) return ve(ds0);
       ve(null);
       layMauNgay_(k, function(ds) { if (pop._k === k) ve(ds); });
