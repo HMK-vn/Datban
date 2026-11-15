@@ -160,6 +160,7 @@
     .dt-smart-table th { white-space: nowrap; font-size: 12px; background: #f1f3f9; color: #2c3e50; vertical-align: middle; }
     .dt-smart-table td { vertical-align: middle; font-size: 12.5px; }
     #dtMainTable thead th i { font-size: 1.1em; color: #864c2a; } /* icon tiêu đề cột cùng cỡ, cùng màu */
+    .ico-nhom { font-size: 1.5em; vertical-align: -.18em; } /* 15/11/2026 chủ quán: icon loại bàn to gấp 1,5 */
     .cell-nowrap-line { white-space: nowrap; display: block; line-height: 1.35; }
     .cell-Clamp-box { max-width: 210px; max-height: 54px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; font-size: 11.5px; line-height: 1.35; }
     .bill-thumb-mini { width: 42px; height: 42px; object-fit: cover; border-radius: 6px; border: 1.5px solid #2e7d32; cursor: pointer; transition: transform 0.15s; }
@@ -3347,7 +3348,7 @@
 function soCoc_(v) { return Number(String(v == null ? "" : v).replace(/[^\d]/g, "")) || 0; }
 function cocGon_(v) { var n = soCoc_(v); if (!n) return "0"; return n >= 1e6 ? String(Math.round(n / 1e5) / 10).replace(".", ",") + "tr" : Math.round(n / 1000) + "k"; } // 15/11/2026 chủ quán: cọc ghi gọn 300k / 500k
 function idGon_(id) { var m = String(id || "").match(/(\d{1,2})-(\d{1,2})\s+(\d{1,2}:\d{2})/); return m ? ("0" + m[2]).slice(-2) + "/" + ("0" + m[1]).slice(-2) + " " + m[3] : String(id || ""); }
-function nhomIcon_(n) { var g = nhomGon_(n); return g === "Thường" ? '<i class="fa-solid fa-utensils"></i>' : '<i class="fa-solid fa-cake-candles"></i>' + (g === "Decor" ? '' : ' ' + escapeHtml(g.replace("Decor ", ""))); } // 15/11/2026 chủ quán: loại bàn bằng icon + số (🍴 thường, 🎂 <6 / ≥6)
+function nhomIcon_(n) { var g = nhomGon_(n); return g === "Thường" ? '<i class="fa-solid fa-utensils ico-nhom"></i>' : '<i class="fa-solid fa-cake-candles ico-nhom"></i>' + (g === "Decor" ? '' : ' ' + escapeHtml(g.replace("Decor ", ""))); } // 15/11/2026 chủ quán: loại bàn bằng icon + số (🍴 thường, 🎂 <6 / ≥6)
 function nhomGon_(n) { var t = String(n || "").toLowerCase(); if (t.indexOf("decor") === -1) return "Thường"; return /≥|>=|> *=|từ *6|tu *6/.test(t) ? "Decor ≥6" : /<|dưới|duoi/.test(t) ? "Decor <6" : "Decor"; }
 // Tên dài hơn số điện thoại: viết tắt dần họ, tên đệm (Nguyễn Hoàng Cẩm Tú -> N. Hoàng Cẩm Tú -> N.H. Cẩm Tú); rê chuột xem tên đầy đủ
 function rutTenKhach_(goc) {
