@@ -159,6 +159,7 @@
     .dt-nhap-tag { display: inline-block; margin-top: 3px; padding: 1px 7px; border-radius: 6px; background: #fef3c7; color: #92400e; font-weight: 700; font-size: 11.5px; }
     .dt-smart-table th { white-space: nowrap; font-size: 12px; background: #f1f3f9; color: #2c3e50; vertical-align: middle; }
     .dt-smart-table td { vertical-align: middle; font-size: 12.5px; }
+    #dtMainTable thead th i { font-size: 1.1em; color: #864c2a; } /* icon tiêu đề cột cùng cỡ, cùng màu */
     .cell-nowrap-line { white-space: nowrap; display: block; line-height: 1.35; }
     .cell-Clamp-box { max-width: 210px; max-height: 54px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; font-size: 11.5px; line-height: 1.35; }
     .bill-thumb-mini { width: 42px; height: 42px; object-fit: cover; border-radius: 6px; border: 1.5px solid #2e7d32; cursor: pointer; transition: transform 0.15s; }
@@ -442,6 +443,43 @@
       body:has(#mainTab:not([style*="display:none"])) { padding-bottom: 72px; }
     }
     .nhan-ngan-dt { display: none; }
+    #ghTomTat { display: none !important; } /* 15/11/2026 chủ quán: ẩn dòng tóm tắt giới hạn theo thứ */
+    .kg-hop > .kg-luoi { flex: 1 1 100%; } /* 1 cột: lưới khoá giờ giãn hết bề ngang cho cân đối */
+    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: điện thoại gọn, cân đối, ít dòng */
+      #kgNgayMoi, #nkrNgay { flex: 1 1 7em; width: auto !important; min-width: 0; }
+      #nkrTu, #nkrDen { flex: 1 1 4.4em; width: auto !important; min-width: 0; }
+      .kg-cot-phai .d-inline-flex:has(#nkrTu) { flex: 1 1 auto; min-width: 0; }
+      #tab8 .card-box > div:first-child { flex-wrap: wrap !important; row-gap: 6px !important; } #tab8 .lc-dk { display: contents !important; }
+      #lcTongNam { order: 2; margin-left: auto; font-size: .8rem !important; padding: 4px 8px !important; }
+      #lcViewMode, #lcPeriod, #lcYearSelect { order: 4; flex: 1 1 auto; min-width: 0; width: auto !important; padding-left: .5rem; padding-right: 1.5rem; background-position: right .35rem center; } #tab8 .lc-dk > .btn { order: 4; }
+      #tab8 .card-box > div:first-child::after { content: ""; order: 3; flex-basis: 100%; height: 0; } /* tiêu đề + tổng 1 dòng, các ô chọn 1 dòng */
+      .gh-chu-thich { gap: 4px !important; }
+      .dtt-bar #dttKhoang { padding-left: .4rem; padding-right: 1.4rem; background-position: right .3rem center; }
+      .dtt-bar h5 { order: 1; font-size: 1rem; } .dtt-bar #dttTim { order: 2; flex: 1 1 100px; min-width: 0; } .dtt-bar .dtt-tai { order: 2; }
+      .dtt-bar .dtt-loc-ngay { order: 4; } .dtt-bar .form-switch { order: 5; margin-left: auto !important; } .dtt-bar #dttXuLy { order: 6; }
+      .dtt-bar .dtt-bo-loc, .dtt-bar .dtt-cap-nhat { display: none !important; }
+      .dtt-bar #dttNgay { width: 6.9em !important; padding-left: 6px; padding-right: 4px; } .dtt-bar #dttNgay::-webkit-calendar-picker-indicator { display: none; }
+      .dtt-bar::after { content: ""; order: 3; flex-basis: 100%; height: 0; } /* xuống dòng sau ô tìm + nút tải lại */
+    }
+    @media (max-width: 767.98px) { /* 15/11/2026 chủ quán: tab Quản lý gọn chiều cao trên điện thoại */
+      #tab2 .the-dt-dau { padding: 8px 10px !important; margin-bottom: 8px !important; }
+      #tab2 .dt-dau-hang { margin-bottom: 0 !important; flex-wrap: nowrap !important; }
+      #tab2 .dt-dau-hang h5 { font-size: 1rem; white-space: nowrap; }
+      #tab2 .dt-dau-hang .btn { padding: 3px 8px; white-space: nowrap; }
+      #tab2 .chu-nut-dt { display: none; } #tab2 .dt-dau-hang .btn i.me-1 { margin-right: 0 !important; } #tab2 .dt-dau-hang .btn-outline-primary i.me-1 { margin-right: 4px !important; }
+      #tab2 input[type=date]::-webkit-calendar-picker-indicator { display: none; }
+      #tab2 #dtSearchDate { width: 6.9em; flex: 0 0 auto; padding-left: 6px; padding-right: 4px; }
+      #tab2 #dtSearchNhap { padding-left: 6px; padding-right: 4px; }
+      #tab2 .row.g-2.mb-3 { margin-bottom: 8px !important; }
+      #tab2 .dt-nhap-box { padding: 6px 4px !important; }
+    }
+    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: bỏ chữ TÚI NƯỚNG, logo bên trái + 2 hàng nút bên phải */
+      header.navbar-custom .main-container { flex-wrap: nowrap !important; gap: 8px !important; align-items: center !important; }
+      header.navbar-custom .main-container > .d-flex:first-child { gap: 0 !important; flex: 0 0 auto; }
+      header.navbar-custom .main-container > .d-flex:first-child > div { display: none !important; }
+      header.navbar-custom .main-container > .d-flex:first-child img { width: 66px !important; height: 66px !important; }
+      header.navbar-custom .nhom-nut-dau { order: 2 !important; flex: 1 1 auto !important; min-width: 0; gap: 3px !important; }
+    }
     @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: 8 mục menu dưới hiện đủ, không phải vuốt */
       #mainTab { overflow-x: visible; padding: 3px 2px; }
       #mainTab .nav-item { flex: 1 1 0; min-width: 0; }
@@ -830,9 +868,9 @@
       header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-dai, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-ngan, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .chu-nut { display: none !important; }
       header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nut-ico { margin-right: 0 !important; }
     }
-    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: 7 nút đầu trang 1 hàng — biểu tượng trên, chữ ngắn dưới */
-      header.navbar-custom .nhom-nut-dau { display: grid !important; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px !important; }
-      header.navbar-custom .nhom-nut-dau > .btn { display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 0; padding: 5px 0 4px !important; font-size: 9.5px !important; line-height: 1.15; letter-spacing: -.1px; white-space: nowrap; overflow: hidden; }
+    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: 7 nút đầu trang 2 hàng (4 + 3) bên phải logo — biểu tượng trên, chữ ngắn dưới */
+      header.navbar-custom .nhom-nut-dau { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px !important; }
+      header.navbar-custom .nhom-nut-dau > .btn { display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 0; padding: 5px 0 4px !important; font-size: 10px !important; line-height: 1.15; letter-spacing: -.1px; white-space: nowrap; overflow: hidden; }
       header.navbar-custom .nhom-nut-dau .nut-ico { font-size: 15px; margin: 0 !important; }
       header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-ngan, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .chu-nut { display: inline !important; }
     }
@@ -1168,31 +1206,31 @@
 
       <!-- TAB 2: NHẬP & QUẢN LÝ DATA_TONG -->
       <div class="tab-pane fade" id="tab2" role="tabpanel">
-        <div class="card-box p-4 mb-4">
-          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div class="card-box p-4 mb-4 the-dt-dau">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 dt-dau-hang">
             <div>
-              <h5 class="fw-bold mb-0 text-success"><i class="fa-solid fa-table me-2"></i>Nhập & Quản Lý DATA_TONG</h5>
+              <h5 class="fw-bold mb-0 text-success"><i class="fa-solid fa-table me-2"></i><span class="d-none d-md-inline">Nhập & Quản Lý DATA_TONG</span><span class="d-md-none">Quản lý</span></h5>
             </div>
             <!-- Nút tùy chọn hiển thị Dòng & Email trên thanh tiêu đề Tab 2 -->
             <div class="d-flex align-items-center flex-wrap gap-2">
-              <button type="button" class="btn btn-outline-secondary btn-sm tool-icon-btn" onclick="document.getElementById('dtMainTable').classList.toggle('hide-dt-row'); this.classList.toggle('active');" title="Ẩn/Hiện cột Dòng"><i class="fa-solid fa-hashtag me-1"></i>Dòng</button>
-              <button type="button" class="btn btn-outline-secondary btn-sm tool-icon-btn" onclick="document.getElementById('dtMainTable').classList.toggle('hide-dt-email'); this.classList.toggle('active');" title="Ẩn/Hiện cột Email"><i class="fa-regular fa-envelope me-1"></i>Email</button>
-              <button type="button" class="btn btn-outline-primary btn-sm fw-bold" onclick="switchToTab5()"><i class="fa-solid fa-bolt me-1"></i> Mở Tab 5 Nhập Đặt Bàn</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm tool-icon-btn" onclick="document.getElementById('dtMainTable').classList.toggle('hide-dt-row'); this.classList.toggle('active');" title="Ẩn/Hiện cột Dòng"><i class="fa-solid fa-hashtag me-1"></i><span class="chu-nut-dt">Dòng</span></button>
+              <button type="button" class="btn btn-outline-secondary btn-sm tool-icon-btn" onclick="document.getElementById('dtMainTable').classList.toggle('hide-dt-email'); this.classList.toggle('active');" title="Ẩn/Hiện cột Email"><i class="fa-regular fa-envelope me-1"></i><span class="chu-nut-dt">Email</span></button>
+              <button type="button" class="btn btn-outline-primary btn-sm fw-bold" onclick="switchToTab5()" title="Mở Tab 5 Nhập Đặt Bàn"><i class="fa-solid fa-bolt me-1"></i><span class="d-none d-md-inline">Mở Tab 5 Nhập Đặt Bàn</span><span class="d-md-none">Thêm đơn</span></button>
       </div>
             </div>
           </div>
 
           <div class="row g-2 mb-3">
-            <div class="col-md-4"><input type="text" id="dtSearchKey" class="form-control" placeholder="Tìm theo tên KH, SĐT, mẫu decor, ghi chú..." onkeypress="if(event.key==='Enter') loadDataTongRecords()"></div>
-            <div class="col-9 col-md-3"><div class="input-group flex-nowrap"><span class="input-group-text fw-bold text-success" title="Ngày khách đến nhận bàn">📅 Ngày đến</span><input type="date" id="dtSearchDate" class="form-control" onchange="dtLocTheoNgayDen()"></div></div>
-            <div class="col-3 col-md-2"><button class="btn btn-outline-success w-100 fw-bold text-nowrap" title="Lọc theo ngày đến" onclick="dtLocTheoNgayDen()"><i class="fa-solid fa-filter me-1"></i>Lọc</button></div>
-            <div class="col-12 col-md-3"><button class="btn btn-outline-secondary w-100 fw-bold text-nowrap" onclick="dtXemTatCa()"><i class="fa-solid fa-list me-1"></i>Tất cả ngày</button></div>
+            <div class="col col-md-4" style="min-width:0"><input type="text" id="dtSearchKey" class="form-control" placeholder="Tìm theo tên KH, SĐT, mẫu decor, ghi chú..." title="Tìm theo tên KH, SĐT, mẫu decor, ghi chú" onkeypress="if(event.key==='Enter') loadDataTongRecords()"></div>
+            <div class="col-auto col-md-3"><div class="input-group flex-nowrap"><span class="input-group-text fw-bold text-success" title="Ngày khách đến nhận bàn"><i class="fa-solid fa-calendar-day"></i><span class="d-none d-md-inline"> Ngày đến</span></span><input type="date" id="dtSearchDate" class="form-control" title="Ngày đến" onchange="dtLocTheoNgayDen()"></div></div>
+            <div class="d-none d-md-block col-md-2"><button class="btn btn-outline-success w-100 fw-bold text-nowrap" title="Lọc theo ngày đến" onclick="dtLocTheoNgayDen()"><i class="fa-solid fa-filter me-1"></i>Lọc</button></div>
+            <div class="col-auto col-md-3"><button class="btn btn-outline-secondary w-100 fw-bold text-nowrap" title="Xem tất cả ngày" onclick="dtXemTatCa()" aria-label="Tất cả ngày"><i class="fa-solid fa-calendar-xmark"></i><span class="d-none d-md-inline ms-1">Tất cả ngày</span></button></div>
           </div>
           <div class="row g-2 mb-3 p-2 rounded dt-nhap-box">
-            <div class="col-md-4 d-flex align-items-center fw-bold text-nowrap" style="color:#b45309;" title="Đơn nhập mới nhất lên đầu">✍️ Lọc theo ngày nhập <span class="small fw-normal text-muted ms-1">· mới nhất trước</span></div>
-            <div class="col-9 col-md-3"><div class="input-group flex-nowrap"><span class="input-group-text fw-bold" style="color:#b45309;background:#fffbeb;">✍️ Ngày nhập</span><input type="date" id="dtSearchNhap" class="form-control" onchange="dtLocTheoNgayNhap()"></div></div>
-            <div class="col-3 col-md-2"><button class="btn btn-warning w-100 fw-bold text-nowrap" title="Lọc theo ngày nhập" onclick="dtLocTheoNgayNhap()"><i class="fa-solid fa-pen-to-square me-1"></i>Lọc</button></div>
-            <div class="col-12 col-md-3"><button class="btn btn-outline-warning w-100 fw-bold text-dark text-nowrap" title="Đơn mới nhập gần nhất" onclick="document.getElementById('dtSearchNhap').value='';dtLocTheoNgayNhap()"><i class="fa-solid fa-clock-rotate-left me-1"></i>Mới nhập</button></div>
+            <div class="col-md-4 d-none d-md-flex align-items-center fw-bold text-nowrap" style="color:#b45309;" title="Đơn nhập mới nhất lên đầu"><i class="fa-solid fa-keyboard"></i>&nbsp;Lọc theo ngày nhập <span class="small fw-normal text-muted ms-1">· mới nhất trước</span></div>
+            <div class="col col-md-3" style="min-width:0"><div class="input-group flex-nowrap"><span class="input-group-text fw-bold" style="color:#b45309;background:#fffbeb;" title="Lọc theo ngày nhập (mới nhất trước)"><i class="fa-solid fa-keyboard"></i><span class="ms-1">Ngày nhập</span></span><input type="date" id="dtSearchNhap" class="form-control" onchange="dtLocTheoNgayNhap()"></div></div>
+            <div class="d-none d-md-block col-md-2"><button class="btn btn-warning w-100 fw-bold text-nowrap" title="Lọc theo ngày nhập" onclick="dtLocTheoNgayNhap()"><i class="fa-solid fa-filter me-1"></i>Lọc</button></div>
+            <div class="col-auto col-md-3"><button class="btn btn-outline-warning w-100 fw-bold text-dark text-nowrap" title="Đơn mới nhập gần nhất" aria-label="Mới nhập" onclick="document.getElementById('dtSearchNhap').value='';dtLocTheoNgayNhap()"><i class="fa-solid fa-clock-rotate-left"></i><span class="d-none d-md-inline ms-1">Mới nhập</span></button></div>
           </div>
           <div id="dtCheDoLoc" class="small fw-bold mb-2"></div>
           <div class="d-flex flex-wrap align-items-center gap-2 mb-2 dt-phan-trang">
@@ -1214,15 +1252,15 @@
         <table id="dtMainTable" class="table table-hover align-middle small table-bordered dt-smart-table hide-dt-row hide-dt-email">
           <thead>
             <tr>
-              <th class="col-dt-row text-center">Dòng</th>
-              <th>ID / Nhóm bàn</th>
-              <th>Khách hàng / SĐT</th>
-              <th>Giờ / Khách / Bàn</th>
-              <th>Tiền cọc</th>
-              <th class="text-center">Bill bank</th>
-              <th>Decor • Đặt món • Note</th>
-              <th class="col-dt-email">Email</th>
-              <th class="text-center">Sửa</th>
+              <th class="col-dt-row text-center" title="Dòng"><i class="fa-solid fa-hashtag" aria-label="Dòng"></i></th><!-- 15/11/2026 chủ quán: tiêu đề cột bằng icon đồng bộ, rê chuột xem tên -->
+              <th class="text-center" title="ID / Nhóm bàn"><i class="fa-solid fa-id-badge" aria-label="ID / Nhóm bàn"></i></th>
+              <th class="text-center" title="Khách hàng / SĐT"><i class="fa-solid fa-user" aria-label="Khách hàng / SĐT"></i></th>
+              <th class="text-center" title="Giờ / Khách / Bàn"><i class="fa-solid fa-clock" aria-label="Giờ / Khách / Bàn"></i></th>
+              <th class="text-center" title="Tiền cọc"><i class="fa-solid fa-sack-dollar" aria-label="Tiền cọc"></i></th>
+              <th class="text-center" title="Bill bank"><i class="fa-solid fa-receipt" aria-label="Bill bank"></i></th>
+              <th class="text-center" title="Decor • Đặt món • Note"><i class="fa-solid fa-note-sticky" aria-label="Decor, đặt món, ghi chú"></i></th>
+              <th class="col-dt-email text-center" title="Email"><i class="fa-solid fa-envelope" aria-label="Email"></i></th>
+              <th class="text-center" title="Sửa / Lưu ảnh"><i class="fa-solid fa-pen-to-square" aria-label="Sửa"></i></th>
             </tr>
           </thead>
           <tbody id="dataTongTableBody"></tbody>
@@ -1236,23 +1274,23 @@
           <!-- DUYỆT TRẠNG THÁI FORM booking -->
           <div id="dttBox" class="mb-4">
             <div class="dtt-bar">
-              <h5 class="fw-bold mb-0 me-2" style="color:#864c2a"><i class="fa-solid fa-clipboard-check me-1"></i>Xác nhận đơn</h5>
+              <h5 class="fw-bold mb-0 me-2" style="color:#864c2a"><i class="fa-solid fa-clipboard-check me-1"></i>Xác nhận<span class="d-none d-sm-inline"> đơn</span></h5>
               <input type="text" id="dttTim" class="form-control form-control-sm" placeholder="Tìm tên, SĐT, mã..." oninput="veDuyetTrangThai()">
               <div class="btn-group btn-group-sm dtt-loc-ngay" role="group">
-                <button class="btn btn-light border" id="dttTatCa" onclick="dttXemTatCa()" title="Hiện tất cả các ngày">📅 Tất cả</button>
+                <button class="btn btn-light border" id="dttTatCa" onclick="dttXemTatCa()" title="Hiện tất cả các ngày" aria-label="Tất cả ngày"><i class="fa-solid fa-calendar-xmark"></i><span class="d-none d-sm-inline ms-1">Tất cả</span></button>
                 <input type="date" id="dttNgay" class="form-control form-control-sm" style="width:140px" title="Xem quanh ngày này (ngày đặt bàn hoặc ngày ghi nhận)" onchange="veDuyetTrangThai()">
                 <select id="dttKhoang" class="form-select form-select-sm" style="width:auto" title="Khoảng ngày quanh ngày chọn" onchange="veDuyetTrangThai()">
-                  <option value="0">Đúng ngày</option><option value="3" selected>± 3 ngày</option><option value="5">± 5 ngày</option>
+                  <option value="0">Đúng ngày</option><option value="3" selected>±3 ngày</option><option value="5">±5 ngày</option>
                 </select>
               </div>
-              <button class="btn btn-sm btn-light border" onclick="document.getElementById('dttTim').value='';dttXemTatCa()" title="Bỏ lọc"><i class="fa-solid fa-xmark"></i></button>
-              <button class="btn btn-sm btn-light border" onclick="taiDuyetTrangThai()" title="Tải lại từ Sheet"><i class="fa-solid fa-rotate"></i></button>
-              <small class="text-muted" id="dttCapNhat"></small>
+              <button class="btn btn-sm btn-light border dtt-bo-loc" onclick="document.getElementById('dttTim').value='';dttXemTatCa()" title="Bỏ lọc"><i class="fa-solid fa-xmark"></i></button>
+              <button class="btn btn-sm btn-light border dtt-tai" onclick="taiDuyetTrangThai()" title="Tải lại từ Sheet"><i class="fa-solid fa-rotate"></i></button>
+              <small class="text-muted dtt-cap-nhat" id="dttCapNhat"></small>
               <div class="form-check form-switch mb-0 ms-auto small text-nowrap" title="Bật: bấm trạng thái trên thẻ khách sẽ tự lưu ảnh xác nhận về máy">
                 <input class="form-check-input" type="checkbox" id="dttTuLuuAnh" onchange="dttGatLuuAnh(this)">
-                <label class="form-check-label" for="dttTuLuuAnh">Tự lưu ảnh <b id="dttOnOff" class="text-muted">OFF</b></label>
+                <label class="form-check-label" for="dttTuLuuAnh"><i class="fa-solid fa-camera d-sm-none"></i><span class="d-none d-sm-inline">Tự lưu ảnh <b id="dttOnOff" class="text-muted">OFF</b></span></label>
               </div>
-              <button class="btn btn-sm fw-bold text-white" style="background:#864c2a" id="dttXuLy" onclick="xuLyDuyetTrangThai()" title="Chuyển đơn XÁC NHẬN sang DATA_TONG, ghi trạng thái hoàn cọc (không gửi email)"><i class="fa-solid fa-check-double me-1"></i>Xử lý (<span id="dttSoXuLy">0</span>)</button>
+              <button class="btn btn-sm fw-bold text-white" style="background:#864c2a" id="dttXuLy" onclick="xuLyDuyetTrangThai()" title="Chuyển đơn XÁC NHẬN sang DATA_TONG, ghi trạng thái hoàn cọc (không gửi email)"><i class="fa-solid fa-check-double me-1"></i><span class="d-none d-sm-inline">Xử lý (</span><span id="dttSoXuLy">0</span><span class="d-none d-sm-inline">)</span></button>
             </div>
             <div class="dtt-seg" id="dttSeg">
               <button class="on" onclick="dttXemCot(0)">🕓 Chờ duyệt<b id="dttSeg0">0</b></button>
@@ -1444,16 +1482,16 @@
         <div class="card-box p-4">
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
             <div>
-              <h5 class="fw-bold mb-0 text-purple text-nowrap" title="Mỗi ô = tổng tiền cọc các đơn nhập vào DATA_TONG trong ngày (cột Thời gian nhập)"><i class="fa-solid fa-coins me-2 text-warning"></i>Tiền cọc theo ngày nhập <small class="text-muted fw-normal fs-6">· tổng cọc mỗi ngày</small></h5>
+              <h5 class="fw-bold mb-0 text-purple text-nowrap" title="Mỗi ô = tổng tiền cọc các đơn nhập vào DATA_TONG trong ngày (cột Thời gian nhập)"><i class="fa-solid fa-coins me-2 text-warning"></i>Tiền cọc<span class="d-none d-sm-inline"> theo ngày nhập <small class="text-muted fw-normal fs-6">· tổng cọc mỗi ngày</small></span></h5>
             </div>
-            <div class="d-flex align-items-center flex-wrap gap-2">
-              <span class="badge bg-warning text-dark px-3 py-2 fs-6 text-wrap text-start" id="lcTongNam">Tổng năm: ...</span>
+            <div class="d-flex align-items-center flex-wrap gap-2 lc-dk">
+              <span class="badge bg-warning text-dark px-3 py-2 fs-6 text-wrap text-start" id="lcTongNam">Tổng: ...</span>
               <select id="lcViewMode" class="form-select form-select-sm w-auto fw-bold" onchange="doiKieuXemLich_()">
-                <option value="nam">Cả năm</option><option value="quy" selected>Theo quý</option><option value="thang">Theo tháng</option>
+                <option value="nam">Cả năm</option><option value="quy" selected>Quý</option><option value="thang">Tháng</option>
               </select>
               <select id="lcPeriod" class="form-select form-select-sm w-auto fw-bold" style="display:none" onchange="veLaiLichTienCoc_()"></select>
               <select id="lcYearSelect" class="form-select form-select-sm w-auto fw-bold border-primary" onchange="loadLichTienCoc()"></select>
-              <button class="btn btn-sm btn-outline-primary fw-bold" onclick="loadLichTienCoc()"><i class="fa-solid fa-rotate me-1"></i> Làm mới</button>
+              <button class="btn btn-sm btn-outline-primary fw-bold" title="Làm mới" onclick="loadLichTienCoc()"><i class="fa-solid fa-rotate"></i><span class="d-none d-sm-inline ms-1">Làm mới</span></button>
             </div>
           </div>
           <div id="lcGrid" class="row g-3"><div class="col-12 text-center text-muted py-5">Đang tải lịch tiền cọc...</div></div>
@@ -1463,10 +1501,10 @@
       <div class="tab-pane fade" id="tab7" role="tabpanel">
         <div class="card-box p-4">
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
-            <h5 class="fw-bold mb-0 text-purple"><i class="fa-solid fa-chart-line me-2 text-primary"></i>Phân Tích Khách & Gợi Ý Quảng Cáo</h5>
+            <h5 class="fw-bold mb-0 text-purple text-nowrap"><i class="fa-solid fa-chart-line me-2 text-primary"></i><span class="d-none d-sm-inline">Phân Tích Khách & Gợi Ý Quảng Cáo</span><span class="d-sm-none">Phân tích khách</span></h5>
             <div class="d-flex align-items-center gap-2">
               <select id="ptYearSelect" class="form-select form-select-sm w-auto fw-bold border-primary" onchange="loadPhanTich()"></select>
-              <button class="btn btn-sm btn-outline-primary fw-bold" onclick="loadPhanTich()"><i class="fa-solid fa-rotate me-1"></i> Làm mới</button>
+              <button class="btn btn-sm btn-outline-primary fw-bold" title="Làm mới" onclick="loadPhanTich()"><i class="fa-solid fa-rotate"></i><span class="d-none d-sm-inline ms-1">Làm mới</span></button>
             </div>
           </div>
           <div id="ptContent"><div class="text-center text-muted py-5">Đang tải số liệu phân tích...</div></div>
@@ -2333,7 +2371,7 @@
       var sel = document.getElementById("ptYearSelect");
       if (!sel || sel.options.length) return;
       var y = new Date().getFullYear();
-      for (var i = 0; i < 4; i++) sel.add(new Option("Năm " + (y - i), y - i));
+      for (var i = 0; i < 4; i++) sel.add(new Option(String(y - i), y - i));
     }
 
     function loadPhanTich() {
@@ -2433,7 +2471,7 @@
     }
     function loadLichTienCoc() {
       var sel = document.getElementById("lcYearSelect");
-      if (!sel.options.length) { var y = new Date().getFullYear(); for (var i = 0; i < 4; i++) sel.add(new Option("Năm " + (y - i), y - i)); }
+      if (!sel.options.length) { var y = new Date().getFullYear(); for (var i = 0; i < 4; i++) sel.add(new Option(String(y - i), y - i)); }
       // Mở lần đầu: luôn xem theo quý của tháng hiện tại
       if (!document.getElementById("lcPeriod").options.length) { document.getElementById("lcViewMode").value = "quy"; doiKieuXemLich_(); }
       document.getElementById("lcGrid").innerHTML = '<div class="col-12 text-center text-muted py-5">Đang tải lịch tiền cọc năm ' + sel.value + '...</div>';
@@ -2455,10 +2493,10 @@
       var now = new Date();
       sel.innerHTML = "";
       if (mode === "quy") {
-        for (var q = 1; q <= 4; q++) sel.add(new Option("Quý " + q + " (T" + (q * 3 - 2) + "-T" + (q * 3) + ")", q));
+        for (var q = 1; q <= 4; q++) sel.add(new Option("Q" + q, q));
         sel.value = Math.floor(now.getMonth() / 3) + 1;
       } else if (mode === "thang") {
-        for (var m = 1; m <= 12; m++) sel.add(new Option("Tháng " + m, m));
+        for (var m = 1; m <= 12; m++) sel.add(new Option("T" + m, m));
         sel.value = now.getMonth() + 1;
       }
       sel.style.display = mode === "nam" ? "none" : "";
@@ -2479,7 +2517,7 @@
       thangs.forEach(function(m) { tongKy.coc += res.thang[m].coc; tongKy.so += res.thang[m].so; });
       Object.keys(res.ngay).forEach(function(k) { if (thangs.indexOf(Number(k.slice(5, 7)) - 1) !== -1) max = Math.max(max, res.ngay[k].coc); });
       var tenKy = mode === "thang" ? "Tháng " + period + "/" + nam : mode === "quy" ? "Quý " + period + "/" + nam : "Năm " + nam;
-      document.getElementById("lcTongNam").innerText = tenKy + ": " + tongKy.coc.toLocaleString("vi-VN") + " đ (" + tongKy.so + " đơn)";
+      var lcT = document.getElementById("lcTongNam"); lcT.innerText = "Σ " + cocGon_(tongKy.coc) + " · " + tongKy.so + " đơn"; lcT.title = tenKy + ": " + tongKy.coc.toLocaleString("vi-VN") + " đ (" + tongKy.so + " đơn)"; // 15/11/2026: tổng ghi gọn
       var homNay = new Date(); var keyHomNay = homNay.getFullYear() + "-" + pad(homNay.getMonth() + 1) + "-" + pad(homNay.getDate());
       var colCls = lon ? "col-12" : mode === "quy" ? "col-lg-4 col-md-6" : "col-xl-3 col-lg-4 col-md-6";
       var html = "";
@@ -2670,9 +2708,9 @@
         html += '<div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-2"><span class="fw-bold text-purple text-nowrap' + (lon ? ' fs-5' : '') + '"' +
           (lon ? '' : ' style="cursor:pointer;text-decoration:underline dotted" title="Bấm để xem tháng này dạng bảng chi tiết" onclick="xemThangTab6_(' + (m + 1) + ')"') + '>Tháng ' + (m + 1) + '/' + year + (lon ? '' : ' 🔍') + '</span>' +
           '<span class="small text-muted">%%TOMTAT%%</span></div>' +
-          (lon ? '<div class="small text-muted mb-2 d-flex flex-wrap gap-2"><span><span class="gh-cham" style="background:#eaf3e6"></span>&lt;6 khách</span><span><span class="gh-cham" style="background:#fbe8dc"></span>≥6 khách</span>' +
-            '<span><span class="gh-cham" style="background:#f5eed8"></span>Σ tổng</span><span><span class="gh-cham" style="background:#dc3545"></span>ô vượt</span><span><span class="gh-cham" style="background:#e8833a"></span>ngày vượt mức</span>' +
-            '<span>🔒 khóa FULL · 📌 giới hạn riêng · bấm số để sửa</span></div>' : '');
+          (lon ? '<div class="small text-muted mb-2 d-flex flex-wrap gap-2 gh-chu-thich" title="Bấm số trong ô ngày để sửa giới hạn"><span><span class="gh-cham" style="background:#eaf3e6"></span>&lt;6</span><span><span class="gh-cham" style="background:#fbe8dc"></span>≥6</span>' +
+            '<span><span class="gh-cham" style="background:#f5eed8"></span>Σ</span><span><span class="gh-cham" style="background:#dc3545"></span>ô vượt</span><span><span class="gh-cham" style="background:#e8833a"></span>ngày vượt</span>' +
+            '<span>🔒 Full</span><span>📌 riêng</span></div>' : ''); // 15/11/2026 chủ quán: gọn ít dòng
         var dauThang = html.lastIndexOf("%%TOMTAT%%"), soVuot = 0, banThang = 0, khachThang = 0;
         html += '<div style="display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); overflow-wrap:anywhere; gap:' + (lon ? 6 : 3) + 'px; font-size:' + (lon ? 13 : 12) + 'px;">';
         ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].forEach(function(t) {
@@ -2709,7 +2747,7 @@
               : (cnt || du ? '<div style="font-size:9px; line-height:1;">' + (cnt || "") + (vuot ? ' 🟠' : '') + '</div>' : '')) + '</div>';
         }
         html += '</div></div></div>';
-        html = html.slice(0, dauThang) + '🔒 ' + soKhoa + ' khóa · <b style="color:#e8833a">⚠️ ' + soVuot + ' vượt mức</b> · 🎀 ' + banThang + ' bàn · 👥 ' + khachThang + ' khách' + html.slice(dauThang + 10);
+        html = html.slice(0, dauThang) + '<span class="text-nowrap" title="' + soKhoa + ' ngày khoá · ' + soVuot + ' ngày vượt mức · ' + banThang + ' bàn decor · ' + khachThang + ' khách">🔒' + soKhoa + ' · <b style="color:#e8833a">⚠️' + soVuot + ' vượt</b> · 🎀' + banThang + ' bàn · 👥' + khachThang + '</span>' + html.slice(dauThang + 10);
       });
       box.innerHTML = html;
     }
@@ -3272,27 +3310,46 @@
     html += '<tr class="' + rowPastelClass + '">' +
       '<td class="col-dt-row text-center"><b>' + r.row + '</b></td>' +
       '<td class="text-nowrap">' +
-        (r.id ? '<div class="fw-bold font-monospace text-dark">🆔 ' + escapeHtml(r.id) + '</div>' : '<div class="small text-muted font-monospace">#Dòng ' + r.row + '</div>') +
-        '<span class="badge mt-1" style="' + badgeStyle + '">' + escapeHtml(r.nhomBan || "Bàn thường") + '</span>' +
-        (dtCheDoNhap ? '<div class="dt-nhap-tag">✍️ Nhập ' + escapeHtml(r.nhapHien || r.thoiGianNhap || "--") + '</div>' : '') +
+        (r.id ? '<div class="fw-bold font-monospace text-dark" title="ID: ' + escapeHtml(r.id) + '">' + escapeHtml(idGon_(r.id)) + '</div>' : '<div class="small text-muted font-monospace">#Dòng ' + r.row + '</div>') +
+        '<span class="badge mt-1" style="' + badgeStyle + '" title="' + escapeHtml(r.nhomBan || "Bàn thường") + '">' + escapeHtml(nhomGon_(r.nhomBan)) + '</span>' +
+        (dtCheDoNhap ? '<div class="dt-nhap-tag"><i class="fa-solid fa-keyboard"></i> Nhập ' + escapeHtml(r.nhapHien || r.thoiGianNhap || "--") + '</div>' : '') +
       '</td>' +
       '<td>' +
-        '<span class="cell-nowrap-line fw-bold text-dark">👤 ' + escapeHtml(r.tenKH) + vatTag(r, true) + '</span>' +
-        '<span class="cell-nowrap-line font-monospace text-secondary">📞 ' + escapeHtml(sdtDep_(r.sdt)) + '</span>' +
+        '<span class="cell-nowrap-line fw-bold text-dark">👤 <span class="chu-ten" data-ten="' + escapeHtml(r.tenKH) + '">' + escapeHtml(r.tenKH) + '</span>' + vatTag(r, true) + '</span>' +
+        '<span class="cell-nowrap-line font-monospace text-secondary">📞 <span class="chu-sdt">' + escapeHtml(sdtDep_(r.sdt)) + '</span></span>' +
       '</td>' +
       '<td>' +
-        (dtCheDoNhap ? '<span class="cell-nowrap-line text-success fw-bold">📅 Đến ' + escapeHtml(r.ngay ? r.ngay.split("-").reverse().join("/") : "--") + '</span>' : '') +
+        (dtCheDoNhap ? '<span class="cell-nowrap-line text-success fw-bold"><i class="fa-solid fa-calendar-day"></i> Đến ' + escapeHtml(r.ngay ? r.ngay.split("-").reverse().join("/").replace(/\/(\d\d)(\d\d)$/, "/$2") : "--") + '</span>' : '') +
         '<span class="cell-nowrap-line">⏰ <b>' + escapeHtml(r.gioVao || "--:--") + '</b> • 👥 <b>' + escapeHtml(r.soKhach || "0") + '</b></span>' +
         '<span class="cell-nowrap-line text-primary">📍 ' + escapeHtml(r.banSo || "Chưa xếp") + '</span>' +
       '</td>' +
-      '<td class="text-nowrap fw-bold text-danger">' + (r.tienCoc ? Number(r.tienCoc).toLocaleString("vi-VN") : "0") + '</td>' +
+      '<td class="text-nowrap fw-bold text-danger text-center" title="' + (soCoc_(r.tienCoc) ? soCoc_(r.tienCoc).toLocaleString("vi-VN") + ' đ' : '') + '">' + cocGon_(r.tienCoc) + '</td>' +
       '<td class="text-center">' + billHtml + '</td>' +
       '<td><div class="cell-Clamp-box" style="max-width:360px; max-height:75px;">' + (combinedBlocks.join("") || '<span class="text-muted">-</span>') + '</div></td>' +
       '<td class="col-dt-email text-nowrap"><small>' + escapeHtml(r.email || "") + '</small></td>' +
-      '<td class="text-center"><button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="editDataTongRow(' + (dauDt + i) + ')"><i class="fa-solid fa-pen-to-square"></i></button> <button class="btn btn-sm btn-outline-secondary py-0 px-2 mt-1" onclick="luuAnhDt(' + (dauDt + i) + ')" title="Lưu ảnh xác nhận đặt bàn">📷</button></td>' +
+      '<td class="text-center"><span class="d-inline-flex gap-1"><button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="editDataTongRow(' + (dauDt + i) + ')" title="Sửa đơn"><i class="fa-solid fa-pen-to-square"></i></button><button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="luuAnhDt(' + (dauDt + i) + ')" title="Lưu ảnh xác nhận đặt bàn"><i class="fa-solid fa-camera"></i></button></span></td>' +
     '</tr>';
   }
   tbody.innerHTML = html;
+  rutTenKhach_(tbody);
+}
+// 15/11/2026 chủ quán: cột ID / Nhóm bàn ngắn gọn — "tháng 11-15 17:14" -> "15/11 17:14"; "Bàn decor: < 6 khách" -> "Decor <6"
+function soCoc_(v) { return Number(String(v == null ? "" : v).replace(/[^\d]/g, "")) || 0; }
+function cocGon_(v) { var n = soCoc_(v); if (!n) return "0"; return n >= 1e6 ? String(Math.round(n / 1e5) / 10).replace(".", ",") + "tr" : Math.round(n / 1000) + "k"; } // 15/11/2026 chủ quán: cọc ghi gọn 300k / 500k
+function idGon_(id) { var m = String(id || "").match(/(\d{1,2})-(\d{1,2})\s+(\d{1,2}:\d{2})/); return m ? ("0" + m[2]).slice(-2) + "/" + ("0" + m[1]).slice(-2) + " " + m[3] : String(id || ""); }
+function nhomGon_(n) { var t = String(n || "").toLowerCase(); if (t.indexOf("decor") === -1) return "Thường"; return /≥|>=|> *=|từ *6|tu *6/.test(t) ? "Decor ≥6" : /<|dưới|duoi/.test(t) ? "Decor <6" : "Decor"; }
+// Tên dài hơn số điện thoại: viết tắt dần họ, tên đệm (Nguyễn Hoàng Cẩm Tú -> N. Hoàng Cẩm Tú -> N.H. Cẩm Tú); rê chuột xem tên đầy đủ
+function rutTenKhach_(goc) {
+  var ds = (goc || document).querySelectorAll(".chu-ten"); if (!ds.length) return;
+  var c = rutTenKhach_.c || (rutTenKhach_.c = document.createElement("canvas").getContext("2d")), f = function(el) { var cs = getComputedStyle(el); return cs.fontStyle + " " + cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily; };
+  var sdt0 = (goc || document).querySelector(".chu-sdt"), fTen = f(ds[0]), fSdt = sdt0 ? f(sdt0) : fTen;
+  [].forEach.call(ds, function(el) {
+    var day = (el.getAttribute("data-ten") || "").trim().replace(/\s+/g, " "), sdt = el.closest("td") && el.closest("td").querySelector(".chu-sdt");
+    c.font = fSdt; var max = c.measureText((sdt && sdt.textContent.trim()) || "0000 000 000").width + 2;
+    c.font = fTen; var kq = day, w = day.split(" ");
+    for (var k = 1; k < w.length && c.measureText(kq).width > max; k++) kq = w.slice(0, k).map(function(x) { return x.charAt(0).toUpperCase() + "."; }).join("") + " " + w.slice(k).join(" ");
+    el.textContent = kq; if (kq !== day) el.title = day; else el.removeAttribute("title");
+  });
 }
 
     // Tab 2 có 2 kiểu lọc tách biệt: 📅 ngày đến nhận bàn (xanh) và ✍️ ngày nhập liệu (vàng, nhập mới nhất lên đầu)
@@ -3310,8 +3367,8 @@
       var den = document.getElementById("dtSearchDate").value, nhap = document.getElementById("dtSearchNhap").value;
       var vn = function(d) { return d.split("-").reverse().join("/"); };
       document.getElementById("dtCheDoLoc").innerHTML = dtCheDoNhap
-        ? '<span class="dt-che-do nhap">✍️ Đang lọc theo NGÀY NHẬP LIỆU' + (nhap ? ' ' + vn(nhap) : ': mọi ngày') + ' · nhập mới nhất lên đầu · ' + soDon + ' đơn</span>'
-        : '<span class="dt-che-do den">📅 Đang lọc theo NGÀY ĐẾN NHẬN BÀN' + (den ? ' ' + vn(den) : ': mọi ngày') + ' · ' + soDon + ' đơn</span>';
+        ? '<span class="dt-che-do nhap"><i class="fa-solid fa-keyboard"></i> Lọc ngày nhập' + (nhap ? ' ' + vn(nhap) : ': mọi ngày') + ' · mới nhất trước · ' + soDon + ' đơn</span>'
+        : '<span class="dt-che-do den"><i class="fa-solid fa-calendar-day"></i> Lọc ngày đến' + (den ? ' ' + vn(den) : ': mọi ngày') + ' · ' + soDon + ' đơn</span>';
     }
 
     function loadDataTongRecords() {
