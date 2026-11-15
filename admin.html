@@ -444,6 +444,8 @@
     }
     .nhan-ngan-dt { display: none; }
     #ghTomTat { display: none !important; } /* 15/11/2026 chủ quán: ẩn dòng tóm tắt giới hạn theo thứ */
+    html body #mainTab .nav-link.active { font-weight: 800 !important; background: #fff !important; box-shadow: 0 3px 10px rgba(60,40,20,.22); transform: translateY(-2px); border-radius: 10px; } /* 15/11/2026 chủ quán: menu đang chọn in đậm, nổi lên */
+    html body #mainTab .nav-link { transition: transform .15s, box-shadow .15s; }
     .kg-hop > .kg-luoi { flex: 1 1 100%; } /* 1 cột: lưới khoá giờ giãn hết bề ngang cho cân đối */
     @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: điện thoại gọn, cân đối, ít dòng */
       #kgNgayMoi, #nkrNgay { flex: 1 1 7em; width: auto !important; min-width: 0; }
@@ -455,7 +457,7 @@
       #tab8 .card-box > div:first-child::after { content: ""; order: 3; flex-basis: 100%; height: 0; } /* tiêu đề + tổng 1 dòng, các ô chọn 1 dòng */
       .gh-chu-thich { gap: 4px !important; }
       .dtt-bar #dttKhoang { padding-left: .4rem; padding-right: 1.4rem; background-position: right .3rem center; }
-      .dtt-bar h5 { order: 1; font-size: 1rem; } .dtt-bar #dttTim { order: 2; flex: 1 1 100px; min-width: 0; } .dtt-bar .dtt-tai { order: 2; }
+      .dtt-bar h5 { display: none !important; } .dtt-bar #dttTim { order: 2; flex: 1 1 100px; min-width: 0; } .dtt-bar .dtt-tai { order: 2; } /* bỏ tiêu đề Xác nhận: ô tìm + tải lại 1 dòng */
       .dtt-bar .dtt-loc-ngay { order: 4; } .dtt-bar .form-switch { order: 5; margin-left: auto !important; } .dtt-bar #dttXuLy { order: 6; }
       .dtt-bar .dtt-bo-loc, .dtt-bar .dtt-cap-nhat { display: none !important; }
       .dtt-bar #dttNgay { width: 6.9em !important; padding-left: 6px; padding-right: 4px; } .dtt-bar #dttNgay::-webkit-calendar-picker-indicator { display: none; }
@@ -464,7 +466,7 @@
     @media (max-width: 767.98px) { /* 15/11/2026 chủ quán: tab Quản lý gọn chiều cao trên điện thoại */
       #tab2 .the-dt-dau { padding: 8px 10px !important; margin-bottom: 8px !important; }
       #tab2 .dt-dau-hang { margin-bottom: 0 !important; flex-wrap: nowrap !important; }
-      #tab2 .dt-dau-hang h5 { font-size: 1rem; white-space: nowrap; }
+      #tab2 .dt-dau-hang > div:first-child { display: none !important; } #tab2 .dt-dau-hang > div:last-child { width: 100%; } #tab2 .dt-dau-hang .btn-outline-primary { flex: 1 1 auto; } /* bỏ tiêu đề Quản lý */
       #tab2 .dt-dau-hang .btn { padding: 3px 8px; white-space: nowrap; }
       #tab2 .chu-nut-dt { display: none; } #tab2 .dt-dau-hang .btn i.me-1 { margin-right: 0 !important; } #tab2 .dt-dau-hang .btn-outline-primary i.me-1 { margin-right: 4px !important; }
       #tab2 input[type=date]::-webkit-calendar-picker-indicator { display: none; }
@@ -473,11 +475,11 @@
       #tab2 .row.g-2.mb-3 { margin-bottom: 8px !important; }
       #tab2 .dt-nhap-box { padding: 6px 4px !important; }
     }
-    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: bỏ chữ TÚI NƯỚNG, logo bên trái + 2 hàng nút bên phải */
-      header.navbar-custom .main-container { flex-wrap: nowrap !important; gap: 8px !important; align-items: center !important; }
+    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: bỏ chữ TÚI NƯỚNG, logo bên trái + 7 nút 1 hàng */
+      header.navbar-custom .main-container { flex-wrap: nowrap !important; gap: 5px !important; align-items: center !important; }
       header.navbar-custom .main-container > .d-flex:first-child { gap: 0 !important; flex: 0 0 auto; }
       header.navbar-custom .main-container > .d-flex:first-child > div { display: none !important; }
-      header.navbar-custom .main-container > .d-flex:first-child img { width: 66px !important; height: 66px !important; }
+      header.navbar-custom .main-container > .d-flex:first-child img { width: 38px !important; height: 38px !important; }
       header.navbar-custom .nhom-nut-dau { order: 2 !important; flex: 1 1 auto !important; min-width: 0; gap: 3px !important; }
     }
     @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: 8 mục menu dưới hiện đủ, không phải vuốt */
@@ -868,9 +870,9 @@
       header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-dai, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-ngan, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .chu-nut { display: none !important; }
       header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nut-ico { margin-right: 0 !important; }
     }
-    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: 7 nút đầu trang 2 hàng (4 + 3) bên phải logo — biểu tượng trên, chữ ngắn dưới */
-      header.navbar-custom .nhom-nut-dau { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px !important; }
-      header.navbar-custom .nhom-nut-dau > .btn { display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 0; padding: 5px 0 4px !important; font-size: 10px !important; line-height: 1.15; letter-spacing: -.1px; white-space: nowrap; overflow: hidden; }
+    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: logo + 7 nút đầu trang cùng 1 hàng — biểu tượng trên, chữ ngắn dưới */
+      header.navbar-custom .nhom-nut-dau { display: grid !important; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px !important; }
+      header.navbar-custom .nhom-nut-dau > .btn { display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 0; padding: 5px 0 4px !important; font-size: 9px !important; line-height: 1.15; letter-spacing: -.1px; white-space: nowrap; overflow: hidden; }
       header.navbar-custom .nhom-nut-dau .nut-ico { font-size: 15px; margin: 0 !important; }
       header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-ngan, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .chu-nut { display: inline !important; }
     }
@@ -904,6 +906,13 @@
     .chu-thich-lich span { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
     .chu-thich-lich i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; }
     .nk-nam { font-size: 12px; color: #864c2a; } #kgNgayList > .nk-dau:not(:first-child) { margin-left: 8px; } /* năm của ngày không nhận khách */
+    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: tiêu đề + chú thích 1 hàng, ô chọn 1 hàng */
+      #tab6 .dau-lich-phai { display: contents !important; }
+      #tab6 .card-box > div:first-child { flex-wrap: wrap !important; row-gap: 6px !important; }
+      #tab6 .card-box > div:first-child .chu-thich-lich { order: 2; margin-left: auto; gap: 3px 8px; }
+      #tab6 .card-box > div:first-child::after { content: ""; order: 3; flex-basis: 100%; height: 0; }
+      #tab6 .card-box > div:first-child .dk-lich { order: 4; }
+    }
     @media (max-width: 575.98px) { /* 15/11/2026: hàng chọn xem lịch 1 dòng trên điện thoại */
       .dk-lich { display: flex !important; flex-wrap: nowrap; width: 100%; gap: 6px !important; }
       .dk-lich .form-select { flex: 1 1 auto; min-width: 0; font-size: 13px; padding: 4px 22px 4px 8px; background-position: right 6px center; }
@@ -938,7 +947,8 @@
       #tab9 .md-thu { font-size: .85rem; }
       #tab9 .md-chon-ngay input[type=date] { width: 8.4em; }
     }
-    @media (max-width: 575.98px) { #tab9 .md-ngay-hang .md-chu { display: none; } #tab9 .md-chon-ngay input[type=date] { width: 8.8em; } #tab9 .md-nut-sua .md-chu-sua { display: none; } #tab9 .md-nut-sua i { margin: 0 !important; } #tab9 .md-thu { min-width: 0; } }
+    @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: đầu Mẫu decor 1 hàng */ #tab9 .md-gh-dau, #tab9 .md-ngay-hang, #tab9 .md-tt-hang { flex-wrap: nowrap !important; gap: 4px !important; } #tab9 .md-chon-ngay input[type=date]::-webkit-calendar-picker-indicator { display: none; } #tab9 .md-chon-ngay input[type=date] { padding-left: 4px; padding-right: 2px; }
+      #tab9 .md-ngay-hang .md-chu { display: none; } #tab9 .md-chon-ngay input[type=date] { width: 7.4em; } #tab9 .md-nut-sua .md-chu-sua { display: none; } #tab9 .md-nut-sua i { margin: 0 !important; } #tab9 .md-thu { min-width: 0; } }
     /* Danh sách đã đặt: đủ rộng thì tên | SĐT | giờ | khách | trạng thái chung 1 hàng theo cột */
     #tab9 #mdDsDa { container-type: inline-size; }
     @container (min-width: 600px) {
@@ -1359,11 +1369,11 @@
       <div class="card-box p-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
           <div>
-            <h5 class="fw-bold mb-0 text-purple"><i class="fa-solid fa-toggle-on me-2 text-success"></i>Lịch &amp; khoá decor 12 tháng</h5><!-- 15/11/2026 chủ quán: nội dung ngắn gọn 1 dòng -->
+            <h5 class="fw-bold mb-0 text-purple"><i class="fa-solid fa-toggle-on me-2 text-success"></i><span class="d-none d-sm-inline">Lịch &amp; khoá decor 12 tháng</span><span class="d-sm-none">Lịch decor</span></h5><!-- 15/11/2026 chủ quán: nội dung ngắn gọn 1 dòng -->
           </div>
-          <div class="d-flex align-items-center flex-wrap gap-2">
-            <span class="chu-thich-lich" title="Chú thích màu ô ngày. Bấm vào từng ô ngày trong lịch để khoá / mở / sửa giới hạn">Chú thích:
-              <span><i style="background:#dc3545"></i>Khoá Full</span><span><i style="background:#f5ebe5;border:1px solid #d8ac93"></i>Có đơn</span><span><i style="background:#f8f9fa;border:1px solid #dee2e6"></i>Đang mở</span></span>
+          <div class="d-flex align-items-center flex-wrap gap-2 dau-lich-phai">
+            <span class="chu-thich-lich" title="Chú thích màu ô ngày. Bấm vào từng ô ngày trong lịch để khoá / mở / sửa giới hạn"><span class="d-none d-sm-inline">Chú thích:</span>
+              <span><i style="background:#dc3545"></i>Khoá<span class="d-none d-sm-inline"> Full</span></span><span><i style="background:#f5ebe5;border:1px solid #d8ac93"></i>Có đơn</span><span><i style="background:#f8f9fa;border:1px solid #dee2e6"></i><span class="d-none d-sm-inline">Đang </span>mở</span></span>
             <span class="dk-lich d-inline-flex align-items-center gap-2"><!-- 15/11/2026: nhóm chọn xem lịch, điện thoại 1 dòng -->
             <select id="calViewMode" class="form-select form-select-sm w-auto fw-bold" onchange="doiKieuXemTab6_()">
               <option value="thang" selected>Theo tháng</option><option value="quy">Theo quý</option><option value="nam">Cả năm</option>
@@ -3310,13 +3320,13 @@
     html += '<tr class="' + rowPastelClass + '">' +
       '<td class="col-dt-row text-center"><b>' + r.row + '</b></td>' +
       '<td class="text-nowrap">' +
-        (r.id ? '<div class="fw-bold font-monospace text-dark" title="ID: ' + escapeHtml(r.id) + '">' + escapeHtml(idGon_(r.id)) + '</div>' : '<div class="small text-muted font-monospace">#Dòng ' + r.row + '</div>') +
-        '<span class="badge mt-1" style="' + badgeStyle + '" title="' + escapeHtml(r.nhomBan || "Bàn thường") + '">' + escapeHtml(nhomGon_(r.nhomBan)) + '</span>' +
+        (r.id ? '<div class="fw-bold font-monospace text-dark lh-sm" title="ID: ' + escapeHtml(r.id) + '">' + idGon_(r.id).split(" ").map(escapeHtml).join("<br>") + '</div>' : '<div class="small text-muted font-monospace">#Dòng ' + r.row + '</div>') +
+        '<span class="badge mt-1" style="' + badgeStyle + '" title="' + escapeHtml(r.nhomBan || "Bàn thường") + '">' + nhomIcon_(r.nhomBan) + '</span>' +
         (dtCheDoNhap ? '<div class="dt-nhap-tag"><i class="fa-solid fa-keyboard"></i> Nhập ' + escapeHtml(r.nhapHien || r.thoiGianNhap || "--") + '</div>' : '') +
       '</td>' +
       '<td>' +
-        '<span class="cell-nowrap-line fw-bold text-dark">👤 <span class="chu-ten" data-ten="' + escapeHtml(r.tenKH) + '">' + escapeHtml(r.tenKH) + '</span>' + vatTag(r, true) + '</span>' +
-        '<span class="cell-nowrap-line font-monospace text-secondary">📞 <span class="chu-sdt">' + escapeHtml(sdtDep_(r.sdt)) + '</span></span>' +
+        '<span class="cell-nowrap-line fw-bold text-dark"><span class="chu-ten" data-ten="' + escapeHtml(r.tenKH) + '">' + escapeHtml(r.tenKH) + '</span>' + vatTag(r, true) + '</span>' +
+        '<span class="cell-nowrap-line font-monospace text-secondary" style="font-size:.92em"><span class="chu-sdt">' + escapeHtml(sdtDep_(r.sdt)) + '</span></span>' +
       '</td>' +
       '<td>' +
         (dtCheDoNhap ? '<span class="cell-nowrap-line text-success fw-bold"><i class="fa-solid fa-calendar-day"></i> Đến ' + escapeHtml(r.ngay ? r.ngay.split("-").reverse().join("/").replace(/\/(\d\d)(\d\d)$/, "/$2") : "--") + '</span>' : '') +
@@ -3327,7 +3337,7 @@
       '<td class="text-center">' + billHtml + '</td>' +
       '<td><div class="cell-Clamp-box" style="max-width:360px; max-height:75px;">' + (combinedBlocks.join("") || '<span class="text-muted">-</span>') + '</div></td>' +
       '<td class="col-dt-email text-nowrap"><small>' + escapeHtml(r.email || "") + '</small></td>' +
-      '<td class="text-center"><span class="d-inline-flex gap-1"><button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="editDataTongRow(' + (dauDt + i) + ')" title="Sửa đơn"><i class="fa-solid fa-pen-to-square"></i></button><button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="luuAnhDt(' + (dauDt + i) + ')" title="Lưu ảnh xác nhận đặt bàn"><i class="fa-solid fa-camera"></i></button></span></td>' +
+      '<td class="text-center"><span class="d-inline-flex flex-column gap-1"><button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="editDataTongRow(' + (dauDt + i) + ')" title="Sửa đơn"><i class="fa-solid fa-pen-to-square"></i></button><button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="luuAnhDt(' + (dauDt + i) + ')" title="Lưu ảnh xác nhận đặt bàn"><i class="fa-solid fa-camera"></i></button></span></td>' +
     '</tr>';
   }
   tbody.innerHTML = html;
@@ -3337,6 +3347,7 @@
 function soCoc_(v) { return Number(String(v == null ? "" : v).replace(/[^\d]/g, "")) || 0; }
 function cocGon_(v) { var n = soCoc_(v); if (!n) return "0"; return n >= 1e6 ? String(Math.round(n / 1e5) / 10).replace(".", ",") + "tr" : Math.round(n / 1000) + "k"; } // 15/11/2026 chủ quán: cọc ghi gọn 300k / 500k
 function idGon_(id) { var m = String(id || "").match(/(\d{1,2})-(\d{1,2})\s+(\d{1,2}:\d{2})/); return m ? ("0" + m[2]).slice(-2) + "/" + ("0" + m[1]).slice(-2) + " " + m[3] : String(id || ""); }
+function nhomIcon_(n) { var g = nhomGon_(n); return g === "Thường" ? '<i class="fa-solid fa-utensils"></i>' : '<i class="fa-solid fa-cake-candles"></i>' + (g === "Decor" ? '' : ' ' + escapeHtml(g.replace("Decor ", ""))); } // 15/11/2026 chủ quán: loại bàn bằng icon + số (🍴 thường, 🎂 <6 / ≥6)
 function nhomGon_(n) { var t = String(n || "").toLowerCase(); if (t.indexOf("decor") === -1) return "Thường"; return /≥|>=|> *=|từ *6|tu *6/.test(t) ? "Decor ≥6" : /<|dưới|duoi/.test(t) ? "Decor <6" : "Decor"; }
 // Tên dài hơn số điện thoại: viết tắt dần họ, tên đệm (Nguyễn Hoàng Cẩm Tú -> N. Hoàng Cẩm Tú -> N.H. Cẩm Tú); rê chuột xem tên đầy đủ
 function rutTenKhach_(goc) {
@@ -3693,10 +3704,11 @@ function rutTenKhach_(goc) {
       if (window.ResizeObserver) [].forEach.call(document.querySelectorAll("[data-canh-hang]"), function(h) { new ResizeObserver(function() { kiemXuongDong_(); }).observe(h); });
       document.addEventListener("shown.bs.tab", function() { setTimeout(kiemXuongDong_, 30); });
     });
+    function thuHai_(thu) { var ngan = thu === "Chủ nhật" ? "CN" : String(thu).replace("Thứ ", "T"); return '<span class="d-none d-sm-inline">' + thu + '</span><span class="d-sm-none">' + ngan + '</span>'; } // 15/11/2026: điện thoại ghi CN / T2…
     function mdThuCua_(ngay) { var p = String(ngay).split("-").map(Number); return ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"][new Date(p[0], p[1] - 1, p[2]).getDay()] || ""; }
     function taiMauDecorNgay() {
       var ngay = document.getElementById("mdNgay").value; if (!ngay) return;
-      document.getElementById("mdThu").innerText = mdThuCua_(ngay);
+      document.getElementById("mdThu").innerHTML = thuHai_(mdThuCua_(ngay));
       var lan = ++_mdLan, cho = '<div class="md-rong"><span class="spinner-border spinner-border-sm me-1"></span>Đang tải…</div>';
       document.getElementById("mdDsCon").innerHTML = cho; document.getElementById("mdDsDa").innerHTML = cho;
       adminRun().withSuccessHandler(function(r) { if (lan === _mdLan) veMauDecorNgay_(r); }) // cổng quản trị (có tên + SĐT khách)
@@ -3770,8 +3782,8 @@ function rutTenKhach_(goc) {
       var o = function(da, gioi) { return '<td class="' + (gioi && da >= gioi ? 'md-du' : '') + '">' + da + (gioi ? '<span class="md-gh">/' + gioi + '</span>' : '') + '</td>'; };
       var tt = r.khoaDecor ? ['khoa', 'fa-lock', 'Đã khoá FULL decor trên lịch'] : c.khoa ? ['khoa', 'fa-ban', 'Không nhận thêm bàn decor'] : duBan ? ['khoa', 'fa-circle-exclamation', 'Đã đủ bàn decor'] : ['mo', 'fa-circle-check', 'Còn nhận bàn decor'];
       _mdGh = { ngay: r.ngay, thu: thu, c: c, dd: dd, rieng: !!gh.rieng };
-      document.getElementById("mdThu").innerText = thu;
-      document.getElementById("mdTT").innerHTML = '<span class="md-tt ' + tt[0] + '"><i class="fa-solid ' + tt[1] + ' me-1"></i>' + tt[2] + '</span>' + (gh.rieng ? '<span class="md-rieng" title="Ngày này đang dùng giới hạn riêng">📌 riêng</span>' : '');
+      document.getElementById("mdThu").innerHTML = thuHai_(thu);
+      document.getElementById("mdTT").innerHTML = '<span class="md-tt ' + tt[0] + '" title="' + tt[2] + '"><i class="fa-solid ' + tt[1] + ' me-1"></i><span class="d-none d-sm-inline">' + tt[2] + '</span></span>' + (gh.rieng ? '<span class="md-rieng" title="Ngày này đang dùng giới hạn riêng">📌<span class="d-none d-sm-inline"> riêng</span></span>' : '');
       document.getElementById("mdBang").innerHTML = '<table class="md-gh-bang"><thead><tr><th></th><th>Bàn</th><th>Khách</th></tr></thead><tbody>' +
         '<tr class="nho"><th>&lt; 6 khách</th>' + o(dd.nho, c.nho) + o(dd.khachNho, c.khachNho) + '</tr>' +
         '<tr class="lon"><th>≥ 6 khách</th>' + o(dd.lon, c.lon) + o(dd.khachLon, c.khachLon) + '</tr>' +
