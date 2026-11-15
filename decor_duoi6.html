@@ -175,6 +175,8 @@
   
     .o-thieu{border-color:#dc3545 !important;border-radius:8px;animation:oThieu 1s ease-in-out infinite}
     @keyframes oThieu{0%,100%{box-shadow:0 0 0 0 rgba(220,53,69,.55)}50%{box-shadow:0 0 0 4px rgba(220,53,69,.22);background-color:#fff1f0}}
+    .khung-tt .o-thieu, .khung-sk .o-thieu { animation-name: oThieuO; } /* 15/11/2026: ô trong khung liền không có viền -> vòng đỏ vẽ phía trong ô cho dễ thấy */
+    @keyframes oThieuO { 0%, 100% { outline: 2px solid rgba(220,53,69,.85); outline-offset: -2px; } 50% { outline: 2px solid rgba(220,53,69,.3); outline-offset: -2px; background-color: #fff1f0; } } /* outline: khung đã chặn box-shadow bằng !important */
       .tc-ok{container-type:inline-size}
   
     .nut-nhay{animation:nutNhay 1.2s ease-in-out infinite}
@@ -461,6 +463,10 @@
     /* nút nền tảng chỉ còn biểu tượng */
     .nt-btn { padding: 5px 9px; } .nt-btn img, .nt-btn .nt-khac { width: 18px; height: 18px; line-height: 18px; }
     /* ô chờ QR + lưu ý cuối gộp 1 khung, giữ 2 màu nền */
+    #theCocCho .lk-thieu { display: inline-flex; align-items: center; justify-content: center; width: 1.8em; height: 1.6em; margin: 0 .1em; border: 1px solid #e3b48c; border-radius: 6px; background: #fff; color: #b4531f; text-decoration: none; vertical-align: middle; cursor: pointer; } /* 15/11/2026: ô còn thiếu hiện bằng icon (giống icon trên form), bấm để tới ô */
+    #theCocCho .lk-thieu i { font-size: .85em; }
+    #theCocCho .lk-thieu:hover, #theCocCho .lk-thieu:focus-visible { background: #fff1e4; border-color: #b4531f; color: #8a3c12; }
+    #theCocCho .lk-thieu.lk-chu { display: inline; width: auto; height: auto; margin: 0; border: 0; background: none; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; vertical-align: baseline; }
     #theCocCho.gan-luu-y { margin-bottom: 0 !important; border: 1px solid #f1dcb4 !important; border-left: 4px solid #e9a23b !important; border-bottom: 1px dashed #e6cfa8 !important; border-radius: .5rem .5rem 0 0 !important; }
     .ghi-chu-cuoi.gan-cho { border-top: 0 !important; border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
     /* 15/11/2026 chủ quán: điện thoại có hướng dẫn đè giữ vào ngày để xem mẫu decor còn trống */
@@ -1203,19 +1209,26 @@
         if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
-    // Các ô còn thiếu để hiện QR cọc (báo rõ cho khách thay vì câu chung chung)
+    // Các ô còn thiếu để hiện QR cọc: [tên ô, ô nhập, icon], theo thứ tự trên form (15/11/2026 chủ quán: tên báo là link dẫn tới ô nhập)
     function dsThieuQr_(f, ngay) {
       var t = [], sk = document.getElementById("txtSoKhach");
-      if (!ngay) t.push("ngày");
-      if (!f.gioVao.value) t.push("giờ");
-      if (!sk.value || !sk.checkValidity()) t.push("số khách");
-      if (!f.hoTen.value.trim()) t.push("tên");
-      if (f.sdt.value.replace(/\D/g, "").length < 9) t.push("SĐT");
-      if (!f.gioiTinh.value) t.push("giới tính");
-      if (!f.doTuoi.value) t.push("tuổi");
-      if (!f.tinhThanh.value) t.push("tỉnh");
+      if (!f.gioiTinh.value) t.push(["giới tính", ".o-gt .btn-group", "fa-venus-mars"]);
+      if (!f.hoTen.value.trim()) t.push(["họ tên", "#txtHoTen", "fa-user"]);
+      if (!f.doTuoi.value) t.push(["tuổi", 'select[name="doTuoi"]', "fa-cake-candles"]);
+      if (f.sdt.value.replace(/\D/g, "").length < 9) t.push(["SĐT", 'input[name="sdt"]', "fa-phone"]);
+      if (!f.tinhThanh.value) t.push(["tỉnh", 'select[name="tinhThanh"]', "fa-location-dot"]);
+      if (!f.gioVao.value) t.push(["giờ đến", "#selectHourDecor", "fa-clock"]);
+      if (!ngay) t.push(["ngày", ".o-cot-ngay", "fa-calendar-day"]);
+      if (!sk.value || !sk.checkValidity()) t.push(["số khách", "#txtSoKhach", "fa-users"]);
       return t;
     }
+    function denOThieu_(chon) { // bấm tên ô còn thiếu: cuộn tới ô, nháy đỏ (điền xong tự thôi), đặt con trỏ vào ô
+      var o = document.querySelector(chon); if (!o) return;
+      if (o.matches("input, select, .btn-group")) o.classList.add("o-thieu");
+      o.scrollIntoView({ block: "center", behavior: "smooth" });
+      if (/^(INPUT|SELECT)$/.test(o.tagName) && !o.disabled) setTimeout(function() { o.focus({ preventScroll: true }); }, 450);
+    }
+    document.addEventListener("click", function(e) { var a = e.target.closest && e.target.closest("#theCocCho .lk-thieu"); if (a) { e.preventDefault(); denOThieu_(a.getAttribute("data-o")); } });
     function capNhatKhoaForm() {
       var f = document.getElementById("bookingForm"); if (!f) return;
       var ngay = document.getElementById("inputNgay").value, lyDo = ngay ? lyDoKhoaNgay() : "", khoa = !!lyDo;
@@ -1246,9 +1259,14 @@
       document.getElementById("theCoc").style.display = hienCoc ? "" : "none";
       document.getElementById("theCocCho").style.display = (hienCoc || khoa) ? "none" : "";
       var choHien = !(hienCoc || khoa), gcc = document.querySelector(".ghi-chu-cuoi"); document.getElementById("theCocCho").classList.toggle("gan-luu-y", choHien && !!gcc); if (gcc) gcc.classList.toggle("gan-cho", choHien); // 15/11/2026: ô chờ QR + lưu ý cuối 1 khung // ngày khoá/đầy: băng đỏ trên + nút dưới đã báo, không cần ô này
+      var lkThieu = function(x) { var ten = x[0].charAt(0).toUpperCase() + x[0].slice(1); return '<a href="#" class="lk-thieu" data-o="' + x[1].replace(/"/g, "&quot;") + '" title="' + ten + '" aria-label="Điền ' + x[0] + '"><i class="fa-solid ' + x[2] + '" aria-hidden="true"></i></a>'; };
       document.getElementById("theCocCho").innerHTML = khoa ? "<i class='fa-solid fa-lock me-1' aria-hidden='true'></i>Ngày này <b>hết nhận bàn decor</b> · ẩn mã QR cọc" :
-        (thieuTT.length && thieuTT.length <= 3) ? '<span class="dong-mot"><i class="fa-solid fa-qrcode me-1" aria-hidden="true"></i>Còn thiếu <b>' + thieuTT.join(", ") + '</b> để hiện QR cọc</span>' : // 15/11/2026: báo rõ còn thiếu gì
+        ngay ? ( // 15/11/2026 chủ quán: đã có ngày thì không hiện câu chung; báo các ô còn thiếu, tên ô là link tới chỗ nhập
+          thieuTT.length ? '<span class="dong-mot"><i class="fa-solid fa-qrcode me-1" aria-hidden="true"></i>Còn thiếu ' + thieuTT.map(lkThieu).join("") + ' để hiện QR<span class="d-none d-sm-inline"> cọc</span></span>' // 15/11/2026 chủ quán: luôn 1 dòng, ô thiếu hiện bằng icon
+          : isTimeRuleLocked ? '<span class="dong-mot"><i class="fa-solid fa-clock me-1" aria-hidden="true"></i>Xem <a href="#" class="lk-thieu lk-chu" data-o="#boxKhoaDecorSau18h31">lưu ý giờ đặt</a> phía trên để hiện QR cọc</span>'
+          : '<span class="dong-mot"><span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Đang kiểm tra ngày còn nhận để hiện QR cọc…</span>') :
         '<span class="d-none d-sm-inline"><span class="dong-mot"><i class="fa-solid fa-qrcode me-1" aria-hidden="true"></i>Chọn <b>ngày còn nhận</b> &amp; điền <b>đủ thông tin</b> phía trên để hiện mã QR cọc</span></span><span class="d-sm-none"><span class="dong-mot"><i class="fa-solid fa-qrcode me-1" aria-hidden="true"></i>Điền <b>đủ thông tin</b> để hiện QR cọc</span></span>';
+      if (typeof vuaDongMot_ === "function") requestAnimationFrame(vuaDongMot_); // ô chờ QR luôn 1 dòng: chữ tự nhỏ lại nếu chật
       updateSubmitButtonState();
       // Ngày full / khoá: chỉ còn băng đỏ + ô chọn ngày. Đầy hẳn cả ngày thì ẩn cả Số khách; chỉ hết 1 loại bàn thì giữ Số khách để đổi loại bàn
       var cfgN = (_ghNgay && _ghNgay.cauHinh) || {}, daN = (_ghNgay && _ghNgay.daDat) || {};
