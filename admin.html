@@ -209,6 +209,27 @@
     .gh-mini td, .gh-mini th { white-space: nowrap; overflow: hidden; }
     @media (max-width: 576px) { .ico-tt { font-size: 12px !important; } .ico-lich { font-size: .7em !important; } .gh-mini td span { display: none; } .gh-mini th:first-child { width: 11px !important; } }
     .ico-tt { font-size: 15px; } .ico-lich { font-size: .85em; color: inherit; opacity: .9; } .gh-chu-thich i { font-size: 12px; }
+    @media (max-width: 576px) { /* 16/11/2026 chủ quán: lịch tháng trên điện thoại hạn chế tối đa lề 2 bên */
+      #tab6.card-box, #tab6 .card-box { padding-left: 4px !important; padding-right: 4px !important; }
+      #calYearGridContainer { margin-left: -4px !important; margin-right: -4px !important; }
+      #calYearGridContainer > div { padding-left: 2px !important; padding-right: 2px !important; }
+      #calYearGridContainer .border.rounded-3 { padding: 8px 3px !important; border-left: 0 !important; border-right: 0 !important; border-radius: 0 !important; }
+    }
+    .o-dau-ngay { font-weight: 700; white-space: nowrap; display: flex; align-items: center; justify-content: center; gap: 4px; line-height: 1.2; }
+    .o-dau-ngay .ico-tt { font-size: .9em !important; } .o-dau-ngay .ico-lich { font-size: .75em !important; }
+    .o-khoa .gh-cot { color: #fff !important; }
+    @media (max-width: 576px) { .o-dau-ngay { gap: 2px; font-size: 13px; } .o-dau-ngay .ico-tt { font-size: .75em !important; } .o-dau-ngay .ico-lich { font-size: .6em !important; } }
+    .gh-bang { display: grid; gap: 3px; margin-top: 5px; font-size: 15px; line-height: 1.2; white-space: nowrap; overflow-wrap: normal; }
+    .gh-dong, .gh-dau { display: grid; grid-template-columns: 1.4em 1fr 1fr; gap: 3px; align-items: center; }
+    .gh-dau { font-size: 14px; color: #8a7a6e; text-align: center; }
+    .gh-nhan { font-weight: 800; text-align: left; padding-left: 2px; }
+    .gh-nhan { color: #9a8a7e; text-align: center; padding: 0; } .gh-cot { font-size: .85em; } .gh-cot.nho { color: #3f6b35; } .gh-cot.lon { color: #a24a22; }
+    .gh-o { display: block; border-radius: 6px; padding: 3px 0; text-align: center; cursor: text; border: 1px solid transparent; color: #3d2a1e; }
+    .gh-o.nho { background: #e8f2e3; } .gh-o.lon { background: #fbe9dd; }
+    .gh-o small { opacity: .55; font-weight: 600; font-size: .85em; }
+    .gh-o.du { background: #dc3545 !important; color: #fff; } .gh-o.du small { opacity: .85; }
+    .o-khoa .gh-nhan, .o-khoa .gh-dau { color: #fff !important; } .o-khoa .gh-o { background: rgba(255,255,255,.88) !important; } .o-khoa .gh-o.du { background: #7a1620 !important; color: #fff; }
+    @media (max-width: 576px) { .gh-bang { font-size: 13px; gap: 2px; } .gh-dong, .gh-dau { grid-template-columns: 1fr 1fr; gap: 2px; } .gh-nhan { display: none; } .gh-o { padding: 2px 0; border-radius: 4px; } .gh-o small { display: none; } .gh-dau { font-size: 11.5px; } }
     .gh-cham { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 3px; vertical-align: -1px; border: 1px solid rgba(0,0,0,.08); }
     /* Màu theo phân loại: bàn < 6 khách (xanh lá), bàn ≥ 6 khách (đất nung), tổng (vàng cát) */
     .gh-bang .c-nho { background: #eaf3e6 !important; } .gh-bang th.c-nho { color: #3f6b35; }
@@ -2848,8 +2869,8 @@
         html += '<div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-2"><span class="fw-bold text-purple text-nowrap' + (lon ? ' fs-5' : '') + '"' +
           (lon ? '' : ' style="cursor:pointer;text-decoration:underline dotted" title="Bấm để xem tháng này dạng bảng chi tiết" onclick="xemThangTab6_(' + (m + 1) + ')"') + '>Tháng ' + (m + 1) + '/' + year + (lon ? '' : ' 🔍') + '</span>' +
           '<span class="small text-muted">%%TOMTAT%%</span></div>' +
-          (lon ? '<div class="small text-muted mb-2 d-flex flex-wrap gap-2 gh-chu-thich" title="Bấm số trong ô ngày để sửa giới hạn"><span><span class="gh-cham" style="background:#eaf3e6"></span>&lt;6</span><span><span class="gh-cham" style="background:#fbe8dc"></span>≥6</span>' +
-            '<span><span class="gh-cham" style="background:#f5eed8"></span>Σ</span><span title="Ô vượt giới hạn"><span class="gh-cham" style="background:#dc3545"></span><i class="fa-solid fa-table-cells-large" style="color:#dc3545"></i></span><span title="Ngày vượt / đủ mức"><span class="gh-cham" style="background:#e8833a"></span><i class="fa-solid fa-calendar-day" style="color:#e8833a"></i></span>' +
+          (lon ? '<div class="small text-muted mb-2 d-flex flex-wrap gap-2 gh-chu-thich" title="Bấm số trong ô ngày để sửa giới hạn"><span><span class="gh-cham" style="background:#eaf3e6"></span>&lt;6</span><span><span class="gh-cham" style="background:#fbe8dc"></span>≥6</span><span title="Hàng trên: số bàn"><i class="fa-solid fa-arrow-up-long" style="font-size:10px"></i><i class="fa-solid fa-chair"></i> bàn</span><span title="Hàng dưới: số khách"><i class="fa-solid fa-arrow-down-long" style="font-size:10px"></i><i class="fa-solid fa-users"></i> khách</span>' +
+            '<span title="Ô vượt giới hạn"><span class="gh-cham" style="background:#dc3545"></span><i class="fa-solid fa-table-cells-large" style="color:#dc3545"></i></span><span title="Ngày vượt / đủ mức"><span class="gh-cham" style="background:#e8833a"></span><i class="fa-solid fa-calendar-day" style="color:#e8833a"></i></span>' +
             '<span title="Đã khóa Full decor"><i class="fa-solid fa-lock" style="color:#dc3545"></i></span><span title="Không nhận thêm bàn"><i class="fa-solid fa-ban" style="color:#dc3545"></i></span><span title="Giới hạn riêng ngày"><i class="fa-solid fa-thumbtack" style="color:#c0392b"></i></span><span title="Bàn decor"><i class="fa-solid fa-cake-candles" style="color:#934c22"></i></span></div>' : ''); // 15/11/2026 chủ quán: gọn ít dòng
         var dauThang = html.lastIndexOf("%%TOMTAT%%"), soVuot = 0, banThang = 0, khachThang = 0;
         html += '<div style="display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); overflow-wrap:anywhere; gap:' + (lon ? 6 : 3) + 'px; font-size:' + (lon ? 13 : 12) + 'px;">';
@@ -2877,13 +2898,13 @@
           if (vuot) soVuot++; banThang += nh.nho + nh.lon; khachThang += nh.khachNho + nh.khachLon;
           if (vuot) style += "box-shadow:inset 0 0 0 2px #e8833a;";
           var tip = (rieng ? "📌 Giới hạn riêng • " : "") + (locked[key] ? "Đã khóa" : "Đang mở") + (cnt ? " • " + cnt + " bàn decor" : "") + (dongGh ? " • " + dongGh + (du ? " (đủ)" : "") : "") + " • Nhấp để chỉnh khóa / giới hạn ngày này";
-          html += '<div class="text-center rounded-2" style="cursor:pointer; padding:' + (lon ? '6px 3px 4px' : '4px 0') + '; ' + style + '" title="' + tip + '" onclick="moNgayGh(\'' + key + '\')">' +
+          html += '<div class="text-center rounded-2' + (locked[key] ? ' o-khoa' : '') + '" style="cursor:pointer; padding:' + (lon ? '6px 3px 4px' : '4px 0') + '; ' + style + '" title="' + tip + '" onclick="moNgayGh(\'' + key + '\')">' +
             '<div style="' + (vuot && lon ? 'background:#e8833a;color:#fff;border-radius:6px;margin:-6px 0 2px;padding:3px 0;' : '') + '">' +
-              '<div style="font-weight:600;white-space:nowrap;">' + d + (rieng ? ' <i class="fa-solid fa-thumbtack ico-lich" title="Có giới hạn riêng ngày này"></i>' : '') + '</div>' +
-              (lon ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '<i class="fa-solid fa-lock ico-tt" title="Đã khóa Full decor"></i>' : ghc.khoa ? '<i class="fa-solid fa-ban ico-tt" style="color:' + (vuot ? '#fff' : '#dc3545') + '" title="' + (rieng ? 'Khóa ngày này' : 'Khóa theo thứ') + ' — không nhận thêm bàn"></i>' : vuot ? '<i class="fa-solid fa-triangle-exclamation ico-tt" title="Vượt / đủ mức"></i>' : '') + '</div>' : '') +
+              // 16/11/2026 chủ quán: icon khoá / cấm / ghim cùng 1 hàng với số ngày
+              '<div class="o-dau-ngay">' + d + (lon ? (locked[key] ? '<i class="fa-solid fa-lock ico-tt" title="Đã khóa Full decor"></i>' : ghc.khoa ? '<i class="fa-solid fa-ban ico-tt" style="color:' + (vuot ? '#fff' : '#dc3545') + '" title="' + (rieng ? 'Khóa ngày này' : 'Khóa theo thứ') + ' — không nhận thêm bàn"></i>' : vuot ? '<i class="fa-solid fa-triangle-exclamation ico-tt" title="Vượt / đủ mức"></i>' : '') : '') + (rieng ? '<i class="fa-solid fa-thumbtack ico-lich" title="Có giới hạn riêng ngày này"></i>' : '') + '</div>' +
             '</div>' +
             (lon
-              ? '<div style="font-size:11px; line-height:1.2;">' + (coGh && !ghc.khoa ? bangOGh_(nh, ghc, locked[key], key) : (cnt ? '<span class="text-nowrap" title="' + cnt + ' bàn decor"><i class="fa-solid fa-cake-candles"></i> ' + cnt + '</span>' : '')) + '</div>'
+              ? '<div style="font-size:11px; line-height:1.2;">' + bangOGh_(nh, ghc.khoa ? {} : ghc, locked[key], key, !!ghc.khoa) + '</div>'
               : (cnt || du ? '<div style="font-size:9px; line-height:1;">' + (cnt || "") + (vuot ? ' <i class="fa-solid fa-circle" style="color:#e8833a;font-size:7px"></i>' : '') + '</div>' : '')) + '</div>';
         }
         html += '</div></div></div>';
@@ -2893,18 +2914,19 @@
     }
 
     // Bảng nhỏ trong ô ngày (xem theo tháng): hàng <6 / ≥6 / Σ, cột Bàn / Khách — "đã đặt/tối đa", đủ thì tô đỏ
-    function bangOGh_(nh, c, khoaNgay, key) {
-      // Ô giới hạn bấm sửa trực tiếp -> lưu thành giới hạn riêng của ngày (📌)
+    function bangOGh_(nh, c, khoaNgay, key, chiBan) { // chiBan: ngày khoá chỉ hiện số bàn 2 loại cho gọn
+      // 16/11/2026 chủ quán: vẽ lại dễ nhìn — 2 hàng <6 / ≥6, mỗi hàng 2 ô Bàn / Khách "đã đặt/tối đa"; ô đủ tô đỏ; bấm ô để sửa giới hạn riêng (📌)
       var o = function(da, max, k) {
         var du = max && da >= max;
-        return '<td data-k="' + k + '" onclick="event.stopPropagation(); suaOGh(this, \'' + key + '\', \'' + k + '\')" title="Bấm để sửa giới hạn riêng ngày này" style="cursor:text;' +
-          (du ? 'background:#dc3545;color:#fff;' : da ? 'filter:brightness(.92);' : '') + (max ? 'font-weight:700' : '') + '">' +
-          (max ? da + '<span style="opacity:.7;font-weight:400">/' + max + '</span>' : (da || '·')) + '</td>';
+        return '<span class="gh-o' + (du ? ' du' : '') + '" data-k="' + k + '" onclick="event.stopPropagation(); suaOGh(this, \'' + key + '\', \'' + k + '\')" title="Bấm để sửa giới hạn riêng ngày này">' +
+          (max ? '<b>' + da + '</b><small>/' + max + '</small>' : (da ? '<b>' + da + '</b>' : '<b style="opacity:.35">·</b>')) + '</span>';
       };
-      return '<table class="gh-mini" style="color:#4a3426"><tr><th></th><th title="Bàn"><i class="fa-solid fa-chair"></i></th><th title="Khách"><i class="fa-solid fa-users"></i></th></tr>' +
-        '<tr class="r-nho"><th>&lt;6</th>' + o(nh.nho, c.nho, "nho") + o(nh.khachNho, c.khachNho, "khachNho") + '</tr>' +
-        '<tr class="r-lon"><th>≥6</th>' + o(nh.lon, c.lon, "lon") + o(nh.khachLon, c.khachLon, "khachLon") + '</tr>' +
-        '<tr class="gh-tong"><th>Σ</th>' + o(nh.nho + nh.lon, c.tong, "tong") + '<td>' + ((nh.khachNho + nh.khachLon) || '·') + '</td></tr></table>';
+      // 16/11/2026: cột = nhóm bàn (<6 xanh · ≥6 cam, có chữ ở đầu cột), hàng trên = bàn, hàng dưới = khách
+      var o2 = function(da, max, k, nhom) { return o(da, max, k).replace('class="gh-o', 'class="gh-o ' + nhom); };
+      return '<div class="gh-bang">' +
+        '<div class="gh-dau"><span class="gh-nhan"></span><b class="gh-cot nho">&lt;6</b><b class="gh-cot lon">≥6</b></div>' +
+        '<div class="gh-dong"><i class="fa-solid fa-chair gh-nhan" title="Bàn"></i>' + o2(nh.nho, c.nho, "nho", "nho") + o2(nh.lon, c.lon, "lon", "lon") + '</div>' + (chiBan ? '</div>' : '') + (chiBan ? '' :
+        '<div class="gh-dong"><i class="fa-solid fa-users gh-nhan" title="Khách"></i>' + o2(nh.khachNho, c.khachNho, "khachNho", "nho") + o2(nh.khachLon, c.khachLon, "khachLon", "lon") + '</div></div>');
     }
     // Sửa 1 ô giới hạn ngay trong lịch: Enter / bấm ra ngoài = lưu, Esc = hủy, để trống hoặc 0 = không giới hạn
     function suaOGh(td, key, k) {
