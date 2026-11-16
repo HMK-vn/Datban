@@ -243,6 +243,13 @@
     .dtt-nut .btn { flex: 1; padding: 3px 2px; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-color: #ecd8cd; color: #555; background: #fff; }
     .dtt-nut .btn.on { background: #864c2a; border-color: #864c2a; color: #fff; }
     .dtt-nut .btn:hover:not(.on) { background: #f8f0ec; }
+    /* 16/11/2026 chủ quán: cặp nút icon Nhận bàn (xanh) / Từ chối (đỏ) cùng hàng, cùng cỡ */
+    .dtt-nut .btn i { font-size: 1.05em; }
+    .dtt-nut .nut-nhan i { color: #2e7d32; } .dtt-nut .nut-tc i { color: #c62828; } .dtt-nut .nut-hoan i { color: #864c2a; }
+    .dtt-nut .btn.on i { color: #fff; }
+    .dtt-nut .nut-nhan.on { background: #2e7d32; border-color: #2e7d32; } .dtt-nut .nut-tc.on { background: #c62828; border-color: #c62828; }
+    .dtt-card.tu-choi { border-color: #f3c4c4; background: #fff7f7; }
+    .dtt-card .dtt-tc { color: #c62828; font-weight: 700; }
     /* Chống nhảy dòng: tên cắt "…", SĐT/mục thông tin không tách, nút chỉ còn biểu tượng khi thẻ hẹp */
     .dtt-card { container-type: inline-size; }
     .dtt-l1 .dtt-ten { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -453,7 +460,7 @@
     html body #mainTab .nav-link { transition: transform .15s, box-shadow .15s; }
     .kg-hop > .kg-luoi { flex: 1 1 100%; } /* 1 cột: lưới khoá giờ giãn hết bề ngang cho cân đối */
     @media (max-width: 575.98px) { /* 15/11/2026 chủ quán: điện thoại gọn, cân đối, ít dòng */
-      #kgNgayMoi, #nkrNgay { flex: 1 1 7em; width: auto !important; min-width: 0; }
+      #kgNgayMoi, #nkrNgay, #nkrDenNgay { flex: 1 1 7em; width: auto !important; min-width: 0; }
       #nkrTu, #nkrDen { flex: 1 1 4.4em; width: auto !important; min-width: 0; }
       .kg-cot-phai .d-inline-flex:has(#nkrTu) { flex: 1 1 auto; min-width: 0; }
       #tab8 .card-box > div:first-child { flex-wrap: wrap !important; row-gap: 6px !important; } #tab8 .lc-dk { display: contents !important; }
@@ -881,30 +888,46 @@
       header.navbar-custom .nhom-nut-dau .nut-ico { font-size: 15px; margin: 0 !important; }
       header.navbar-custom .nhom-nut-dau > .chi-icon-dt .nhan-ngan, header.navbar-custom .nhom-nut-dau > .chi-icon-dt .chu-nut { display: inline !important; }
     }
-    /* Ô khoá giờ: 2 dòng Bàn decor / Bàn thường thẳng cột */
-    .kg-luoi { display: grid; grid-template-columns: max-content max-content 7.5em max-content 7.5em; align-items: center; gap: 6px 8px; }
-    .kg-luoi .kg-tieude, .kg-luoi .kg-luu { grid-column: 1 / -1; }
-    .kg-luoi .kg-thu { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
-    .kg-thu label { margin: 0; cursor: pointer; }
-    .kg-thu input { position: absolute; opacity: 0; pointer-events: none; }
-    .kg-thu label span { display: inline-block; min-width: 2.4em; text-align: center; padding: 2px 8px; border-radius: 999px; border: 1px solid #d8c3b3; background: #fff; color: #6f432a; font-weight: 700; font-size: .85em; }
-    .kg-thu input:checked + span { background: #864c2a; border-color: #864c2a; color: #fff; }
-    .kg-luoi .kg-lon { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: -2px; }
-    .kg-luoi .kg-goi { color: #1f7a45; font-weight: 600; }
+    /* 16/11/2026 chủ quán: khoá giờ theo CỤM thứ — mỗi cụm 1 thẻ (chip thứ + dòng decor + dòng bàn thường) */
+    .kg-luoi { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
     .kg-luoi .kg-dau { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; } /* nút Lưu cùng dòng tiêu đề */
-    .kg-luoi #kgThuDecor { padding-bottom: 6px; border-bottom: 1px dashed #ecdccf; } /* tách nhóm decor / bàn thường */
-    @media (max-width: 575.98px) { .kg-luoi { grid-template-columns: max-content auto minmax(0, 1fr) auto minmax(0, 1fr); }
-      .kg-luoi .kg-thu { flex-wrap: nowrap; gap: 4px; } .kg-thu label span { min-width: 0; padding: 2px 6px; font-size: .8em; } /* 15/11/2026: T2–CN 1 dòng trên điện thoại */
-      .kg-luoi input[type=time] { padding-left: 6px; padding-right: 4px; } .kg-luoi input[type=time]::-webkit-calendar-picker-indicator { display: none; } /* giờ không bị cắt chữ */
+    .kg-thu { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+    .kg-thu label { margin: 0; cursor: pointer; position: relative; }
+    .kg-thu input { position: absolute; opacity: 0; pointer-events: none; }
+    .kg-thu label span { display: inline-block; min-width: 2.3em; text-align: center; padding: 2px 6px; border-radius: 999px; border: 1px solid #d8c3b3; background: #fff; color: #6f432a; font-weight: 700; font-size: .82em; }
+    .kg-thu input:checked + span { background: var(--cum, #864c2a); border-color: var(--cum, #864c2a); color: #fff; }
+    .kg-thu label.mo { cursor: not-allowed; } .kg-thu label.mo span { opacity: .35; border-style: dashed; }
+    .kg-thanh { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; } /* thanh mini 7 thứ: thứ nào khoá gì */
+    .kg-thanh > div { border-radius: 6px; padding: 3px 0 2px; text-align: center; font-size: 11px; line-height: 1.25; font-weight: 700; background: #fff; border: 1px dashed #e2d2c5; color: #a8968a; min-width: 0; }
+    .kg-thanh > div.co { background: var(--cum); border: 1px solid var(--cum); color: #fff; }
+    .kg-thanh > div i { font-size: 10px; margin: 0 1px; } .kg-thanh > div small { display: block; font-size: 10px; font-weight: 600; }
+    .kg-cum { background: #fff; border: 1px solid #ecdccf; border-left: 4px solid var(--cum, #864c2a); border-radius: 10px; padding: 6px 8px; display: flex; flex-direction: column; gap: 5px; }
+    .kg-cum-dau { display: flex; align-items: center; gap: 6px; }
+    .kg-cum-dau .kg-thu { flex: 1 1 auto; min-width: 0; }
+    .kg-cum-dau .kg-xoa { flex: 0 0 auto; color: #b4231b; padding: 2px 6px; line-height: 1; }
+    .kg-dong { display: grid; grid-template-columns: minmax(5.6em, max-content) repeat(3, minmax(0, 1fr)); align-items: end; gap: 2px 6px; }
+    .kg-dong > label.kg-loai { margin: 0; font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; padding-bottom: 5px; cursor: pointer; }
+    .kg-dong > label.kg-loai i { color: var(--cum, #864c2a); width: 1em; text-align: center; }
+    .kg-dong .kg-o { display: flex; flex-direction: column; min-width: 0; }
+    .kg-dong .kg-o input[type=time] { padding: 2px 3px; font-size: 13px; min-width: 0; text-align: center; } /* 16/11/2026: ô giờ hẹp vẫn đủ HH:mm */
+    .kg-dong .kg-o input[type=time]::-webkit-calendar-picker-indicator { display: none; }
+    .kg-dong > label.kg-loai .kg-chu { overflow: hidden; text-overflow: ellipsis; }
+    .kg-dong .kg-o small { font-size: 10.5px; color: #8a7a6e; line-height: 1.1; white-space: nowrap; }
+    .kg-dong input[type=time] { padding: 2px 4px; min-width: 0; width: 100%; font-variant-numeric: tabular-nums; }
+    .kg-dong.tat .kg-o { opacity: .45; }
+    .kg-cum .kg-goi { color: #1f7a45; font-weight: 600; font-size: 11.5px; grid-column: 1 / -1; }
+    .kg-dong + .kg-goi + .kg-dong { border-top: 1px dashed #ecdccf; padding-top: 4px; }
+    @media (max-width: 575.98px) {
+      .kg-dong input[type=time] { padding-left: 4px; padding-right: 2px; } .kg-dong input[type=time]::-webkit-calendar-picker-indicator { display: none; } /* giờ không bị cắt chữ */
+      .kg-dong { grid-template-columns: minmax(4.6em, max-content) repeat(3, minmax(0, 1fr)); gap: 2px 4px; }
+      .kg-dong > label.kg-loai .chu-dai { display: none; }
     }
     .kg-hop-boc { container-type: inline-size; }
     @container (min-width: 900px) { /* 15/11/2026 chủ quán: bảng cài đặt 2 cột khi khung rộng từ 900px; hẹp hơn (tablet dọc, điện thoại) xếp 1 cột như cũ */
-      div.kg-hop { display: grid !important; grid-template-columns: max-content minmax(0, 1fr); align-items: start !important; column-gap: 1.25rem; }
-      div.kg-hop .kg-luoi > .kg-tieude, div.kg-hop .kg-luoi > .kg-thu, div.kg-hop .kg-luoi > .kg-lon { width: 0; min-width: 100%; } /* dòng trải ngang (chữ xanh dài) không kéo giãn cột trái */
+      div.kg-hop { display: grid !important; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start !important; column-gap: 1.25rem; } /* 16/11/2026: cột trái = danh sách cụm */
       div.kg-hop > .kg-cot-phai { border-left: 1px solid #ecdccf; padding-left: 1.25rem; align-self: stretch; }
       div.kg-hop > .kg-cot-phai > div:first-child { border-top: 0 !important; padding-top: 0 !important; }
-      div.kg-hop .kg-luoi { grid-template-columns: max-content max-content 5.4em max-content 5.4em; } /* ô giờ gọn để cột phải đủ rộng, mỗi hàng 1 dòng */
-      div.kg-hop .kg-lon input[type=time] { width: 5.2em !important; } div.kg-hop #nkrTu, div.kg-hop #nkrDen { width: 5.9em !important; }
+      div.kg-hop #nkrTu, div.kg-hop #nkrDen { width: 5.9em !important; }
     }
     /* Chú thích màu lịch decor (chữ nhỏ, không phải nút) */
     .chu-thich-lich { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: .78em; color: #7b6f66; }
@@ -1395,14 +1418,11 @@
         </div>
         <!-- Khóa khung giờ đặt bàn trên web khách -->
         <div class="kg-hop-boc"><div class="mb-2 p-2 rounded-3 d-flex flex-wrap align-items-center gap-2 gap-md-3 kg-hop" style="background:#faf4ef;border:1px solid #ecdccf">
-          <div class="kg-luoi">
-            <div class="kg-tieude kg-dau"><b style="color:#864c2a">⏰ Khoá giờ đặt bàn<span class="d-none d-sm-inline"> (web khách)</span></b><span class="d-inline-flex align-items-center gap-2"><small class="text-muted" id="kgTrangThai"></small><button class="btn btn-sm fw-bold text-white" style="background:#864c2a" title="Lưu giờ khoá" onclick="luuKhoaGioAdmin()">💾 Lưu</button></span></div>
-            <label class="d-inline-flex align-items-center gap-1 fw-bold mb-0 text-nowrap"><input type="checkbox" id="kgDecorBat" checked> 🎀 Bàn decor</label><span>từ</span><input type="time" step="900" id="kgDecorTu" class="form-control form-control-sm"><span>đến</span><input type="time" step="900" id="kgDecorDen" class="form-control form-control-sm">
-            <div class="kg-thu" id="kgThuDecor"><span class="text-muted small">Áp dụng:</span><label><input type="checkbox" class="kg-thu-o" value="1"><span>T2</span></label><label><input type="checkbox" class="kg-thu-o" value="2"><span>T3</span></label><label><input type="checkbox" class="kg-thu-o" value="3"><span>T4</span></label><label><input type="checkbox" class="kg-thu-o" value="4"><span>T5</span></label><label><input type="checkbox" class="kg-thu-o" value="5"><span>T6</span></label><label><input type="checkbox" class="kg-thu-o" value="6"><span>T7</span></label><label><input type="checkbox" class="kg-thu-o" value="0"><span>CN</span></label></div>
-            <div class="kg-lon"><span class="text-muted small" title="Bàn từ 6 khách khoá từ giờ này">≥6 từ</span><input type="time" id="kgDecorTuLon" class="form-control form-control-sm w-auto"><small class="kg-goi" id="kgDecorGoi"></small></div>
-            <label class="d-inline-flex align-items-center gap-1 fw-bold mb-0 text-nowrap"><input type="checkbox" id="kgThuongBat"> 🍽️ Bàn thường</label><span>từ</span><input type="time" step="900" id="kgThuongTu" class="form-control form-control-sm"><span>đến</span><input type="time" step="900" id="kgThuongDen" class="form-control form-control-sm">
-            <div class="kg-thu" id="kgThuThuong"><span class="text-muted small">Áp dụng:</span><label><input type="checkbox" class="kg-thu-o" value="1"><span>T2</span></label><label><input type="checkbox" class="kg-thu-o" value="2"><span>T3</span></label><label><input type="checkbox" class="kg-thu-o" value="3"><span>T4</span></label><label><input type="checkbox" class="kg-thu-o" value="4"><span>T5</span></label><label><input type="checkbox" class="kg-thu-o" value="5"><span>T6</span></label><label><input type="checkbox" class="kg-thu-o" value="6"><span>T7</span></label><label><input type="checkbox" class="kg-thu-o" value="0"><span>CN</span></label></div>
-            <div class="kg-lon"><span class="text-muted small" title="Bàn từ 6 khách khoá từ giờ này">≥6 từ</span><input type="time" id="kgThuongTuLon" class="form-control form-control-sm w-auto"><small class="kg-goi" id="kgThuongGoi"></small></div>
+          <div class="kg-luoi"><!-- 16/11/2026 chủ quán: khoá giờ theo cụm thứ (vẽ bằng veCumKhoa_) -->
+            <div class="kg-tieude kg-dau"><b style="color:#864c2a"><i class="fa-solid fa-clock me-1"></i>Khoá giờ đặt bàn<span class="d-none d-sm-inline"> (web khách)</span></b><span class="d-inline-flex align-items-center gap-2"><small class="text-muted" id="kgTrangThai"></small><button class="btn btn-sm fw-bold text-white" style="background:#864c2a" title="Lưu giờ khoá" aria-label="Lưu giờ khoá" onclick="luuKhoaGioAdmin()"><i class="fa-solid fa-floppy-disk me-1"></i>Lưu</button></span></div>
+            <div class="kg-thanh" id="kgThanhThu" aria-label="Tóm tắt khoá theo thứ"></div>
+            <div class="d-flex flex-column gap-2" id="kgCumList"></div>
+            <button type="button" class="btn btn-sm fw-bold align-self-start" style="background:#f3e3d6;color:#864c2a" id="kgThemCum" title="Thêm cụm thứ" aria-label="Thêm cụm thứ" onclick="themCumKhoa()"><i class="fa-solid fa-plus me-1"></i>Thêm cụm</button>
           </div>
           <div class="kg-cot-phai w-100"><!-- 15/11/2026 chủ quán: bảng cài đặt 2 cột (máy tính); cột phải = ngày không nhận khách + ngày khoá riêng -->
           <div class="w-100 d-flex flex-wrap align-items-center gap-2 pt-2 border-top">
@@ -1413,7 +1433,7 @@
           </div>
           <div class="w-100 d-flex flex-wrap align-items-center gap-2 pt-2 border-top">
             <b style="color:#864c2a" title="Nghỉ decor và / hoặc khoá giờ bàn thường">📅 Khoá riêng</b>
-            <input type="date" id="nkrNgay" class="form-control form-control-sm w-auto">
+            <span class="d-inline-flex align-items-center gap-1 flex-grow-1 flex-sm-grow-0" style="min-width:0"><input type="date" id="nkrNgay" class="form-control form-control-sm w-auto" title="Từ ngày" aria-label="Từ ngày">–<input type="date" id="nkrDenNgay" class="form-control form-control-sm w-auto" title="Đến ngày (tuỳ chọn, để khoá cả khoảng)" aria-label="Đến ngày (tuỳ chọn)"></span><!-- 16/11/2026: thêm "đến ngày" để khoá cả khoảng -->
             <label class="mb-0 fw-bold text-nowrap"><input type="checkbox" id="nkrDecor" checked> 🎀 Nghỉ decor</label>
             <div class="w-100 d-flex flex-wrap align-items-center gap-2">
               <label class="mb-0 fw-bold text-nowrap"><input type="checkbox" id="nkrThuong" checked> 🍽️ <span class="d-none d-sm-inline">Bàn thường</span><span class="d-sm-none">Khoá</span></label>
@@ -2015,13 +2035,14 @@
       var mau = dttMau(d.ma), vt = vatTag(d);
       var meta = [d.ma ? '<span class="dtt-ma">' + escapeHtml(d.ma) + '</span>' : "", '<span>' + escapeHtml(dttNgayHien(d.ngay)) + (d.gio ? " " + escapeHtml(d.gio) : "") + '</span>',
         d.soKhach ? '<span>' + escapeHtml(d.soKhach) + ' khách</span>' : "", d.tienCoc && d.tienCoc !== "0" ? '<span>' + escapeHtml(dttTien(d.tienCoc)) + '</span>' : ""].filter(Boolean).join(" · ");
-      var h = '<div class="dtt-card' + (vt ? ' co-vat' : '') + '"' + (mau ? ' style="--mau:' + mau + '"' : '') + '>' + vt +
+      var h = '<div class="dtt-card' + (vt ? ' co-vat' : '') + (d.nguon === "FORM" && d.tt === "TỪ CHỐI" ? ' tu-choi' : '') + '"' + (mau ? ' style="--mau:' + mau + '"' : '') + '>' + vt +
         '<div class="dtt-l1"><span class="dtt-ten" data-ten="' + escapeHtml(d.ten || "") + '" title="' + escapeHtml(d.ten || "") + '">' + escapeHtml(d.ten || "(chưa có tên)") + '</span><span class="text-nowrap flex-shrink-0"><a href="tel:' + escapeHtml(d.sdt) + '">' + escapeHtml(sdtDep_(d.sdt)) + '</a>' + (dttLoaiAnh(d) ? '<button class="btn btn-sm p-0 ms-1 dtt-anh-btn" onclick="dttLuuAnh(' + i + ')" title="Lưu ảnh xác nhận trạng thái">📷</button>' : '') + '</span></div>' +
         '<div class="dtt-meta">' + meta + '</div>';
       if (d.trung && d.trung.length) h += '<div class="dtt-trung">⚠️ CÓ THỂ TRÙNG<br>' + dttTrungDong_(d).map(escapeHtml).join("<br>") + '</div>';
       var sub = [];
       if (d.nganHang || d.stk) sub.push('<span class="dtt-tk1" title="' + escapeHtml([d.nganHang, d.stk, d.chuTK].filter(Boolean).join(" · ")) + '">🏦 ' + escapeHtml([d.nganHang, d.stk, d.chuTK].filter(Boolean).join(" · ")) + "</span>");
       var tt = [];
+      if (d.nguon === "FORM" && d.tt === "TỪ CHỐI") tt.push('<b class="dtt-tc">từ chối</b>'); // 16/11/2026
       if (d.nguon === "FORM" && d.tt) tt.push("chờ bấm Xử lý");
       if (d.ghiNhan && d.ghiNhan.indexOf("Đã gửi email") === 0) tt.push("đã báo hết bàn");
       if (d.ttHoan && d.ttHoan !== "Đã hoàn cọc") tt.push(escapeHtml(d.ttHoan).toLowerCase());
@@ -2031,16 +2052,21 @@
       var anh = dttAnh(d.bill, d.billLink, "Bill CK") + dttAnh(d.qr, d.qrLink, "QR hoàn");
       if (anh) h += '<div class="dtt-anh">' + anh + '</div>';
       if (d.nguon === "FORM") {
-        var nut = [["XÁC NHẬN", "✅<span class=\"t\"> Xác nhận</span>"]];
-        if (d.decor) nut.push(["CHỜ HOÀN CỌC", "⏳<span class=\"t\"> Chờ hoàn</span>"], ["ĐÃ HOÀN CỌC", "💸<span class=\"t\"> Đã hoàn</span>"]);
-        h += '<div class="btn-group btn-group-sm dtt-nut">' + nut.map(function(n) {
-          var on = d.tt === n[0];
-          // Đơn đã XÁC NHẬN (kể cả bàn thường tự xác nhận): bấm ✅ là chuyển sang DATA_TONG, không bỏ chọn
-          if (on && n[0] === "XÁC NHẬN") return '<button class="btn on" onclick="datTrangThaiDtt(' + i + ',\'XÁC NHẬN\', this)" title="Chuyển đơn sang DATA_TONG">✅<span class="t"> Chuyển DATA_TONG</span></button>';
-          return '<button class="btn' + (on ? " on" : "") + '" onclick="datTrangThaiDtt(' + i + ',\'' + (on ? "" : n[0]) + '\', this)" title="' + (on ? "Bấm để bỏ chọn" : "Chọn " + n[0]) + '">' + n[1] + '</button>';
-        }).join("") + '</div>';
+        // 16/11/2026 chủ quán: cặp nút icon Nhận bàn / Từ chối. Bàn thường từ chối = TỪ CHỐI; decor từ chối = CHỜ HOÀN CỌC (sang cột Chờ hoàn cọc)
+        var ten = escapeHtml(d.ten || d.ma || ""), nhanOn = d.tt === "XÁC NHẬN", tcOn = d.decor ? d.tt === "CHỜ HOÀN CỌC" : d.tt === "TỪ CHỐI";
+        var nutIcon = function(lop, on, goi, tieuDe, icon, chu) {
+          return '<button type="button" class="btn ' + lop + (on ? " on" : "") + '" onclick="' + goi + '" title="' + tieuDe + '" aria-label="' + tieuDe + '" aria-pressed="' + (on ? "true" : "false") + '"><i class="fa-solid ' + icon + '"></i><span class="t"> ' + chu + '</span></button>';
+        };
+        var ds = [];
+        // Đơn đã XÁC NHẬN (kể cả bàn thường tự xác nhận): bấm Nhận là chuyển sang DATA_TONG, không bỏ chọn
+        ds.push(nhanOn ? nutIcon("nut-nhan", true, "datTrangThaiDtt(" + i + ",'XÁC NHẬN', this)", "Chuyển đơn " + ten + " sang DATA_TONG", "fa-circle-check", "Chuyển")
+          : nutIcon("nut-nhan", false, "datTrangThaiDtt(" + i + ",'XÁC NHẬN', this)", "Nhận bàn " + ten, "fa-circle-check", "Nhận"));
+        ds.push(nutIcon("nut-tc", tcOn, "tuChoiDtt(" + i + ", this)", tcOn ? "Bỏ từ chối đơn " + ten : (d.decor ? "Từ chối " + ten + " (hết bàn decor → chờ hoàn cọc)" : "Từ chối đơn " + ten), "fa-circle-xmark", tcOn ? "Đã từ chối" : "Từ chối"));
+        if (d.decor) { var dhOn = d.tt === "ĐÃ HOÀN CỌC";
+          ds.push(nutIcon("nut-hoan", dhOn, "datTrangThaiDtt(" + i + ",'" + (dhOn ? "" : "ĐÃ HOÀN CỌC") + "', this)", dhOn ? "Bỏ chọn ĐÃ HOÀN CỌC" : "Chọn ĐÃ HOÀN CỌC cho " + ten, "fa-money-bill-transfer", "Đã hoàn")); }
+        h += '<div class="btn-group btn-group-sm dtt-nut">' + ds.join("") + '</div>';
       } else if (d.ttHoan !== "Đã hoàn cọc") {
-        h += '<div class="btn-group btn-group-sm dtt-nut"><button class="btn" onclick="daHoanDtt(' + i + ', this)" title="Ghi Đã hoàn cọc ở HOAN_COC (không gửi email)">💸 Đánh dấu đã hoàn cọc</button></div>';
+        h += '<div class="btn-group btn-group-sm dtt-nut"><button class="btn" onclick="daHoanDtt(' + i + ', this)" title="Ghi Đã hoàn cọc ở HOAN_COC (không gửi email)" aria-label="Đánh dấu đã hoàn cọc"><i class="fa-solid fa-money-bill-transfer me-1"></i>Đánh dấu đã hoàn cọc</button></div>';
       }
       return h + '</div>';
     }
@@ -2129,22 +2155,22 @@
       ve("dttVC", loc(_dtt.choHoan.filter(vat("ck"))), "dttSoVC", "Không có đơn VAT chờ hoàn chuyển khoản");
       ve("dttDH", loc(_dtt.daHoan), "dttSoDH", "Chưa có đơn đã hoàn cọc");
       _dtt._the = tat;
-      var soXL = [].concat(_dtt.xacNhan, _dtt.choHoan, _dtt.daHoan).filter(function(d) { return d.nguon === "FORM" && d.tt && !(d.tt === "CHỜ HOÀN CỌC" && String(d.ghiNhan).indexOf("Đã gửi email") === 0); }).length;
+      var soXL = [].concat(_dtt.xacNhan, _dtt.choHoan, _dtt.daHoan, _dtt.choDuyet.filter(function(d) { return d.tt === "TỪ CHỐI"; })).filter(function(d) { return d.nguon === "FORM" && d.tt && !(d.tt === "CHỜ HOÀN CỌC" && String(d.ghiNhan).indexOf("Đã gửi email") === 0); }).length;
       document.getElementById("dttSoXuLy").textContent = soXL;
       document.getElementById("dttCapNhat").textContent = "Cập nhật " + String(_dtt.capNhat || "").slice(0, 5);
     }
-    function datTrangThaiDtt(i, tt, btn) {
+    function datTrangThaiDtt(i, tt, btn, khongChuyen) { // 16/11/2026: khongChuyen = chỉ ghi trạng thái, không tự chuyển DATA_TONG (bỏ từ chối)
       var d = _dtt._the[i];
       if (tt === "XÁC NHẬN" && d.trung && d.trung.length && !confirm("⚠️ ĐƠN CÓ THỂ TRÙNG\n" + d.ten + " · " + (d.gio || "") + "\n\n" + dttTrungDong_(d).join("\n") + "\n\nVẫn xác nhận đơn này?")) return;
       btn.disabled = true;
       adminRun().withSuccessHandler(function() {
         ["choDuyet", "xacNhan", "choHoan", "daHoan"].forEach(function(k) { _dtt[k] = _dtt[k].filter(function(x) { return x !== d; }); });
         d.tt = tt;
-        if (tt && dttTuLuuAnh()) taiAnhTrangThai(dttLoaiAnh(d), d);
-        (tt === "XÁC NHẬN" ? _dtt.xacNhan : tt === "CHỜ HOÀN CỌC" ? _dtt.choHoan : tt === "ĐÃ HOÀN CỌC" ? _dtt.daHoan : _dtt.choDuyet).unshift(d);
+        if (tt && dttTuLuuAnh() && dttLoaiAnh(d)) taiAnhTrangThai(dttLoaiAnh(d), d);
+        (tt === "XÁC NHẬN" || tt === "TỪ CHỐI" ? _dtt.xacNhan : tt === "CHỜ HOÀN CỌC" ? _dtt.choHoan : tt === "ĐÃ HOÀN CỌC" ? _dtt.daHoan : _dtt.choDuyet).unshift(d);
         veDuyetTrangThai();
         // Bấm ✅ Xác nhận: tự chạy luồng "XÁC NHẬN THÔNG TIN" (chuyển sang DATA_TONG) như nút trên Sheet
-        if (tt === "XÁC NHẬN") {
+        if (tt === "XÁC NHẬN" && !khongChuyen) {
           var cn = document.getElementById("dttCapNhat"); if (cn) cn.textContent = "⏳ Đang chuyển sang DATA_TONG...";
           adminRun().withSuccessHandler(function() { taiDuyetTrangThai(); })
             .withFailureHandler(function(e) { alert("Đã chọn XÁC NHẬN nhưng chưa chuyển được sang DATA_TONG: " + (e && e.message || e) + "\nBấm ✅ Xử lý để thử lại."); taiDuyetTrangThai(); })
@@ -2152,6 +2178,18 @@
         }
       }).withFailureHandler(function(e) { btn.disabled = false; alert("❌ " + (e && e.message || e)); })
         .datTrangThaiFormWeb(d.dong, d.ma, d.ten, tt);
+    }
+    // 16/11/2026 chủ quán: nút Từ chối — bàn thường ghi TỪ CHỐI (bấm lại = bỏ, về XÁC NHẬN); decor ghi CHỜ HOÀN CỌC (bấm lại = về chờ duyệt)
+    function tuChoiDtt(i, btn) {
+      var d = _dtt._the[i]; if (!d) return;
+      if (d.decor) {
+        if (d.tt === "CHỜ HOÀN CỌC") return datTrangThaiDtt(i, "", btn);
+        if (!confirm("Từ chối đơn " + (d.ten || "") + " (" + (d.ma || "") + ")? Khách sẽ được báo trên trang tra cứu và thông báo điện thoại.\n(Bàn decor: chuyển sang Chờ hoàn cọc)")) return;
+        return datTrangThaiDtt(i, "CHỜ HOÀN CỌC", btn);
+      }
+      if (d.tt === "TỪ CHỐI") return datTrangThaiDtt(i, "XÁC NHẬN", btn, true);
+      if (!confirm("Từ chối đơn " + (d.ten || "") + " (" + (d.ma || "") + ")? Khách sẽ được báo trên trang tra cứu và thông báo điện thoại.")) return;
+      datTrangThaiDtt(i, "TỪ CHỐI", btn);
     }
     function daHoanDtt(i, btn) {
       var d = _dtt._the[i];
@@ -2164,12 +2202,13 @@
     function xuLyDuyetTrangThai() {
       if (!_dtt) return;
       var form = function(ds, tt) { return ds.filter(function(d) { return d.nguon === "FORM" && d.tt === tt; }).length; };
-      var a = form(_dtt.xacNhan, "XÁC NHẬN"), b = _dtt.choHoan.filter(function(d) { return d.nguon === "FORM" && String(d.ghiNhan).indexOf("Đã gửi email") !== 0; }).length, c = form(_dtt.daHoan, "ĐÃ HOÀN CỌC");
-      if (!a && !b && !c) return alert("Chưa có đơn nào được chọn trạng thái để xử lý.");
+      var a = form(_dtt.xacNhan, "XÁC NHẬN"), b = _dtt.choHoan.filter(function(d) { return d.nguon === "FORM" && String(d.ghiNhan).indexOf("Đã gửi email") !== 0; }).length, c = form(_dtt.daHoan, "ĐÃ HOÀN CỌC"), e = form(_dtt.xacNhan, "TỪ CHỐI"); // 16/11/2026: e = đơn TỪ CHỐI
+      if (!a && !b && !c && !e) return alert("Chưa có đơn nào được chọn trạng thái để xử lý.");
       if (!confirm("Xử lý FORM booking (không gửi email, khách xem ở trang tra cứu):\n" +
         (a ? "• " + a + " đơn XÁC NHẬN → chuyển sang DATA_TONG\n" : "") +
         (b ? "• " + b + " đơn CHỜ HOÀN CỌC → ghi chờ hoàn cọc ở HOAN_COC\n" : "") +
         (c ? "• " + c + " đơn ĐÃ HOÀN CỌC → ghi Đã hoàn cọc ở HOAN_COC\n" : "") +
+        (e ? "• " + e + " đơn TỪ CHỐI → lưu sheet TU_CHOI, xoá khỏi FORM\n" : "") +
         (function() { var tr = _dtt.xacNhan.filter(function(d) { return d.nguon === "FORM" && d.tt === "XÁC NHẬN" && d.trung && d.trung.length; }); return tr.length ? "\n⚠️ " + tr.length + " đơn có thể trùng:\n" + tr.map(function(d) { return "• " + d.ten + " (" + (d.gio || "") + ")"; }).join("\n") + "\n" : ""; })() + "\nTiếp tục?")) return;
       var btn = document.getElementById("dttXuLy"); btn.disabled = true;
       adminRun().withSuccessHandler(function(kq) { btn.disabled = false; alert(kq.msg); taiDuyetTrangThai(); })
@@ -2607,49 +2646,133 @@
         .withFailureHandler(function(err) { tt.innerText = ""; alert("Chưa lưu được: " + (err && err.message || err)); })
         .luuNgayKhoaRiengWeb(map);
     }
+    // 16/11/2026 chủ quán: "đến ngày" tuỳ chọn — khoá cả khoảng, máy tách ra từng ngày rồi lưu như cũ
+    function dsNgayKhoang_(tu, den) {
+      var p = function(x) { var m = String(x).split("-"); return Date.UTC(+m[0], m[1] - 1, +m[2]); }, ds = [];
+      for (var t = p(tu), het = p(den || tu); t <= het && ds.length <= 366; t += 864e5) ds.push(new Date(t).toISOString().slice(0, 10));
+      return ds;
+    }
     function themNgayKhoaRieng() {
-      var n = document.getElementById("nkrNgay").value, d = document.getElementById("nkrDecor").checked, t = document.getElementById("nkrThuong").checked;
+      var n = document.getElementById("nkrNgay").value, nDen = document.getElementById("nkrDenNgay").value, d = document.getElementById("nkrDecor").checked, t = document.getElementById("nkrThuong").checked;
       var tu = document.getElementById("nkrTu").value, den = document.getElementById("nkrDen").value;
       if (!n) return alert("Vui lòng chọn ngày.");
+      if (nDen && nDen < n) return alert("\"Đến ngày\" phải sau \"từ ngày\".");
       if (!d && !t) return alert("Chọn ít nhất 1 loại khoá.");
       if (t && (!tu || !den || tu > den)) return alert("Giờ khoá bàn thường chưa đúng.");
-      var r = { decor: d, thuong: t ? { tu: tu, den: den } : null };
-      if (!confirm("Lưu khoá riêng " + chuNgayRieng_(n, r) + "?" + (_ngayKhoa.indexOf(n) !== -1 ? "\n(Ngày này sẽ bỏ khỏi danh sách nghỉ cả ngày)" : ""))) return;
-      var m = Object.assign({}, _ngayRieng); m[n] = r; luuNgayKhoaRieng_(m);
-      document.getElementById("nkrNgay").value = "";
+      var ds = dsNgayKhoang_(n, nDen);
+      if (ds.length > 92) return alert("Khoảng ngày tối đa 92 ngày.");
+      var r = { decor: d, thuong: t ? { tu: tu, den: den } : null }, trungNghi = ds.filter(function(x) { return _ngayKhoa.indexOf(x) !== -1; }).length;
+      var chu = ds.length > 1 ? n.slice(8, 10) + "/" + n.slice(5, 7) + "–" + chuNgayRieng_(nDen, r) + " (" + ds.length + " ngày)" : chuNgayRieng_(n, r);
+      if (!confirm("Lưu khoá riêng " + chu + "?" + (trungNghi ? "\n(" + (ds.length > 1 ? trungNghi + " ngày" : "Ngày này") + " sẽ bỏ khỏi danh sách nghỉ cả ngày)" : ""))) return;
+      var m = Object.assign({}, _ngayRieng); ds.forEach(function(x) { m[x] = r; }); luuNgayKhoaRieng_(m);
+      document.getElementById("nkrNgay").value = ""; document.getElementById("nkrDenNgay").value = "";
     }
     function boNgayKhoaRieng(n) {
       if (!confirm("Bỏ khoá riêng ngày " + n.split("-").reverse().join("/") + "? Ngày này sẽ nhận khách bình thường.")) return;
       var m = Object.assign({}, _ngayRieng); delete m[n]; luuNgayKhoaRieng_(m);
     }
+    // 16/11/2026 chủ quán: khoá giờ theo CỤM thứ — _kgCum = [{thu:[..], decor:{bat,tu,tuLon,den}, thuong:{...}}]
+    var _kgCum = [];
+    var KG_MAU = ["#864c2a", "#2e6f9e", "#2e7d32", "#8e44ad", "#c0662b", "#5d6d7e", "#b03a5b"];
+    var KG_THU = [[1, "T2"], [2, "T3"], [3, "T4"], [4, "T5"], [5, "T6"], [6, "T7"], [0, "CN"]];
+    function kgLuat_(r, macDinh) { r = r || {}; return { bat: !!r.bat, tu: r.tu || macDinh.tu, tuLon: r.tuLon || "", den: r.den || macDinh.den }; }
     function veKhoaGioAdmin_(k) {
       _ngayKhoa = k.ngayKhoa || [];
       veNgayKhoa_();
       _ngayRieng = k.ngayRieng || {}; veNgayKhoaRieng_();
-      ["Decor", "Thuong"].forEach(function(t) {
-        var d = k[t.toLowerCase()] || {}, thu = d.thu || [5, 6];
-        document.getElementById("kg" + t + "Bat").checked = !!d.bat; document.getElementById("kg" + t + "Tu").value = d.tu || "18:00"; document.getElementById("kg" + t + "Den").value = d.den || "20:30"; document.getElementById("kg" + t + "TuLon").value = d.tuLon || "";
-        [].forEach.call(document.querySelectorAll("#kgThu" + t + " .kg-thu-o"), function(c) { c.checked = thu.indexOf(+c.value) !== -1; });
+      var cum = k.cum;
+      if (!cum || !cum.length) { // server cũ chưa có cum: gộp decor/thuong kiểu cũ thành 1 cụm
+        var thu = [].concat((k.decor && k.decor.thu) || [], (k.thuong && k.thuong.thu) || []).filter(function(t, i, a) { return a.indexOf(t) === i; });
+        cum = (k.decor || k.thuong) ? [{ thu: thu.length ? thu : [5, 6], decor: k.decor, thuong: k.thuong }] : [];
+      }
+      _kgCum = cum.map(function(c) {
+        return { thu: (c.thu || []).map(Number), decor: kgLuat_(c.decor, { tu: "17:31", den: "22:00" }), thuong: kgLuat_(c.thuong, { tu: "17:31", den: "22:30" }) };
       });
-      veTomTatKhoa_();
+      veCumKhoa_();
     }
     // Tóm tắt giờ nhận theo nhóm bàn (khoá tính cả 2 đầu: khoá từ 17:31 = nhận tới 17:30)
     function chuNhanToiA_(tu) { var m = String(tu || "").match(/^(\d\d):(\d\d)$/); if (!m) return "–"; if (+m[2] % 15 !== 1) return "trước " + tu; var p = +m[1] * 60 + +m[2] - 1; return "tới " + ("0" + Math.floor(p / 60)).slice(-2) + ":" + ("0" + p % 60).slice(-2); }
-    function veTomTatKhoa_() {
-      ["Decor", "Thuong"].forEach(function(t) {
-        var g = function(x) { return document.getElementById("kg" + t + x).value; }, el = document.getElementById("kg" + t + "Goi");
-        if (el) { var a = chuNhanToiA_(g("Tu")), b = chuNhanToiA_(g("TuLon") || g("Tu")), sau = g("Den") >= "22:00"; // 15/11/2026: ngắn gọn 1 dòng; điện thoại bỏ chữ "tới"
-          el.textContent = "→ <6 " + a.replace("tới ", "") + " · ≥6 " + b.replace("tới ", "") + (sau ? " · nghỉ" : " · mở " + g("Den")); el.title = "Dưới 6 khách nhận " + a + " · từ 6 khách " + b + (sau ? " · sau đó không nhận" : " · nhận lại từ " + g("Den")); }
-      });
+    function chuGoiKhoa_(r) {
+      if (!r.bat) return { t: "không khoá", ti: "Không khoá giờ" };
+      var a = chuNhanToiA_(r.tu), b = chuNhanToiA_(r.tuLon || r.tu), sau = r.den >= "22:00";
+      return { t: "→ <6 " + a.replace("tới ", "") + " · ≥6 " + b.replace("tới ", "") + (sau ? " · nghỉ" : " · mở " + r.den),
+        ti: "Dưới 6 khách nhận " + a + " · từ 6 khách " + b + (sau ? " · sau đó không nhận" : " · nhận lại từ " + r.den) };
     }
-    document.addEventListener("input", function(e) { if (e.target && /^kg(Decor|Thuong)(Tu|TuLon|Den)$/.test(e.target.id)) veTomTatKhoa_(); });
+    function kgCumCuaThu_(t) { for (var i = 0; i < _kgCum.length; i++) if (_kgCum[i].thu.indexOf(t) !== -1) return i; return -1; }
+    function veThanhThu_() {
+      document.getElementById("kgThanhThu").innerHTML = KG_THU.map(function(x) {
+        var ci = kgCumCuaThu_(x[0]);
+        if (ci === -1) return '<div title="' + x[1] + ': không khoá">' + x[1] + '<small>mở</small></div>';
+        var c = _kgCum[ci], ic = (c.decor.bat ? '<i class="fa-solid fa-cake-candles"></i>' : "") + (c.thuong.bat ? '<i class="fa-solid fa-utensils"></i>' : "");
+        var ti = x[1] + " · Cụm " + (ci + 1) + "\nDecor: " + chuGoiKhoa_(c.decor).ti + "\nBàn thường: " + chuGoiKhoa_(c.thuong).ti;
+        return '<div class="co" style="--cum:' + KG_MAU[ci % KG_MAU.length] + '" title="' + escapeHtml(ti) + '">' + x[1] + '<small>' + (ic || "mở") + '</small></div>';
+      }).join("");
+    }
+    function veCumKhoa_() {
+      var dong = function(ci, loai, icon, chu, chuNgan) {
+        var r = _kgCum[ci][loai], id = "kg" + ci + loai, g = chuGoiKhoa_(r);
+        var o = function(truong, nhan, tieuDe) {
+          return '<span class="kg-o"><small>' + nhan + '</small><input type="time" id="' + id + truong + '" class="form-control form-control-sm" value="' + escapeHtml(r[truong] || "") + '" title="' + tieuDe + '" aria-label="' + chu + ' – ' + tieuDe + '" oninput="kgDoiGio(' + ci + ',\'' + loai + '\',\'' + truong + '\',this.value)"></span>';
+        };
+        return '<div class="kg-dong' + (r.bat ? "" : " tat") + '" id="' + id + 'Dong"><label class="kg-loai" title="Bật/tắt khoá ' + chu + '"><input type="checkbox" id="' + id + 'Bat"' + (r.bat ? " checked" : "") + ' onchange="kgDoiGio(' + ci + ',\'' + loai + '\',\'bat\',this.checked)"><i class="fa-solid ' + icon + '"></i><span class="chu-dai">' + chu + '</span><span class="d-sm-none">' + chuNgan + '</span></label>' +
+          o("tu", "Từ", "Khoá từ giờ") + o("tuLon", "≥6 từ", "Bàn từ 6 khách khoá từ giờ này (trống = như trên)") + o("den", "Đến", "Khoá đến giờ") + '</div>' +
+          '<small class="kg-goi" id="' + id + 'Goi" title="' + escapeHtml(g.ti) + '">' + escapeHtml(g.t) + '</small>';
+      };
+      document.getElementById("kgCumList").innerHTML = _kgCum.map(function(c, ci) {
+        var chip = KG_THU.map(function(x) {
+          var chu = kgCumCuaThu_(x[0]), khac = chu !== -1 && chu !== ci;
+          return '<label' + (khac ? ' class="mo" title="' + x[1] + ' đã thuộc Cụm ' + (chu + 1) + '"' : ' title="' + x[1] + '"') + '><input type="checkbox" value="' + x[0] + '" aria-label="' + x[1] + '"' + (c.thu.indexOf(x[0]) !== -1 ? " checked" : "") + (khac ? " disabled" : "") + ' onchange="kgDoiThu(' + ci + ',' + x[0] + ',this.checked)"><span>' + x[1] + '</span></label>';
+        }).join("");
+        return '<div class="kg-cum" style="--cum:' + KG_MAU[ci % KG_MAU.length] + '"><div class="kg-cum-dau"><div class="kg-thu">' + chip + '</div>' +
+          '<button type="button" class="btn btn-sm kg-xoa" title="Xoá cụm ' + (ci + 1) + '" aria-label="Xoá cụm ' + (ci + 1) + '" onclick="xoaCumKhoa(' + ci + ')"><i class="fa-solid fa-trash"></i></button></div>' +
+          dong(ci, "decor", "fa-cake-candles", "Decor", "Decor") + dong(ci, "thuong", "fa-utensils", "Bàn thường", "Thường") + '</div>';
+      }).join("") || '<small class="text-muted">Chưa có cụm nào — mọi thứ không khoá giờ</small>';
+      document.getElementById("kgThemCum").disabled = _kgCum.length >= 7;
+      veThanhThu_();
+    }
+    function kgDoiThu(ci, t, bat) {
+      var c = _kgCum[ci]; if (!c) return;
+      c.thu = c.thu.filter(function(x) { return x !== t; });
+      if (bat && kgCumCuaThu_(t) === -1) c.thu.push(t);
+      veCumKhoa_();
+    }
+    function kgDoiGio(ci, loai, truong, v) {
+      var c = _kgCum[ci]; if (!c) return;
+      c[loai][truong] = v;
+      var id = "kg" + ci + loai, g = chuGoiKhoa_(c[loai]), el = document.getElementById(id + "Goi");
+      if (el) { el.textContent = g.t; el.title = g.ti; }
+      if (truong === "bat") document.getElementById(id + "Dong").classList.toggle("tat", !v);
+      veThanhThu_();
+    }
+    function themCumKhoa() {
+      if (_kgCum.length >= 7) return;
+      _kgCum.push({ thu: [], decor: { bat: false, tu: "17:31", tuLon: "18:01", den: "22:00" }, thuong: { bat: true, tu: "17:31", tuLon: "", den: "22:30" } });
+      veCumKhoa_();
+    }
+    function xoaCumKhoa(ci) {
+      var c = _kgCum[ci]; if (!c) return;
+      if (c.thu.length && !confirm("Xoá cụm " + (ci + 1) + "? Các thứ trong cụm sẽ không khoá giờ (bấm Lưu để áp dụng).")) return;
+      _kgCum.splice(ci, 1); veCumKhoa_();
+    }
     function luuKhoaGioAdmin() {
-      function doc(t) { return { bat: document.getElementById("kg" + t + "Bat").checked, tu: document.getElementById("kg" + t + "Tu").value, den: document.getElementById("kg" + t + "Den").value, tuLon: document.getElementById("kg" + t + "TuLon").value, thu: [].filter.call(document.querySelectorAll("#kgThu" + t + " .kg-thu-o"), function(c) { return c.checked; }).map(function(c) { return +c.value; }) }; }
+      var loi = [], bo = 0, ten = { decor: "decor", thuong: "bàn thường" };
+      var cum = _kgCum.filter(function(c) { if (!c.thu.length) bo++; return c.thu.length; }).map(function(c, i) {
+        var o = { thu: c.thu.slice().sort(function(a, b) { return ((a + 6) % 7) - ((b + 6) % 7); }) };
+        ["decor", "thuong"].forEach(function(l) {
+          var r = c[l]; o[l] = { bat: !!r.bat, tu: r.tu || "", tuLon: r.tuLon || "", den: r.den || "" };
+          if (!r.bat) return;
+          if (!r.tu || !r.den || r.tu >= r.den) loi.push("Cụm " + (i + 1) + " " + ten[l] + ": giờ \"từ\" phải trước \"đến\"");
+          if (r.tuLon && r.tuLon >= r.den) loi.push("Cụm " + (i + 1) + " " + ten[l] + ": giờ ≥6 khách phải trước \"đến\"");
+        });
+        return o;
+      });
+      if (loi.length) return alert("Chưa lưu được:\n• " + loi.join("\n• "));
+      if (bo && !confirm(bo + " cụm chưa chọn thứ sẽ bị bỏ. Vẫn lưu?")) return;
       var tt = document.getElementById("kgTrangThai");
       tt.innerText = "Đang lưu...";
       adminRun().withSuccessHandler(function(k) { veKhoaGioAdmin_(k); tt.innerText = "✅ Đã lưu"; })
         .withFailureHandler(function(err) { tt.innerText = ""; alert("Chưa lưu được: " + (err && err.message || err)); })
-        .luuKhoaGioWeb({ decor: doc("Decor"), thuong: doc("Thuong") });
+        .luuKhoaGioWeb({ cum: cum });
     }
     function loadCalendarYearTab6() {
       adminRun().withSuccessHandler(veKhoaGioAdmin_).layKhoaGio();

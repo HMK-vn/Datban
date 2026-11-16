@@ -48,6 +48,153 @@
   window.google = { script: { host: { close: function () { throw new Error("Không chạy trong Google Sheet"); } } } };
   Object.defineProperty(window.google.script, "run", { get: taoRun });
 })();
+</script>
+<script>
+  (function () {
+    var KHOA = "tbDonDaBat";
+    // 16/11/2026: hiệu ứng chung — chuông lắc + sóng, nút nhấp nháy (khung hỏi, nút nhận thông báo)
+    (function () { var st = document.createElement("style"); st.textContent = '@keyframes chuongRung{0%{transform:rotate(0)}8%{transform:rotate(14deg)}16%{transform:rotate(-11deg)}24%{transform:rotate(8deg)}32%{transform:rotate(-5deg)}40%{transform:rotate(2.5deg)}48%,100%{transform:rotate(0)}}.chuong-rung{display:inline-block;transform-origin:50% 6%;animation:chuongRung 2.4s cubic-bezier(.36,.07,.19,.97) infinite;will-change:transform}.chuong-boc{position:relative;display:inline-block;margin-right:11px;font-size:1.45em;vertical-align:-3px;line-height:1}.chuong-boc::before,.chuong-boc::after{content:"";position:absolute;left:50%;top:50%;width:1.5em;height:1.5em;margin:-.75em 0 0 -.75em;border-radius:50%;border:1.5px solid rgba(255,230,190,.8);opacity:0;animation:chuongSong 2.4s cubic-bezier(.22,.61,.36,1) infinite}.chuong-boc::after{animation-delay:.45s}@keyframes chuongSong{0%{transform:scale(.6);opacity:0}10%{opacity:.7}55%{transform:scale(1.45);opacity:0}100%{transform:scale(1.45);opacity:0}}@keyframes nutTbNhay{0%,100%{box-shadow:0 0 0 0 rgba(201,138,91,.65),0 4px 12px rgba(134,76,42,.25);transform:scale(1);filter:brightness(1)}50%{box-shadow:0 0 0 10px rgba(201,138,91,0),0 6px 18px rgba(134,76,42,.35);transform:scale(1.035);filter:brightness(1.12)}}.nut-tb-nhay{animation:nutTbNhay 1.6s cubic-bezier(.45,0,.55,1) infinite;will-change:transform,box-shadow}'; (document.head || document.documentElement).appendChild(st); })();
+    function ds() { try { var a = JSON.parse(localStorage.getItem(KHOA) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+    function nho(ma) { try { var a = ds(); if (a.indexOf(ma) < 0) { a.push(ma); localStorage.setItem(KHOA, JSON.stringify(a.slice(-30))); } } catch (e) {} }
+    function hoTro() { return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window; }
+    window.daBatThongBaoDon = function (ma) {
+      return ds().indexOf(String(ma || "").trim()) >= 0 && hoTro() && Notification.permission === "granted";
+    };
+    function bao(nut, html, loi) {
+      if (!nut || !nut.parentNode) { if (html) alert(html.replace(/<[^>]+>/g, "")); return; }
+      var neo = (nut.closest && nut.closest(".hang-nut-tc, .don-h")) || nut; // 16/11/2026: lời nhắn nằm dưới hàng nút, không chen vào hàng
+      var d = neo.nextElementSibling;
+      if (!d || !d.hasAttribute("data-tb")) {
+        d = document.createElement("div"); d.setAttribute("data-tb", ""); d.setAttribute("role", "status");
+        neo.parentNode.insertBefore(d, neo.nextSibling);
+      }
+      d.style.cssText = "margin:6px 0 0;font:500 13px/1.4 system-ui,sans-serif;color:" + (loi ? "#c62828" : "#5d4037");
+      d.innerHTML = html || "";
+    }
+    function khoaTuB64(s) {
+      s = String(s).replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "=";
+      var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u;
+    }
+    function goi(ten, args) {
+      return new Promise(function (ok, fail) {
+        var r = google.script.run.withSuccessHandler(ok).withFailureHandler(fail); r[ten].apply(r, args);
+      });
+    }
+    function daXong(nut, ma) {
+      nho(ma);
+      if (nut) { nut.innerHTML = nut.classList.contains("nut-tb-don") ? '<i class="fa-solid fa-bell me-1" aria-hidden="true"></i>Đã bật' : "🔔 Đã bật thông báo"; nut.classList.remove("nut-tb-nhay"); nut.disabled = true; nut.setAttribute("aria-disabled", "true"); }
+      bao(nut, "Túi sẽ báo lên điện thoại khi đơn được duyệt.");
+    }
+    // 16/11/2026 chủ quán: tự động — hỏi "Cho phép thông báo?" ngay trong lúc khách bấm Gửi đặt bàn (trình duyệt bắt buộc khách bấm Cho phép 1 lần)
+    window.xinQuyenThongBaoSom = function () {
+      try {
+        var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+        var app = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+        if (!hoTro() || (ios && !app) || Notification.permission !== "default" || document.getElementById("hoiTbTui")) return;
+        // Khung hỏi của Túi (khung của trình duyệt luôn ghi tên miền, không đổi được) -> khách hiểu vì sao cần Cho phép
+        var nen = document.createElement("div"); nen.id = "hoiTbTui";
+        nen.style.cssText = "position:fixed;inset:0;z-index:10000;background:rgba(60,36,20,.28);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);display:flex;align-items:center;justify-content:center;padding:18px";
+        nen.innerHTML = '<div role="dialog" aria-modal="true" style="max-width:360px;width:100%;background:linear-gradient(160deg,rgba(255,255,255,.94),rgba(255,250,245,.86));-webkit-backdrop-filter:blur(22px) saturate(1.8);backdrop-filter:blur(22px) saturate(1.8);border:1px solid rgba(255,255,255,.75);border-radius:24px;padding:18px 18px 14px;box-shadow:0 18px 40px rgba(60,30,10,.28),inset 0 1px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(255,255,255,.35);font:15px/1.45 system-ui,sans-serif;color:#3d2a1e;text-align:center">' +
+          '<img src="app_icon/logo_khach_180.png" alt="" style="width:56px;height:56px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.15)">' +
+          '<div style="font-weight:800;font-size:17px;margin:8px 0 4px;color:#864c2a">Túi Nướng Lavender</div>' +
+          '<div style="display:inline-block"><div style="white-space:nowrap;font-size:min(15.5px,4.2vw)">Bấm <b>Cho phép</b> để nhận tin<br><b>xác nhận / từ chối</b> đặt bàn</div>' +
+          '<div style="margin-top:14px"><button type="button" data-k="1" class="nut-tb-nhay" style="width:100%;border:0;background:#864c2a;color:#fff;border-radius:14px;padding:12px;font-weight:800;font-size:16px"><span class="chuong-boc" aria-hidden="true"><i class="fa-solid fa-bell chuong-rung"></i></span>Cho phép</button></div></div></div>' +
+          '';
+        nen.querySelector('[data-k="1"]').onclick = function () {
+          nen.remove();
+          navigator.serviceWorker.register("sw.js").catch(function () {});
+          var p = Notification.requestPermission(function (q) { xong(q); }); if (p && p.then) p.then(xong, function () {});
+        };
+        var daXongQ = false;
+        function xong(q) {
+          if (daXongQ) return; daXongQ = true;
+          // đơn đã gửi xong trong lúc khách đọc khung hỏi -> tự bật thông báo cho đơn đó
+          if (q === "granted") [].forEach.call(document.querySelectorAll(".nut-tb-don:not([disabled]), .nut-tb:not([disabled])"), function (b) { b.click(); });
+        }
+        document.body.appendChild(nen);
+      } catch (e) {}
+    };
+    // 16/11/2026 chủ quán: khách quên bấm Cho phép vẫn biết kết quả — trang đang mở tự kiểm tra trạng thái đơn mỗi 30 giây,
+    // Túi duyệt xong thì hiện dải báo lớn + rung máy (không cần xin phép gì). hop: khung để chèn dải báo.
+    window.theoDoiDon = function (ma, sdt, hop, khiDoi) {
+      ma = String(ma || "").trim(); sdt = String(sdt || "").trim();
+      if (!ma || !sdt || !hop) return;
+      var batDau = Date.now(), dau = null, hen = null;
+      var CHU = {
+        xacnhan: ["#2e7d32", "✅ Túi đã xác nhận bàn của Quý khách!", "Hẹn gặp Quý khách tại Túi Nướng Lavender."],
+        tuchoi: ["#c62828", "Rất tiếc, Túi không nhận được bàn này", "Quý khách vui lòng chọn giờ khác hoặc gọi 0911 588 138 giúp Túi nhé."],
+        chohoan: ["#c62828", "Rất tiếc, Túi đã hết bàn decor", "Bấm vào đây để gửi tài khoản nhận lại tiền cọc."]
+      };
+      function hien(d) {
+        var c = CHU[d.tt]; if (!c) return;
+        var cu = hop.querySelector("[data-bao-don]"); if (cu) cu.remove();
+        var el = document.createElement(d.tt === "chohoan" && d.linkHoanCoc ? "a" : "div");
+        if (el.tagName === "A") el.href = d.linkHoanCoc;
+        el.setAttribute("data-bao-don", ""); el.setAttribute("role", "alert");
+        el.style.cssText = "display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;margin:0 0 10px;padding:12px 14px;border-radius:12px;color:#fff;background:" + c[0] + ";font:600 15px/1.35 system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.18);animation:baoDonVao .4s ease-out";
+        el.innerHTML = '<div style="font-size:16.5px;font-weight:800">' + c[1] + '</div><div style="font-weight:500;opacity:.95;margin-top:2px">' + c[2] + '</div>';
+        hop.insertBefore(el, hop.firstChild);
+        [].forEach.call(hop.querySelectorAll("[data-nhac-tb], .nut-tb-don:not([disabled])"), function (x) { x.remove(); }); // đã duyệt: bỏ lời nhắc
+        var bc = hop.querySelectorAll(".tc-buoc > div"); // sơ đồ bước: tô bước "Túi xác nhận"
+        if (bc.length > 1 && d.tt === "xacnhan") { [].forEach.call(bc, function (x) { x.classList.remove("xong"); }); bc[1].classList.add("xong"); }
+        try { el.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+        try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) {}
+        if (khiDoi) try { khiDoi(d); } catch (e) {}
+      }
+      function kiem() {
+        hen = null;
+        if (Date.now() - batDau > 4 * 3600e3) return; // tối đa 4 giờ
+        if (document.hidden) { hen = setTimeout(kiem, 30000); return; }
+        goi("traCuuDonCongKhai", [sdt]).then(function (res) {
+          var d = ((res && res.data) || []).filter(function (x) { return x.ma === ma; })[0];
+          if (d) {
+            if (dau === null) dau = d.tt;
+            if (d.tt !== dau && CHU[d.tt]) { hien(d); return; } // đã duyệt -> dừng theo dõi
+          }
+          hen = setTimeout(kiem, 30000);
+        }).catch(function () { hen = setTimeout(kiem, 60000); });
+      }
+      if (!document.getElementById("baoDonCss")) {
+        var st = document.createElement("style"); st.id = "baoDonCss";
+        st.textContent = "@keyframes baoDonVao{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}";
+        document.head.appendChild(st);
+      }
+      document.addEventListener("visibilitychange", function () { if (!document.hidden && hen) { clearTimeout(hen); kiem(); } });
+      hen = setTimeout(kiem, 20000);
+    };
+    window.dangKyThongBaoDon = function (ma, nut, tk) {
+      ma = String(ma || "").trim();
+      if (!ma) return;
+      var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      var app = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+      if (ios && !app) { bao(nut, "📲 iPhone: bấm <b>Chia sẻ</b> ⬆️ → <b>Thêm vào MH chính</b>, rồi mở app Túi Nướng để nhận thông báo."); return; }
+      if (!hoTro()) { if (nut) nut.style.display = "none"; bao(nut, "Trình duyệt này chưa hỗ trợ thông báo — bạn vẫn xem trạng thái đơn ở trang Tra cứu."); return; }
+      if (Notification.permission === "denied") { bao(nut, "Bạn đã chặn thông báo của trang này. Mở cài đặt trình duyệt → cho phép Thông báo rồi bấm lại.", true); return; }
+      var chu = nut ? nut.innerHTML : "";
+      if (nut) { nut.disabled = true; nut.textContent = "Đang bật thông báo…"; }
+      function hong(msg) { if (nut) { nut.disabled = false; nut.innerHTML = chu; } bao(nut, msg, true); }
+      // Xin quyền ngay trong sự kiện bấm (iPhone bắt buộc); Safari cũ dùng callback
+      var xinQuyen = new Promise(function (ok) { var p = Notification.requestPermission(ok); if (p && p.then) p.then(ok); });
+      var layKhoa = goi("layKhoaPushCongKhai", []);
+      layKhoa.catch(function () {});
+      xinQuyen.then(function (q) {
+        if (q !== "granted") throw { nguoiDung: q === "denied" ? "Bạn đã chặn thông báo. Mở cài đặt trình duyệt → cho phép Thông báo rồi bấm lại." : "Bạn chưa cho phép thông báo." };
+        return navigator.serviceWorker.register("sw.js").then(function () { return navigator.serviceWorker.ready; });
+      }).then(function (reg) {
+        return layKhoa.then(function (k) {
+          var key = khoaTuB64(k.key);
+          var dk = function () { return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key }); };
+          return dk().catch(function () {
+            // Đã đăng ký với khoá khác -> huỷ rồi đăng ký lại
+            return reg.pushManager.getSubscription().then(function (cu) { return cu ? cu.unsubscribe() : null; }).then(dk);
+          });
+        });
+      }).then(function (sub) {
+        return goi("luuDangKyPush", [ma, sub.toJSON(), tk || ""]);
+      }).then(function () { daXong(nut, ma); })
+        .catch(function (e) { hong((e && e.nguoiDung) || "Chưa bật được thông báo, vui lòng thử lại. (" + ((e && e.message) || e) + ")"); });
+    };
+  })();
 </script> 
   <base target="_top"> 
   <meta charset="utf-8"> 
@@ -66,11 +213,18 @@
     .tt { font-size: 12.5px; font-weight: 700; border-radius: 20px; padding: 3px 10px; white-space: nowrap; }
     .tt-choduyet { background: #fff4e0; color: #9a5b00; } .tt-xacnhan { background: #e7f6ea; color: #1e7b34; }
     .tt-chohoan { background: #fdecea; color: #a8261b; } .tt-dahoan { background: #e8f1fb; color: #1f5fa8; }
+    .tt-tuchoi { background: #b3261e; color: #fff; } /* 16/11/2026: đơn bị từ chối */
+    .buoc div.tu-choi { color: #b3261e; border-color: #b3261e; font-weight: 600; }
+    .nut-tb { font-size: 11.5px; border: 1px solid #c58865; color: #864c2a; background: #fff; border-radius: 20px; padding: 2px 9px; white-space: nowrap; line-height: 1.5; }
+    .nut-tb:disabled { opacity: 1; background: #e7f6ea; border-color: #9fd3ab; color: #1e7b34; }
+    .don-h .ben-phai { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
     .kv { display: grid; grid-template-columns: minmax(0,1fr); gap: 4px; font-size: 13.5px; }
     .kv b { color: #807067; font-weight: 600; }
     .buoc { display: flex; gap: 4px; margin: 10px 0 2px; }
     .buoc div { flex: 1; text-align: center; font-size: 11px; color: #a89d96; border-top: 4px solid #f3e6de; padding-top: 4px; }
     .buoc div.xong { color: #864c2a; border-color: #c58865; font-weight: 600; }
+    .buoc div.mo { color: #c4bcb7; border-color: #eeeae8; } /* 16/11/2026: bước chưa tới / đã qua mờ xám */
+    .buoc div.xong, .buoc div.tu-choi { font-weight: 800; }
     .note { font-size: 12.5px; background: #fff8e6; border: 1px solid #f3dfa6; border-radius: 10px; padding: 8px 10px; margin-top: 8px; }
     /* Không nhảy dòng: mỗi dòng giữ 1 hàng, chữ tự co theo màn hình, quá dài thì cắt "…" */
     .note > div, .kv > div, .buoc div, .header-bar p, .form-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -108,7 +262,7 @@
       <div class="card-body p-3 p-sm-4">
         <label class="form-label fw-bold">Nhập số điện thoại hoặc email đặt bàn:</label>
         <div class="input-group mb-3">
-          <input type="text" inputmode="text" id="inputSearchPhone" class="form-control form-control-lg" placeholder="SĐT hoặc email" onkeypress="if(event.key==='Enter') searchBooking()">
+          <input type="text" inputmode="text" id="inputSearchPhone" class="form-control form-control-lg" placeholder="SĐT hoặc email" onkeypress="if(event.key==='Enter') searchBooking()" oninput="ngatSdt_(this)" autocomplete="tel">
           <button class="btn btn-search px-4" id="btnSearch" onclick="searchBooking()">Tra cứu</button>
         </div>
         <div id="bookingResult"><div class="py-3 text-muted small">Nhập số điện thoại hoặc email Quý khách đã dùng khi đặt bàn.</div></div>
@@ -132,22 +286,40 @@
     function tien(v) { var s = String(v || "").trim(); return /^\d+$/.test(s) ? Number(s).toLocaleString("vi-VN") + " VNĐ" : s; }
     var TT = {
       choduyet: ["⏳ Đang chờ Túi xác nhận", "⏳ Túi đang kiểm tra, tra cứu lại sau ít phút."],
-      xacnhan: ["✅ Đã xác nhận", "⏰ Vui lòng đến đúng giờ · Quá giờ Túi không giữ bàn · Đổi giờ báo trước 2h."],
+      xacnhan: ["✅ Đã xác nhận", "⏰ Vui lòng đến đúng giờ.<br>Quá giờ Túi không giữ bàn · Đổi giờ báo trước 2h."],
       chohoan: ["⚠ Ngày đã đủ bàn decor", "☎ Gọi hotline đổi ngày, hoặc nhận lại cọc."],
-      dahoan: ["💸 Đã hoàn tiền cọc", "💸 Sau 24h chưa nhận, vui lòng gọi hotline."]
+      dahoan: ["💸 Đã hoàn tiền cọc", "💸 Sau 24h chưa nhận, vui lòng gọi hotline."],
+      tuchoi: ["Không nhận được bàn", "🙏 Rất tiếc, Túi chưa thể nhận đơn này. Mong Quý khách thông cảm."] // 16/11/2026
     };
+    // 16/11/2026: đơn chưa xong (chờ duyệt / chờ hoàn / đã xác nhận mà chưa tới ngày) → cho bật thông báo web push
+    // 16/11/2026: SĐT tự ngắt nhóm khi gõ (0784 832 660); có @ là email thì để nguyên
+    function ngatSdt_(el) {
+      var v = el.value; if (v.indexOf("@") !== -1 || /[^\d\s+]/.test(v)) return;
+      var so = v.replace(/\D/g, "").slice(0, 11), dau = el.selectionStart === v.length;
+      var m = so.length > 10 ? [so.slice(0, 4), so.slice(4, 7), so.slice(7)] : [so.slice(0, 4), so.slice(4, 7), so.slice(7, 10)];
+      var moi = m.filter(Boolean).join(" ");
+      if (moi !== v) { el.value = moi; if (dau) el.setSelectionRange(moi.length, moi.length); }
+    }
+    function homNay_() { var n = new Date(); return n.getFullYear() + "-" + ("0" + (n.getMonth() + 1)).slice(-2) + "-" + ("0" + n.getDate()).slice(-2); }
+    function donChuaXong_(d) { return d.tt === "choduyet" || d.tt === "chohoan" || (d.tt === "xacnhan" && String(d.ngay || "").slice(0, 10) >= homNay_()); }
+    function nutTb_(d) {
+      if (!d.ma || typeof window.dangKyThongBaoDon !== "function" || !donChuaXong_(d)) return "";
+      var daBat = typeof window.daBatThongBaoDon === "function" && window.daBatThongBaoDon(d.ma);
+      return '<button type="button" class="nut-tb" data-ma="' + escapeHtml(d.ma) + '" data-tk="' + escapeHtml(d.tk || "") + '"' + (daBat ? ' disabled' : '') + ' onclick="window.dangKyThongBaoDon && window.dangKyThongBaoDon(this.getAttribute(\'data-ma\'), this, this.getAttribute(\'data-tk\'))">' + (daBat ? "🔔 Đã bật thông báo" : "🔔 Bật thông báo") + '</button>';
+    }
     var HOAN = { chokhach: "chờ Quý khách gửi tài khoản", dangxuly: "Túi đang hoàn cọc", dahoan: "đã hoàn tiền" };
     function veDon(d) {
-      var t = TT[d.tt] || TT.choduyet, buoc = { choduyet: 1, xacnhan: 3, chohoan: 2, dahoan: 3 }[d.tt] || 1;
-      var b = d.tt === "chohoan" || d.tt === "dahoan" ? ["Gửi yêu cầu", "Đủ bàn decor", "Hoàn cọc"] : ["Gửi yêu cầu", "Túi kiểm tra", "Xác nhận"];
+      var t = TT[d.tt] || TT.choduyet, buoc = { choduyet: 1, xacnhan: 3, chohoan: 2, dahoan: 3, tuchoi: 3 }[d.tt] || 1, tc = d.tt === "tuchoi";
+      var b = d.tt === "chohoan" || d.tt === "dahoan" ? ["Gửi yêu cầu", "Đủ bàn decor", "Hoàn cọc"] : tc ? ["Gửi yêu cầu", "Túi kiểm tra", "Không nhận"] : ["Gửi yêu cầu", "Túi kiểm tra", "Xác nhận"];
       // Gọn 1 dòng mỗi nhóm thông tin
       var kv = [["📅", [ngayVN(d.ngay), d.gio, d.soKhach ? d.soKhach + " khách" : ""].filter(Boolean).join(" · ")], ["👤", [d.ten, sdtDep_(d.sdt)].filter(Boolean).join(" · ")],
         ["💰", d.tienCoc && d.tienCoc !== "0" ? "Cọc " + tien(d.tienCoc) : ""], ["🎀", d.mauDecor], ["🪑", d.banSo ? "Bàn " + d.banSo : ""]].filter(function(x) { return x[1]; });
-      return '<div class="don"><div class="don-h"><span class="ma">' + escapeHtml(d.ma || "Đơn đặt bàn") + '</span><span class="tt tt-' + d.tt + '">' + t[0] + '</span></div>' +
+      return '<div class="don"><div class="don-h"><span class="ma">' + escapeHtml(d.ma || "Đơn đặt bàn") + '</span><span class="ben-phai">' + nutTb_(d) + '<span class="tt tt-' + (TT[d.tt] ? d.tt : "choduyet") + '">' + t[0] + '</span></span></div>' +
         '<div class="kv">' + kv.map(function(x) { return '<div title="' + escapeHtml(x[1]) + '">' + x[0] + ' ' + escapeHtml(x[1]) + '</div>'; }).join("") + '</div>' +
-        '<div class="buoc">' + b.map(function(x, i) { return '<div class="' + (i < buoc ? "xong" : "") + '">' + (i + 1) + '. ' + x + '</div>'; }).join("") + '</div>' +
-        '<div class="note"><div>' + t[1] + '</div>' +
+        '<div class="buoc">' + b.map(function(x, i) { return '<div class="' + (tc && i === 2 ? "tu-choi" : i === buoc - 1 ? "xong" : "mo") + '">' + (i + 1) + '. ' + x + '</div>'; }).join("") + '</div>' +
+        '<div class="note"><div style="white-space:normal">' + t[1] + '</div>' +
           (d.tt === "choduyet" ? '<div style="color:#b3261e">☎ 30 phút chưa Xác nhận/Từ chối: gọi hotline</div>' : '') + (d.hoan ? '<div><b>Hoàn cọc:</b> ' + HOAN[d.hoan] + '</div>' : '') + '</div>' +
+        (tc ? '<div class="d-flex gap-2 mt-2"><a class="btn btn-sm btn-search flex-fill text-nowrap" style="flex-basis:0" href="index.html">📅 Đặt lại</a><a class="btn btn-sm btn-outline-danger flex-fill fw-bold text-nowrap" style="flex-basis:0" href="tel:0911588138">☎ Gọi Túi</a></div>' : '') +
         (d.linkHoanCoc ? '<a class="btn btn-sm btn-search w-100 mt-2" href="' + escapeHtml(d.linkHoanCoc) + '">🧡 Gửi thông tin nhận hoàn cọc</a>' : '') + '</div>';
     }
     function searchBooking() {
@@ -160,13 +332,20 @@
         if (!res.success) { resDiv.innerHTML = '<div class="alert alert-warning text-center small">' + escapeHtml(res.message) + '</div>'; return; }
         if (!res.data || !res.data.length) { resDiv.innerHTML = '<div class="alert alert-warning text-center small">Không tìm thấy đơn đặt bàn nào khớp. Quý khách kiểm tra lại số / email, hoặc gọi hotline.</div>'; return; }
         resDiv.innerHTML = '<div class="small text-muted mb-2">Tìm thấy <b>' + res.tong + '</b> đơn' + (res.tong > res.data.length ? ' (hiện ' + res.data.length + ' đơn gần nhất)' : '') + ':</div>' + res.data.map(veDon).join("");
+        // 16/11/2026 chủ quán: tự động — máy đã cho phép thông báo thì tự bật cho các đơn chưa xong, khách không cần bấm
+        if (window.Notification && Notification.permission === "granted") [].forEach.call(resDiv.querySelectorAll(".nut-tb:not([disabled])"), function(b) { b.click(); });
+        // 16/11/2026: đơn đang chờ duyệt -> trang tự kiểm tra, Túi duyệt xong hiện dải báo + rung, rồi tải lại danh sách
+        if (window.theoDoiDon && !window._dangTheoDoi) res.data.filter(function(d) { return d.tt === "choduyet" && d.ma; }).forEach(function(d) {
+          window._dangTheoDoi = true;
+          window.theoDoiDon(d.ma, p, resDiv.parentNode, function() { window._dangTheoDoi = false; setTimeout(searchBooking, 4000); });
+        });
       }).withFailureHandler(function(e) {
         btn.disabled = false; btn.innerText = "Tra cứu";
         resDiv.innerHTML = '<div class="alert alert-danger text-center small">Lỗi kết nối, vui lòng thử lại.</div>';
       }).traCuuDonCongKhai(p);
     }
     // Vừa đặt bàn xong trên cùng trang web: tự điền số đã đặt và tra cứu luôn (không đưa SĐT lên đường link)
-    try { var q0 = sessionStorage.getItem("tracuu_q"); if (q0) { sessionStorage.removeItem("tracuu_q"); document.getElementById("inputSearchPhone").value = q0; setTimeout(searchBooking, 300); } } catch (e) {}
+    try { var q0 = sessionStorage.getItem("tracuu_q"); if (q0) { sessionStorage.removeItem("tracuu_q"); var o0 = document.getElementById("inputSearchPhone"); o0.value = q0; ngatSdt_(o0); setTimeout(searchBooking, 300); } } catch (e) {}
   </script>
 </body>
 </html>
