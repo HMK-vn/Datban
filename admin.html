@@ -2016,7 +2016,7 @@
       var meta = [d.ma ? '<span class="dtt-ma">' + escapeHtml(d.ma) + '</span>' : "", '<span>' + escapeHtml(dttNgayHien(d.ngay)) + (d.gio ? " " + escapeHtml(d.gio) : "") + '</span>',
         d.soKhach ? '<span>' + escapeHtml(d.soKhach) + ' khách</span>' : "", d.tienCoc && d.tienCoc !== "0" ? '<span>' + escapeHtml(dttTien(d.tienCoc)) + '</span>' : ""].filter(Boolean).join(" · ");
       var h = '<div class="dtt-card' + (vt ? ' co-vat' : '') + '"' + (mau ? ' style="--mau:' + mau + '"' : '') + '>' + vt +
-        '<div class="dtt-l1"><span class="dtt-ten" title="' + escapeHtml(d.ten || "") + '">' + escapeHtml(d.ten || "(chưa có tên)") + '</span><span class="text-nowrap flex-shrink-0"><a href="tel:' + escapeHtml(d.sdt) + '">' + escapeHtml(sdtDep_(d.sdt)) + '</a>' + (dttLoaiAnh(d) ? '<button class="btn btn-sm p-0 ms-1 dtt-anh-btn" onclick="dttLuuAnh(' + i + ')" title="Lưu ảnh xác nhận trạng thái">📷</button>' : '') + '</span></div>' +
+        '<div class="dtt-l1"><span class="dtt-ten" data-ten="' + escapeHtml(d.ten || "") + '" title="' + escapeHtml(d.ten || "") + '">' + escapeHtml(d.ten || "(chưa có tên)") + '</span><span class="text-nowrap flex-shrink-0"><a href="tel:' + escapeHtml(d.sdt) + '">' + escapeHtml(sdtDep_(d.sdt)) + '</a>' + (dttLoaiAnh(d) ? '<button class="btn btn-sm p-0 ms-1 dtt-anh-btn" onclick="dttLuuAnh(' + i + ')" title="Lưu ảnh xác nhận trạng thái">📷</button>' : '') + '</span></div>' +
         '<div class="dtt-meta">' + meta + '</div>';
       if (d.trung && d.trung.length) h += '<div class="dtt-trung">⚠️ CÓ THỂ TRÙNG<br>' + dttTrungDong_(d).map(escapeHtml).join("<br>") + '</div>';
       var sub = [];
@@ -2080,6 +2080,7 @@
     function dttXemCot(k) {
       document.getElementById("dttBoard").setAttribute("data-show", k);
       [].forEach.call(document.querySelectorAll("#dttSeg button"), function(b, i) { b.classList.toggle("on", i === k); });
+      vuaTenThe_(document.getElementById("dttBoard"));
     }
     function veDuyetTrangThai() {
       if (!_dtt) return;
@@ -2113,6 +2114,7 @@
         if (ngays.length > 5 && !ng) h += '<div class="dtt-them" onclick="_dttHetNgay[\'' + id + '\']=!_dttHetNgay[\'' + id + '\'];veDuyetTrangThai()">' +
           (_dttHetNgay[id] ? '▴ Thu gọn, chỉ hiện 5 ngày gần nhất' : '▾ Xem thêm ' + (ngays.length - 5) + ' ngày cũ hơn') + '</div>';
         document.getElementById(id).innerHTML = h || '<div class="dtt-rong">' + rong + '</div>';
+        vuaTenThe_(document.getElementById(id));
         document.getElementById(soId).textContent = ds.length;
         var seg = document.getElementById("dttSeg" + ["dttSoCho", "dttSoXN", "dttSoCH", "dttSoVT", "dttSoVC", "dttSoDH"].indexOf(soId)); if (seg) seg.textContent = ds.length;
       }
@@ -3359,6 +3361,22 @@ function idGon_(id) { var m = String(id || "").match(/(\d{1,2})-(\d{1,2})\s+(\d{
 function nhomIcon_(n) { var g = nhomGon_(n); return g === "Thường" ? '<i class="fa-solid fa-utensils ico-nhom"></i>' : '<i class="fa-solid fa-cake-candles ico-nhom"></i>' + (g === "Decor" ? '' : ' ' + escapeHtml(g.replace("Decor ", ""))); } // 15/11/2026 chủ quán: loại bàn bằng icon + số (🍴 thường, 🎂 <6 / ≥6)
 function nhomGon_(n) { var t = String(n || "").toLowerCase(); if (t.indexOf("decor") === -1) return "Thường"; return /≥|>=|> *=|từ *6|tu *6/.test(t) ? "Decor ≥6" : /<|dưới|duoi/.test(t) ? "Decor <6" : "Decor"; }
 // Tên dài hơn số điện thoại: viết tắt dần họ, tên đệm (Nguyễn Hoàng Cẩm Tú -> N. Hoàng Cẩm Tú -> N.H. Cẩm Tú); rê chuột xem tên đầy đủ
+// Thẻ bảng Xác nhận / hoàn cọc: tên không đủ chỗ thì viết tắt họ, đệm — luôn giữ tên (chữ cuối). VD "Nguyễn Thị Lam Linh" → "N.T.L. Linh" → "Linh"
+function vuaTenThe_(goc) {
+  [].forEach.call((goc || document).querySelectorAll(".dtt-ten[data-ten]"), function(el) {
+    var day = el.getAttribute("data-ten").trim().replace(/\s+/g, " "); if (!day) return;
+    el.textContent = day; if (!el.clientWidth || el.scrollWidth <= el.clientWidth) return;
+    var w = day.split(" "), kq = day;
+    for (var k = 1; k < w.length && el.scrollWidth > el.clientWidth; k++) {
+      kq = w.slice(0, k).map(function(x) { return x.charAt(0).toUpperCase() + "."; }).join("") + " " + w.slice(k).join(" ");
+      el.textContent = kq;
+    }
+    if (el.scrollWidth > el.clientWidth && w.length > 1) el.textContent = w[w.length - 1];
+  });
+}
+(function() { var t; var lai = function() { clearTimeout(t); t = setTimeout(function() { vuaTenThe_(); }, 120); };
+  window.addEventListener("resize", lai); document.addEventListener("shown.bs.tab", lai); })();
+
 function rutTenKhach_(goc) {
   var ds = (goc || document).querySelectorAll(".chu-ten"); if (!ds.length) return;
   var c = rutTenKhach_.c || (rutTenKhach_.c = document.createElement("canvas").getContext("2d")), f = function(el) { var cs = getComputedStyle(el); return cs.fontStyle + " " + cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily; };
