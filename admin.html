@@ -206,6 +206,9 @@
     .gh-bang tr.gh-khoa td { background: #fbe9e7; }
     .gh-nhanh td { border-top: 2px dashed #e0c9b8; }
     .gh-box summary::-webkit-details-marker { display: none; }
+    .gh-mini td, .gh-mini th { white-space: nowrap; overflow: hidden; }
+    @media (max-width: 576px) { .ico-tt { font-size: 12px !important; } .ico-lich { font-size: .7em !important; } .gh-mini td span { display: none; } .gh-mini th:first-child { width: 11px !important; } }
+    .ico-tt { font-size: 15px; } .ico-lich { font-size: .85em; color: inherit; opacity: .9; } .gh-chu-thich i { font-size: 12px; }
     .gh-cham { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 3px; vertical-align: -1px; border: 1px solid rgba(0,0,0,.08); }
     /* Màu theo phân loại: bàn < 6 khách (xanh lá), bàn ≥ 6 khách (đất nung), tổng (vàng cát) */
     .gh-bang .c-nho { background: #eaf3e6 !important; } .gh-bang th.c-nho { color: #3f6b35; }
@@ -2721,8 +2724,8 @@
           (lon ? '' : ' style="cursor:pointer;text-decoration:underline dotted" title="Bấm để xem tháng này dạng bảng chi tiết" onclick="xemThangTab6_(' + (m + 1) + ')"') + '>Tháng ' + (m + 1) + '/' + year + (lon ? '' : ' 🔍') + '</span>' +
           '<span class="small text-muted">%%TOMTAT%%</span></div>' +
           (lon ? '<div class="small text-muted mb-2 d-flex flex-wrap gap-2 gh-chu-thich" title="Bấm số trong ô ngày để sửa giới hạn"><span><span class="gh-cham" style="background:#eaf3e6"></span>&lt;6</span><span><span class="gh-cham" style="background:#fbe8dc"></span>≥6</span>' +
-            '<span><span class="gh-cham" style="background:#f5eed8"></span>Σ</span><span><span class="gh-cham" style="background:#dc3545"></span>ô vượt</span><span><span class="gh-cham" style="background:#e8833a"></span>ngày vượt</span>' +
-            '<span>🔒 Full</span><span>📌 riêng</span></div>' : ''); // 15/11/2026 chủ quán: gọn ít dòng
+            '<span><span class="gh-cham" style="background:#f5eed8"></span>Σ</span><span title="Ô vượt giới hạn"><span class="gh-cham" style="background:#dc3545"></span><i class="fa-solid fa-table-cells-large" style="color:#dc3545"></i></span><span title="Ngày vượt / đủ mức"><span class="gh-cham" style="background:#e8833a"></span><i class="fa-solid fa-calendar-day" style="color:#e8833a"></i></span>' +
+            '<span title="Đã khóa Full decor"><i class="fa-solid fa-lock" style="color:#dc3545"></i></span><span title="Không nhận thêm bàn"><i class="fa-solid fa-ban" style="color:#dc3545"></i></span><span title="Giới hạn riêng ngày"><i class="fa-solid fa-thumbtack" style="color:#c0392b"></i></span><span title="Bàn decor"><i class="fa-solid fa-cake-candles" style="color:#934c22"></i></span></div>' : ''); // 15/11/2026 chủ quán: gọn ít dòng
         var dauThang = html.lastIndexOf("%%TOMTAT%%"), soVuot = 0, banThang = 0, khachThang = 0;
         html += '<div style="display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); overflow-wrap:anywhere; gap:' + (lon ? 6 : 3) + 'px; font-size:' + (lon ? 13 : 12) + 'px;">';
         ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].forEach(function(t) {
@@ -2751,15 +2754,15 @@
           var tip = (rieng ? "📌 Giới hạn riêng • " : "") + (locked[key] ? "Đã khóa" : "Đang mở") + (cnt ? " • " + cnt + " bàn decor" : "") + (dongGh ? " • " + dongGh + (du ? " (đủ)" : "") : "") + " • Nhấp để chỉnh khóa / giới hạn ngày này";
           html += '<div class="text-center rounded-2" style="cursor:pointer; padding:' + (lon ? '6px 3px 4px' : '4px 0') + '; ' + style + '" title="' + tip + '" onclick="moNgayGh(\'' + key + '\')">' +
             '<div style="' + (vuot && lon ? 'background:#e8833a;color:#fff;border-radius:6px;margin:-6px 0 2px;padding:3px 0;' : '') + '">' +
-              '<div style="font-weight:600;">' + d + (rieng ? ' <span title="Có giới hạn riêng ngày này">📌</span>' : '') + '</div>' +
-              (lon ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '🔒 Đã khóa' : ghc.khoa ? '<b style="color:' + (vuot ? '#fff' : '#dc3545') + '">⛔ ' + (rieng ? 'Khóa ngày' : 'Khóa thứ') + '</b>' : vuot ? '⚠️ Vượt mức' : '') + '</div>' : '') +
+              '<div style="font-weight:600;white-space:nowrap;">' + d + (rieng ? ' <i class="fa-solid fa-thumbtack ico-lich" title="Có giới hạn riêng ngày này"></i>' : '') + '</div>' +
+              (lon ? '<div style="font-size:11px; line-height:1.2; margin-top:2px;">' + (locked[key] ? '<i class="fa-solid fa-lock ico-tt" title="Đã khóa Full decor"></i>' : ghc.khoa ? '<i class="fa-solid fa-ban ico-tt" style="color:' + (vuot ? '#fff' : '#dc3545') + '" title="' + (rieng ? 'Khóa ngày này' : 'Khóa theo thứ') + ' — không nhận thêm bàn"></i>' : vuot ? '<i class="fa-solid fa-triangle-exclamation ico-tt" title="Vượt / đủ mức"></i>' : '') + '</div>' : '') +
             '</div>' +
             (lon
-              ? '<div style="font-size:11px; line-height:1.2;">' + (coGh && !ghc.khoa ? bangOGh_(nh, ghc, locked[key], key) : (cnt ? '🎀 ' + cnt + ' bàn' : '')) + '</div>'
-              : (cnt || du ? '<div style="font-size:9px; line-height:1;">' + (cnt || "") + (vuot ? ' 🟠' : '') + '</div>' : '')) + '</div>';
+              ? '<div style="font-size:11px; line-height:1.2;">' + (coGh && !ghc.khoa ? bangOGh_(nh, ghc, locked[key], key) : (cnt ? '<span class="text-nowrap" title="' + cnt + ' bàn decor"><i class="fa-solid fa-cake-candles"></i> ' + cnt + '</span>' : '')) + '</div>'
+              : (cnt || du ? '<div style="font-size:9px; line-height:1;">' + (cnt || "") + (vuot ? ' <i class="fa-solid fa-circle" style="color:#e8833a;font-size:7px"></i>' : '') + '</div>' : '')) + '</div>';
         }
         html += '</div></div></div>';
-        html = html.slice(0, dauThang) + '<span class="text-nowrap" title="' + soKhoa + ' ngày khoá · ' + soVuot + ' ngày vượt mức · ' + banThang + ' bàn decor · ' + khachThang + ' khách">🔒' + soKhoa + ' · <b style="color:#e8833a">⚠️' + soVuot + ' vượt</b> · 🎀' + banThang + ' bàn · 👥' + khachThang + '</span>' + html.slice(dauThang + 10);
+        html = html.slice(0, dauThang) + '<span class="text-nowrap" title="' + soKhoa + ' ngày khoá · ' + soVuot + ' ngày vượt mức · ' + banThang + ' bàn decor · ' + khachThang + ' khách"><i class="fa-solid fa-lock"></i> ' + soKhoa + ' · <b style="color:#e8833a"><i class="fa-solid fa-triangle-exclamation"></i> ' + soVuot + '</b> · <i class="fa-solid fa-cake-candles"></i> ' + banThang + ' · <i class="fa-solid fa-users"></i> ' + khachThang + '</span>' + html.slice(dauThang + 10);
       });
       box.innerHTML = html;
     }
@@ -2773,7 +2776,7 @@
           (du ? 'background:#dc3545;color:#fff;' : da ? 'filter:brightness(.92);' : '') + (max ? 'font-weight:700' : '') + '">' +
           (max ? da + '<span style="opacity:.7;font-weight:400">/' + max + '</span>' : (da || '·')) + '</td>';
       };
-      return '<table class="gh-mini" style="color:#4a3426"><tr><th></th><th>Bàn</th><th>Khách</th></tr>' +
+      return '<table class="gh-mini" style="color:#4a3426"><tr><th></th><th title="Bàn"><i class="fa-solid fa-chair"></i></th><th title="Khách"><i class="fa-solid fa-users"></i></th></tr>' +
         '<tr class="r-nho"><th>&lt;6</th>' + o(nh.nho, c.nho, "nho") + o(nh.khachNho, c.khachNho, "khachNho") + '</tr>' +
         '<tr class="r-lon"><th>≥6</th>' + o(nh.lon, c.lon, "lon") + o(nh.khachLon, c.khachLon, "khachLon") + '</tr>' +
         '<tr class="gh-tong"><th>Σ</th>' + o(nh.nho + nh.lon, c.tong, "tong") + '<td>' + ((nh.khachNho + nh.khachLon) || '·') + '</td></tr></table>';
@@ -3789,8 +3792,8 @@ function rutTenKhach_(goc) {
       var tt = r.khoaDecor ? ['khoa', 'fa-lock', 'Đã khoá FULL decor trên lịch'] : c.khoa ? ['khoa', 'fa-ban', 'Không nhận thêm bàn decor'] : duBan ? ['khoa', 'fa-circle-exclamation', 'Đã đủ bàn decor'] : ['mo', 'fa-circle-check', 'Còn nhận bàn decor'];
       _mdGh = { ngay: r.ngay, thu: thu, c: c, dd: dd, rieng: !!gh.rieng };
       document.getElementById("mdThu").innerHTML = thuHai_(thu);
-      document.getElementById("mdTT").innerHTML = '<span class="md-tt ' + tt[0] + '" title="' + tt[2] + '"><i class="fa-solid ' + tt[1] + ' me-1"></i><span class="d-none d-sm-inline">' + tt[2] + '</span></span>' + (gh.rieng ? '<span class="md-rieng" title="Ngày này đang dùng giới hạn riêng">📌<span class="d-none d-sm-inline"> riêng</span></span>' : '');
-      document.getElementById("mdBang").innerHTML = '<table class="md-gh-bang"><thead><tr><th></th><th>Bàn</th><th>Khách</th></tr></thead><tbody>' +
+      document.getElementById("mdTT").innerHTML = '<span class="md-tt ' + tt[0] + '" title="' + tt[2] + '"><i class="fa-solid ' + tt[1] + ' me-1"></i><span class="d-none d-sm-inline">' + tt[2] + '</span></span>' + (gh.rieng ? '<span class="md-rieng" title="Ngày này đang dùng giới hạn riêng"><i class="fa-solid fa-thumbtack"></i><span class="d-none d-sm-inline"> riêng</span></span>' : '');
+      document.getElementById("mdBang").innerHTML = '<table class="md-gh-bang"><thead><tr><th></th><th title="Bàn"><i class="fa-solid fa-chair"></i></th><th title="Khách"><i class="fa-solid fa-users"></i></th></tr></thead><tbody>' +
         '<tr class="nho"><th>&lt; 6 khách</th>' + o(dd.nho, c.nho) + o(dd.khachNho, c.khachNho) + '</tr>' +
         '<tr class="lon"><th>≥ 6 khách</th>' + o(dd.lon, c.lon) + o(dd.khachLon, c.khachLon) + '</tr>' +
         '<tr class="tong"><th>Tổng</th>' + o(tongBan, c.tong) + o(tongKhach, ghKhach) + '</tr></tbody></table>';
