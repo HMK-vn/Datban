@@ -1664,23 +1664,66 @@
   <script>
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","luuNgayKhoaRiengWeb","layMauDecorTheoNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
+    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","luuDangKyPushQuanTri","thuPushQuanTri","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","luuNgayKhoaRiengWeb","layMauDecorTheoNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
     // 🔔 Khung cài / thử thông báo Telegram (khung trên trang, không dùng hộp prompt vì vài trình duyệt chặn)
     function caiTelegram() {
       var k = document.getElementById("tgKhung");
       if (k) { k.remove(); return; }
       k = document.createElement("div"); k.id = "tgKhung";
       k.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:3000;width:min(460px,94vw);background:#fff;border:1px solid #e3d3c6;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.2);padding:14px;font-size:14px";
-      k.innerHTML = '<div class="d-flex justify-content-between align-items-center mb-2"><b>🔔 Thông báo Telegram</b><button type="button" class="btn-close" onclick="caiTelegram()"></button></div>' +
+      k.innerHTML = '<div class="d-flex justify-content-between align-items-center mb-2"><b>🔔 Thông báo quản trị</b><button type="button" class="btn-close" onclick="caiTelegram()"></button></div>' +
+        '<div class="fw-bold mb-1"><i class="fa-brands fa-telegram me-1" style="color:#229ED9"></i>Telegram</div>' +
         '<div class="small text-muted mb-2">Thêm bot vào nhóm Telegram, nhắn 1 tin trong nhóm, rồi dán MÃ BOT (lấy ở @BotFather).</div>' +
         '<input id="tgMa" type="password" class="form-control form-control-sm mb-2" placeholder="Dán mã bot, dạng 123456:ABC..." autocomplete="off">' +
         '<div class="input-group input-group-sm mb-2"><span class="input-group-text">ID nhóm</span><input id="tgChat" class="form-control" value="-5368746170" title="Nhóm Đặt Bàn - Túi Nướng. Để trống = tự tìm nhóm vừa nhắn cho bot"></div>' +
         '<div class="d-flex gap-2 flex-wrap"><button type="button" class="btn btn-sm text-white fw-bold" style="background:#864c2a" onclick="tgChay(\'luu\')">💾 Lưu & gửi thử</button>' +
         '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="tgChay(\'thu\')">🧪 Chỉ gửi thử</button>' +
         '<button type="button" class="btn btn-sm btn-outline-danger ms-auto" onclick="tgChay(\'tat\')">Tắt</button></div>' +
-        '<div id="tgKq" class="small mt-2"></div>';
+        '<div id="tgKq" class="small mt-2"></div>' +
+        // 17/11/2026: thông báo đẩy trên chính máy này (app TN Quản trị), tự gộp 2 nhóm 🆕 Bàn mới / 💸 Hoàn cọc
+        '<hr class="my-2"><div class="d-flex align-items-center gap-2 flex-wrap"><b class="me-auto"><i class="fa-solid fa-mobile-screen me-1"></i>Thông báo trên máy này</b>' +
+        '<button type="button" class="btn btn-sm text-white fw-bold" style="background:#864c2a" onclick="batPushQuanTri(this)"><i class="fa-solid fa-bell me-1"></i>Bật</button>' +
+        '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="thuPushQuanTri()">🧪 Thử</button></div>' +
+        '<div class="small text-muted mt-1">Bàn mới và hoàn cọc hiện thành 2 nhóm thông báo riêng. iPhone: cài app TN Quản trị (Thêm vào MH chính) rồi bật trong app.</div>' +
+        '<div id="pqKq" class="small mt-1"></div>';
       document.body.appendChild(k);
+      if (window.Notification && Notification.permission === "granted") document.getElementById("pqKq").innerHTML = '<span class="text-success">✅ Máy này đã cho phép thông báo — bấm Bật để chắc chắn đã đăng ký.</span>';
       document.getElementById("tgMa").focus();
+    }
+    // 17/11/2026: bật thông báo đẩy cho máy quản trị (dùng chung sw.js của trang, máy chủ lưu mã QUANTRI)
+    function batPushQuanTri(nut) {
+      var kq = document.getElementById("pqKq"), bao = function(h, loi) { kq.innerHTML = '<span class="' + (loi ? 'text-danger' : 'text-success') + '">' + h + '</span>'; };
+      var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      var app = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+      if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+        if (ios && !app) return bao('📲 iPhone: bấm <b>Chia sẻ</b> → <b>Thêm vào MH chính</b>, mở app <b>TN Quản trị</b> rồi bật lại.', true);
+        return bao("Trình duyệt này chưa hỗ trợ thông báo.", true);
+      }
+      if (ios && !app) return bao('📲 iPhone: bấm <b>Chia sẻ</b> → <b>Thêm vào MH chính</b>, mở app <b>TN Quản trị</b> rồi bật lại.', true);
+      if (Notification.permission === "denied") return bao("Máy đang chặn thông báo của trang: mở cài đặt (ổ khoá cạnh địa chỉ / Cài đặt → Thông báo) → Cho phép, rồi bấm Bật lại.", true);
+      nut.disabled = true; kq.textContent = "⏳ Đang bật...";
+      var khoa = new Promise(function(ok, fail) { google.script.run.withSuccessHandler(ok).withFailureHandler(fail).layKhoaPushCongKhai(); });
+      khoa.catch(function() {});
+      new Promise(function(ok) { var p = Notification.requestPermission(ok); if (p && p.then) p.then(ok); }).then(function(q) {
+        if (q !== "granted") throw new Error("Chưa cho phép thông báo.");
+        return navigator.serviceWorker.register("sw.js").then(function() { return navigator.serviceWorker.ready; });
+      }).then(function(reg) {
+        return khoa.then(function(k) {
+          var s = String(k.key).replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "=";
+          var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
+          var dk = function() { return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: u }); };
+          return dk().catch(function() { return reg.pushManager.getSubscription().then(function(c) { return c ? c.unsubscribe() : null; }).then(dk); });
+        });
+      }).then(function(sub) {
+        try { caches.open("tn-quantri").then(function(c) { c.put("link-quantri", new Response(location.href)); }); } catch (e) {} // bấm thông báo mở lại đúng link có mã
+        return new Promise(function(ok, fail) { adminRun().withSuccessHandler(ok).withFailureHandler(fail).luuDangKyPushQuanTri(sub.toJSON()); });
+      }).then(function(r) { nut.disabled = false; bao("✅ Đã bật thông báo trên máy này (" + (r && r.soMay || 1) + " máy quản trị đang nhận). Bấm 🧪 Thử để kiểm tra."); })
+        .catch(function(e) { nut.disabled = false; bao("❌ " + escapeHtml((e && e.message) || String(e)), true); });
+    }
+    function thuPushQuanTri() {
+      var kq = document.getElementById("pqKq"); kq.textContent = "⏳ Đang gửi thử...";
+      adminRun().withSuccessHandler(function(r) { kq.innerHTML = r && r.ok ? '<span class="text-success">✅ Đã gửi tới ' + r.ok + ' máy — xem thông báo trên điện thoại.</span>' : '<span class="text-danger">Chưa có máy quản trị nào bật thông báo.</span>'; })
+        .withFailureHandler(function(e) { kq.innerHTML = '<span class="text-danger">❌ ' + escapeHtml(e.message || e) + '</span>'; }).thuPushQuanTri();
     }
     function tgChay(viec) {
       var kqEl = document.getElementById("tgKq"), ma = document.getElementById("tgMa").value.trim();
