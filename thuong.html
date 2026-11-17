@@ -16,7 +16,7 @@
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Đặt bàn"><script>
+  <meta name="apple-mobile-web-app-title" content="Túi Nướng"><script>
 /* Cầu nối thay cho google.script.run: gọi Apps Script qua API (không kèm cookie Google)
    -> không bị lỗi "không thể mở tệp" khi trình duyệt đăng nhập nhiều tài khoản Google */
 (function () {
@@ -50,53 +50,6 @@
   window.google = { script: { host: { close: function () { throw new Error("Không chạy trong Google Sheet"); } } } };
   Object.defineProperty(window.google.script, "run", { get: taoRun });
 })();
-</script>
-<script>
-  (function () {
-    var app = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
-    if (app) return;
-    try { if (localStorage.getItem("anCaiApp2") === "1") return; } catch (e) {}
-    var hoi = null, ua = navigator.userAgent;
-    var ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    var trongApp = /Zalo|FBAN|FBAV|Instagram|Line/.test(ua);
-    addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); hoi = e; });
-    addEventListener("appinstalled", function () { var n = document.getElementById("nutCaiApp"); if (n) n.remove(); });
-    function huongDan() {
-      if (!document.querySelector('link[href*="font-awesome"]')) { var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"; document.head.appendChild(l); }
-      var b = function (so, ic, html) { return '<div style="display:flex;gap:10px;align-items:center;text-align:left;padding:9px 0;border-top:1px solid #f0e6df"><span style="flex:none;width:26px;height:26px;border-radius:50%;background:#864c2a;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px">' + so + '</span><i class="fa-solid ' + ic + '" style="flex:none;width:24px;text-align:center;color:#864c2a;font-size:19px"></i><span style="flex:1;font-size:14.5px;line-height:1.35">' + html + '</span></div>'; };
-      var buoc = ios
-        ? (trongApp ? b(1, "fa-compass", 'Bấm <b>•••</b> → <b>Mở bằng Safari</b>') : "") +
-          b(trongApp ? 2 : 1, "fa-arrow-up-from-bracket", 'Bấm nút <b>Chia sẻ</b> ở thanh dưới Safari') +
-          b(trongApp ? 3 : 2, "fa-square-plus", 'Kéo xuống, chọn <b>Thêm vào MH chính</b>') +
-          b(trongApp ? 4 : 3, "fa-circle-check", 'Bấm <b>Thêm</b> — icon <b>Đặt bàn</b> hiện trên màn hình')
-        : (trongApp ? b(1, "fa-compass", 'Bấm <b>⋮</b> → <b>Mở bằng Chrome</b>') : "") +
-          b(trongApp ? 2 : 1, "fa-ellipsis-vertical", 'Bấm <b>⋮</b> góc trên Chrome') +
-          b(trongApp ? 3 : 2, "fa-square-plus", 'Chọn <b>Thêm vào màn hình chính</b> / <b>Cài đặt ứng dụng</b>') +
-          b(trongApp ? 4 : 3, "fa-circle-check", 'Bấm <b>Cài đặt</b> — icon <b>Đặt bàn</b> hiện trên màn hình');
-      var nen = document.createElement("div");
-      nen.style.cssText = "position:fixed;inset:0;z-index:10002;background:rgba(60,36,20,.28);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);display:flex;align-items:center;justify-content:center;padding:16px";
-      nen.innerHTML = '<div role="dialog" aria-modal="true" style="max-width:360px;width:100%;background:linear-gradient(160deg,rgba(255,255,255,.96),rgba(255,250,245,.9));border:1px solid rgba(255,255,255,.75);border-radius:22px;padding:16px 16px 12px;box-shadow:0 18px 40px rgba(60,30,10,.28);font:15px/1.4 system-ui,sans-serif;color:#3d2a1e;text-align:center">' +
-        '<img src="app_icon/logo_khach_180.png?v=20261103" alt="" style="width:64px;height:64px;border-radius:15px;box-shadow:0 3px 10px rgba(0,0,0,.18)"><div style="font-weight:800;font-size:17px;color:#864c2a;margin:6px 0 2px">Thêm app Đặt bàn</div>' +
-        '<div style="font-size:12.5px;color:#8a7a6e;margin-bottom:6px">Mở nhanh từ màn hình chính, nhận thông báo đặt bàn</div>' + buoc +
-        '<button type="button" style="margin-top:10px;width:100%;border:0;border-radius:12px;padding:10px;background:#864c2a;color:#fff;font-weight:800">Đã hiểu</button></div>';
-      nen.querySelector("button").onclick = function () { nen.remove(); };
-      nen.onclick = function (e) { if (e.target === nen) nen.remove(); };
-      document.body.appendChild(nen);
-    }
-    window.themVaoManHinhChinh = function () {
-      if (hoi) { hoi.prompt(); hoi.userChoice.then(function (c) { if (c && c.outcome === "accepted") { var n = document.getElementById("nutCaiApp"); if (n) n.remove(); } hoi = null; }); return; }
-      huongDan();
-    };
-    addEventListener("load", function () {
-      var d = document.createElement("div"); d.id = "nutCaiApp";
-      d.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));z-index:9999;display:flex;align-items:center;gap:8px;background:rgba(134,76,42,.94);color:#fff;border-radius:999px;padding:6px 8px 6px 6px;font:700 14px/1 system-ui,sans-serif;box-shadow:0 6px 18px rgba(60,30,10,.3);white-space:nowrap";
-      d.innerHTML = '<button type="button" data-cai style="display:flex;align-items:center;gap:8px;border:0;background:none;color:#fff;font:inherit;padding:0"><img src="app_icon/logo_khach_180.png?v=20261103" alt="" style="width:30px;height:30px;border-radius:8px;background:#fff"><span>Thêm <b>Đặt bàn</b> vào màn hình chính</span></button>' +
-        '<button type="button" aria-label="Ẩn" data-an style="border:0;background:rgba(255,255,255,.18);color:#fff;width:24px;height:24px;border-radius:50%;font-size:15px;line-height:1">×</button>';
-      d.querySelector("[data-cai]").onclick = window.themVaoManHinhChinh;
-      d.querySelector("[data-an]").onclick = function () { d.remove(); try { localStorage.setItem("anCaiApp2", "1"); } catch (e) {} };
-      document.body.appendChild(d);
-    });
-  })();
 </script>
 <script>
   (function () {
