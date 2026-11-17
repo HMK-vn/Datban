@@ -164,14 +164,53 @@
       document.addEventListener("visibilitychange", function () { if (!document.hidden && hen) { clearTimeout(hen); kiem(); } });
       hen = setTimeout(kiem, 20000);
     };
+    // 17/11/2026 chủ quán: màn hình hướng dẫn khách bật thông báo trên điện thoại (iPhone / Android, cả khi lỡ bấm Chặn)
+    window.moHuongDanThongBao = function (chiChan) {
+      if (!document.querySelector('link[href*="font-awesome"]')) { var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"; document.head.appendChild(l); }
+      var cu = document.getElementById("hdTbTui"); if (cu) cu.remove();
+      var ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      var trongApp = /Zalo|FBAN|FBAV|Instagram|Line\//i.test(ua);
+      var buoc = function (so, ic, html) { return '<div style="display:flex;gap:10px;align-items:center;text-align:left;padding:8px 0;border-top:1px solid #f0e6df">' +
+        '<span style="flex:none;width:26px;height:26px;border-radius:50%;background:#864c2a;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px">' + so + '</span>' +
+        '<i class="fa-solid ' + ic + '" style="flex:none;width:22px;text-align:center;color:#864c2a;font-size:18px"></i><span style="flex:1;font-size:14.5px;line-height:1.35">' + html + '</span></div>'; };
+      var IOS = (trongApp ? buoc(1, "fa-compass", 'Bấm <b>•••</b> → <b>Mở bằng Safari</b>') : "") +
+        buoc(trongApp ? 2 : 1, "fa-arrow-up-from-bracket", 'Bấm <b>Chia sẻ</b> → <b>Thêm vào MH chính</b>') +
+        buoc(trongApp ? 3 : 2, "fa-mobile-screen", 'Mở app <b>Túi Nướng</b> trên màn hình chính') +
+        buoc(trongApp ? 4 : 3, "fa-bell", 'Bấm <b>Nhận thông báo</b> → <b>Cho phép</b>');
+      var AND = (trongApp ? buoc(1, "fa-compass", 'Bấm <b>⋮</b> → <b>Mở bằng Chrome</b>') : "") +
+        buoc(trongApp ? 2 : 1, "fa-bell", 'Bấm <b>Nhận thông báo</b>') +
+        buoc(trongApp ? 3 : 2, "fa-circle-check", 'Điện thoại hỏi → bấm <b>Cho phép</b>');
+      var nhanChan = '<div style="font-size:12.5px;color:#b4231b;font-weight:700;text-align:left;margin-top:6px">' + (chiChan ? "Quý khách đã chặn thông báo — bật lại:" : "Lỡ bấm Chặn?") + '</div>';
+      var CHAN_IOS = nhanChan + buoc("!", "fa-gear", '<b>Cài đặt</b> → <b>Thông báo</b> → <b>Túi Nướng</b> → bật <b>Cho phép</b>');
+      var CHAN_AND = nhanChan + buoc("!", "fa-lock", 'Bấm <b>ổ khoá</b> cạnh địa chỉ web → <b>Quyền</b> → <b>Thông báo</b> → <b>Cho phép</b>');
+      var nen = document.createElement("div"); nen.id = "hdTbTui";
+      nen.style.cssText = "position:fixed;inset:0;z-index:10001;background:rgba(60,36,20,.28);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);display:flex;align-items:center;justify-content:center;padding:16px";
+      nen.innerHTML = '<div role="dialog" aria-modal="true" style="max-width:360px;width:100%;background:linear-gradient(160deg,rgba(255,255,255,.96),rgba(255,250,245,.9));border:1px solid rgba(255,255,255,.75);border-radius:22px;padding:16px 16px 12px;box-shadow:0 18px 40px rgba(60,30,10,.28);font:15px/1.4 system-ui,sans-serif;color:#3d2a1e;text-align:center">' +
+        '<div style="font-weight:800;font-size:17px;color:#864c2a"><i class="fa-solid fa-bell" style="margin-right:6px"></i>Bật thông báo Túi Nướng</div>' +
+        '<div style="font-size:12.5px;color:#8a7a6e;margin:2px 0 8px">Nhận tin xác nhận / từ chối đặt bàn</div>' +
+        '<div style="display:flex;gap:6px;margin-bottom:6px" data-tab>' +
+          '<button type="button" data-t="ios" style="flex:1;border:0;border-radius:10px;padding:7px;font-weight:700"><i class="fa-brands fa-apple"></i> iPhone</button>' +
+          '<button type="button" data-t="and" style="flex:1;border:0;border-radius:10px;padding:7px;font-weight:700"><i class="fa-brands fa-android"></i> Android</button></div>' +
+        '<div data-p="ios">' + (chiChan ? "" : IOS) + CHAN_IOS + '</div><div data-p="and">' + (chiChan ? "" : AND) + CHAN_AND + '</div>' +
+        '<button type="button" data-dong style="margin-top:10px;width:100%;border:0;border-radius:12px;padding:10px;background:#864c2a;color:#fff;font-weight:800">Đã hiểu</button></div>';
+      var chon = function (t) {
+        [].forEach.call(nen.querySelectorAll("[data-t]"), function (b) { var on = b.getAttribute("data-t") === t; b.style.background = on ? "#864c2a" : "#f3e9e2"; b.style.color = on ? "#fff" : "#864c2a"; });
+        [].forEach.call(nen.querySelectorAll("[data-p]"), function (d) { d.style.display = d.getAttribute("data-p") === t ? "" : "none"; });
+      };
+      [].forEach.call(nen.querySelectorAll("[data-t]"), function (b) { b.onclick = function () { chon(b.getAttribute("data-t")); }; });
+      nen.querySelector("[data-dong]").onclick = function () { nen.remove(); };
+      nen.onclick = function (e) { if (e.target === nen) nen.remove(); };
+      chon(ios ? "ios" : "and");
+      document.body.appendChild(nen);
+    };
     window.dangKyThongBaoDon = function (ma, nut, tk) {
       ma = String(ma || "").trim();
       if (!ma) return;
       var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
       var app = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
-      if (ios && !app) { bao(nut, "📲 iPhone: bấm <b>Chia sẻ</b> ⬆️ → <b>Thêm vào MH chính</b>, rồi mở app Túi Nướng để nhận thông báo."); return; }
+      if (ios && !app) { window.moHuongDanThongBao(); return; } // iPhone phải cài app trước: mở màn hình hướng dẫn
       if (!hoTro()) { if (nut) nut.style.display = "none"; bao(nut, "Trình duyệt này chưa hỗ trợ thông báo — bạn vẫn xem trạng thái đơn ở trang Tra cứu."); return; }
-      if (Notification.permission === "denied") { bao(nut, "Bạn đã chặn thông báo của trang này. Mở cài đặt trình duyệt → cho phép Thông báo rồi bấm lại.", true); return; }
+      if (Notification.permission === "denied") { window.moHuongDanThongBao(true); return; }
       var chu = nut ? nut.innerHTML : "";
       if (nut) { nut.disabled = true; nut.textContent = "Đang bật thông báo…"; }
       function hong(msg) { if (nut) { nut.disabled = false; nut.innerHTML = chu; } bao(nut, msg, true); }
@@ -728,7 +767,7 @@
       // tự động — khách đã bấm Cho phép (hỏi ngay lúc bấm Gửi) thì tự bật thông báo cho đơn này
       if (!daBat && window.Notification && Notification.permission === "granted") b.click();
       else if (!daBat && window.Notification && Notification.permission === "denied") {
-        b.style.display = "none";
+        // 17/11/2026: đã chặn -> vẫn hiện nút, bấm mở màn hình hướng dẫn bật lại
         var nhac = document.createElement("div"); nhac.setAttribute("data-nhac-tb", ""); nhac.className = "small mb-2"; nhac.style.color = "#8a5a3c";
         nhac.innerText = "Trang sẽ tự báo khi Túi duyệt — giữ trang mở nhé."; hang.insertAdjacentElement("afterend", nhac);
       }

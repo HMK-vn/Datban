@@ -1690,7 +1690,9 @@
         if (kq.tat) return kqEl.innerHTML = "Đã tắt thông báo Telegram.";
         if (!kq.coMaBot) return kqEl.innerHTML = '<span class="text-danger">Chưa cài Telegram: dán mã bot rồi bấm 💾.</span>';
         kqEl.innerHTML = (kq.daGui ? '<span class="text-success fw-bold">✅ Đã gửi tin thử tới: ' : '<span class="text-danger fw-bold">❌ Chưa gửi được tới: ') + escapeHtml(kq.noiNhan || "?") + '</span>' +
-          (kq.loiGui || kq.loiChat ? '<br><span class="text-danger">Lỗi: ' + escapeHtml(kq.loiGui || kq.loiChat) + '</span>' : '');
+          (kq.loiGui || kq.loiChat ? '<br><span class="text-danger">Lỗi: ' + escapeHtml(kq.loiGui || kq.loiChat) + '</span>' : '') +
+          (kq.daGui ? (kq.chuDe ? '<br><span class="text-success">🆕 Bàn mới · 💸 Hoàn cọc: đã tách 2 chủ đề</span>' // 17/11/2026
+            : '<br><span class="text-muted">Muốn tách 2 nhóm 🆕 Bàn mới / 💸 Hoàn cọc: bật <b>Chủ đề</b> cho nhóm Telegram, cho bot làm quản trị viên có quyền <b>Quản lý chủ đề</b>, rồi bấm Thử lại.</span>') : '');
         document.getElementById("tgMa").value = "";
       };
       var loi = function(e) { kqEl.innerHTML = '<span class="text-danger">❌ ' + escapeHtml(e && e.message ? e.message : String(e)) + '</span>'; };
