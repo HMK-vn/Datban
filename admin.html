@@ -3520,6 +3520,55 @@
       document.head.appendChild(s);
     }
     function taiPdfTongQuanA4() {
+  var dateVal = document.getElementById("timelineDateInput").value || "";
+  // Helper to decide if data is ready (any list has items)
+  var hasData = function() {
+    return _tlItems && (
+      (_tlItems.listSmallDecor && _tlItems.listSmallDecor.length) ||
+      (_tlItems.listLargeDecor && _tlItems.listLargeDecor.length) ||
+      (_tlItems.listNormal && _tlItems.listNormal.length)
+    );
+  };
+
+  // If data not ready, wait with polling (max 20 tries ~4s)
+  var tries = 0, maxTries = 20, interval = 200;
+  var attempt = function() {
+    if (hasData()) {
+      // Data ready – generate PDF
+      var filename = 'Tong_quan_ban_den_' + (dateVal ? dateVal.split("-").reverse().join("-") : 'A4') + '.pdf';
+      try {
+        var docDef = taoPdfA4_('horizontal', dateVal, _tlItems);
+        pdfMake.createPdf(docDef).download(filename);
+      } catch (e) {
+        alert('Lỗi tạo PDF: ' + (e && e.message || e));
+      }
+    } else {
+      tries++;
+      if (tries < maxTries) {
+        setTimeout(attempt, interval);
+      } else {
+        alert('Chưa tải dữ liệu ngày này. Vui lòng chọn ngày và đợi tải xong rồi bấm tải PDF.');
+      }
+    }
+  };
+  attempt();
+}
+  var dateVal = document.getElementById("timelineDateInput").value || "";
+  if (!_tlItems.listSmallDecor && !_tlItems.listLargeDecor && !_tlItems.listNormal) {
+    alert("Chưa tải dữ liệu ngày này. Vui lòng chọn ngày và đợi tải xong rồi bấm tải PDF.");
+    return;
+  }
+  // Use pdfMake (already available via pdfMake.min.js) to generate PDF directly.
+  // The existing function taoPdfA4_ can generate the PDF definition for horizontal A4.
+  // Pass mode "horizontal" to indicate A4 landscape (same as previous HTML2PDF output).
+  var filename = 'Tong_quan_ban_den_' + (dateVal ? dateVal.split("-").reverse().join("-") : 'A4') + '.pdf';
+  try {
+    var docDef = taoPdfA4_('horizontal', dateVal, _tlItems);
+    pdfMake.createPdf(docDef).download(filename);
+  } catch (e) {
+    alert('Lỗi tạo PDF: ' + (e && e.message || e));
+  }
+}
       var dateVal = document.getElementById("timelineDateInput").value || "";
       if (!_tlItems.listSmallDecor && !_tlItems.listLargeDecor && !_tlItems.listNormal) {
         alert("Chưa tải dữ liệu ngày này. Vui lòng chọn ngày và đợi tải xong rồi bấm tải PDF.");
