@@ -4615,11 +4615,9 @@ function rutTenKhach_(goc) {
       applyBookingLock(isLocked);
     }
 
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initBookingLock);
-    } else {
-      initBookingLock();
-    }
+    // Khởi tạo ngay trạng thái khoá khi script tải
+    initBookingLock();
+    document.addEventListener("DOMContentLoaded", initBookingLock);
 
     document.addEventListener("DOMContentLoaded", function() {
       var dtModal = document.getElementById("dataTongModal");
