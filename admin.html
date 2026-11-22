@@ -1235,8 +1235,6 @@
             <div class="dropdown">
               <button class="btn btn-primary dropdown-toggle nut-icon" id="btnPrintTimeline" title="In đặt bàn (khổ A4)" aria-label="In đặt bàn" data-bs-toggle="dropdown" type="button"><i class="fa-solid fa-print"></i> In</button>
               <ul class="dropdown-menu shadow">
-                <li><a class="dropdown-item fw-bold" href="#" onclick="inTongQuanA4(); return false;">🗂️ In tổng quan bàn đến (A4 ngang)</a></li>
-                <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="#" onclick="inTimelineA4('all'); return false;">📄 In đủ 3 phân loại bàn (A4 dọc)</a></li>
                 <li><a class="dropdown-item" href="#" onclick="inTimelineA4('decor'); return false;">✨ In chỉ bàn decor (A4 dọc)</a></li>
                 <li><a class="dropdown-item" href="#" onclick="inTimelineA4('normal'); return false;">🍽️ In chỉ bàn ăn thường (A4 dọc)</a></li>
@@ -1245,8 +1243,6 @@
             <div class="dropdown">
               <button class="btn btn-danger dropdown-toggle nut-icon" id="btnPdfTimeline" data-bs-toggle="dropdown" type="button" title="Tải file PDF (khổ A4)" aria-label="Tải PDF"><i class="fa-solid fa-file-pdf"></i> PDF</button>
               <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li><a class="dropdown-item fw-bold text-danger" href="#" onclick="taiPdfTongQuanA4(); return false;">🗂️ Tải PDF tổng quan bàn đến (A4 ngang)</a></li>
-                <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="#" onclick="taiPdfTimelineA4('all'); return false;">📄 Tải PDF đủ 3 phân loại bàn (A4 dọc)</a></li>
                 <li><a class="dropdown-item" href="#" onclick="taiPdfTimelineA4('decor'); return false;">✨ Tải PDF chỉ bàn decor (A4 dọc)</a></li>
                 <li><a class="dropdown-item" href="#" onclick="taiPdfTimelineA4('normal'); return false;">🍽️ Tải PDF chỉ bàn ăn thường (A4 dọc)</a></li>
@@ -3762,145 +3758,7 @@
       s.onerror = function() { alert("Chưa tải được bộ xuất PDF. Vui lòng kiểm tra kết nối mạng."); };
       document.head.appendChild(s);
     }
-    function taiPdfTongQuanA4() {
-      var dateVal = document.getElementById("timelineDateInput").value || "";
-      if (!_tlItems || (!_tlItems.listSmallDecor && !_tlItems.listLargeDecor && !_tlItems.listNormal)) {
-        alert("Chưa tải dữ liệu ngày này. Vui lòng chọn ngày và đợi tải xong rồi bấm tải PDF.");
-        return;
-      }
-      var nut = document.getElementById("btnPdfTimeline"), cu = nut.innerHTML;
-      nut.disabled = true; nut.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang tải...';
-      taiHtml2Pdf_(function() {
-        try {
-          var ngayHien = dateVal ? dateVal.split("-").reverse().join("-") : "";
-          var wrap = document.createElement("div");
-          wrap.id = "pdfTongQuanWrap";
-          wrap.style.cssText = "position:absolute;left:-9999px;top:0;width:1070px;background:#fff;padding:8px;font-family:'Times New Roman',Times,serif;";
-          var htmlNoiDung = taoTongQuanA4_(dateVal, _tlItems, true);
-          var mBody = htmlNoiDung.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-          var mCss = htmlNoiDung.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
-          wrap.innerHTML = (mCss ? '<style>' + mCss[1] + '</style>' : '') + (mBody ? mBody[1] : htmlNoiDung);
-          document.body.appendChild(wrap);
-
-          var opt = {
-            margin: [4, 4, 4, 4],
-            filename: 'Tong_quan_ban_den_' + (ngayHien || 'A4') + '.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, letterRendering: true, width: 1070 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-          };
-
-          html2pdf().set(opt).from(wrap).save().then(function() {
-            if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
-            nut.disabled = false; nut.innerHTML = cu;
-          }).catch(function(err) {
-            if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
-            nut.disabled = false; nut.innerHTML = cu;
-            alert("Lỗi xuất PDF: " + (err && err.message || err));
-          });
-        } catch(e) {
-          nut.disabled = false; nut.innerHTML = cu;
-          alert("Chưa tạo được PDF: " + (e && e.message || e));
-        }
-      });
-      setTimeout(function() { nut.disabled = false; nut.innerHTML = cu; }, 25000);
-    }
-
-    // 21/11/2026 chủ quán: bản in A4 ngang "Bàn đến hôm nay" — gọn, bao quát, chữ ~15: decor lớn/nhỏ ở trên, bàn thường theo khung giờ (đoàn ≥10 khách tô xanh, xếp đầu)
-    function inTongQuanA4() {
-      var dateVal = document.getElementById("timelineDateInput").value || "";
-      if (!_tlItems || (!_tlItems.listSmallDecor && !_tlItems.listLargeDecor && !_tlItems.listNormal)) { alert("Chưa tải dữ liệu ngày này. Vui lòng chọn ngày và đợi tải xong rồi bấm in."); return; }
-      var w = window.open("", "_blank");
-      if (!w) { alert("Trình duyệt đang chặn cửa sổ in. Vui lòng cho phép cửa sổ bật lên (pop-up) rồi bấm in lại."); return; }
-      w.document.open(); w.document.write(taoTongQuanA4_(dateVal, _tlItems)); w.document.close();
-    }
-    function taoTongQuanA4_(dateVal, d, chiLayHtml) {
-      var e = function(s) { return escapeHtml(s === undefined || s === null ? "" : String(s)); };
-      var gioSo = function(g) { var m = String(g || "").match(/(\d{1,2})\s*(?:[h:g.]\s*(\d{0,2}))?/i); return m ? (+m[1]) * 60 + (+m[2] || 0) : 9999; };
-      var gioH = function(n) { return n === 9999 ? "--" : ("0" + Math.floor(n / 60)).slice(-2) + "h" + ("0" + n % 60).slice(-2); };
-      var tenSach = function(s) { return String(s || "").replace(/^\s*(tên|ten|họ tên|họ & tên)\s*[:：]\s*/i, "").trim() || "(chưa có tên)"; };
-      var be = function(it) { var m = String(it.ghiChu || "").match(/(\d+)\+?\s*bé/i); return m ? +m[1] : (/bé trẻ em|ghế trẻ em/i.test(it.ghiChu || "") ? 1 : 0); };
-      var ghiGon = function(it) { return String(it.ghiChu || "").replace(/Có\s*\d+\+?\s*bé trẻ em\s*\(ghế trẻ em\),?\s*/gi, "").replace(/\s+/g, " ").trim(); };
-      var mauGon = function(it) { var m = String(it.mauDecor || "").trim(); return m.replace(/^Mẫu\s*/i, "M"); };
-      // Xử lý đơn trùng (chỉ trên bản in, không sửa dữ liệu): cùng SĐT (hoặc tên) + cùng giờ + cùng số khách -> in 1 lần, ghi "trùng ×N";
-      // cùng SĐT/tên nhưng khác giờ -> giữ đủ, ghi cảnh báo gọi xác nhận
-      var khoaNguoi = function(it) { var so = String(it.sdt || "").replace(/\D/g, ""); return so.length >= 8 ? "s" + so.slice(-9) : "t" + tenSach(it.tenKH).toLowerCase(); };
-      var locTrung = function(ds) {
-        var gap = {}, ra = [];
-        ds.forEach(function(it) {
-          var k = khoaNguoi(it) + "|" + gioSo(it.gioVao) + "|" + (+it.soKhach || 0);
-          if (gap[k]) { gap[k]._trung = (gap[k]._trung || 1) + 1; return; }
-          var ban = Object.assign({}, it); gap[k] = ban; ra.push(ban);
-        });
-        return ra;
-      };
-      var sm = locTrung(d.listSmallDecor || []), lg = locTrung(d.listLargeDecor || []), th = locTrung(d.listNormal || []);
-      // Mỗi khách (SĐT/tên) có những đơn nào trong ngày -> ghi rõ giờ + số khách của đơn còn lại
-      var donNguoi = {};
-      [].concat(sm, lg, th).forEach(function(it) { var k = khoaNguoi(it); if (k !== "t(chưa có tên)") (donNguoi[k] = donNguoi[k] || []).push(it); });
-      var canhBao = function(it) {
-        var c = [];
-        if (it._trung) c.push("Trùng " + it._trung + " đơn giống hệt (" + gioH(gioSo(it.gioVao)) + " · " + (+it.soKhach || "?") + " khách) — đã gộp còn 1");
-        var khac = (donNguoi[khoaNguoi(it)] || []).filter(function(x) { return x !== it; });
-        if (khac.length) c.push("Còn đơn khác: " + khac.map(function(x) { return gioH(gioSo(x.gioVao)) + " · " + (+x.soKhach || "?") + " khách"; }).join("; ") + " — gọi xác nhận");
-        return c.length ? '<div class="cb">⚠ ' + c.join("<br>⚠ ") + '</div>' : "";
-      };
-      var tat = [].concat(sm, lg, th), tongKhach = 0, tongBe = 0;
-      tat.forEach(function(it) { tongKhach += +it.soKhach || 0; tongBe += be(it); });
-      var ngay = dateVal ? new Date(dateVal + "T00:00:00") : new Date(), thu = ["CN", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"][ngay.getDay()];
-      var ngayHien = dateVal ? dateVal.slice(8, 10) + "/" + dateVal.slice(5, 7) : "";
-      var theDecor = function(it) {
-        var b = be(it), g = ghiGon(it);
-        return '<div class="the"><div class="d1"><span class="gio">' + gioH(gioSo(it.gioVao)) + '</span><b>' + e(tenSach(it.tenKH)) + '</b></div>' +
-          '<div class="d2"><span class="k">' + (+it.soKhach || "?") + ' khách</span>' + (b ? ' <span class="be">👶' + b + '</span>' : '') + (function(){var so=String(it.sdt||'').replace(/\D/g,'');return so.length>=4?' <span class="sd">☎ '+so.slice(-4)+'</span>':'';})() + '</div>' +
-          (mauGon(it) ? '<div class="mau">🎀 ' + e(mauGon(it)) + '</div>' : '') + (g ? '<div class="gc">' + e(g) + '</div>' : '') + canhBao(it) + '</div>';
-      };
-      var sapGio = function(a, b) { return gioSo(a.gioVao) - gioSo(b.gioVao); };
-      var khoiDecor = function(ten, ico, ds, cls) {
-        var k = ds.reduce(function(t, x) { return t + (+x.soKhach || 0); }, 0);
-        return '<div class="khoi ' + cls + '"><div class="kd">' + ico + ' ' + ten + ' <small>' + ds.length + ' bàn · ' + k + ' khách</small></div><div class="luoi">' +
-          (ds.length ? ds.slice().sort(sapGio).map(theDecor).join("") : '<div class="trong">Không có bàn</div>') + '</div></div>';
-      };
-      // Bàn thường theo khung giờ
-      var nhom = {};
-      th.forEach(function(it) { var g = gioSo(it.gioVao); (nhom[g] = nhom[g] || []).push(it); });
-      var gioDs = Object.keys(nhom).map(Number).sort(function(a, b) { return a - b; });
-      var tongTh = th.reduce(function(t, x) { return t + (+x.soKhach || 0); }, 0);
-      var hangTh = gioDs.map(function(g) {
-        var ds = nhom[g].slice().sort(function(a, b) { return (+b.soKhach || 0) - (+a.soKhach || 0); });
-        var doan = ds.filter(function(x) { return (+x.soKhach || 0) >= 10; }), k = ds.reduce(function(t, x) { return t + (+x.soKhach || 0); }, 0);
-        return '<div class="hang"><div class="nhan"><div class="g">' + gioH(g) + '</div><div class="s">' + ds.length + ' bàn · ' + k + ' khách</div>' +
-          (doan.length ? '<div class="sd">👥 ' + doan.length + ' đoàn</div>' : '') + '</div><div class="luoi th">' +
-          ds.map(function(it) {
-            var dn = (+it.soKhach || 0) >= 10, b = be(it), gc = ghiGon(it);
-            return '<div class="the' + (dn ? ' doan' : '') + '"><div class="d1"><b>' + e(tenSach(it.tenKH)) + '</b>' + (dn ? ' <span class="tag">ĐOÀN</span>' : '') + '</div>' +
-              '<div class="d2"><span class="k">' + (+it.soKhach || "?") + ' khách</span>' + (b ? ' <span class="be">👶' + b + '</span>' : '') + (function(){var so=String(it.sdt||'').replace(/\D/g,'');return so.length>=4?' <span class="sd">☎ '+so.slice(-4)+'</span>':'';})() + '</div>' +
-              (gc ? '<div class="gc">' + e(gc) + '</div>' : '') + canhBao(it) + '</div>';
-          }).join("") + '</div></div>';
-      }).join("");
-      var gioIn = new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
-      return '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>Bàn đến ' + ngayHien + '</title><style>' +
-        '@page{size:A4 landscape;margin:7mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
-        'html,body{background:#fff}body{margin:0;font:15px/1.3 Arial,Helvetica,sans-serif;color:#2b1d14}' +
-        'h1{font-size:22px;margin:0;color:#864c2a}.dau{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:2px solid #864c2a;padding-bottom:4px;margin-bottom:6px}.dau .tt{font-size:14px;color:#6b5a4e}' +
-        '.tren{display:grid;grid-template-columns:2fr 3fr;gap:6px;margin-bottom:8px}.khoi{border:1.5px solid #d9b8a3;border-radius:8px;padding:5px 6px;break-inside:avoid}' +
-        '.khoi.lon{background:#f6eefb;border-color:#c9a7e3}.khoi.nho{background:#fdeef3;border-color:#efb6c9}.kd{font-weight:800;font-size:16px;margin-bottom:4px}.kd small{font-weight:600;font-size:13px;color:#6b5a4e}' +
-        '.luoi{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:4px}.khoi.lon .luoi{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}' +
-        '.the{background:#fff;border:1px solid #e3d3c6;border-radius:6px;padding:4px 6px;break-inside:avoid}.d1{font-size:14.5px;line-height:1.25;display:flex;align-items:center;gap:4px;flex-wrap:wrap}.d1 b{font-size:14.5px}.d2{font-size:13px;margin-top:2px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}' +
-        '.gio{background:#3b2a20;color:#fff;border-radius:4px;padding:0 4px;font-size:13px;font-weight:700;margin-right:3px}.k{color:#b4531f;font-weight:800;font-size:14px;white-space:nowrap}.sd{color:#555;font-size:12.5px;font-weight:700;white-space:nowrap;border:1px solid #ccc;border-radius:4px;padding:0 4px}.be{display:inline-flex;align-items:center;gap:1px;background:#fde7cf;border:1.5px solid #e8a76a;color:#8a4a1c;border-radius:999px;padding:0 6px 0 3px;font-size:12px;font-weight:800;line-height:1.35;vertical-align:1px}' +
-        '.mau{color:#a0306a;font-weight:700;font-size:13px}.gc{font-size:12.5px;color:#4a3a30;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}' +
-        '.tieude{font-weight:800;font-size:16px;color:#864c2a;margin:2px 0 4px}.tieude small{font-weight:600;font-size:13px;color:#6b5a4e}' +
-        '.hang{display:grid;grid-template-columns:92px 1fr;gap:5px;margin-bottom:4px;break-inside:avoid;align-items:stretch}.nhan{background:#864c2a;color:#fff;border-radius:7px;padding:6px 4px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%}' +
-        '.nhan .g{font-size:19px;font-weight:800;line-height:1.1}.nhan .s{font-size:12px;opacity:.95}.nhan .sd{font-size:12px;background:#dbe9fb;color:#1f4f8a;border-radius:4px;margin-top:2px;font-weight:700}' +
-        '.luoi.th{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}.the.doan{background:#dbe9fb;border-color:#6d9edc}.tag{background:#1f4f8a;color:#fff;border-radius:3px;font-size:11px;padding:0 3px;font-weight:700}.trong{color:#999;font-size:13px}.cb{color:#c0392b;font-weight:700;font-size:12.5px}' +
-        '@media screen{html{background:#eee}body{margin:10px auto;box-shadow:0 0 0 1px #ddd}}@media print{body{margin:0}}</style></head><body>' +
-        '<div class="dau"><h1>🍽️ Bàn đến · ' + thu + ', ' + ngayHien + '</h1><span class="tt">Túi Nướng Lavender · <b>' + tat.length + '</b> bàn · <b>' + tongKhach + '</b> khách' + (tongBe ? ' · <b>' + tongBe + '</b> ghế em bé' : '') + ' · in lúc ' + gioIn + '</span></div>' +
-        '<div class="tren">' + khoiDecor("DECOR LỚN (từ 6 khách)", "🎉", lg, "lon") + khoiDecor("DECOR NHỎ (dưới 6 khách)", "🎀", sm, "nho") + '</div>' +
-        '<div class="tieude">🍽️ BÀN THƯỜNG <small>' + th.length + ' bàn · ' + tongTh + ' khách · theo khung giờ · ô xanh = đoàn từ 10 khách</small></div>' + hangTh +
-        // Tự căn vừa 1 trang A4 ngang (vùng in ~1070×718px): ít bàn thì phóng to chữ (tối đa ×1.25 ≈ 19px), nhiều bàn thì thu vừa (tối thiểu ×0.87 ≈ 13px), quá nhiều thì sang trang 2
-        (chiLayHtml ? '' : '<script>function canA4(){var W=1070,H=712,b=document.body,z=1;b.style.zoom=1;b.style.width=W+"px";for(var i=0;i<4;i++){var h=b.scrollHeight*z;var nz=Math.max(0.87,Math.min(1.25,z*H/h));if(Math.abs(nz-z)<0.01)break;z=nz;b.style.zoom=z;b.style.width=(W/z)+"px";}}' +
-        'window.onload=function(){canA4();setTimeout(function(){window.print();},350);};<\/script>') + '</body></html>';
-    }
+    // [ĐÃ XOÁ] Chức năng in/PDF tổng quan A4 ngang — bỏ theo yêu cầu chủ quán
     function inTimelineA4(mode) {
       var dateVal = document.getElementById("timelineDateInput").value || "";
       if (!_tlItems || (!_tlItems.listSmallDecor && !_tlItems.listLargeDecor && !_tlItems.listNormal)) { alert("Chưa tải dữ liệu ngày này. Vui lòng chọn ngày và đợi tải xong rồi bấm in."); return; }

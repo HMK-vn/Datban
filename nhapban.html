@@ -809,11 +809,15 @@
     function fieldHtml(idx, icon, label, field, value, opts) {
       opts = opts || {};
       var evt = opts.live ? 'oninput' : 'onchange';
+      var isDate = opts.isDate || field === 'ngay';
+      var clickAttr = isDate
+        ? ' onclick="event.preventDefault(); event.stopPropagation(); moLichThe_(' + idx + ', this)" onmousedown="event.preventDefault()"'
+        : ' onclick="event.stopPropagation()"';
       var input = opts.textarea
         ? '<textarea class="card-textarea" placeholder="' + label + '..." ' + evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">' + esc(value) + '</textarea>'
-        : '<input type="' + (opts.type || 'text') + '" class="card-input"' + (opts.list ? ' list="' + opts.list + '"' : '') +
+        : '<input type="' + (opts.type || 'text') + '"' + (isDate ? ' readonly' : '') + ' class="card-input' + (isDate ? ' lct-input' : '') + '"' + (opts.list ? ' list="' + opts.list + '"' : '') +
           (opts.style ? ' style="' + opts.style + '"' : '') + ' placeholder="' + label + '" value="' + esc(value) + '" ' +
-          evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">';
+          evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)"' + clickAttr + '>';
       return '<div class="card-field-row' + (opts.full ? ' card-edit-col-full' : '') + '"><span class="card-field-label" title="' + label + '">' + icon + '</span>' + input + '</div>';
     }
 
@@ -1010,7 +1014,28 @@
         (soMo ? "Còn <b>" + soMo + "</b> ngày nhận bàn decor" + (tong ? " · tổng <b>" + tong + "</b> bàn" : "") : "Không còn ngày nhận bàn decor (tính từ hôm nay)");
       if (!du) lctTai_(_lct.thang, false);
     }
-    function chonLct_(k) { var i = _lct.input; dongLct_(); if (!i) return; i.value = k; i.dispatchEvent(new Event("change", { bubbles: true })); }
+    function moLichThe_(idx, input) {
+      _lct.targetTagIdx = idx;
+      if (idx !== activeTagIndex) {
+        activeTagIndex = idx;
+        var cards = document.querySelectorAll('.folder-tag-card');
+        cards.forEach(function(c, i) { c.classList.toggle('active', i === idx); });
+        dongBoNgayTheoThe();
+      }
+      moLichConTrong_(input);
+    }
+    function chonLct_(k) {
+      var i = _lct.input;
+      dongLct_();
+      if (!i) return;
+      i.value = k;
+      if (_lct.targetTagIdx != null && tagList[_lct.targetTagIdx]) {
+        var tidx = _lct.targetTagIdx;
+        _lct.targetTagIdx = null;
+        updateCardField(tidx, 'ngay', k);
+      }
+      i.dispatchEvent(new Event("change", { bubbles: true }));
+    }
     document.addEventListener("DOMContentLoaded", function() { setTimeout(function() { var d = new Date(); lctTai_(d.getFullYear() + "-" + lctPad_(d.getMonth() + 1), false); }, 800); ganLichConTrong_("dateSelector"); });
   </script>
 </body>
