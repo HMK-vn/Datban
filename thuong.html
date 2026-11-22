@@ -485,6 +485,9 @@
     .khung-sk > .o-tre-em { flex-wrap: nowrap !important; } .khung-sk .o-tre-em:has(.form-check-input:checked) .nhan-tre { display: none; } /* bật trẻ em: chỉ còn icon + ô số bé, vẫn 1 hàng */
     .khung-sk #kidsBox, .khung-sk #kidsBoxT { flex: none; }
     .header-bar.hd-mo { opacity: .35; filter: blur(1.5px) grayscale(.3); transition: opacity .3s, filter .3s; } /* 16/11/2026 */
+    /* Khi hệ thống khoá toàn bộ: ẩn sạch mọi thứ, chỉ hiện duy nhất màn hình thông báo */
+    body.he-thong-khoa > *:not(#manHinhKhoaHeThong) { display: none !important; }
+    body.he-thong-khoa #manHinhKhoaHeThong { display: block !important; }
 </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -691,6 +694,7 @@
     var KHOA_GIO_CU = null, KHOA_GIO_TAI = null; // 16/11/2026: luật cũ (fallback) + dữ liệu layKhoaGio() có theoThu/cum
     var _khoaToanHeThong = false;
     function apDungGiaoDienKhoaToanHeThong(isLocked) {
+      document.body.classList.toggle("he-thong-khoa", !!isLocked);
       var manHinh = document.getElementById("manHinhKhoaHeThong");
       var container = document.querySelector(".container");
       if (isLocked) {

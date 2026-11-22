@@ -696,6 +696,9 @@
     .lich-o.chon { outline: 2px solid #864c2a; outline-offset: 1px; }
     .lich-o.mo:hover, .lich-o.it:hover { filter: brightness(.96); }
     .lich-chu { margin-top: 8px; font-size: min(11.5px, 2.9vw); color: #7b6f66; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* Khi hệ thống khoá toàn bộ: ẩn sạch mọi thứ, chỉ hiện duy nhất màn hình thông báo */
+    body.he-thong-khoa > *:not(#manHinhKhoaHeThong) { display: none !important; }
+    body.he-thong-khoa #manHinhKhoaHeThong { display: block !important; }
   </style>
 </head>
 <body class="py-4 dang-chon-ngay">
@@ -1168,6 +1171,7 @@
     function tenThuKhoa_() { chonKhoaTheoNgay_(); return (KHOA_GIO.thu || [5, 6]).map(function(n) { return ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][n]; }).join(", "); }
     var _khoaToanHeThong = false;
     function apDungGiaoDienKhoaToanHeThong(isLocked) {
+      document.body.classList.toggle("he-thong-khoa", !!isLocked);
       var manHinh = document.getElementById("manHinhKhoaHeThong");
       var container = document.querySelector(".container");
       var lichPopup = document.getElementById("lichPopup");
