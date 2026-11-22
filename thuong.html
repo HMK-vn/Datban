@@ -721,11 +721,23 @@
     function chuNhanToiT_(tu) { var m = String(tu || "").match(/^(\d\d):(\d\d)$/); if (!m || +m[2] % 15 !== 1) return "trước " + tu; var p = +m[1] * 60 + +m[2] - 1; return "tới " + ("0" + Math.floor(p / 60)).slice(-2) + ":" + ("0" + p % 60).slice(-2); }
     function tenThuKhoaT_() { return (KHOA_GIO.thu || []).map(function(n) { return ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][n]; }).join(", "); }
     function kiemNgayKhoa() {
-      const khoa = NGAY_KHOA.indexOf(document.getElementById("txtNgayT").value) !== -1, btn = document.getElementById("btnSubmitT");
-      document.getElementById("ngayKhoaT").style.display = khoa ? "block" : "none";
+      const toanBo = (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1);
+      const khoa = toanBo || (NGAY_KHOA.indexOf(document.getElementById("txtNgayT").value) !== -1), btn = document.getElementById("btnSubmitT");
+      var w = document.getElementById("ngayKhoaT");
+      if (w) {
+        w.style.display = khoa ? "block" : "none";
+        if (toanBo) w.innerHTML = '<i class="fa-solid fa-lock me-1"></i><b>TÚI HIỆN TẠM NGƯNG NHẬN ĐẶT BÀN</b><br>Quý khách vui lòng quay lại sau hoặc liên hệ Hotline!';
+        else w.innerText = "Ngày này Túi không nhận khách. Vui lòng chọn ngày khác!";
+      }
       var ktt = document.querySelector(".khung-tt"); if (ktt) ktt.classList.toggle("ngay-nhay", !!khoa); // ngày khoá: khung ngày nháy nhẹ
       btn.disabled = khoa;
-      btn.innerText = khoa ? "NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : "GỬI YÊU CẦU ĐẶT BÀN";
+      btn.innerText = toanBo ? "TẠM NGƯNG NHẬN ĐẶT BÀN" : (khoa ? "NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : "GỬI YÊU CẦU ĐẶT BÀN");
+      if (toanBo) {
+        var f = document.getElementById("formDatBan");
+        if (f) {
+          [].forEach.call(f.querySelectorAll("input, select, textarea"), function(el) { el.disabled = true; });
+        }
+      }
     }
     document.getElementById("txtNgayT").addEventListener("change", function() { kiemNgayKhoa(); apDungKhoaGio(); }); // đổi ngày -> áp lại khung khoá theo thứ
     var OPT_GIO = [].slice.call(document.getElementById("selectGioVao").options);
@@ -861,6 +873,10 @@
       var nutGui = nen.querySelector(".ct-gui"); if (nutGui) nutGui.onclick = function() { nen.remove(); vanGui(); };
     }
     function guiDonWebAnToan(data, khiXong, khiLoi) {
+      if (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1) {
+        alert("Hệ thống hiện đang tạm ngưng nhận đặt bàn. Quý khách vui lòng liên hệ hotline quán!");
+        return khiXong({ success: false, message: "Hệ thống tạm ngưng nhận đặt bàn." });
+      }
       // Gửi lại đúng thông tin vừa bị từ chối (trong 5 phút): báo lại ngay, không gửi lên máy chủ
       var khoaTC = [data.sdt, data.ngay, data.gioVao, data.soKhach, data.mauDecor || ""].join("|");
       if (window._tuChoi && window._tuChoi.khoa === khoaTC && Date.now() - window._tuChoi.luc < 300000) return khiXong({ success: false, message: window._tuChoi.msg });

@@ -2979,7 +2979,7 @@
         return '<span class="badge fw-bold d-inline-flex align-items-center gap-1" style="background:#fbe9e7;color:#b4231b;font-size:13px" title="' + n.split("-").reverse().join("/") + '">' + n.slice(8, 10) + "/" + n.slice(5, 7) +
           ' <a href="#" class="text-decoration-none" style="color:#b4231b" title="Mở lại ngày này" onclick="boNgayKhoa(\'' + n + '\');return false">✕</a></span>';
       };
-      _ngayKhoa.slice().sort().forEach(function(n) { (theoNam[n.slice(0, 4)] = theoNam[n.slice(0, 4)] || []).push(n); });
+      _ngayKhoa.filter(function(x) { return /^\d{4}-\d{2}-\d{2}$/.test(x); }).sort().forEach(function(n) { (theoNam[n.slice(0, 4)] = theoNam[n.slice(0, 4)] || []).push(n); });
       document.getElementById("kgNgayList").innerHTML = Object.keys(theoNam).sort().map(function(y) {
         return '<span class="d-inline-flex align-items-center gap-1 text-nowrap nk-dau"><b class="nk-nam">' + y + '</b>' + chip(theoNam[y][0]) + '</span>' + theoNam[y].slice(1).map(chip).join(""); // năm luôn đi cùng ngày đầu, không bị lẻ cuối dòng
       }).join("") || '<small class="text-muted">Chưa có ngày nào</small>';
@@ -3050,6 +3050,9 @@
       _ngayKhoa = k.ngayKhoa || [];
       veNgayKhoa_();
       _ngayRieng = k.ngayRieng || {}; veNgayKhoaRieng_();
+      var isAllLocked = _ngayKhoa.indexOf("ALL") !== -1;
+      localStorage.setItem("bookingLocked", isAllLocked ? "true" : "false");
+      applyBookingLock(isAllLocked);
       var cum = k.cum;
       if (!cum || !cum.length) { // server cũ chưa có cum: gộp decor/thuong kiểu cũ thành 1 cụm
         var thu = [].concat((k.decor && k.decor.thu) || [], (k.thuong && k.thuong.thu) || []).filter(function(t, i, a) { return a.indexOf(t) === i; });
@@ -4462,10 +4465,35 @@ function rutTenKhach_(goc) {
     }
 
     function toggleBookingLock() {
-      var current = localStorage.getItem("bookingLocked") === "true";
-      var nextState = !current;
-      localStorage.setItem("bookingLocked", nextState ? "true" : "false");
+      var isCurrentlyLocked = (_ngayKhoa && _ngayKhoa.indexOf("ALL") !== -1) ||
+                              (localStorage.getItem("bookingLocked") === "true");
+      var nextState = !isCurrentlyLocked;
+      
       applyBookingLock(nextState);
+      localStorage.setItem("bookingLocked", nextState ? "true" : "false");
+
+      if (typeof adminRun === "function") {
+        var dsMoi = nextState
+          ? (["ALL"].concat((_ngayKhoa || []).filter(function(x) { return x !== "ALL"; })))
+          : ((_ngayKhoa || []).filter(function(x) { return x !== "ALL"; }));
+        
+        var btn = document.getElementById("lockToggle");
+        if (btn) btn.title = "Đang đồng bộ trạng thái lên máy chủ...";
+        
+        adminRun()
+          .withSuccessHandler(function(k) {
+            if (k && k.ngayKhoa) _ngayKhoa = k.ngayKhoa;
+            else _ngayKhoa = dsMoi;
+            applyBookingLock(nextState);
+            alert(nextState 
+              ? "🔒 ĐÃ KHOÁ TOÀN BỘ!\nTất cả khách vào web (mọi ngày) sẽ bị chặn không thể đặt bàn." 
+              : "🔓 ĐÃ MỞ NHẬN BÀN TRỞ LẠI!\nCác cài đặt ngày khoá trước đó vẫn được giữ nguyên.");
+          })
+          .withFailureHandler(function(err) {
+            alert("Lưu lên máy chủ chưa thành công: " + (err && err.message || err));
+          })
+          .luuNgayKhoaWeb(dsMoi);
+      }
     }
 
     function initBookingLock() {

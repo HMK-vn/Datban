@@ -1381,6 +1381,7 @@
     }
     function lyDoKhoaNgay() {
       _chiConNhom = "";
+      if (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1) return "Túi Nướng Lavender hiện đang tạm ngưng nhận đặt bàn.";
       if (NGAY_KHOA.indexOf(document.getElementById("inputNgay").value) !== -1) return "Ngày bạn chọn Túi không nhận khách.";
       if (isCurrentDateLocked) return "Ngày bạn chọn đã khóa nhận đơn decor (FULL DECOR).";
       if (!_ghNgay || !_ghNgay.cauHinh) return "";
@@ -1432,6 +1433,21 @@
     document.addEventListener("click", function(e) { var a = e.target.closest && e.target.closest("#theCocCho .lk-thieu"); if (a) { e.preventDefault(); denOThieu_(a.getAttribute("data-o")); } });
     function capNhatKhoaForm() {
       var f = document.getElementById("bookingForm"); if (!f) return;
+      var toanBoKhoa = (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1);
+      if (toanBoKhoa) {
+        var w = document.getElementById("lockWarning");
+        if (w) w.style.display = "block";
+        var wt = document.getElementById("lockWarningTitle");
+        if (wt) wt.textContent = "🔒 TÚI HIỆN TẠM NGƯNG NHẬN ĐẶT BÀN";
+        var lw = document.getElementById("lockWarningText");
+        if (lw) lw.textContent = "Hệ thống đang tạm khoá nhận đơn. Quý khách vui lòng quay lại sau hoặc liên hệ Hotline quán!";
+        [].forEach.call(f.elements, function(el) { el.disabled = true; });
+        var theCoc = document.getElementById("theCoc"); if (theCoc) theCoc.style.display = "none";
+        var theCocCho = document.getElementById("theCocCho"); if (theCocCho) theCocCho.style.display = "none";
+        var hopMau = document.getElementById("decorSectionBox"); if (hopMau) hopMau.style.display = "none";
+        [].forEach.call(f.querySelectorAll('[type="submit"]'), function(b) { b.style.display = "none"; b.disabled = true; });
+        return;
+      }
       var ngay = document.getElementById("inputNgay").value, lyDo = ngay ? lyDoKhoaNgay() : "", khoa = !!lyDo;
       var oNg = document.querySelector(".o-cot-ngay"); if (oNg) oNg.classList.toggle("ngay-trong", !ngay); // ô ngày trống: chữ "Chọn ngày" + nhấp nháy
       cheDoChonNgay_();
@@ -1587,6 +1603,11 @@
     function updateSubmitButtonState() {
       const btn = document.getElementById("btnSubmit");
       if (!btn) return;
+      if (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1) {
+        btn.disabled = true;
+        btn.innerText = "TẠM NGƯNG NHẬN ĐẶT BÀN";
+        return;
+      }
       if (isCurrentDateLocked || lyDoKhoaNgay()) {
         btn.disabled = true;
         btn.innerText = NGAY_KHOA.indexOf(document.getElementById("inputNgay").value) !== -1 ? "NGÀY NÀY TÚI KHÔNG NHẬN KHÁCH" : "NGÀY NÀY ĐÃ ĐẦY - VUI LÒNG CHỌN NGÀY KHÁC";
@@ -1839,6 +1860,10 @@
       if (window.theoDoiDon && window._sdtVuaDat) window.theoDoiDon(ma, window._sdtVuaDat, hop.querySelector(".modal-body") || hop);
     }
     function guiDonWebAnToan(data, khiXong, khiLoi) {
+      if (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1) {
+        alert("Hệ thống hiện đang tạm ngưng nhận đặt bàn. Quý khách vui lòng liên hệ hotline quán!");
+        return khiXong({ success: false, message: "Hệ thống tạm ngưng nhận đặt bàn." });
+      }
       // Gửi lại đúng thông tin vừa bị từ chối (trong 5 phút): báo lại ngay, không gửi lên máy chủ
       var khoaTC = [data.sdt, data.ngay, data.gioVao, data.soKhach, data.mauDecor || ""].join("|");
       if (window._tuChoi && window._tuChoi.khoa === khoaTC && Date.now() - window._tuChoi.luc < 300000) return khiXong({ success: false, message: window._tuChoi.msg });
@@ -2016,11 +2041,15 @@
       var homNay = hn.getFullYear() + "-" + lichPad_(hn.getMonth() + 1) + "-" + lichPad_(hn.getDate()), dangChon = document.getElementById("inputNgay").value || _ngayCho;
       var html = dau; for (var b = 0; b < lech; b++) html += "<div></div>";
       var tongCon = 0, soMo = 0;
+      var toanBoKhoa = (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1);
       for (var d = 1; d <= soNgay; d++) {
         var k = _lichThang + "-" + lichPad_(d), o = du && du.ngay ? du.ngay[k] : null, lop = "", chu = "", tip = "";
-        if (k < homNay) { lop = "qua"; }
+        if (toanBoKhoa) {
+          lop = "nghi"; chu = '<i class="fa-solid fa-lock" aria-label="Khóa" title="Khóa"></i>'; tip = "Túi hiện đang tạm ngưng nhận đặt bàn";
+        }
+        else if (k < homNay) { lop = "qua"; }
         else if (!du) { lop = ""; chu = "…"; }
-        else if (!o || o.dong) { lop = (o && o.ly === "Nghỉ") ? "nghi" : "day"; chu = lop === "nghi" ? '<i class="fa-solid fa-lock" aria-label="Nghỉ" title="Nghỉ"></i>' : ((o && o.ly) || "Đầy"); } // 15/11/2026: ngày nghỉ hiện ổ khoá
+        else if (!o || o.dong || NGAY_KHOA.indexOf(k) !== -1) { lop = ((o && o.ly === "Nghỉ") || NGAY_KHOA.indexOf(k) !== -1) ? "nghi" : "day"; chu = lop === "nghi" ? '<i class="fa-solid fa-lock" aria-label="Nghỉ" title="Nghỉ"></i>' : ((o && o.ly) || "Đầy"); } // 15/11/2026: ngày nghỉ hiện ổ khoá
         else {
           var n = lichConNhom_(o, sk);
           if (n === 0) { lop = "day"; chu = "Đầy"; } // chỉ tính nhóm bàn của số khách, không nhắc nhóm kia
@@ -2031,7 +2060,8 @@
         html += '<div class="lich-o ' + lop + (k === dangChon ? " chon" : "") + '"' + bam + (bam ? ' data-ngay="' + k + '"' : "") + (tip ? ' data-tip-ngay="' + tip + '"' : "") + '><span class="so">' + d + '</span>' + (chu ? '<span class="con">' + chu + '</span>' : "") + '</div>';
       }
       luoi.innerHTML = html;
-      tom.innerHTML = !du ? "Đang tải…" : du.loi ? '<span style="color:#b42318">' + du.loi + '</span>' : soMo ? ("Còn <b>" + soMo + "</b> ngày" + (tongCon ? " · <b>" + tongCon + "</b> bàn" : "")) : "Tháng này hết bàn"; // 1 dòng cùng Số khách
+      tom.innerHTML = toanBoKhoa ? '<span style="color:#b42318;font-weight:700"><i class="fa-solid fa-lock me-1"></i>Hệ thống hiện đang tạm ngưng nhận đặt bàn</span>' :
+        (!du ? "Đang tải…" : du.loi ? '<span style="color:#b42318">' + du.loi + '</span>' : soMo ? ("Còn <b>" + soMo + "</b> ngày" + (tongCon ? " · <b>" + tongCon + "</b> bàn" : "")) : "Tháng này hết bàn"); // 1 dòng cùng Số khách
       if (!du && !_lichDangTai[_lichThang]) {
         var thang = _lichThang; _lichDangTai[thang] = 1;
         google.script.run.withSuccessHandler(function(r) { delete _lichDangTai[thang]; if (r && r.success) r._luc = Date.now(); _lichDuLieu[thang] = (r && r.success) ? r : { loi: (r && r.message) || "Chưa tải được, thử lại sau." }; if (thang === _lichThang) veLichPopup_(); })
