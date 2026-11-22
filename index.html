@@ -104,6 +104,7 @@
       <div class="hd-wrap"><img class="hd-logo" src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'"><div class="hd-txt"><h1 class="hd-brand">Túi Nướng Lavender</h1><div class="hd-sub">17/6 Nguyễn Trãi, Phường Xuân Hương, Đà Lạt</div></div></div>
     </div>
     <div class="body">
+      <div id="khoaBanner" style="display:none;background:#fee4e2;border:1px solid #fecdca;color:#b42318;padding:12px 14px;border-radius:12px;font-weight:bold;text-align:center;font-size:13.5px;line-height:1.4;">🔒 Túi Nướng Lavender hiện đang tạm ngưng nhận đặt bàn mới. Quý khách vui lòng liên hệ Hotline quán!</div>
       <a class="btn" href="thuong.html"><span class="ico">🍽️</span><span><div class="t">Đặt bàn ăn</div><div class="s">Đặt bàn nhanh, không cần cọc</div></span></a>
       <a class="btn" href="decor_duoi6.html"><span class="ico"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" alt="" style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;border:2px solid rgba(255,255,255,.85);box-shadow:0 1px 4px rgba(0,0,0,.2);margin-right:0"></span><span><div class="t">Đặt bàn decor dưới 6 khách</div><div class="s">Sinh nhật, kỷ niệm, cầu hôn · 1–5 khách</div></span></a>
       <a class="btn" href="decor_tu6.html"><span class="ico"><img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" alt="" style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;border:2px solid rgba(255,255,255,.85);box-shadow:0 1px 4px rgba(0,0,0,.2);margin-right:0"></span><span><div class="t">Đặt bàn decor từ 6 khách</div><div class="s">Tiệc nhóm, gia đình, công ty · từ 6 khách</div></span></a>
@@ -111,5 +112,16 @@
     </div>
     <div class="foot">Hotline hỗ trợ: <b>0911.588.138</b></div>
   </div>
+  <script>
+    fetch("https://raw.githubusercontent.com/HMK-vn/Datban/main/khoa.json?_=" + Date.now(), { cache: "no-store" })
+      .then(function(r) { return r.json(); })
+      .catch(function() { return fetch("khoa.json?_=" + Date.now(), { cache: "no-store" }).then(function(r) { return r.json(); }); })
+      .then(function(cfg) {
+        if (cfg && cfg.khoa) {
+          var b = document.getElementById("khoaBanner");
+          if (b) b.style.display = "block";
+        }
+      }).catch(function() {});
+  </script>
 </body>
 </html>

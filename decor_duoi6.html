@@ -1133,9 +1133,55 @@
     function chuNhanToiC_(tu) { var m = String(tu || "").match(/^(\d\d):(\d\d)$/); if (!m || +m[2] % 15 !== 1) return "trước " + tu; var p = +m[1] * 60 + +m[2] - 1; return "tới " + ("0" + Math.floor(p / 60)).slice(-2) + ":" + ("0" + p % 60).slice(-2); }
     document.addEventListener("input", function(e) { if (e.target && e.target.id === "txtSoKhach") { rebuildHourMinSelectors(); onHourMinDecorChange(); } }); // đổi số khách: giờ được chọn theo nhóm bàn
     function tenThuKhoa_() { chonKhoaTheoNgay_(); return (KHOA_GIO.thu || [5, 6]).map(function(n) { return ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][n]; }).join(", "); }
+    var _khoaToanHeThong = false;
+    function kiemTraKhoaToanHeThong(cb) {
+      var urlGithub = "https://raw.githubusercontent.com/HMK-vn/Datban/main/khoa.json?_=" + Date.now();
+      var urlLocal = "khoa.json?_=" + Date.now();
+      function xuLy(cfg) {
+        _khoaToanHeThong = !!(cfg && cfg.khoa);
+        if (_khoaToanHeThong) {
+          if (typeof NGAY_KHOA !== "undefined" && NGAY_KHOA.indexOf("ALL") === -1) {
+            NGAY_KHOA.push("ALL");
+          }
+          var inp = document.getElementById("inputNgay");
+          if (inp) inp.value = "";
+          if (typeof _ngayCho !== "undefined") _ngayCho = "";
+        } else {
+          if (typeof NGAY_KHOA !== "undefined") {
+            NGAY_KHOA = NGAY_KHOA.filter(function(x) { return x !== "ALL"; });
+          }
+        }
+        if (typeof capNhatKhoaForm === "function") capNhatKhoaForm();
+        if (typeof veLichPopup_ === "function") veLichPopup_();
+        if (typeof kiemNgayKhoa === "function") kiemNgayKhoa();
+        if (typeof updateSubmitButtonState === "function") updateSubmitButtonState();
+        if (cb) cb(_khoaToanHeThong);
+      }
+      fetch(urlGithub, { cache: "no-store" })
+        .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(xuLy)
+        .catch(function() {
+          fetch(urlLocal, { cache: "no-store" })
+            .then(function(r) { return r.json(); })
+            .then(xuLy)
+            .catch(function() { if (cb) cb(false); });
+        });
+    }
     function taiKhoaGio() {
       google.script.run.withSuccessHandler(function(k) {
-        if (k && (k.decor || k.theoThu)) { KHOA_GIO_TAI = k; if (k.decor) KHOA_GIO = KHOA_GIO_CU = k.decor; chonKhoaTheoNgay_(); NGAY_KHOA = k.ngayKhoa || []; rebuildHourMinSelectors(); onHourMinDecorChange(); capNhatKhoaForm(); }
+        if (k && (k.decor || k.theoThu)) {
+          KHOA_GIO_TAI = k;
+          if (k.decor) KHOA_GIO = KHOA_GIO_CU = k.decor;
+          chonKhoaTheoNgay_();
+          NGAY_KHOA = k.ngayKhoa || [];
+          if (_khoaToanHeThong && NGAY_KHOA.indexOf("ALL") === -1) {
+            NGAY_KHOA.push("ALL");
+          }
+          rebuildHourMinSelectors();
+          onHourMinDecorChange();
+          capNhatKhoaForm();
+          if (typeof veLichPopup_ === "function") veLichPopup_();
+        }
       }).withFailureHandler(function() {}).layKhoaGio();
     }
     // Mốc khóa decor Thứ 6/Thứ 7: khung khóa bắt đầu sớm hơn 18:30 thì theo khung khóa, không thì 18:31
@@ -1381,7 +1427,7 @@
     }
     function lyDoKhoaNgay() {
       _chiConNhom = "";
-      if (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1) return "Túi Nướng Lavender hiện đang tạm ngưng nhận đặt bàn.";
+      if (_khoaToanHeThong || (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1)) return "Túi Nướng Lavender hiện đang tạm ngưng nhận đặt bàn.";
       if (NGAY_KHOA.indexOf(document.getElementById("inputNgay").value) !== -1) return "Ngày bạn chọn Túi không nhận khách.";
       if (isCurrentDateLocked) return "Ngày bạn chọn đã khóa nhận đơn decor (FULL DECOR).";
       if (!_ghNgay || !_ghNgay.cauHinh) return "";
@@ -1433,7 +1479,7 @@
     document.addEventListener("click", function(e) { var a = e.target.closest && e.target.closest("#theCocCho .lk-thieu"); if (a) { e.preventDefault(); denOThieu_(a.getAttribute("data-o")); } });
     function capNhatKhoaForm() {
       var f = document.getElementById("bookingForm"); if (!f) return;
-      var toanBoKhoa = (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1);
+      var toanBoKhoa = _khoaToanHeThong || (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1);
       if (toanBoKhoa) {
         var w = document.getElementById("lockWarning");
         if (w) w.style.display = "block";
@@ -1603,7 +1649,7 @@
     function updateSubmitButtonState() {
       const btn = document.getElementById("btnSubmit");
       if (!btn) return;
-      if (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1) {
+      if (_khoaToanHeThong || (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1)) {
         btn.disabled = true;
         btn.innerText = "TẠM NGƯNG NHẬN ĐẶT BÀN";
         return;
@@ -1860,7 +1906,7 @@
       if (window.theoDoiDon && window._sdtVuaDat) window.theoDoiDon(ma, window._sdtVuaDat, hop.querySelector(".modal-body") || hop);
     }
     function guiDonWebAnToan(data, khiXong, khiLoi) {
-      if (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1) {
+      if (_khoaToanHeThong || (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1)) {
         alert("Hệ thống hiện đang tạm ngưng nhận đặt bàn. Quý khách vui lòng liên hệ hotline quán!");
         return khiXong({ success: false, message: "Hệ thống tạm ngưng nhận đặt bàn." });
       }
@@ -1888,6 +1934,7 @@
 
     window.addEventListener("DOMContentLoaded", function() {
       // 15/11/2026 chủ quán: không chọn sẵn ngày (trước đây đặt sẵn hôm nay) -> vào trang hiện lịch tháng để khách chọn
+      kiemTraKhoaToanHeThong();
       apDungNhomTrang_(); // trang decor dưới 6 / từ 6 khách: đặt sẵn số khách + tiêu đề
       updateDepositCalculation();
       taiCaiDatCoc();
@@ -2041,7 +2088,7 @@
       var homNay = hn.getFullYear() + "-" + lichPad_(hn.getMonth() + 1) + "-" + lichPad_(hn.getDate()), dangChon = document.getElementById("inputNgay").value || _ngayCho;
       var html = dau; for (var b = 0; b < lech; b++) html += "<div></div>";
       var tongCon = 0, soMo = 0;
-      var toanBoKhoa = (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1);
+      var toanBoKhoa = _khoaToanHeThong || (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1);
       for (var d = 1; d <= soNgay; d++) {
         var k = _lichThang + "-" + lichPad_(d), o = du && du.ngay ? du.ngay[k] : null, lop = "", chu = "", tip = "";
         if (toanBoKhoa) {
@@ -2056,7 +2103,7 @@
           else { soMo++; if (n != null) tongCon += n; lop = n == null || n >= 3 ? "mo" : "it"; chu = n == null ? "Còn" : "Còn " + n; }
           tip = n === 0 ? "Bàn " + tenNhom + " đã đầy" : n == null ? "" : "Bàn " + tenNhom + " còn " + n;
         }
-        var bam = (lop === "mo" || lop === "it") ? ' onclick="chonNgayLich_(\'' + k + '\')"' : "";
+        var bam = (toanBoKhoa || lop === "day" || lop === "nghi" || lop === "qua" || lop === "") ? "" : ' onclick="chonNgayLich_(\'' + k + '\')"';
         html += '<div class="lich-o ' + lop + (k === dangChon ? " chon" : "") + '"' + bam + (bam ? ' data-ngay="' + k + '"' : "") + (tip ? ' data-tip-ngay="' + tip + '"' : "") + '><span class="so">' + d + '</span>' + (chu ? '<span class="con">' + chu + '</span>' : "") + '</div>';
       }
       luoi.innerHTML = html;
@@ -2123,6 +2170,10 @@
     }
     document.addEventListener("click", function(e) { var p = document.getElementById("lichMauPop"); if (!p || p.style.display === "none" || !p._ghim) return; if (p.contains(e.target) || (e.target.closest && e.target.closest(".lich-o[data-ngay]"))) return; anMauNgay_(); }); // đang chọn mẫu: bấm ra ngoài thì đóng
     function chonNgayLich_(k) {
+      if (_khoaToanHeThong || (NGAY_KHOA && NGAY_KHOA.indexOf("ALL") !== -1)) {
+        alert("Túi Nướng Lavender hiện đang tạm ngưng nhận đặt bàn. Quý khách vui lòng liên hệ Hotline quán!");
+        return;
+      }
       anMauNgay_();
       if (k !== _mauChoNgay) { _mauCho = ""; _mauChoNgay = ""; }
       var lp = document.getElementById("lichPopup");

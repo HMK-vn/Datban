@@ -4472,33 +4472,92 @@ function rutTenKhach_(goc) {
       applyBookingLock(nextState);
       localStorage.setItem("bookingLocked", nextState ? "true" : "false");
 
+      var btn = document.getElementById("lockToggle");
+      if (btn) btn.title = "Đang đồng bộ trạng thái lên GitHub & máy chủ...";
+
+      // 1. Đồng bộ lên GitHub contents/khoa.json qua GitHub REST API
+      var GH_TOKEN = localStorage.getItem("GH_ADMIN_TOKEN");
+      var apiGh = "https://api.github.com/repos/HMK-vn/Datban/contents/khoa.json";
+
+      if (GH_TOKEN) {
+        fetch(apiGh, {
+          headers: {
+            "Authorization": "token " + GH_TOKEN,
+            "Accept": "application/vnd.github.v3+json"
+          }
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(info) {
+          var sha = info.sha;
+          var noiDung = {
+            khoa: nextState,
+            lyDo: "Túi Nướng Lavender hiện đang tạm ngưng nhận đặt bàn. Quý khách vui lòng liên hệ Hotline quán hoặc quay lại sau!",
+            capNhat: new Date().toISOString()
+          };
+          var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(noiDung, null, 2))));
+          return fetch(apiGh, {
+            method: "PUT",
+            headers: {
+              "Authorization": "token " + GH_TOKEN,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              message: (nextState ? "Khoá" : "Mở khoá") + " đặt bàn hệ thống (từ Admin)",
+              content: b64,
+              sha: sha,
+              branch: "main"
+            })
+          });
+        })
+        .then(function(putRes) {
+          if (!putRes.ok) console.warn("Lưu GitHub HTTP " + putRes.status);
+        })
+        .catch(function(err) {
+          console.error("Lỗi cập nhật GitHub khoa.json:", err);
+        });
+      }
+
+      // 2. Đồng bộ lên Google Apps Script nếu có session admin
       if (typeof adminRun === "function") {
         var dsMoi = nextState
           ? (["ALL"].concat((_ngayKhoa || []).filter(function(x) { return x !== "ALL"; })))
           : ((_ngayKhoa || []).filter(function(x) { return x !== "ALL"; }));
         
-        var btn = document.getElementById("lockToggle");
-        if (btn) btn.title = "Đang đồng bộ trạng thái lên máy chủ...";
-        
         adminRun()
           .withSuccessHandler(function(k) {
             if (k && k.ngayKhoa) _ngayKhoa = k.ngayKhoa;
             else _ngayKhoa = dsMoi;
-            applyBookingLock(nextState);
-            alert(nextState 
-              ? "🔒 ĐÃ KHOÁ TOÀN BỘ!\nTất cả khách vào web (mọi ngày) sẽ bị chặn không thể đặt bàn." 
-              : "🔓 ĐÃ MỞ NHẬN BÀN TRỞ LẠI!\nCác cài đặt ngày khoá trước đó vẫn được giữ nguyên.");
           })
           .withFailureHandler(function(err) {
-            alert("Lưu lên máy chủ chưa thành công: " + (err && err.message || err));
+            console.warn("Lưu Apps Script:", err);
           })
           .luuNgayKhoaWeb(dsMoi);
       }
+
+      alert(nextState 
+        ? "🔒 ĐÃ KHOÁ TOÀN BỘ!\nTất cả khách vào web (mọi ngày) sẽ bị chặn không thể đặt bàn." 
+        : "🔓 ĐÃ MỞ NHẬN BÀN TRỞ LẠI!\nCác cài đặt ngày khoá trước đó vẫn được giữ nguyên.");
     }
 
     function initBookingLock() {
-      var isLocked = localStorage.getItem("bookingLocked") === "true";
-      applyBookingLock(isLocked);
+      fetch("https://raw.githubusercontent.com/HMK-vn/Datban/main/khoa.json?_=" + Date.now(), { cache: "no-store" })
+        .then(function(r) { return r.json(); })
+        .catch(function() {
+          return fetch("khoa.json?_=" + Date.now(), { cache: "no-store" }).then(function(r) { return r.json(); });
+        })
+        .then(function(cfg) {
+          if (cfg && typeof cfg.khoa !== "undefined") {
+            applyBookingLock(!!cfg.khoa);
+            localStorage.setItem("bookingLocked", cfg.khoa ? "true" : "false");
+          } else {
+            var isLocked = localStorage.getItem("bookingLocked") === "true";
+            applyBookingLock(isLocked);
+          }
+        })
+        .catch(function() {
+          var isLocked = localStorage.getItem("bookingLocked") === "true";
+          applyBookingLock(isLocked);
+        });
     }
 
     // Khởi tạo ngay trạng thái khoá khi script tải
