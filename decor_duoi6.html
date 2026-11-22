@@ -699,6 +699,39 @@
   </style>
 </head>
 <body class="py-4 dang-chon-ngay">
+  <div id="manHinhKhoaHeThong" style="display:none; max-width: 520px; margin: 40px auto 20px; padding: 0 15px;">
+    <div style="background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(121,65,32,0.12); overflow: hidden; text-align: center;">
+      <div style="background: linear-gradient(135deg, #794120, #af6a42); color: #fff; padding: 30px 20px 25px;">
+        <img src="https://hmk-vn.github.io/Datban/app_icon/be_cho_200.jpg" alt="" onerror="this.onerror=null;this.src='https://hmk-vn.github.io/Datban/app_icon/logo_khach_192.png'" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.9); box-shadow: 0 4px 12px rgba(0,0,0,0.2); background: #fff; margin-bottom: 15px;">
+        <h2 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 0.5px;">TÚI NƯỚNG LAVENDER</h2>
+        <div style="font-size: 13px; opacity: 0.9; margin-top: 5px;">17/6 Nguyễn Trãi, Phường Xuân Hương, Đà Lạt</div>
+      </div>
+      <div style="padding: 30px 24px 35px;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 50%; background: #fee4e2; color: #b42318; font-size: 28px; margin-bottom: 18px;">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h3 style="color: #b42318; font-weight: 800; font-size: 20px; margin-bottom: 12px;">TẠM NGƯNG NHẬN ĐẶT BÀN</h3>
+        <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
+          Hệ thống hiện đang <b>tạm ngưng tiếp nhận đặt bàn</b> mới.<br>
+          Quý khách có nhu cầu vui lòng liên hệ Hotline trực tiếp của quán để được phục vụ chu đáo nhất!
+        </p>
+        <div style="background: #fdf5f0; border: 1.5px dashed #c98a5b; border-radius: 14px; padding: 16px 20px; margin-bottom: 20px;">
+          <div style="font-size: 12.5px; color: #794120; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">Hotline Hỗ Trực Tiếp</div>
+          <a href="tel:0911588138" style="font-size: 24px; font-weight: 800; color: #864c2a; text-decoration: none; display: inline-block;">
+            <i class="fa-solid fa-phone-volume me-2"></i>0911.588.138
+          </a>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <a href="tracuu.html" class="btn btn-outline-secondary btn-sm" style="border-radius: 10px; font-weight: 600; padding: 8px 16px;">
+            <i class="fa-solid fa-magnifying-glass me-1"></i> Tra cứu đơn đã đặt
+          </a>
+          <a href="index.html" class="btn btn-outline-secondary btn-sm" style="border-radius: 10px; font-weight: 600; padding: 8px 16px;">
+            <i class="fa-solid fa-house me-1"></i> Về trang chủ
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="container" style="max-width: 680px;">
     <div class="card">
       <div class="header-bar text-center">
@@ -1134,6 +1167,23 @@
     document.addEventListener("input", function(e) { if (e.target && e.target.id === "txtSoKhach") { rebuildHourMinSelectors(); onHourMinDecorChange(); } }); // đổi số khách: giờ được chọn theo nhóm bàn
     function tenThuKhoa_() { chonKhoaTheoNgay_(); return (KHOA_GIO.thu || [5, 6]).map(function(n) { return ["CN", "T2", "T3", "T4", "T5", "T6", "T7"][n]; }).join(", "); }
     var _khoaToanHeThong = false;
+    function apDungGiaoDienKhoaToanHeThong(isLocked) {
+      var manHinh = document.getElementById("manHinhKhoaHeThong");
+      var container = document.querySelector(".container");
+      var lichPopup = document.getElementById("lichPopup");
+      if (isLocked) {
+        if (manHinh) manHinh.style.display = "block";
+        if (container) container.style.display = "none";
+        if (lichPopup) lichPopup.style.display = "none";
+        document.body.classList.remove("dang-chon-ngay");
+        [].forEach.call(document.querySelectorAll(".nut-cuon-nhanh, #lichMauPop"), function(el) {
+          el.style.display = "none";
+        });
+      } else {
+        if (manHinh) manHinh.style.display = "none";
+        if (container) container.style.display = "block";
+      }
+    }
     function kiemTraKhoaToanHeThong(cb) {
       var urlGithub = "https://raw.githubusercontent.com/HMK-vn/Datban/main/khoa.json?_=" + Date.now();
       var urlLocal = "khoa.json?_=" + Date.now();
@@ -1151,6 +1201,7 @@
             NGAY_KHOA = NGAY_KHOA.filter(function(x) { return x !== "ALL"; });
           }
         }
+        apDungGiaoDienKhoaToanHeThong(_khoaToanHeThong);
         if (typeof capNhatKhoaForm === "function") capNhatKhoaForm();
         if (typeof veLichPopup_ === "function") veLichPopup_();
         if (typeof kiemNgayKhoa === "function") kiemNgayKhoa();
