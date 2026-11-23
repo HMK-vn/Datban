@@ -446,11 +446,14 @@
   <div class="viewport-grid">
     <div class="panel-left" id="panelLeft">
       <div class="paste-box-wrap">
-        <textarea class="multi-paste-box" id="multiPasteArea" placeholder="Dán nội dung 1 hoặc nhiều đơn tại đây (ngăn cách bằng --- hoặc Tên: ...) Hệ thống tự nhận diện Ngày, Tên, SĐT, Số khách, Kênh, Decor, Mẫu Decor, Đặt món, Cọc, ID, Email..." onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0); }" onpaste="var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0);" onblur="handleMultiPaste(this.value)"></textarea>
+        <textarea class="multi-paste-box" id="multiPasteArea" placeholder="Dán nội dung 1 hoặc nhiều đơn tại đây (ngăn cách bằng --- hoặc Tên: ...) Hệ thống tự nhận diện Ngày, Tên, SĐT, Số khách, Kênh, Decor, Mẫu Decor, Đặt món, Cọc, ID, Email..." oninput="handleMultiPaste(this.value)" onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0); }" onpaste="var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0);" onblur="handleMultiPaste(this.value)"></textarea>
       </div>
       <div class="tag-header-label">
         <span><i class="fa-solid fa-folder-open me-1" style="color:#38bdf8;"></i> CÁC THẺ TAG ĐƠN (<span id="tagCountLabel">0</span>)</span>
-        <button type="button" style="background:#1e293b; color:#38bdf8; border:1.5px solid #38bdf8; border-radius:5px; padding:3px 10px; font-size:11.5px; cursor:pointer; font-weight:700;" onclick="createTagFromText('')">+ Thêm thẻ trống</button>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button type="button" style="background:#0284c7; color:#fff; border:none; border-radius:5px; padding:3px 10px; font-size:11px; cursor:pointer; font-weight:700;" onclick="napMauGiaLapNhieuKhach()" title="Nạp nhanh 3 đơn giả lập đầy đủ thông tin để thử"><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Dán mẫu thử nhiều khách</button>
+          <button type="button" style="background:#1e293b; color:#38bdf8; border:1.5px solid #38bdf8; border-radius:5px; padding:3px 10px; font-size:11px; cursor:pointer; font-weight:700;" onclick="createTagFromText('')">+ Thêm thẻ trống</button>
+        </div>
       </div>
       <div class="tags-container" id="tagsContainer"></div>
       <div class="bottom-save-wrap">
@@ -739,16 +742,85 @@
       return c;
     }
 
-    function handleMultiPaste(rawText) {
-      if (!rawText || !rawText.trim()) return;
-      var rawBlocks = rawText.split(/\n\s*---\s*\n/);
-      if (rawBlocks.length === 1 && !rawText.includes('---')) {
-        var subBlocks = rawText.split(/(?=(?:^|\n)\s*(?:Tên|Họ tên|Khách|SĐT|Phone|Ngày|Date)\s*[:\-–])/i);
-        if (subBlocks.length > 1) {
-          rawBlocks = subBlocks;
+    // Tách nhiều đơn thông minh: hỗ trợ dấu ---, dòng trống, dòng Tên lặp lại, danh sách đánh số, hoặc tab Excel
+    function tachKhoiDon(rawText) {
+      if (!rawText || !rawText.trim()) return [];
+      var txt = rawText.trim();
+      
+      // 1. Phân cách rõ ràng bằng --- hoặc === hoặc ___
+      if (/[\r\n]\s*[-=_]{3,}\s*[\r\n]/.test(txt)) {
+        return txt.split(/\r?\n\s*[-=_]{3,}\s*\r?\n/).map(function(s) { return s.trim(); }).filter(Boolean);
+      }
+
+      // 2. Dán nhiều dòng từ Excel / Google Sheet (tab \t)
+      var rawLines = txt.split(/\r?\n/).map(function(s) { return s.trim(); }).filter(Boolean);
+      var linesWithTab = rawLines.filter(function(l) { return l.indexOf("\t") !== -1; });
+      if (linesWithTab.length >= 2 && linesWithTab.length >= rawLines.length * 0.7) {
+        return rawLines;
+      }
+
+      // 3. Danh sách có số thứ tự: 1. ... hoặc [1] ... hoặc Khách 1: ... hoặc Đơn 1: ...
+      var reNumbered = /^(?:(?:\d{1,2}[.)\]\-]|\b(?:Khách|Đơn|Tag)\s*\d{1,2}\s*[:\-–]))\s*\S/i;
+      var numberedCount = rawLines.filter(function(l) { return reNumbered.test(l); }).length;
+      if (numberedCount >= 2) {
+        var blocksNum = [], curNum = [];
+        rawLines.forEach(function(line) {
+          if (reNumbered.test(line) && curNum.length > 0) {
+            blocksNum.push(curNum.join("\n").trim());
+            curNum = [];
+          }
+          curNum.push(line);
+        });
+        if (curNum.length) blocksNum.push(curNum.join("\n").trim());
+        if (blocksNum.length > 1) return blocksNum;
+      }
+
+      // 4. Khối ngăn cách bởi 1 hoặc nhiều dòng trống liên tiếp
+      var blankBlocks = txt.split(/\r?\n\s*\r?\n+/).map(function(s) { return s.trim(); }).filter(Boolean);
+      if (blankBlocks.length > 1) {
+        var RE_SDT_SIMPLE = /(?:^|[^\d])((?:\+?84|0)\d{8,10})(?!\d)/;
+        var RE_NAME_LINE = /^[\s•\-*+]*(?:Họ\s*(?:&|và)?\s*tên|Tên\s*(?:khách(?:\s*hàng)?|KH)?|Khách\s*hàng|Khách)\s*[:\-–]\s*(?!\d)\S/i;
+        var validBlockCount = blankBlocks.filter(function(b) { return RE_SDT_SIMPLE.test(b) || RE_NAME_LINE.test(b); }).length;
+        if (validBlockCount >= 2) {
+          return blankBlocks;
         }
       }
-      var blocks = rawBlocks.map(function(b) { return b.trim(); }).filter(function(b) { return b; });
+
+      // 5. Khối liên tục nhận diện theo dòng Tên khách lặp lại (mỗi dòng Tên khách là mở 1 đơn mới)
+      var RE_DONG_TEN = /^[\s•\-*+]*(?:Họ\s*(?:&|và)?\s*tên|Tên\s*(?:khách(?:\s*hàng)?|KH)?|Khách\s*hàng|Khách)\s*[:\-–]\s*(?!\d)\S/i;
+      var blocksTen = [], curTen = [];
+      rawLines.forEach(function(line) {
+        if (RE_DONG_TEN.test(line) && curTen.some(function(l) { return RE_DONG_TEN.test(l); })) {
+          blocksTen.push(curTen.join("\n").trim());
+          curTen = [];
+        }
+        curTen.push(line);
+      });
+      if (curTen.length) blocksTen.push(curTen.join("\n").trim());
+      if (blocksTen.length > 1) return blocksTen;
+
+      // 6. Trường hợp nếu có nhiều dòng chứa SĐT khác nhau (mỗi dòng 1 khách)
+      var RE_SDT_CHECK = /(?:^|[^\d])((?:\+?84|0)\d{8,10})(?!\d)/;
+      var sdtLines = rawLines.filter(function(l) { return RE_SDT_CHECK.test(l); });
+      if (sdtLines.length >= 2) {
+        var blocksSdt = [], curSdt = [];
+        rawLines.forEach(function(line) {
+          if (RE_SDT_CHECK.test(line) && curSdt.some(function(l) { return RE_SDT_CHECK.test(l); })) {
+            blocksSdt.push(curSdt.join("\n").trim());
+            curSdt = [];
+          }
+          curSdt.push(line);
+        });
+        if (curSdt.length) blocksSdt.push(curSdt.join("\n").trim());
+        if (blocksSdt.length > 1) return blocksSdt;
+      }
+
+      return [txt];
+    }
+
+    function handleMultiPaste(rawText) {
+      if (!rawText || !rawText.trim()) return;
+      var blocks = tachKhoiDon(rawText);
       if (!blocks.length) return;
 
       var cu = tagList.filter(function(t) { return t.raw; });
@@ -770,6 +842,44 @@
       activeTagIndex = thayDoi >= 0 ? Math.max(thayDoi, blocks.length - 1) : Math.min(activeTagIndex, tagList.length - 1);
       renderAllTags();
       dongBoNgayTheoThe();
+    }
+
+    function napMauGiaLapNhieuKhach() {
+      var mauGiaLap =
+        "Tên: Chị Lan Anh\n" +
+        "SĐT: 0901234567\n" +
+        "Ngày: 25/11/2026\n" +
+        "Giờ: 18h30\n" +
+        "Số khách: 4 lớn 1 bé\n" +
+        "Mẫu decor: Mẫu 01 - Khung Kỷ Niệm Nơ Trắng\n" +
+        "Bàn: B1\n" +
+        "Cọc: 200k\n" +
+        "Kênh: FB\n" +
+        "Ghi chú: Khách thích hoa tươi, tiệc sinh nhật\n" +
+        "---\n" +
+        "Tên: Anh Hoàng Tuấn\n" +
+        "SĐT: 0911588138\n" +
+        "Ngày: 25/11/2026\n" +
+        "Giờ: 19h00\n" +
+        "Số khách: 8 khách\n" +
+        "Mẫu decor: Mẫu 02 - Khung Kỷ Niệm Ruy Băng Nơ\n" +
+        "Bàn: B2\n" +
+        "Cọc: 500k\n" +
+        "Kênh: Zal\n" +
+        "Ghi chú: Đoàn công ty, xuất hóa đơn VAT\n" +
+        "---\n" +
+        "Tên: Minh Hoàng\n" +
+        "SĐT: 0779229299\n" +
+        "Ngày: 26/11/2026\n" +
+        "Giờ: 18h00\n" +
+        "Số khách: 2 khách\n" +
+        "Bàn: B3\n" +
+        "Cọc: 0\n" +
+        "Kênh: Web\n" +
+        "Ghi chú: Bàn thường, góc view đẹp";
+      var area = document.getElementById('multiPasteArea');
+      if (area) area.value = mauGiaLap;
+      handleMultiPaste(mauGiaLap);
     }
 
     function createTagFromText(txt) {
@@ -813,6 +923,33 @@
         tienHoan: '', lyDoHoan: ''
       };
       if (!txt || !txt.trim()) return p;
+
+      // Xử lý dòng tab-separated (copy từ Google Sheet / Excel)
+      if (txt.indexOf('\t') !== -1) {
+        var parts = txt.split('\t').map(function(s) { return s.trim(); });
+        parts.forEach(function(col, idx) {
+          if (!col) return;
+          var d = col.replace(/[^\d]/g, '');
+          if (!p.ngay && /(\d{1,2}[\/\-.]\d{1,2}(?:[\/\-.]\d{2,4})?|\d{4}-\d{2}-\d{2})/.test(col)) {
+            p.ngay = normalizeDateString(col);
+          } else if (!p.gioVao && /^([01]?\d|2[0-3])\s*(?:h|g|giờ|:)\s*([0-5]\d)?$/i.test(col)) {
+            p.gioVao = col;
+          } else if (!p.sdt && /^(?:\+?84|0)\d{8,10}$/.test(d) && (col.indexOf('0') === 0 || col.indexOf('84') === 0 || col.indexOf('+84') === 0)) {
+            p.sdt = d.indexOf('84') === 0 ? '0' + d.slice(2) : d;
+          } else if (!p.ten && /^[a-zA-ZÀ-ỹ\s]{2,40}$/.test(col) && !/^(gsh|fb|zalo|web|tik|ig|call)$/i.test(col)) {
+            p.ten = col;
+          } else if (p.soKhach === '2' && /^\d{1,2}$/.test(col) && parseInt(col, 10) >= 1 && parseInt(col, 10) <= 99 && idx >= 3) {
+            p.soKhach = col;
+          } else if (!p.banSo && /^(?:B|bàn)?\s*([A-Za-z]?\d+[A-Za-z]?)$/i.test(col)) {
+            p.banSo = col;
+          }
+        });
+        if (p.ten || p.sdt) {
+          if (!p.coc || p.coc === '0') p.coc = cocTheoSoKhach(p.soKhach);
+          return p;
+        }
+      }
+
       var lines = txt.split(/\r?\n/).map(function(l) { return l.trim(); }).filter(function(l) { return l; });
 
       function nhan(label) {
@@ -848,6 +985,10 @@
 
       var ten = nhan('Họ\\s*(?:&|và)?\\s*tên|Tên\\s*(?:khách(?:\\s*hàng)?|KH)?|Khách\\s*hàng|Khách');
       if (ten && !/^\d/.test(ten)) p.ten = ten.replace(RE_SDT, '').replace(/[\s\-–,|]+$/, '').trim();
+      if (!p.ten) {
+        var mFreeTen = txt.match(/^(?:(?:\d{1,2}[.)\]\-]\s*)?(?:Khách(?:\s*hàng)?|Anh|Chị|Bạn)\s*[:\-–]?\s*)([a-zA-ZÀ-ỹ\s]{2,30})(?=[,\-–\n]|$)/im);
+        if (mFreeTen && mFreeTen[1]) p.ten = mFreeTen[1].trim();
+      }
 
       var khach = nhan('Số\\s*khách|Số\\s*lượng(?:\\s*khách)?|Lượng\\s*khách|Số\\s*người|Pax') || (/^\d/.test(nhan('Khách')) ? nhan('Khách') : '');
       if (!khach) { var mk = txt.match(/(\d{1,2})\s*(?:người|khách|pax|lớn|ng\b)[^\n]*/i); if (mk) khach = mk[0]; }
@@ -861,7 +1002,7 @@
 
       var ban = nhan('Bàn\\s*số|Số\\s*bàn|Bàn|Table');
       if (ban && !/decor|thường|khách|nhóm/i.test(ban)) p.banSo = ban;
-      if (!p.banSo) { var mb = txt.match(/bàn\s*số\s*([A-Za-z]?\d+[A-Za-z]?)/i); if (mb) p.banSo = mb[1]; }
+      if (!p.banSo) { var mb = txt.match(/bàn\s*số\s*([A-Za-z]?\d+[A-Za-z]?)/i) || txt.match(/\b(B\d+|Bàn\s*\d+)\b/i); if (mb) p.banSo = mb[1]; }
       if (p.banSo) capNhatDatalistBanSo(p.banSo);
 
       p.kenh = chuanKenh(nhan('Kênh|Nguồn|Channel')) || chuanKenh(txt, true) || 'GSh';
@@ -870,10 +1011,18 @@
       if (mEmail) p.email = mEmail[1].trim();
       p.id = nhan('ID|Mã\\s*(?:đơn|đặt\\s*bàn|KH)');
       p.mauDecor = nhan('Mẫu(?:\\s*decor[e]?)?');
+      if (!p.mauDecor) {
+        var mMau = txt.match(/(Mẫu\s*\d{1,2}(?:\s*[-–]\s*[^\n,]+)?)/i);
+        if (mMau) p.mauDecor = mMau[1].trim();
+      }
       var decor = nhan('Decor|Nội\\s*dung(?:\\s*(?:bảng|decor))?|Bảng(?:\\s*tên)?|Ghi\\s*bảng');
       if (decor && decor.toLowerCase() !== 'không') p.decor = decor;
 
       var coc = nhan('Tiền\\s*cọc|Đã\\s*cọc|Đặt\\s*cọc|Cọc');
+      if (!coc) {
+        var mCoc = txt.match(/(?:cọc|đã cọc)\s*[:\-–]?\s*(\d+(?:[.\s]?\d+)?\s*(?:k|tr|triệu|nghìn|ngàn|000)?)/i);
+        if (mCoc) coc = mCoc[1];
+      }
       if (coc) {
         var num = parseInt(coc.replace(/[^0-9]/g, ''), 10) || 0;
         if (/k\b|k$|nghìn|ngàn/i.test(coc) && num < 1000) num *= 1000;
@@ -889,7 +1038,7 @@
       var low = txt.toLowerCase();
       if (/vat\s*[:\-]?\s*có|xuất\s*vat|có\s*vat/.test(low) && !/không\s*xuất\s*vat|vat\s*[:\-]?\s*không/.test(low)) p.vat = 'Có xuất VAT';
       if (p.be === 'Không') {
-        var mBe = txt.match(/(\d+)\s*(?:bé|trẻ em)/i) || txt.match(/(?:Em bé|Trẻ em|Ghế bé)\s*[:\-]\s*(\d+)/i);
+        var mBe = txt.match(/(\d+)\s*(?:bé|trẻ em|ghế em bé)/i) || txt.match(/(?:Em bé|Trẻ em|Ghế bé)\s*[:\-]\s*(\d+)/i);
         if (mBe && parseInt(mBe[1], 10) > 0) p.be = parseInt(mBe[1], 10) + ' ghế em bé';
       }
       p.ghiChu = nhan('Ghi\\s*chú|Note|Lưu\\s*ý');

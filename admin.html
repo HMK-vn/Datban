@@ -529,7 +529,12 @@
       .admin-title { font-size: 1.15rem; }
     }
     .nhan-ngan { display: none; }
-    @media (min-width: 992px) { header.navbar-custom .nhan-ngan { display: inline; } }
+    .nhan-dai { display: inline; }
+    @media (max-width: 1200px) {
+      header.navbar-custom .nhan-dai { display: none !important; }
+      header.navbar-custom .nhan-ngan { display: inline !important; }
+    }
+    header.navbar-custom .gio-dau { flex-shrink: 0; white-space: nowrap; margin-left: 4px; }
     /* Điện thoại / máy tính bảng: menu thành thanh dưới đáy như trang Chấm công */
     @media (max-width: 991.98px) {
       #mainTab { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: flex; flex-wrap: nowrap; overflow-x: auto; margin: 0 !important;
@@ -936,12 +941,12 @@
       .hang-ngay.da-xuong-dong > .ms-auto { margin-left: 0 !important; }
       #tab9 .md-gh-khung.da-xuong-dong > #mdBang { margin-left: 0; }
     }
-    /* Đầu trang: nhóm nút + đồng hồ dồn phải; màn vừa (đầu trang xuống dòng) đưa đồng hồ lên cùng hàng tên quán, canh phải */
+    /* Đầu trang: nhóm nút + đồng hồ dồn phải; không chồng lấn */
     header.navbar-custom .nhom-nut-dau { margin-left: auto; }
-    header.navbar-custom .gio-dau { order: 3; }
+    header.navbar-custom .gio-dau { flex-shrink: 0; white-space: nowrap; margin-left: 6px; }
     @media (max-width: 991.98px) {
-      header.navbar-custom .gio-dau { order: 2; margin-left: auto; }
-      header.navbar-custom .nhom-nut-dau { order: 3; flex-basis: 100%; margin-left: 0; }
+      header.navbar-custom .gio-dau { margin-left: auto; }
+      header.navbar-custom .nhom-nut-dau { flex-basis: 100%; margin-left: 0; }
     }
     /* Màn vừa: hàng nút giãn đều hết bề ngang, mép phải thẳng với ô giờ */
     @media (min-width: 576px) and (max-width: 991.98px) {
@@ -4013,7 +4018,8 @@ function nhomGon_(n) { var t = String(n || "").toLowerCase(); if (t.indexOf("dec
 // Tên dài hơn số điện thoại: viết tắt dần họ, tên đệm (Nguyễn Hoàng Cẩm Tú -> N. Hoàng Cẩm Tú -> N.H. Cẩm Tú); rê chuột xem tên đầy đủ
 // Thẻ bảng Xác nhận / hoàn cọc: tên không đủ chỗ thì viết tắt họ, đệm — luôn giữ tên (chữ cuối). VD "Nguyễn Thị Lam Linh" → "N.T.L. Linh" → "Linh"
 function vuaTenThe_(goc) {
-  [].forEach.call((goc || document).querySelectorAll(".dtt-ten[data-ten]"), function(el) {
+  var root = (goc && typeof goc.querySelectorAll === "function") ? goc : document;
+  [].forEach.call(root.querySelectorAll(".dtt-ten[data-ten]"), function(el) {
     var day = el.getAttribute("data-ten").trim().replace(/\s+/g, " "); if (!day) return;
     el.textContent = day; if (!el.clientWidth || el.scrollWidth <= el.clientWidth) return;
     var w = day.split(" "), kq = day;
