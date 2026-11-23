@@ -13,6 +13,7 @@
   <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
   <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <meta name="theme-color" content="#864c2a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -130,41 +131,54 @@
       font-size: 10px; font-weight: 700; margin-bottom: 4px;
     }
     .card-edit-grid {
-      display: grid; grid-template-columns: 1fr; gap: 2px;
+      display: grid; grid-template-columns: 1fr; gap: 3px;
     }
     .card-edit-col-full { grid-column: auto; }
     .card-field-row {
-      display: flex; align-items: center; gap: 3px; background: #111827; min-width: 0;
-      border: 1px solid #334155; border-radius: 4px; padding: 1px 4px;
+      display: flex; align-items: center; gap: 6px; background: #111827; min-width: 0;
+      border: 1px solid #334155; border-radius: 5px; padding: 2px 6px; min-height: 26px;
+      transition: border-color 0.15s;
     }
-    .card-field-label { font-size: 11px; flex-shrink: 0; cursor: default; }
+    .card-field-row:focus-within { border-color: #38bdf8; background: #0f172a; }
+    .card-field-label { width: 20px; font-size: 13.5px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: default; }
     .card-input, .card-select, .card-textarea {
-      width: 100%; min-width: 0; background: transparent; border: none; color: #f8fafc;
-      font-size: 10.5px; outline: none; padding: 1px 0;
+      width: 100%; min-width: 0; background: transparent !important; border: none; color: #f8fafc;
+      font-size: 12.5px; font-weight: 500; outline: none; padding: 2px 0;
     }
-    /* Điện thoại / màn hình nhỏ: xếp chồng 2 khung, cho phép cuộn trang */
+    .card-input::placeholder, .card-textarea::placeholder {
+      color: #94a3b8; opacity: 1; font-size: 11.5px; font-weight: 400;
+    }
+    .card-input.lct-input { color: #f8fafc !important; font-weight: 700; cursor: pointer; font-size: 12.5px; }
+    .card-date-open { color: #38bdf8; font-size: 12px; margin-left: auto; flex-shrink: 0; cursor: pointer; padding: 0 2px; opacity: 0.85; }
+    .card-date-open:hover { opacity: 1; transform: scale(1.1); }
+    /* Điện thoại / màn hình nhỏ: bố cục bao quát, dễ nhìn, chạm dễ */
     @media (max-width: 900px) {
-      html, body { height: auto; overflow: auto; width: 100%; }
-      .viewport-grid { grid-template-columns: 1fr; height: auto; }
-      .panel-left, .panel-right { max-height: none; }
-      .tags-container { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); overflow: visible; }
-      .decor-viewport { max-height: 55vh; }
-      .card-input, .card-select, .card-textarea { font-size: 14px; padding: 4px 0; } /* tránh iPhone tự phóng to khi gõ */
-      .bottom-save-wrap { flex-direction: column; position: sticky; bottom: 0; background: #111827; padding-top: 6px; }
+      html, body { height: auto; overflow: auto; width: 100%; padding: 4px; }
+      .viewport-grid { grid-template-columns: 1fr; height: auto; gap: 10px; }
+      .panel-left, .panel-right { max-height: none; padding: 8px; border-radius: 8px; }
+      .tags-container { grid-template-columns: 1fr; overflow: visible; gap: 8px; padding-right: 0; }
+      .folder-tag-card { padding: 8px; border-radius: 8px; border-width: 1.5px; }
+      .card-field-row { min-height: 32px; padding: 3px 8px; gap: 8px; border-radius: 6px; }
+      .card-field-label { width: 22px; font-size: 15px; }
+      .card-input, .card-select, .card-textarea { font-size: 14px; padding: 3px 0; } /* chữ to rõ, chống zoom trên iPhone */
+      .decor-viewport { max-height: 50vh; }
+      .bottom-save-wrap { flex-direction: column; position: sticky; bottom: 0; background: #111827; padding: 8px 0; z-index: 10; border-top: 1px solid #1f293d; }
+      .btn-save-all { padding: 12px; font-size: 14px; border-radius: 8px; }
     }
     /* Điện thoại dọc: thẻ khách chiếm trọn bề ngang */
     @media (max-width: 576px) {
       .tags-container { grid-template-columns: 1fr; }
-      .card-field-row { padding: 3px 6px; }
-      .card-field-label { font-size: 14px; }
+      .card-field-row { padding: 4px 8px; min-height: 34px; }
+      .card-field-label { font-size: 16px; width: 24px; }
+      .card-input, .card-select, .card-textarea { font-size: 14.5px; }
     }
     .card-select { cursor: pointer; color: #38bdf8; font-weight: 600; }
     .card-select option { background: #0f172a; color: #f8fafc; }
-    .card-textarea { resize: vertical; min-height: 18px; height: 18px; line-height: 1.3; font-family: inherit; }
+    .card-textarea { resize: vertical; min-height: 22px; height: 22px; line-height: 1.35; font-family: inherit; }
     .bottom-save-wrap { margin-top: 8px; flex-shrink: 0; display: flex; gap: 6px; align-items: stretch; }
     .badge-target-row-bottom {
       background: #0f172a; border: 1px solid #0284c7; color: #38bdf8; flex: 1;
-      font-weight: 700; padding: 5px 10px; border-radius: 6px; font-size: 11px;
+      font-weight: 700; padding: 6px 10px; border-radius: 6px; font-size: 12px;
       display: flex; align-items: center; justify-content: center; text-align: center;
     }
     .btn-save-all {
@@ -174,18 +188,19 @@
     }
     .btn-save-all:hover { background: #0369a1; }
     .btn-save-all:disabled { background: #334155; cursor: wait; }
-    /* Cột phải 1/4: ngày + mẫu decor còn lại dạng danh sách */
-    .date-control { display: flex; align-items: center; gap: 6px; font-weight: 600; margin-bottom: 6px; flex-shrink: 0; }
+    /* Cột phải: ngày + mẫu decor còn lại */
+    .date-control { display: flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 8px; flex-shrink: 0; font-size: 13px; }
+    .date-control-label { display: flex; align-items: center; gap: 6px; color: #94a3b8; flex-shrink: 0; }
     .date-control input[type="date"] {
       flex: 1; min-width: 0; background: #0b1120; border: 1.5px solid #38bdf8; color: #ffffff;
-      padding: 4px 6px; border-radius: 5px; font-size: 12px; outline: none; cursor: pointer;
+      padding: 5px 8px; border-radius: 6px; font-size: 13px; font-weight: 700; outline: none; cursor: pointer;
     }
-    .stat-ribbon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 6px; flex-shrink: 0; }
+    .stat-ribbon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 8px; flex-shrink: 0; }
     .stat-pill {
-      background: #0b1120; border: 1px solid #1f293d; border-radius: 5px;
-      padding: 3px 2px; text-align: center; font-size: 10px; font-weight: 600; white-space: nowrap;
+      background: #0b1120; border: 1px solid #1f293d; border-radius: 6px;
+      padding: 5px 3px; text-align: center; font-size: 11px; font-weight: 700; white-space: nowrap;
     }
-    .stat-pill b { color: #38bdf8; font-size: 12px; display: block; }
+    .stat-pill b { color: #38bdf8; font-size: 15px; font-weight: 800; display: block; margin-top: 2px; }
     .lock-warning {
       background: #7f1d1d; border: 1px solid #ef4444; color: #fecaca;
       padding: 6px 8px; border-radius: 5px; font-weight: 700; text-align: center;
@@ -276,8 +291,8 @@
         <textarea class="multi-paste-box" id="multiPasteArea" placeholder="Dán nội dung 1 hoặc nhiều đơn tại đây (ngăn cách bằng --- hoặc Tên: ...) Hệ thống tự nhận diện Ngày, Tên, SĐT, Số khách, Kênh, Decor, Mẫu Decor, Đặt món, Cọc, ID, Email..." onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0); }" onpaste="var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0);" onblur="handleMultiPaste(this.value)"></textarea>
       </div>
       <div class="tag-header-label">
-        <span>📁 CÁC THẺ TAG ĐƠN (<span id="tagCountLabel">0</span>)</span>
-        <button type="button" style="background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; border-radius:4px; padding:2px 8px; font-size:10px; cursor:pointer; font-weight:700;" onclick="createTagFromText('')">+ Thêm thẻ trống</button>
+        <span><i class="fa-solid fa-folder-open me-1" style="color:#38bdf8;"></i> CÁC THẺ TAG ĐƠN (<span id="tagCountLabel">0</span>)</span>
+        <button type="button" style="background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; border-radius:4px; padding:3px 10px; font-size:11px; cursor:pointer; font-weight:700;" onclick="createTagFromText('')">+ Thêm thẻ trống</button>
       </div>
       <div class="tags-container" id="tagsContainer"></div>
       <div class="bottom-save-wrap">
@@ -288,17 +303,17 @@
 
     <div class="panel-right">
       <div class="date-control">
-        <span>📅 Ngày:</span>
+        <span class="date-control-label"><i class="fa-solid fa-calendar-days" style="color:#38bdf8;font-size:16px;"></i> Ngày:</span>
         <input type="date" id="dateSelector" onchange="onDateChanged()">
       </div>
       <div class="stat-ribbon">
-        <div class="stat-pill" title="Bàn decor dưới 6 khách">🎀 &lt; 6<b id="cntNho">0</b></div>
-        <div class="stat-pill" title="Bàn decor từ 6 khách">🎉 ≥ 6<b id="cntLon">0</b></div>
-        <div class="stat-pill" title="Bàn thường">🍽️ Thường<b id="cntThuong">0</b></div>
+        <div class="stat-pill" title="Bàn decor dưới 6 khách"><i class="fa-solid fa-ribbon" style="color:#f472b6;font-size:13px;"></i> &lt; 6<b id="cntNho">0</b></div>
+        <div class="stat-pill" title="Bàn decor từ 6 khách"><i class="fa-solid fa-champagne-glasses" style="color:#fbbf24;font-size:13px;"></i> ≥ 6<b id="cntLon">0</b></div>
+        <div class="stat-pill" title="Bàn thường"><i class="fa-solid fa-utensils" style="color:#34d399;font-size:13px;"></i> Thường<b id="cntThuong">0</b></div>
       </div>
       <div class="lock-warning" id="lockWarning"></div>
       <div class="decor-list-head">
-        ✨ MẪU DECOR CÒN LẠI (<span id="decorRemainLabel">0</span>)
+        <i class="fa-solid fa-wand-magic-sparkles me-1" style="color:#f472b6;"></i> MẪU DECOR CÒN LẠI (<span id="decorRemainLabel">0</span>)
         <small id="decorHint">Nhấp để gán vào thẻ đang chọn</small>
       </div>
       <div class="decor-viewport" id="decorViewport"></div>
@@ -813,12 +828,14 @@
       var clickAttr = isDate
         ? ' onclick="event.preventDefault(); event.stopPropagation(); moLichThe_(' + idx + ', this)" onmousedown="event.preventDefault()"'
         : ' onclick="event.stopPropagation()"';
+      var inputType = isDate ? 'text' : (opts.type || 'text');
+      var rightIcon = isDate ? '<span class="card-date-open" title="Bấm mở lịch số bàn còn trống"><i class="fa-solid fa-calendar-day"></i></span>' : '';
       var input = opts.textarea
         ? '<textarea class="card-textarea" placeholder="' + label + '..." ' + evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">' + esc(value) + '</textarea>'
-        : '<input type="' + (opts.type || 'text') + '"' + (isDate ? ' readonly' : '') + ' class="card-input' + (isDate ? ' lct-input' : '') + '"' + (opts.list ? ' list="' + opts.list + '"' : '') +
+        : '<input type="' + inputType + '"' + (isDate ? ' readonly' : '') + ' class="card-input' + (isDate ? ' lct-input' : '') + '"' + (opts.list ? ' list="' + opts.list + '"' : '') +
           (opts.style ? ' style="' + opts.style + '"' : '') + ' placeholder="' + label + '" value="' + esc(value) + '" ' +
           evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)"' + clickAttr + '>';
-      return '<div class="card-field-row' + (opts.full ? ' card-edit-col-full' : '') + '"><span class="card-field-label" title="' + label + '">' + icon + '</span>' + input + '</div>';
+      return '<div class="card-field-row' + (opts.full ? ' card-edit-col-full' : '') + (isDate ? ' card-field-date' : '') + '"><span class="card-field-label" title="' + label + '">' + icon + '</span>' + input + rightIcon + '</div>';
     }
 
     function renderAllTags() {
@@ -840,35 +857,35 @@
           '<div class="folder-tag-header">' +
             '<div class="folder-tag-title" title="' + esc(tagTitle) + '">' + esc(tagTitle) + '</div>' +
             '<div class="tag-actions">' +
-              '<label class="btn-bill' + (tag.billBase64 ? ' has-bill' : '') + '" title="' + (tag.billBase64 ? 'Đã có ảnh bill - bấm để đổi ảnh' : 'Tải ảnh bill chuyển khoản') + '" onclick="event.stopPropagation()">🧾' +
+              '<label class="btn-bill' + (tag.billBase64 ? ' has-bill' : '') + '" title="' + (tag.billBase64 ? 'Đã có ảnh bill - bấm để đổi ảnh' : 'Tải ảnh bill chuyển khoản') + '" onclick="event.stopPropagation()"><i class="fa-solid fa-receipt"></i>' +
                 '<input type="file" accept="image/*" onchange="chonBillThe(' + idx + ', this)"></label>' +
-              '<button class="btn-del-tag" title="Xóa thẻ" onclick="deleteTagAt(' + idx + ', event)">✕</button>' +
+              '<button class="btn-del-tag" title="Xóa thẻ" onclick="deleteTagAt(' + idx + ', event)"><i class="fa-solid fa-xmark"></i></button>' +
             '</div>' +
           '</div>' +
           (tag.lockReason ? '<div class="tag-lock-reason">' + esc(tag.lockReason) + '</div>' : '') +
-          (tag.anhDecor ? '<div class="tag-thumb"><img src="' + esc(tag.anhDecor) + '" alt=""><span>✨ ' + esc(mauVal) + '</span></div>' : '') +
+          (tag.anhDecor ? '<div class="tag-thumb"><img src="' + esc(tag.anhDecor) + '" alt=""><span><i class="fa-solid fa-wand-magic-sparkles me-1"></i> ' + esc(mauVal) + '</span></div>' : '') +
           '<div class="card-edit-grid">' +
-            fieldHtml(idx, '📅', 'Ngày', 'ngay', tag.ngay, { type: 'date' }) +
-            fieldHtml(idx, '⏰', 'Giờ vào', 'gioVao', p.gioVao || '18h30', { list: 'timeSuggestions' }) +
-            fieldHtml(idx, '👤', 'Họ tên KH', 'ten', p.ten, { live: true }) +
-            fieldHtml(idx, '📞', 'SĐT', 'sdt', p.sdt, { live: true }) +
-            fieldHtml(idx, '👥', 'Số khách', 'soKhach', p.soKhach || '2', { style: 'color:#38bdf8; font-weight:700;' }) +
-            fieldHtml(idx, '🪑', 'Bàn số', 'banSo', p.banSo) +
-            fieldHtml(idx, '💰', 'Tiền cọc', 'coc', p.coc || '0', { list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
-            fieldHtml(idx, '🌐', 'Kênh', 'kenh', p.kenh || 'GSh', { list: 'channelSuggestions', style: 'color:#38bdf8; font-weight:600;' }) +
-            fieldHtml(idx, '🆔', 'Mã ID (để trống: ' + taoMaDatBan(p.kenh, p.sdt, tag.ngay) + ')', 'id', p.id) +
-            '<div class="card-field-row"><span class="card-field-label" title="Xuất VAT">🧾</span>' +
+            fieldHtml(idx, '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>', 'Ngày', 'ngay', tag.ngay) +
+            fieldHtml(idx, '<i class="fa-solid fa-clock" style="color:#f59e0b;"></i>', 'Giờ vào', 'gioVao', p.gioVao || '18h30', { list: 'timeSuggestions' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-user" style="color:#38bdf8;"></i>', 'Họ tên KH', 'ten', p.ten, { live: true }) +
+            fieldHtml(idx, '<i class="fa-solid fa-phone" style="color:#34d399;"></i>', 'SĐT', 'sdt', p.sdt, { live: true }) +
+            fieldHtml(idx, '<i class="fa-solid fa-users" style="color:#c084fc;"></i>', 'Số khách', 'soKhach', p.soKhach || '2', { style: 'color:#38bdf8; font-weight:700;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn số', 'banSo', p.banSo) +
+            fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Tiền cọc', 'coc', p.coc || '0', { list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-globe" style="color:#38bdf8;"></i>', 'Kênh', 'kenh', p.kenh || 'GSh', { list: 'channelSuggestions', style: 'color:#38bdf8; font-weight:600;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-id-badge" style="color:#e879f9;"></i>', 'Mã ID (để trống: ' + taoMaDatBan(p.kenh, p.sdt, tag.ngay) + ')', 'id', p.id) +
+            '<div class="card-field-row"><span class="card-field-label" title="Xuất VAT"><i class="fa-solid fa-file-invoice-dollar" style="color:#94a3b8;"></i></span>' +
               '<select class="card-select" onchange="updateCardField(' + idx + ', \'vat\', this.value)" onclick="event.stopPropagation()">' +
                 '<option value="Không" ' + (p.vat !== 'Có xuất VAT' ? 'selected' : '') + '>Không VAT</option>' +
                 '<option value="Có xuất VAT" ' + (p.vat === 'Có xuất VAT' ? 'selected' : '') + '>Có VAT</option>' +
               '</select>' +
             '</div>' +
-            fieldHtml(idx, '👶', 'Ghế em bé', 'be', p.be || 'Không') +
-            fieldHtml(idx, '✉️', 'Email khách', 'email', p.email) +
-            fieldHtml(idx, '✨', 'Mẫu decor (chọn ở cột phải)', 'mauDecor', mauVal, { full: true, style: 'color:#e2a684; font-weight:700;' }) +
-            fieldHtml(idx, '🎀', 'Nội dung bảng tiệc / Decor', 'decor', p.decor, { full: true, style: 'color:#38bdf8; font-weight:600;' }) +
-            fieldHtml(idx, '🍲', 'Đặt món', 'datMon', p.datMon, { full: true, textarea: true }) +
-            fieldHtml(idx, '📝', 'Ghi chú', 'ghiChu', p.ghiChu, { full: true, textarea: true }) +
+            fieldHtml(idx, '<i class="fa-solid fa-baby" style="color:#facc15;"></i>', 'Ghế em bé', 'be', p.be || 'Không') +
+            fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#94a3b8;"></i>', 'Email khách', 'email', p.email) +
+            fieldHtml(idx, '<i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i>', 'Mẫu decor (chọn ở cột phải)', 'mauDecor', mauVal, { full: true, style: 'color:#e2a684; font-weight:700;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-ribbon" style="color:#fb7185;"></i>', 'Nội dung bảng tiệc / Decor', 'decor', p.decor, { full: true, style: 'color:#38bdf8; font-weight:600;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món', 'datMon', p.datMon, { full: true, textarea: true }) +
+            fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú', 'ghiChu', p.ghiChu, { full: true, textarea: true }) +
           '</div>';
         container.appendChild(card);
       });

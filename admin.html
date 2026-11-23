@@ -1193,7 +1193,7 @@
         <a href="https://hmk-vn.github.io/Datban/decor_tu6.html" class="btn btn-danger btn-sm fw-bold" target="_blank" title="Mở trang khách đặt bàn decor từ 6 khách"><i class="fa-solid fa-cake-candles nut-ico"></i><span class="nhan-dai">Decor từ 6 khách</span><span class="nhan-ngan">Decor ≥6</span><span class="nhan-so">≥6</span></a>
         <a href="thuong.html" class="btn btn-primary btn-sm fw-bold" target="_blank"><i class="fa-solid fa-utensils nut-ico"></i><span class="nhan-dai">Đặt bàn thường</span><span class="nhan-ngan">Thường</span></a>
         <a href="tracuu.html" class="btn btn-success btn-sm fw-bold" target="_blank"><i class="fa-solid fa-magnifying-glass nut-ico"></i>Tra cứu</a>
-        <button type="button" class="btn btn-outline-success btn-sm fw-bold" id="lockToggle" onclick="toggleBookingLock()" title="Bấm để khoá/mở khoá nhận đặt bàn"><i class="fa-solid fa-lock-open me-1" id="lockToggleIcon"></i><span id="lockToggleText">Đang nhận bàn</span></button>
+        <button type="button" class="btn btn-light btn-sm fw-bold chi-icon-dt" id="lockToggle" onclick="toggleBookingLock()" title="Bấm để khoá/mở khoá nhận đặt bàn trên web khách" style="background:#fdf6f0;color:#5a2e12;border:1px solid #d9b89e;"><i class="fa-solid fa-lock-open me-1" id="lockToggleIcon" style="color:#5a2e12;"></i><span id="lockToggleText">Đang nhận bàn</span></button>
         <button type="button" class="btn btn-light btn-sm fw-bold chi-icon-dt" onclick="doiGiaoDien()" title="Đổi giao diện" id="nutGiaoDien"><i class="fa-solid fa-circle-half-stroke nut-ico"></i><span class="nhan-dai">Giao diện</span><span class="nhan-ngan">Giao diện</span></button>
         <button type="button" class="btn btn-light btn-sm fw-bold chi-icon-dt" onclick="caiTelegram()" title="Báo đơn mới / hoàn cọc về nhóm Telegram"><i class="fa-brands fa-telegram nut-ico"></i><span class="chu-nut">Telegram</span></button>
       </div>
@@ -4413,55 +4413,31 @@ function rutTenKhach_(goc) {
     document.addEventListener("DOMContentLoaded", function() { setTimeout(function() { var d = new Date(); lctTai_(d.getFullYear() + "-" + lctPad_(d.getMonth() + 1), false); }, 800); ganLichConTrong_("timelineDateInput"); ganLichConTrong_("mdNgay"); });
   </script>
   <script>
-    // 🔒 CHỨC NĂNG KHOÁ / MỞ KHOÁ ĐẶT BÀN (Booking Lock)
+    // 🔒 CHỨC NĂNG KHOÁ / MỞ KHOÁ ĐẶT BÀN TRANG KHÁCH (Booking Lock)
+    // CHỈ KHOÁ TRANG KHÁCH, TRANG QUẢN TRỊ KHÔNG KHOÁ (nhân viên/quản trị vẫn nhập đơn, thao tác 100% bình thường)
     function applyBookingLock(isLocked) {
       var btn = document.getElementById("lockToggle");
       var icon = document.getElementById("lockToggleIcon");
       var text = document.getElementById("lockToggleText");
       if (btn) {
+        btn.className = "btn btn-light btn-sm fw-bold chi-icon-dt";
+        btn.style.cssText = "background:#fdf6f0;color:#5a2e12;border:1px solid #d9b89e;";
         if (isLocked) {
-          btn.className = "btn btn-danger btn-sm fw-bold text-white";
-          btn.title = "Hệ thống đang khoá nhận đặt bàn. Bấm để mở khoá.";
-          if (icon) icon.className = "fa-solid fa-lock me-1";
+          btn.title = "Trang khách đang KHOÁ nhận đặt bàn. Bấm để mở lại.";
+          if (icon) { icon.className = "fa-solid fa-lock me-1"; icon.style.color = "#5a2e12"; }
           if (text) text.textContent = "Đã khoá đặt bàn";
         } else {
-          btn.className = "btn btn-outline-success btn-sm fw-bold";
-          btn.title = "Hệ thống đang mở nhận đặt bàn. Bấm để khoá.";
-          if (icon) icon.className = "fa-solid fa-lock-open me-1";
+          btn.title = "Trang khách đang MỞ nhận đặt bàn. Bấm để khoá.";
+          if (icon) { icon.className = "fa-solid fa-lock-open me-1"; icon.style.color = "#5a2e12"; }
           if (text) text.textContent = "Đang nhận bàn";
         }
       }
 
-      // Disable/enable all input, select, textarea, button controls in booking forms
-      var targets = document.querySelectorAll(
-        ".booking-form input, .booking-form select, .booking-form textarea, .booking-form button, #dtForm input, #dtForm select, #dtForm textarea, #dtForm button"
-      );
-      targets.forEach(function(el) {
-        if (el.id === "lockToggle" || el.classList.contains("btn-close") || el.closest(".navbar-custom") || el.closest("#mainTab")) {
-          return;
-        }
-        el.disabled = !!isLocked;
-      });
-
-      // Handle Tab 5 iframe
-      var iframe = document.getElementById("iframeNhapBan");
+      // Đảm bảo không khoá bất kỳ form hay nút nào trên trang quản trị
       var tab5Banner = document.getElementById("bookingLockTab5Banner");
-      var tab5 = document.getElementById("tab5");
-      if (isLocked) {
-        if (iframe) iframe.style.pointerEvents = "none";
-        if (!tab5Banner && tab5) {
-          tab5Banner = document.createElement("div");
-          tab5Banner.id = "bookingLockTab5Banner";
-          tab5Banner.className = "alert alert-danger text-center fw-bold py-3 mb-2";
-          tab5Banner.innerHTML = '<i class="fa-solid fa-lock me-2"></i> Hệ thống nhận đặt bàn hiện ĐANG KHOÁ. Không thể tạo đơn mới.';
-          tab5.insertBefore(tab5Banner, tab5.firstChild);
-        } else if (tab5Banner) {
-          tab5Banner.style.display = "block";
-        }
-      } else {
-        if (iframe) iframe.style.pointerEvents = "auto";
-        if (tab5Banner) tab5Banner.style.display = "none";
-      }
+      if (tab5Banner) tab5Banner.remove();
+      var iframe = document.getElementById("iframeNhapBan");
+      if (iframe) iframe.style.pointerEvents = "auto";
     }
 
     function toggleBookingLock() {
