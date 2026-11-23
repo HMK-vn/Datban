@@ -205,6 +205,7 @@
     .col-span-2 { grid-column: span 2; }
 
     .card-field-row {
+      position: relative;
       display: flex; align-items: center; gap: 6px; background: #111827; min-width: 0;
       border: 1px solid #334155; border-radius: 5px; padding: 2px 6px; min-height: 28px;
       transition: border-color 0.15s;
@@ -234,7 +235,7 @@
     .card-select option { background: #0f172a; color: #f8fafc; }
     .card-textarea { resize: vertical; min-height: 24px; height: 24px; line-height: 1.35; font-family: inherit; }
 
-    /* Switch toggle cho Trẻ em (Ghế em bé) */
+    /* Switch toggle cho Trẻ em (Ghế em bé) & VAT */
     .baby-field-wrap {
       display: flex; align-items: center; justify-content: space-between; gap: 4px; width: 100%;
     }
@@ -244,10 +245,84 @@
     .baby-toggle-box input[type="checkbox"] {
       width: 14px; height: 14px; cursor: pointer; accent-color: #facc15; margin: 0;
     }
+    .baby-toggle-box input[type="checkbox"].vat-check {
+      accent-color: #38bdf8;
+    }
     .baby-toggle-text { font-size: 11.5px; color: #cbd5e1; font-weight: 500; white-space: nowrap; }
+    .text-vat-active { color: #38bdf8 !important; font-weight: 700; }
     .baby-select {
       flex: 1; min-width: 0; background: #0f172a !important; border: 1px solid #334155;
-      color: #facc15; font-size: 11.5px; font-weight: 700; border-radius: 4px; padding: 1px 2px;
+      color: #facc15; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 1px 2px;
+    }
+
+    /* Popup gợi ý Email gắn sát ô nhập */
+    .email-suggest-popup {
+      position: absolute; top: calc(100% + 2px); left: 0; right: 0;
+      background: #0f172a; border: 1.5px solid #38bdf8; border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.8); z-index: 1000; overflow: hidden;
+    }
+    .email-suggest-item {
+      padding: 6px 10px; font-size: 12px; color: #f8fafc; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #1e293b;
+    }
+    .email-suggest-item:last-child { border-bottom: none; }
+    .email-suggest-item:hover { background: #0284c7; color: #fff; }
+
+    /* Popup bảng chọn giờ thông minh có chặn giờ */
+    .time-picker-popup {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.65); z-index: 2500; display: none;
+      align-items: center; justify-content: center; padding: 12px;
+      backdrop-filter: blur(2px);
+    }
+    .time-picker-box {
+      background: #0f172a; border: 1.5px solid #38bdf8; border-radius: 12px;
+      width: min(440px, 96vw); max-height: 90vh; overflow-y: auto; padding: 14px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px;
+    }
+    .time-picker-head {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #1e293b; padding-bottom: 8px; font-weight: 700; color: #f8fafc; font-size: 13.5px;
+    }
+    .time-picker-close {
+      background: transparent; border: none; color: #94a3b8; font-size: 16px; cursor: pointer; padding: 2px 6px;
+    }
+    .time-picker-close:hover { color: #f8fafc; }
+    .time-picker-hint {
+      font-size: 11.5px; color: #fbbf24; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3);
+      padding: 4px 8px; border-radius: 6px; line-height: 1.4;
+    }
+    .time-picker-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+    }
+    .time-slot-btn {
+      padding: 7px 4px; font-size: 12px; font-weight: 700; border-radius: 6px;
+      border: 1px solid #334155; background: #1e293b; color: #f8fafc; cursor: pointer;
+      text-align: center; transition: all 0.15s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    }
+    .time-slot-btn:hover:not(.locked) {
+      background: #0284c7; border-color: #38bdf8; color: #fff; transform: scale(1.03);
+    }
+    .time-slot-btn.active {
+      background: #0284c7; border-color: #38bdf8; color: #fff; box-shadow: 0 0 10px rgba(56,189,248,0.5);
+    }
+    .time-slot-btn.locked {
+      background: #2a1215; border-color: #7f1d1d; color: #f87171; cursor: not-allowed; opacity: 0.75;
+    }
+    .time-slot-locked-tag {
+      font-size: 9px; font-weight: 800; color: #ef4444; text-transform: uppercase;
+    }
+
+    /* Toast thông báo */
+    .toast-msg-box {
+      position: fixed; top: 18px; right: 18px; z-index: 3000;
+      background: #0284c7; color: #fff; padding: 10px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 700; box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      display: none; align-items: center; gap: 8px; animation: fadeInSlide 0.25s ease-out;
+    }
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* Nút lưu đơn DATA_TONG */
@@ -459,7 +534,7 @@
   <div class="viewport-grid">
     <div class="panel-left" id="panelLeft">
       <div class="paste-box-wrap">
-        <textarea class="multi-paste-box" id="multiPasteArea" placeholder="Dán nội dung 1 hoặc nhiều đơn tại đây (ngăn cách bằng --- hoặc Tên: ...) Hệ thống tự nhận diện Ngày, Tên, SĐT, Số khách, Kênh, Decor, Mẫu Decor, Đặt món, Cọc, ID, Email..." oninput="handleMultiPaste(this.value)" onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0); }" onpaste="var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0);" onblur="handleMultiPaste(this.value)"></textarea>
+        <textarea class="multi-paste-box" id="multiPasteArea" placeholder="Dán nội dung đơn hoặc dán ảnh bill cọc (Ctrl+V) tại đây... Tự nhận diện văn bản & ảnh bill!" oninput="handleMultiPaste(this.value)" onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0); }" onpaste="handleMultiPasteWithImage(event, this)" onblur="handleMultiPaste(this.value)"></textarea>
       </div>
       <div class="tag-header-label">
         <span><i class="fa-solid fa-folder-open me-1" style="color:#38bdf8;"></i> CÁC THẺ TAG ĐƠN (<span id="tagCountLabel">0</span>)</span>
@@ -512,9 +587,24 @@
 
   <div id="lctMauPop" class="lct-mau-pop"></div>
 
+  <!-- 🕒 MODAL BẢNG CHỌN VÀ CHẶN GIỜ THÔNG MINH -->
+  <div id="timePickerModal" class="time-picker-popup" onclick="if(event.target===this) dongBangChonGio()">
+    <div class="time-picker-box">
+      <div class="time-picker-head">
+        <span id="timePickerTitle"><i class="fa-solid fa-clock me-1 text-warning"></i> Chọn giờ đến</span>
+        <button type="button" class="time-picker-close" onclick="dongBangChonGio()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="timePickerHint" class="time-picker-hint" style="display:none;"></div>
+      <div id="timePickerGrid" class="time-picker-grid"></div>
+    </div>
+  </div>
+
+  <!-- 🔔 TOAST THÔNG BÁO NHANH -->
+  <div id="toastMsgBox" class="toast-msg-box"></div>
+
   <script>
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getDateContextFast","getQuickDecorCatalog","luuDanhSachDatBan","layLichConNhanDecor"];
+    var ADMIN_FNS = ["getDateContextFast","getQuickDecorCatalog","luuDanhSachDatBan","layLichConNhanDecor","layKhoaGio","thuTelegramWeb","thuPushQuanTri"];
     function adminRun() {
       var ok = null, fail = null, o = {
         withSuccessHandler: function(h) { ok = h; return o; },
@@ -587,6 +677,7 @@
 
     window.onload = function() {
       capNhatDatalistBanSo();
+      taiKhoaGioNhapBan();
       var today = new Date().toISOString().split('T')[0];
       document.getElementById('dateSelector').value = today;
       createTagFromText("");
@@ -1221,20 +1312,46 @@
       var val = input.value;
       updateCardField(idx, 'email', val);
       var atIndex = val.indexOf('@');
-      var dl = document.getElementById('emailDomainList');
-      if (atIndex !== -1) {
+      var row = input.closest('.card-field-row');
+      var oldPop = row ? row.querySelector('.email-suggest-popup') : null;
+      if (oldPop) oldPop.remove();
+
+      if (atIndex !== -1 && row) {
         var prefix = val.substring(0, atIndex);
-        if (dl) {
-          dl.innerHTML =
-            '<option value="' + prefix + '@gmail.com"></option>' +
-            '<option value="' + prefix + '@yahoo.com"></option>' +
-            '<option value="' + prefix + '@icloud.com"></option>' +
-            '<option value="' + prefix + '@outlook.com"></option>';
+        var domainPart = val.substring(atIndex).toLowerCase();
+        if (!domainPart || domainPart === '@' || domainPart.length < 5) {
+          var pop = document.createElement('div');
+          pop.className = 'email-suggest-popup';
+          var list = ['@gmail.com', '@yahoo.com', '@icloud.com', '@outlook.com'];
+          pop.innerHTML = list.map(function(d) {
+            var full = prefix + d;
+            return '<div class="email-suggest-item" onmousedown="chonEmailSuggest(' + idx + ', \'' + full + '\')">' +
+              '<i class="fa-regular fa-envelope" style="color:#38bdf8;font-size:11px;"></i> ' + esc(full) + '</div>';
+          }).join('');
+          row.appendChild(pop);
         }
       }
     }
 
+    function chonEmailSuggest(idx, email) {
+      var card = document.querySelector('.folder-tag-card[data-index="' + idx + '"]');
+      if (card) {
+        var emailInput = card.querySelector('input[placeholder="Email khách"]');
+        if (emailInput) emailInput.value = email;
+        var pop = card.querySelector('.email-suggest-popup');
+        if (pop) pop.remove();
+      }
+      updateCardField(idx, 'email', email);
+    }
+
     function onEmailBlur(idx, input) {
+      var row = input.closest('.card-field-row');
+      setTimeout(function() {
+        if (row) {
+          var pop = row.querySelector('.email-suggest-popup');
+          if (pop) pop.remove();
+        }
+      }, 200);
       var val = input.value.trim();
       if (!val) return;
       var atIndex = val.indexOf('@');
@@ -1263,6 +1380,176 @@
       if (!tagList[idx]) return;
       tagList[idx].parsed.be = countStr;
       renderAllTags();
+    }
+
+    function toggleVat(idx, checked) {
+      if (!tagList[idx]) return;
+      tagList[idx].parsed.vat = checked ? "Có xuất VAT" : "Không";
+      renderAllTags();
+    }
+
+    /* 📸 DÁN ẢNH BILL TRỰC TIẾP QUA CLIPBOARD (Ctrl+V) */
+    function handleMultiPasteWithImage(e, textarea) {
+      var clipboardData = e.clipboardData || window.clipboardData;
+      if (!clipboardData) return;
+      var items = clipboardData.items;
+      var imagePasted = false;
+      if (items) {
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].type && items[i].type.indexOf("image") !== -1) {
+            var file = items[i].getAsFile();
+            if (file) {
+              imagePasted = true;
+              if (!tagList.length) createTagFromText("");
+              var targetIdx = (activeTagIndex >= 0 && activeTagIndex < tagList.length) ? activeTagIndex : 0;
+              xuLyFileBill(targetIdx, file, false);
+              hienToastThongBao("📸 Đã nạp ảnh bill cọc vào Thẻ #" + (targetIdx + 1) + " (" + (tagList[targetIdx].parsed.ten || "Khách") + ")");
+            }
+          }
+        }
+      }
+      var textData = clipboardData.getData('text/plain');
+      if (imagePasted && (!textData || !textData.trim())) {
+        e.preventDefault();
+      } else {
+        setTimeout(function() { handleMultiPaste(textarea.value); }, 0);
+      }
+    }
+
+    document.addEventListener("paste", function(e) {
+      if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+      var clipboardData = e.clipboardData || window.clipboardData;
+      if (!clipboardData || !clipboardData.items) return;
+      for (var i = 0; i < clipboardData.items.length; i++) {
+        if (clipboardData.items[i].type && clipboardData.items[i].type.indexOf("image") !== -1) {
+          var file = clipboardData.items[i].getAsFile();
+          if (file) {
+            e.preventDefault();
+            if (!tagList.length) createTagFromText("");
+            var targetIdx = (activeTagIndex >= 0 && activeTagIndex < tagList.length) ? activeTagIndex : 0;
+            xuLyFileBill(targetIdx, file, false);
+            hienToastThongBao("📸 Đã dán ảnh bill cọc vào Thẻ #" + (targetIdx + 1) + " (" + (tagList[targetIdx].parsed.ten || "Khách") + ")");
+            break;
+          }
+        }
+      }
+    });
+
+    /* 🕒 BẢNG CHỌN VÀ CHẶN GIỜ THÔNG MINH */
+    var KHOA_GIO_DATA = null;
+    function taiKhoaGioNhapBan() {
+      adminRun().withSuccessHandler(function(k) {
+        if (k) KHOA_GIO_DATA = k;
+      }).layKhoaGio();
+    }
+
+    var _currentTimePickerIdx = null;
+    function moBangChonGio(idx, triggerEl) {
+      _currentTimePickerIdx = idx;
+      var tag = tagList[idx];
+      if (!tag) return;
+      var modal = document.getElementById('timePickerModal');
+      var title = document.getElementById('timePickerTitle');
+      var grid = document.getElementById('timePickerGrid');
+      var hint = document.getElementById('timePickerHint');
+      if (!modal || !grid) return;
+
+      var curNgay = tag.ngay || document.getElementById('dateSelector').value || '';
+      var curGio = (tag.parsed && tag.parsed.gioVao) ? tag.parsed.gioVao : '18h30';
+      if (title) title.innerHTML = '<i class="fa-solid fa-clock me-1 text-warning"></i> Chọn giờ đến — Thẻ #' + (idx + 1) + (curNgay ? ' (' + curNgay + ')' : '');
+
+      var rule = null;
+      if (KHOA_GIO_DATA && curNgay) {
+        var p = curNgay.split('-').map(Number);
+        var dow = new Date(p[0], p[1] - 1, p[2]).getDay();
+        if (KHOA_GIO_DATA.theoThu && KHOA_GIO_DATA.theoThu[dow]) {
+          rule = tag.isDecor ? KHOA_GIO_DATA.theoThu[dow].decor : KHOA_GIO_DATA.theoThu[dow].thuong;
+        } else if (KHOA_GIO_DATA.decor) {
+          rule = tag.isDecor ? KHOA_GIO_DATA.decor : KHOA_GIO_DATA.thuong;
+        }
+      }
+
+      var khoaTu = rule && rule.bat ? rule.tu : '';
+      var khoaDen = rule && rule.bat ? rule.den : '';
+
+      if (hint) {
+        if (khoaTu && khoaDen) {
+          hint.style.display = 'block';
+          hint.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-1"></i> Ngày này quán khóa nhận ' + (tag.isDecor ? 'bàn decor' : 'bàn thường') + ' từ <b>' + khoaTu + '</b> đến <b>' + khoaDen + '</b>.';
+        } else {
+          hint.style.display = 'none';
+        }
+      }
+
+      var slots = [];
+      for (var h = 14; h <= 21; h++) {
+        var mins = (h === 21) ? ['00', '15', '30'] : ['00', '15', '30', '45'];
+        for (var m = 0; m < mins.length; m++) {
+          var time24 = (h < 10 ? '0' : '') + h + ':' + mins[m];
+          var timeDisplay = h + 'h' + (mins[m] === '00' ? '00' : mins[m]);
+          var isLocked = false;
+          if (khoaTu && khoaDen) {
+            if (time24 >= khoaTu && time24 < khoaDen) isLocked = true;
+          }
+          slots.push({ t24: time24, display: timeDisplay, locked: isLocked });
+        }
+      }
+
+      var normCurGio = curGio.replace(':', 'h');
+      grid.innerHTML = slots.map(function(s) {
+        var isActive = (normCurGio === s.display || curGio === s.t24 || curGio.replace(/^0/, '') === s.display);
+        var cls = 'time-slot-btn' + (isActive ? ' active' : '') + (s.locked ? ' locked' : '');
+        var clickFn = s.locked
+          ? 'alert(\'Khung giờ ' + s.display + ' đang bị quán khóa nhận khách (từ ' + khoaTu + ' đến ' + khoaDen + ').\')'
+          : 'chonGioTuBang(\'' + s.display + '\')';
+        return '<button type="button" class="' + cls + '" onclick="' + clickFn + '" title="' + (s.locked ? 'Khung giờ bị khóa' : 'Chọn ' + s.display) + '">' +
+          '<span>' + s.display + '</span>' +
+          (s.locked ? '<span class="time-slot-locked-tag">Khóa</span>' : '') +
+        '</button>';
+      }).join('');
+
+      modal.style.display = 'flex';
+    }
+
+    function chonGioTuBang(timeStr) {
+      if (_currentTimePickerIdx !== null && tagList[_currentTimePickerIdx]) {
+        updateCardField(_currentTimePickerIdx, 'gioVao', timeStr);
+        renderAllTags();
+      }
+      dongBangChonGio();
+    }
+
+    function dongBangChonGio() {
+      var modal = document.getElementById('timePickerModal');
+      if (modal) modal.style.display = 'none';
+      _currentTimePickerIdx = null;
+    }
+
+    /* 🔔 ÂM THANH CHUÔNG & TOAST THÔNG BÁO */
+    function phatChuongThanhCong() {
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var osc1 = ctx.createOscillator();
+        var osc2 = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc1.type = "sine"; osc1.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc2.type = "sine"; osc2.frequency.setValueAtTime(880.00, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+        osc1.connect(gain); osc2.connect(gain); gain.connect(ctx.destination);
+        osc1.start(); osc1.stop(ctx.currentTime + 0.12);
+        osc2.start(ctx.currentTime + 0.12); osc2.stop(ctx.currentTime + 0.45);
+      } catch(e) {}
+    }
+
+    var _toastTimeout = null;
+    function hienToastThongBao(msg, isSuccess) {
+      var toast = document.getElementById('toastMsgBox');
+      if (!toast) return;
+      toast.innerHTML = (isSuccess !== false ? '<i class="fa-solid fa-circle-check me-1"></i> ' : '<i class="fa-solid fa-circle-info me-1"></i> ') + esc(msg);
+      toast.style.display = 'flex';
+      if (_toastTimeout) clearTimeout(_toastTimeout);
+      _toastTimeout = setTimeout(function() { toast.style.display = 'none'; }, 3500);
     }
 
     function toggleHoanCoc(idx, e) {
@@ -1598,8 +1885,20 @@
             '</div>';
         }
 
+        var hasVat = p.vat === 'Có xuất VAT';
+        var vatRowHtml =
+          '<div class="card-field-row col-span-2">' +
+            '<span class="card-field-label" title="Xuất hóa đơn VAT"><i class="fa-solid fa-file-invoice-dollar" style="color:#94a3b8;"></i></span>' +
+            '<div class="baby-field-wrap" onclick="event.stopPropagation()">' +
+              '<label class="baby-toggle-box" title="Bấm để bật/tắt xuất hóa đơn VAT">' +
+                '<input type="checkbox" class="vat-check" ' + (hasVat ? 'checked' : '') + ' onchange="toggleVat(' + idx + ', this.checked)">' +
+                '<span class="baby-toggle-text ' + (hasVat ? 'text-vat-active' : '') + '">' + (hasVat ? 'VAT' : 'Ko') + '</span>' +
+              '</label>' +
+            '</div>' +
+          '</div>';
+
         var babyRowHtml =
-          '<div class="card-field-row col-span-3">' +
+          '<div class="card-field-row col-span-2">' +
             '<span class="card-field-label" title="Ghế em bé"><i class="fa-solid fa-baby" style="color:#facc15;"></i></span>' +
             '<div class="baby-field-wrap" onclick="event.stopPropagation()">' +
               '<label class="baby-toggle-box" title="Bấm để bật/tắt có trẻ em">' +
@@ -1608,13 +1907,43 @@
               '</label>' +
               (hasBaby ?
                 '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)">' +
-                  '<option value="1 ghế em bé" ' + (babyCount.indexOf('1') !== -1 ? 'selected' : '') + '>1 bé</option>' +
-                  '<option value="2 ghế em bé" ' + (babyCount.indexOf('2') !== -1 ? 'selected' : '') + '>2 bé</option>' +
-                  '<option value="3 ghế em bé" ' + (babyCount.indexOf('3') !== -1 ? 'selected' : '') + '>3 bé</option>' +
-                  '<option value="4 ghế em bé" ' + (babyCount.indexOf('4') !== -1 ? 'selected' : '') + '>4 bé</option>' +
+                  '<option value="1 ghế em bé" ' + (babyCount.indexOf('1') !== -1 ? 'selected' : '') + '>1</option>' +
+                  '<option value="2 ghế em bé" ' + (babyCount.indexOf('2') !== -1 ? 'selected' : '') + '>2</option>' +
+                  '<option value="3 ghế em bé" ' + (babyCount.indexOf('3') !== -1 ? 'selected' : '') + '>3</option>' +
+                  '<option value="4 ghế em bé" ' + (babyCount.indexOf('4') !== -1 ? 'selected' : '') + '>4</option>' +
                 '</select>' : '') +
             '</div>' +
           '</div>';
+
+        var gioRowHtml =
+          '<div class="card-field-row col-span-3 card-field-time" onclick="event.stopPropagation(); moBangChonGio(' + idx + ', this)">' +
+            '<span class="card-field-label" title="Giờ vào (Bấm để xem bảng chọn & giờ chặn)"><i class="fa-solid fa-clock" style="color:#f59e0b;"></i></span>' +
+            '<input type="text" readonly class="card-input lct-input" placeholder="Giờ vào" value="' + esc(p.gioVao || '18h30') + '" style="cursor:pointer; font-weight:700; color:#f8fafc;" title="Bấm mở bảng chọn giờ">' +
+            '<span class="card-date-open" title="Bấm mở bảng chọn giờ"><i class="fa-solid fa-chevron-down" style="font-size:11px;"></i></span>' +
+          '</div>';
+
+        var kenhRowHtml =
+          '<div class="card-field-row col-span-2">' +
+            '<span class="card-field-label" title="Kênh đặt bàn">' + layIconKenh(p.kenh) + '</span>' +
+            '<select class="card-select" style="color:#38bdf8; font-weight:700;" onchange="updateCardField(' + idx + ', \'kenh\', this.value)" onclick="event.stopPropagation()">' +
+              '<option value="FB"' + (p.kenh === 'FB' ? ' selected' : '') + '>FB</option>' +
+              '<option value="Zal"' + (p.kenh === 'Zal' ? ' selected' : '') + '>Zalo</option>' +
+              '<option value="Web"' + (p.kenh === 'Web' ? ' selected' : '') + '>Web</option>' +
+              '<option value="GSh"' + (!p.kenh || p.kenh === 'GSh' ? ' selected' : '') + '>GSheet</option>' +
+              '<option value="Tik"' + (p.kenh === 'Tik' ? ' selected' : '') + '>TikTok</option>' +
+              '<option value="IG"' + (p.kenh === 'IG' ? ' selected' : '') + '>Insta</option>' +
+              '<option value="Thread"' + (p.kenh === 'Thread' ? ' selected' : '') + '>Threads</option>' +
+              '<option value="Call"' + (p.kenh === 'Call' ? ' selected' : '') + '>Hotline</option>' +
+              '<option value="Khác"' + (p.kenh === 'Khác' ? ' selected' : '') + '>Khác</option>' +
+            '</select>' +
+          '</div>';
+
+        var decorFieldsHtml = '';
+        if (tag.isDecor) {
+          decorFieldsHtml =
+            fieldHtml(idx, '<i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i>', 'Mẫu decor (chọn ở cột phải)', 'mauDecor', mauVal, { colSpan: 'col-span-6', style: 'color:#e2a684; font-weight:700;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-ribbon" style="color:#fb7185;"></i>', 'Nội dung bảng tiệc / Decor', 'decor', p.decor, { colSpan: 'col-span-6', style: 'color:#38bdf8; font-weight:600;' });
+        }
 
         card.innerHTML =
           '<div class="folder-tag-header">' +
@@ -1636,26 +1965,20 @@
           billSectionHtml +
           '<div class="card-smart-grid">' +
             fieldHtml(idx, '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>', 'Ngày', 'ngay', tag.ngay, { colSpan: 'col-span-3' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-clock" style="color:#f59e0b;"></i>', 'Giờ vào', 'gioVao', p.gioVao || '18h30', { colSpan: 'col-span-3', list: 'timeSuggestions' }) +
+            gioRowHtml +
             fieldHtml(idx, '<i class="fa-solid fa-user" style="color:#38bdf8;"></i>', 'Họ tên KH', 'ten', p.ten, { colSpan: 'col-span-3', live: true }) +
             fieldHtml(idx, '<i class="fa-solid fa-phone" style="color:#34d399;"></i>', 'SĐT', 'sdt', p.sdt, { colSpan: 'col-span-3', live: true }) +
             fieldHtml(idx, '<i class="fa-solid fa-users" style="color:#c084fc;"></i>', 'Số khách', 'soKhach', p.soKhach || '2', { colSpan: 'col-span-2', style: 'color:#38bdf8; font-weight:700;' }) +
             fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn', 'banSo', p.banSo, { colSpan: 'col-span-2', list: 'tableSuggestions' }) +
             fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Cọc', 'coc', p.coc || '0', { colSpan: 'col-span-2', list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
-            fieldHtml(idx, layIconKenh(p.kenh), 'Kênh', 'kenh', p.kenh || 'GSh', { colSpan: 'col-span-3', list: 'channelSuggestions', style: 'color:#38bdf8; font-weight:600;' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-id-badge" style="color:#e879f9;"></i>', 'Mã ID (' + taoMaDatBan(p.kenh, p.sdt, tag.ngay) + ')', 'id', p.id, { colSpan: 'col-span-3' }) +
-            '<div class="card-field-row col-span-3"><span class="card-field-label" title="Xuất VAT"><i class="fa-solid fa-file-invoice-dollar" style="color:#94a3b8;"></i></span>' +
-              '<select class="card-select" onchange="updateCardField(' + idx + ', \'vat\', this.value)" onclick="event.stopPropagation()">' +
-                '<option value="Không" ' + (p.vat !== 'Có xuất VAT' ? 'selected' : '') + '>Không VAT</option>' +
-                '<option value="Có xuất VAT" ' + (p.vat === 'Có xuất VAT' ? 'selected' : '') + '>Có VAT</option>' +
-              '</select>' +
-            '</div>' +
+            kenhRowHtml +
+            vatRowHtml +
             babyRowHtml +
-            fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#94a3b8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'col-span-6' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i>', 'Mẫu decor (chọn ở cột phải)', 'mauDecor', mauVal, { colSpan: 'col-span-6', style: 'color:#e2a684; font-weight:700;' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-ribbon" style="color:#fb7185;"></i>', 'Nội dung bảng tiệc / Decor', 'decor', p.decor, { colSpan: 'col-span-6', style: 'color:#38bdf8; font-weight:600;' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món...', 'datMon', p.datMon, { colSpan: 'col-span-6', textarea: true }) +
-            fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú...', 'ghiChu', p.ghiChu, { colSpan: 'col-span-6', textarea: true }) +
+            fieldHtml(idx, '<i class="fa-solid fa-id-badge" style="color:#e879f9;"></i>', 'Mã ID', 'id', p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay), { colSpan: 'col-span-3' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#94a3b8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'col-span-3' }) +
+            decorFieldsHtml +
+            fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món...', 'datMon', p.datMon, { colSpan: 'col-span-3', textarea: true }) +
+            fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú...', 'ghiChu', p.ghiChu, { colSpan: 'col-span-3', textarea: true }) +
           '</div>' +
           hoanCocSectionHtml;
 
@@ -1720,7 +2043,13 @@
             btn.innerText = "💾 Lưu Đơn Vào DATA_TONG";
             return;
           }
-          alert("✅ Lưu thành công " + res.count + " đơn vào DATA_TONG!\n(Từ dòng " + res.fromRow + " đến dòng " + res.toRow + ").");
+          phatChuongThanhCong();
+          hienToastThongBao("✅ Đã lưu " + res.count + " đơn vào DATA_TONG!", true);
+          try {
+            adminRun().withSuccessHandler(function(){}).thuTelegramWeb();
+            adminRun().withSuccessHandler(function(){}).thuPushQuanTri();
+          } catch (e) {}
+          alert("✅ Lưu thành công " + res.count + " đơn vào DATA_TONG!\n(Từ dòng " + res.fromRow + " đến dòng " + res.toRow + ").\n🔔 Đã phát thông báo về Telegram & Quản trị.");
           try {
             google.script.host.close();
           } catch (e) {
