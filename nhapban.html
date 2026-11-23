@@ -102,6 +102,19 @@
       display: flex; justify-content: space-between; align-items: center; gap: 4px;
       padding-bottom: 4px; border-bottom: 1px solid #1e293b;
     }
+    .tag-type-toggle {
+      display: inline-flex; align-items: center; background: #0b1120;
+      border: 1px solid #334155; border-radius: 6px; padding: 1.5px; gap: 2px;
+      margin-left: auto; margin-right: 6px;
+    }
+    .tag-type-btn {
+      display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px;
+      font-size: 11px; font-weight: 600; border-radius: 4px; cursor: pointer;
+      color: #94a3b8; margin: 0; user-select: none; transition: all 0.15s;
+    }
+    .tag-type-btn input { display: none; }
+    .tag-type-btn.active-thuong { background: #0284c7; color: #fff; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .tag-type-btn.active-decor { background: #d946ef; color: #fff; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
     .folder-tag-title {
       font-weight: 700; color: #38bdf8; font-size: 13px; min-width: 0;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -904,9 +917,11 @@
       var parsed = parseSmartBlock(blockText);
       var defaultDate = document.getElementById('dateSelector').value;
       var finalDate = parsed.ngay || defaultDate;
+      var isDecor = !!(parsed.mauDecor || (parsed.decor && parsed.decor.toLowerCase() !== 'không') || (blockText && /decor/i.test(blockText)));
       return {
         raw: blockText,
         ngay: finalDate,
+        isDecor: isDecor,
         mauDecor: parsed.mauDecor || '',
         anhDecor: '',
         billBase64: '',
@@ -914,6 +929,26 @@
         showHoanCoc: false,
         parsed: parsed
       };
+    }
+
+    function doiLoaiBanThe(idx, isDecor) {
+      var t = tagList[idx];
+      if (!t) return;
+      t.isDecor = isDecor;
+      if (!isDecor) {
+        t.mauDecor = "";
+        t.anhDecor = "";
+        t.parsed.mauDecor = "";
+        t.parsed.decor = "";
+        t.parsed.coc = "0";
+      } else {
+        if (!t.parsed.coc || t.parsed.coc === "0") {
+          var kNum = parseInt(t.parsed.soKhach, 10) || 2;
+          t.parsed.coc = cocTheoSoKhach(kNum);
+        }
+      }
+      renderAllTags();
+      renderDecorView();
     }
 
     function parseSmartBlock(txt) {
@@ -984,7 +1019,13 @@
       if (!p.sdt) { for (var i = 0; i < lines.length && !p.sdt; i++) p.sdt = laySdt(lines[i]); }
 
       var ten = nhan('Họ\\s*(?:&|và)?\\s*tên|Tên\\s*(?:khách(?:\\s*hàng)?|KH)?|Khách\\s*hàng|Khách');
-      if (ten && !/^\d/.test(ten)) p.ten = ten.replace(RE_SDT, '').replace(/[\s\-–,|]+$/, '').trim();
+      if (ten && !/^\d/.test(ten)) {
+        var firstPart = ten.split(/[\-–|,]/)[0].trim();
+        if (firstPart && !/^\d/.test(firstPart) && firstPart.length >= 2) {
+          ten = firstPart;
+        }
+        p.ten = ten.replace(RE_SDT, '').replace(/[\s\-–,|]+$/, '').trim();
+      }
       if (!p.ten) {
         var mFreeTen = txt.match(/^(?:(?:\d{1,2}[.)\]\-]\s*)?(?:Khách(?:\s*hàng)?|Anh|Chị|Bạn)\s*[:\-–]?\s*)([a-zA-ZÀ-ỹ\s]{2,30})(?=[,\-–\n]|$)/im);
         if (mFreeTen && mFreeTen[1]) p.ten = mFreeTen[1].trim();
@@ -1029,8 +1070,12 @@
         if (/tr|triệu/i.test(coc) && num < 100) num *= 1000000;
         p.coc = num > 0 ? num.toLocaleString('vi-VN') : '0';
       }
-      if ((p.decor || p.mauDecor || p.coc === '0' || !p.coc)) {
+      var coDecor = !!(p.mauDecor || (p.decor && p.decor.toLowerCase() !== 'không'));
+      // Bàn thường không tự nhảy cọc (giữ nguyên 0 hoặc tiền cọc đã nhập). Chỉ bàn Decor mới tự tính cọc theo số khách khi chưa nhập cọc
+      if (coDecor && (!p.coc || p.coc === '0')) {
         p.coc = cocTheoSoKhach(p.soKhach);
+      } else if (!p.coc) {
+        p.coc = '0';
       }
 
       var mon = nhan('Đặt\\s*món|Món(?:\\s*ăn)?|Menu|Ord(?:\\s*món)?');
@@ -1155,7 +1200,10 @@
         if (field === 'banSo') capNhatDatalistBanSo(value);
         if (field === 'soKhach') {
           var kNum = parseInt(value, 10) || 2;
-          tagList[idx].parsed.coc = cocTheoSoKhach(kNum);
+          // Bàn thường sẽ KHÔNG tự nhảy cọc! Chỉ bàn decor mới tự tính cọc khi chưa nhập cọc
+          if (tagList[idx] && tagList[idx].isDecor) {
+            tagList[idx].parsed.coc = cocTheoSoKhach(kNum);
+          }
           renderAllTags();
           return;
         }
@@ -1263,6 +1311,7 @@
       }
 
       cur.lockReason = "";
+      cur.isDecor = true; // Bật cờ Bàn Decor
       cur.mauDecor = decorItem.tenMau;
       cur.anhDecor = decorItem.hinhAnh;
       cur.parsed.mauDecor = decorItem.tenMau;
@@ -1570,6 +1619,14 @@
         card.innerHTML =
           '<div class="folder-tag-header">' +
             '<div class="folder-tag-title" title="' + esc(tagTitle) + '">' + esc(tagTitle) + '</div>' +
+            '<div class="tag-type-toggle" onclick="event.stopPropagation()">' +
+              '<label class="tag-type-btn ' + (!tag.isDecor ? 'active-thuong' : '') + '" title="Bàn ăn thường (không cần cọc, không decor)">' +
+                '<input type="radio" name="loaiBan_' + idx + '" value="thuong" ' + (!tag.isDecor ? 'checked' : '') + ' onchange="doiLoaiBanThe(' + idx + ', false)"> 🍽️ Thường' +
+              '</label>' +
+              '<label class="tag-type-btn ' + (tag.isDecor ? 'active-decor' : '') + '" title="Bàn tiệc có trang trí decor">' +
+                '<input type="radio" name="loaiBan_' + idx + '" value="decor" ' + (tag.isDecor ? 'checked' : '') + ' onchange="doiLoaiBanThe(' + idx + ', true)"> ✨ Decor' +
+              '</label>' +
+            '</div>' +
             '<div class="tag-actions">' +
               '<button type="button" class="btn-del-tag" title="Xóa thẻ" onclick="deleteTagAt(' + idx + ', event)"><i class="fa-solid fa-xmark"></i></button>' +
             '</div>' +
