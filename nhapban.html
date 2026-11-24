@@ -196,15 +196,15 @@
       background: #d946ef; color: #fff; box-shadow: 0 1px 4px rgba(217,70,239,0.5);
     }
     .folder-tag-title {
-      font-weight: 700; color: #38bdf8; font-size: 13.5px; min-width: 0; max-width: 105px;
+      font-weight: 700; color: #38bdf8; font-size: 13.5px; min-width: 0; flex: 1;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
-      padding: 1px 4px; border-radius: 4px; transition: background 0.15s; flex-shrink: 1;
+      padding: 1px 4px; border-radius: 4px; transition: background 0.15s;
     }
     .folder-tag-title:hover {
       background: rgba(56, 189, 248, 0.12);
     }
     .card-field-date .card-input {
-      font-size: 10.5px !important; letter-spacing: -0.3px !important;
+      font-size: 11px !important; letter-spacing: -0.2px !important;
     }
     .folder-tag-title-edit-input {
       font-weight: 700; color: #38bdf8; font-size: 13px; min-width: 0; flex: 1;
@@ -304,14 +304,14 @@
     }
     .card-top-action-bar {
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.1fr) minmax(0, 0.75fr) minmax(0, 1.15fr);
+      grid-template-columns: minmax(72px, 80px) minmax(0, 1fr) auto 44px;
       gap: 4px;
       margin-bottom: 4px;
       align-items: stretch;
     }
     @media (max-width: 640px) {
       .card-top-action-bar {
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.1fr) minmax(0, 0.75fr) minmax(0, 1.15fr);
+        grid-template-columns: minmax(68px, 78px) minmax(0, 1fr) auto 44px;
         gap: 3px;
       }
     }
@@ -427,11 +427,12 @@
     }
 
     .btn-vat-pill {
-      width: 100%; height: 100%; min-height: 28px;
+      width: auto; min-width: auto; height: 100%; min-height: 34px;
       display: inline-flex; align-items: center; justify-content: center; gap: 4px;
       background: #111827; border: 1px solid #334155; border-radius: 5px;
-      color: #94a3b8; font-size: 11px; font-weight: 600; cursor: pointer;
-      transition: all 0.15s ease; user-select: none; padding: 0 4px; box-sizing: border-box;
+      color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer;
+      transition: all 0.15s ease; user-select: none; padding: 0 7px; box-sizing: border-box;
+      white-space: nowrap; flex-shrink: 0;
     }
     .btn-vat-pill:hover {
       border-color: #38bdf8; color: #f8fafc;
@@ -442,15 +443,20 @@
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.5) !important;
     }
 
-    /* Nhóm 3 nút tiện ích công cụ: Email, Món, Ghi chú */
+    /* Nhóm 4 nút tiện ích công cụ: Email, Món, Ghi chú, Hoàn cọc (Lưới 2 dòng trên 2 dưới 2) */
     .tools-pill-group {
-      display: flex; align-items: center; justify-content: space-around; gap: 2px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 2px;
       background: #111827; border: 1px solid #334155; border-radius: 5px;
-      padding: 2px 3px; min-height: 28px; box-sizing: border-box; width: 100%; min-width: 0;
+      padding: 2px; height: 34px; min-height: 34px; box-sizing: border-box;
+      width: 44px; min-width: 44px; flex-shrink: 0;
     }
     .tools-pill-group .btn-field-pill {
-      flex: 1; height: 22px; width: auto; font-size: 11px; border-radius: 4px;
-      padding: 0 2px;
+      width: 100%; height: 100%; min-height: 0; font-size: 10px; border-radius: 3px;
+      padding: 0; display: inline-flex; align-items: center; justify-content: center;
+      line-height: 1;
     }
 
     .btn-field-pill {
@@ -678,7 +684,7 @@
       }
       .card-top-action-bar {
         display: grid !important;
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.1fr) minmax(0, 0.75fr) minmax(0, 1.15fr) !important;
+        grid-template-columns: minmax(68px, 78px) minmax(0, 1fr) auto 44px !important;
         gap: 3px !important;
       }
       .card-smart-grid-3col {
@@ -1976,12 +1982,34 @@
       dongBoTuTheSangPasteBox();
     }
 
+    function dongHoacXoaField(idx, loai) {
+      if (!tagList[idx]) return;
+      var propMap = { 'Email': 'email', 'DatMon': 'datMon', 'GhiChu': 'ghiChu' };
+      var prop = propMap[loai];
+      if (prop) {
+        tagList[idx].parsed[prop] = '';
+      }
+      tagList[idx]['mo' + loai] = false;
+      dongBoTuTheSangPasteBox();
+      renderAllTags();
+    }
+
     function toggleFieldMo(idx, loai) {
       if (!tagList[idx]) return;
-      var key = 'mo' + loai;
-      tagList[idx][key] = !tagList[idx][key];
-      renderAllTags();
-      if (tagList[idx][key]) {
+      var propMap = { 'Email': 'email', 'DatMon': 'datMon', 'GhiChu': 'ghiChu' };
+      var prop = propMap[loai];
+      var p = tagList[idx].parsed || {};
+      var hasData = !!(prop && p[prop] && p[prop].trim());
+      var isCurrentlyOpen = hasData || !!tagList[idx]['mo' + loai];
+
+      if (isCurrentlyOpen) {
+        if (prop) tagList[idx].parsed[prop] = '';
+        tagList[idx]['mo' + loai] = false;
+        dongBoTuTheSangPasteBox();
+        renderAllTags();
+      } else {
+        tagList[idx]['mo' + loai] = true;
+        renderAllTags();
         setTimeout(function() {
           var card = document.querySelectorAll('.folder-tag-card')[idx];
           if (card) {
@@ -2404,11 +2432,7 @@
 
     function dinhDangNgayHienThi(val) {
       if (!val) return '';
-      var s = String(val).trim();
-      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
-        return s.slice(5);
-      }
-      return s;
+      return String(val).trim();
     }
 
     function fieldHtml(idx, icon, label, field, value, opts) {
@@ -2456,7 +2480,7 @@
       
       var spanClass = opts.colSpan ? (' ' + opts.colSpan) : '';
       var closeBtn = opts.canClose
-        ? '<span class="card-field-close-btn" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'' + opts.canClose + '\')" title="Thu gọn ô này"><i class="fa-solid fa-xmark"></i></span>'
+        ? '<span class="card-field-close-btn" onclick="event.stopPropagation(); dongHoacXoaField(' + idx + ', \'' + opts.canClose + '\')" title="Tắt và xóa ô này"><i class="fa-solid fa-xmark"></i></span>'
         : '';
       return '<div class="card-field-row' + spanClass + '"><span class="card-field-label" title="' + label + '">' + icon + '</span>' + input + rightIcon + collapseBtn + closeBtn + '</div>';
     }
@@ -2557,19 +2581,19 @@
 
         var hasVat = p.vat === 'Có xuất VAT';
         var vatRowHtml =
-          '<button type="button" class="btn-vat-pill ' + (hasVat ? 'active' : '') + '" onclick="event.stopPropagation(); toggleVatPill(' + idx + ')" title="Bật/tắt xuất hóa đơn VAT" style="width:100%; height:100%; min-height:28px;">' +
+          '<button type="button" class="btn-vat-pill ' + (hasVat ? 'active' : '') + '" onclick="event.stopPropagation(); toggleVatPill(' + idx + ')" title="Bật/tắt xuất hóa đơn VAT">' +
             '<i class="fa-solid fa-receipt"></i> ' +
             '<span>VAT</span>' +
           '</button>';
 
         var babyFieldHtml =
-          '<div class="card-field-row ' + (hasBaby ? 'active-baby' : '') + '" style="padding:2px 4px; gap:3px; min-height:28px;" title="Ghế em bé">' +
-            '<button type="button" class="btn-baby-pill ' + (hasBaby ? 'active' : '') + '" onclick="event.stopPropagation(); toggleBabyPill(' + idx + ')" style="display:inline-flex; align-items:center; gap:3px; background:transparent; border:none; color:' + (hasBaby ? '#facc15' : '#64748b') + '; font-size:11.5px; font-weight:700; cursor:pointer; padding:0; flex-shrink:0;" title="Bật/tắt ghế bé">' +
+          '<div class="card-field-row ' + (hasBaby ? 'active-baby' : '') + '" style="padding:2px 5px; gap:4px; min-height:28px; justify-content:space-between;" title="Ghế em bé">' +
+            '<button type="button" class="btn-baby-pill ' + (hasBaby ? 'active' : '') + '" onclick="event.stopPropagation(); toggleBabyPill(' + idx + ')" style="display:inline-flex; align-items:center; gap:3px; background:transparent; border:none; color:' + (hasBaby ? '#facc15' : '#64748b') + '; font-size:11.5px; font-weight:700; cursor:pointer; padding:0; flex-shrink:0; line-height:1;" title="Bật/tắt ghế bé">' +
               '<i class="fa-solid fa-baby-carriage" style="font-size:11.5px;"></i>' +
               '<span>Bé</span>' +
             '</button>' +
             (hasBaby ?
-              '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)" onclick="event.stopPropagation()" style="background:transparent; border:none; color:#facc15; font-size:11.5px; font-weight:700; padding:0; cursor:pointer; flex:1; min-width:0;" title="Số lượng ghế em bé">' +
+              '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)" onclick="event.stopPropagation()" style="background:#0f172a; border:1px solid #eab308; color:#facc15; font-size:11px; font-weight:700; height:20px; line-height:18px; padding:0 3px; border-radius:3px; cursor:pointer; outline:none; text-align:center; text-align-last:center; display:inline-flex; align-items:center; vertical-align:middle; flex-shrink:0;" title="Số lượng ghế em bé">' +
                 '<option value="1 ghế em bé"' + (babyCount.indexOf('1') !== -1 ? ' selected' : '') + '>1</option>' +
                 '<option value="2 ghế em bé"' + (babyCount.indexOf('2') !== -1 ? ' selected' : '') + '>2</option>' +
                 '<option value="3 ghế em bé"' + (babyCount.indexOf('3') !== -1 ? ' selected' : '') + '>3</option>' +
@@ -2582,22 +2606,18 @@
         var hasGhiChu = !!(p.ghiChu && p.ghiChu.trim()) || tag.moGhiChu;
 
         var toolsRowHtml =
-          '<div class="tools-pill-group" style="padding:2px 2px; gap:2px; justify-content:space-around; width:100%; box-sizing:border-box; min-height:28px;" title="Công cụ mở rộng">' +
-            '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô nhập Email">' +
+          '<div class="tools-pill-group" title="Công cụ mở rộng">' +
+            '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt Email">' +
               '<i class="fa-solid fa-envelope"></i>' +
             '</button>' +
-            '<button type="button" class="btn-field-pill ' + (hasDatMon ? 'active' : '') + (p.datMon ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'DatMon\')" title="Bật/tắt ô nhập Đặt món">' +
+            '<button type="button" class="btn-field-pill ' + (hasDatMon ? 'active' : '') + (p.datMon ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'DatMon\')" title="Bật/tắt Đặt món">' +
               '<i class="fa-solid fa-utensils"></i>' +
             '</button>' +
-            '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt ô nhập Ghi chú">' +
+            '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt Ghi chú">' +
               '<i class="fa-solid fa-pen-to-square"></i>' +
             '</button>' +
-            '<button type="button" class="btn-field-pill btn-hoancoc-pill ' + (tag.showHoanCoc ? 'active ' : '') + (hasHoanData ? 'has-data ' : '') + '" onclick="event.stopPropagation(); toggleHoanCoc(' + idx + ', event)" title="Bật/tắt thông tin hoàn cọc">' +
-              '<svg width="15" height="13" viewBox="0 0 24 20" fill="none" style="vertical-align:middle; display:inline-block;">' +
-                '<path d="M7 6 L2 10 L7 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-                '<path d="M3 10 C3 4 10 3 17 6 C21 8 22 13 20 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>' +
-                '<text x="12" y="13.5" font-size="7" font-weight="900" fill="currentColor" text-anchor="middle">CỌC</text>' +
-              '</svg>' +
+            '<button type="button" class="btn-field-pill btn-hoancoc-pill ' + (tag.showHoanCoc ? 'active ' : '') + (hasHoanData ? 'has-data ' : '') + '" onclick="event.stopPropagation(); toggleHoanCoc(' + idx + ', event)" title="Bật/tắt Hoàn cọc">' +
+              '<i class="fa-solid fa-rotate-left" style="font-size:10px;"></i>' +
             '</button>' +
           '</div>';
 
@@ -2608,8 +2628,8 @@
           '<div class="card-field-row" style="flex-direction:column; align-items:stretch; justify-content:center; padding:2px 6px; gap:1px; min-height:34px; border-radius:6px; min-width:0; width:100%; box-sizing:border-box;" title="Kênh đặt bàn & Mã ID đơn">' +
             /* Dòng 1: Kênh nền tảng */
             '<div style="display:flex; align-items:center; gap:4px; height:16px; min-width:0;">' +
-              '<span class="card-field-label" id="kenhIcon_' + idx + '" style="width:14px; font-size:11.5px; line-height:1;">' + layIconKenh(p.kenh) + '</span>' +
-              '<select class="card-select" id="kenhSelect_' + idx + '" style="color:#38bdf8; font-weight:700; width:100%; font-size:11.5px; padding:0; height:16px; line-height:16px; border:none; background:transparent;" onchange="doiKenhThe(' + idx + ', this.value)" onclick="event.stopPropagation()">' +
+              '<span class="card-field-label" id="kenhIcon_' + idx + '" style="width:14px; font-size:11px; line-height:1;">' + layIconKenh(p.kenh) + '</span>' +
+              '<select class="card-select" id="kenhSelect_' + idx + '" style="color:#38bdf8; font-weight:700; width:100%; font-size:11px; padding:0; height:16px; line-height:16px; border:none; background:transparent;" onchange="doiKenhThe(' + idx + ', this.value)" onclick="event.stopPropagation()">' +
                 '<option value="FB"' + (p.kenh === 'FB' ? ' selected' : '') + '>Facebook</option>' +
                 '<option value="Zal"' + (p.kenh === 'Zal' ? ' selected' : '') + '>Zalo</option>' +
                 '<option value="Web"' + (p.kenh === 'Web' ? ' selected' : '') + '>Website</option>' +
@@ -2623,7 +2643,7 @@
             '</div>' +
             /* Dòng 2: Mã ID đơn */
             '<div style="display:flex; align-items:center; height:16px; min-width:0;">' +
-              '<input type="text" class="card-input" id="idInput_' + idx + '" placeholder="Mã ID đơn" value="' + esc(idVal) + '" onchange="updateCardField(' + idx + ', \'id\', this.value)" onclick="event.stopPropagation()" style="font-size:11.5px; font-weight:700; color:#f8fafc; padding:0; height:16px; line-height:16px; letter-spacing:0.2px;">' +
+              '<input type="text" class="card-input" id="idInput_' + idx + '" placeholder="Mã ID đơn" value="' + esc(idVal) + '" onchange="updateCardField(' + idx + ', \'id\', this.value)" onclick="event.stopPropagation()" style="font-size:11px; font-weight:700; color:#f8fafc; padding:0; height:16px; line-height:16px; letter-spacing:-0.2px; width:100%;">' +
             '</div>' +
           '</div>';
 
