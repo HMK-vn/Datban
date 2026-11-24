@@ -77,13 +77,26 @@
       padding: 1px 7px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.15s;
     }
     .btn-toggle-paste:hover { color: #38bdf8; border-color: #38bdf8; }
+    .btn-clear-paste {
+      background: #1e293b; border: 1px solid #475569; color: #f87171; font-size: 10.5px;
+      padding: 1px 8px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.15s;
+      display: inline-flex; align-items: center;
+    }
+    .btn-clear-paste:hover {
+      background: #7f1d1d; color: #fee2e2; border-color: #ef4444;
+    }
     .multi-paste-box {
-      width: 100%; min-height: 32px; height: 32px; max-height: 280px; background: #0b1120; border: 1px solid #334155;
+      width: 100%; min-height: 34px; height: 34px; max-height: 280px; background: #0b1120; border: 1px solid #334155;
       color: #f8fafc; border-radius: 6px; padding: 5px 8px; font-size: 11.5px;
-      outline: none; resize: vertical; line-height: 1.4; overflow-y: auto; box-sizing: border-box;
-      transition: border-color 0.15s;
+      outline: none; resize: vertical; line-height: 1.45; overflow-y: auto; box-sizing: border-box;
+      white-space: pre-wrap; word-break: break-word; transition: border-color 0.15s;
     }
     .multi-paste-box:focus { border-color: #38bdf8; }
+    .multi-paste-box:empty:before {
+      content: attr(data-placeholder);
+      color: #94a3b8;
+      pointer-events: none;
+    }
     .multi-paste-box.two-cols {
       columns: 2; column-gap: 20px; column-rule: 1px dashed #334155;
     }
@@ -226,15 +239,30 @@
     .col-span-3 { grid-column: span 3; }
     .col-span-2 { grid-column: span 2; }
 
+    /* Triệt tiêu hoàn toàn nút sổ mũi tên indicator của trình duyệt để giữ văn bản thuần tuý */
+    input::-webkit-calendar-picker-indicator {
+      display: none !important;
+      -webkit-appearance: none;
+      opacity: 0 !important;
+      pointer-events: none;
+      width: 0 !important;
+      height: 0 !important;
+      margin: 0 !important;
+    }
+    input::-webkit-list-button {
+      display: none !important;
+      -webkit-appearance: none;
+    }
+
     .card-field-row {
       position: relative;
-      display: flex; align-items: center; gap: 6px; background: #111827; min-width: 0;
-      border: 1px solid #334155; border-radius: 5px; padding: 2px 6px; min-height: 28px;
+      display: flex; align-items: center; gap: 4px; background: #111827; min-width: 0;
+      border: 1px solid #334155; border-radius: 5px; padding: 2px 5px; min-height: 28px;
       transition: border-color 0.15s;
     }
     .card-field-row:focus-within { border-color: #38bdf8; background: #0f172a; }
     .card-field-label {
-      width: 20px; font-size: 14px; display: inline-flex; align-items: center;
+      width: 15px; font-size: 12px; display: inline-flex; align-items: center;
       justify-content: center; flex-shrink: 0; cursor: default; text-align: center;
     }
     .card-field-row:has(.card-textarea) {
@@ -242,41 +270,41 @@
     }
     .card-input, .card-select, .card-textarea {
       width: 100%; min-width: 0; background: transparent !important; border: none; color: #f8fafc;
-      font-size: 12.5px; font-weight: 500; outline: none; padding: 2px 0;
+      font-size: 12px; font-weight: 500; outline: none; padding: 2px 0;
     }
     .card-input::placeholder, .card-textarea::placeholder {
-      color: #94a3b8; opacity: 1; font-size: 12px; font-weight: 400;
+      color: #94a3b8; opacity: 1; font-size: 11.5px; font-weight: 400;
     }
     .card-input.lct-input {
-      color: #f8fafc !important; font-weight: 700; cursor: pointer; font-size: 12.5px;
+      color: #f8fafc !important; font-weight: 700; cursor: pointer; font-size: 12px;
       background-color: transparent !important;
     }
     .card-date-open {
-      color: #38bdf8; font-size: 13px; margin-left: auto; flex-shrink: 0; cursor: pointer;
-      padding: 0 2px; opacity: 0.85;
+      color: #38bdf8; font-size: 12px; margin-left: auto; flex-shrink: 0; cursor: pointer;
+      padding: 0 1px; opacity: 0.85;
     }
     .card-date-open:hover { opacity: 1; transform: scale(1.15); }
-    .card-select { cursor: pointer; color: #38bdf8; font-weight: 600; }
+    .card-select { cursor: pointer; color: #38bdf8; font-weight: 600; font-size: 12px; }
     .card-select option { background: #0f172a; color: #f8fafc; }
     .card-textarea {
-      resize: vertical; min-height: 26px; height: auto; max-height: 120px; line-height: 1.35;
-      font-family: inherit; overflow-y: auto;
+      resize: vertical; min-height: 26px; height: auto; max-height: 140px; line-height: 1.35;
+      font-family: inherit; overflow-y: auto; transition: height 0.2s ease;
     }
 
-    /* Switch toggle cho Trẻ em (Ghế em bé) & VAT - Cân đối tuyệt đối */
+    /* Switch toggle cho Trẻ em (Ghế em bé) & VAT - Tối ưu lọt lòng tuyệt đối */
     .baby-field-wrap {
-      display: flex; align-items: center; justify-content: flex-start; gap: 4px; width: 100%;
+      display: flex; align-items: center; justify-content: flex-start; gap: 3px; width: 100%; min-width: 0;
     }
     .baby-toggle-box {
-      display: inline-flex; align-items: center; gap: 3px; cursor: pointer; user-select: none;
+      display: inline-flex; align-items: center; gap: 2px; cursor: pointer; user-select: none;
     }
     .baby-toggle-box input[type="checkbox"] {
-      width: 14px; height: 14px; cursor: pointer; accent-color: #facc15; margin: 0;
+      width: 13px; height: 13px; cursor: pointer; accent-color: #facc15; margin: 0;
     }
     .baby-toggle-box input[type="checkbox"].vat-check {
       accent-color: #38bdf8;
     }
-    .baby-toggle-text { font-size: 11.5px; color: #cbd5e1; font-weight: 500; white-space: nowrap; }
+    .baby-toggle-text { font-size: 11px; color: #cbd5e1; font-weight: 500; white-space: nowrap; }
     .text-vat-active { color: #38bdf8 !important; font-weight: 700; }
     .badge-vat-text {
       display: inline-flex; align-items: center; justify-content: center;
@@ -290,21 +318,52 @@
       border-color: #38bdf8; box-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
     }
     .baby-select {
-      width: 34px; height: 22px; min-width: 34px; background: #0f172a !important; border: 1px solid #334155;
-      color: #facc15; font-size: 11.5px; font-weight: 700; border-radius: 4px; padding: 0;
-      text-align: center; text-align-last: center; line-height: 20px; outline: none; cursor: pointer;
+      width: 28px; height: 21px; min-width: 28px; background: #0f172a !important; border: 1px solid #334155;
+      color: #facc15; font-size: 11px; font-weight: 700; border-radius: 3px; padding: 0;
+      text-align: center; text-align-last: center; line-height: 19px; outline: none; cursor: pointer;
     }
 
-    /* Thanh trạng thái tổng hợp: Kênh + Mã ID + VAT + 3 Icon không chữ (Gọn trên 1 dòng) */
+    /* Thanh trạng thái tổng hợp & Công cụ */
     .card-status-bar {
       display: flex; align-items: center; gap: 4px; width: 100%; min-width: 0;
     }
     .card-status-bar .sub-kenh {
-      flex: 0 0 74px; min-width: 74px; padding: 2px 4px;
+      flex: 0 0 68px; min-width: 68px; padding: 2px 4px;
     }
     .card-status-bar .sub-id {
-      flex: 1 1 auto; min-width: 90px;
+      flex: 1 1 auto; min-width: 80px;
     }
+    .card-status-bar .sub-vat {
+      flex: 0 0 auto; padding: 2px 5px; gap: 3px;
+    }
+    .card-status-bar .sub-tools {
+      flex: 0 0 auto; display: flex; align-items: center; gap: 3px;
+      padding: 2px 4px !important; background: #0b1120 !important; border: 1px dashed #334155 !important;
+      border-radius: 5px; min-height: 28px;
+    }
+    .btn-field-pill {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #1e293b; border: 1px solid #334155; border-radius: 4px;
+      color: #94a3b8; font-size: 11px; font-weight: 600; width: 23px; height: 21px; cursor: pointer;
+      transition: all 0.15s; line-height: 1;
+    }
+    .btn-field-pill:hover { background: #334155; color: #f8fafc; }
+    .btn-field-pill.active {
+      background: rgba(56, 189, 248, 0.22); color: #38bdf8; border-color: #38bdf8; font-weight: 700;
+    }
+    .btn-field-pill.has-data {
+      background: rgba(52, 211, 153, 0.22); color: #34d399; border-color: #34d399; font-weight: 700;
+    }
+    .card-field-close-btn {
+      color: #64748b; font-size: 11px; cursor: pointer; padding: 2px 4px; margin-left: 2px;
+      border-radius: 3px; transition: color 0.15s; flex-shrink: 0;
+    }
+    .card-field-close-btn:hover { color: #f43f5e; background: rgba(244,63,94,0.1); }
+    .card-field-collapse-btn {
+      color: #64748b; font-size: 11px; cursor: pointer; padding: 2px 4px; margin-left: auto;
+      border-radius: 3px; transition: color 0.15s; flex-shrink: 0;
+    }
+    .card-field-collapse-btn:hover { color: #38bdf8; background: rgba(56,189,248,0.15); }
     .card-status-bar .sub-vat {
       flex: 0 0 auto; padding: 2px 5px; gap: 3px;
     }
@@ -597,6 +656,9 @@
     <option value="Thread">Threads</option><option value="Call">Gọi điện / Hotline</option><option value="Khác">Khác</option>
   </datalist>
 
+  <!-- Danh sách số điện thoại & Email từ hệ thống (văn bản thuần tuý, không hiện nút sổ) -->
+  <datalist id="customerPhoneList"></datalist>
+  <datalist id="customerEmailList"></datalist>
   <datalist id="emailDomainList"></datalist>
 
   <div class="mobile-tab-bar" id="mobileTabBar">
@@ -613,9 +675,12 @@
       <div class="paste-box-wrap">
         <div class="paste-box-bar">
           <span style="font-size:11px; font-weight:700; color:#38bdf8;"><i class="fa-solid fa-paste me-1"></i> Dán nội dung / Bill cọc (Tự nhận diện không cần nhấn nút)</span>
-          <button type="button" class="btn-toggle-paste" id="btnTogglePaste" onclick="togglePasteBox()" title="Thu gọn hoặc mở rộng ô dán"><i class="fa-solid fa-chevron-up"></i> Thu gọn</button>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <button type="button" class="btn-clear-paste" onclick="xoaNoiDungOdan()" title="Xóa nội dung trong ô dán (Các thẻ đã nhận diện vẫn được giữ nguyên)"><i class="fa-solid fa-eraser me-1"></i> Xóa ô dán</button>
+            <button type="button" class="btn-toggle-paste" id="btnTogglePaste" onclick="togglePasteBox()" title="Thu gọn hoặc mở rộng ô dán"><i class="fa-solid fa-chevron-up"></i> Thu gọn</button>
+          </div>
         </div>
-        <textarea class="multi-paste-box" id="multiPasteArea" placeholder="Dán nội dung đơn hoặc dán ảnh bill cọc (Ctrl+V) tại đây... Tự nhận diện văn bản & ảnh bill!" oninput="autoFitPasteBox(this); handleMultiPaste(this.value)" onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { autoFitPasteBox(el); handleMultiPaste(el.value); }, 0); }" onpaste="var el = this; setTimeout(function() { autoFitPasteBox(el); }, 30); handleMultiPasteWithImage(event, this)" onblur="autoFitPasteBox(this); handleMultiPaste(this.value)"></textarea>
+        <div class="multi-paste-box" id="multiPasteArea" contenteditable="true" data-placeholder="Dán nội dung đơn hoặc dán ảnh bill cọc (Ctrl+V) tại đây... Tự nhận diện văn bản & ảnh bill!" oninput="autoFitPasteBox(this); handleMultiPaste(this.innerText || this.textContent)" onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { autoFitPasteBox(el); handleMultiPaste(el.innerText || el.textContent); }, 0); }" onpaste="handleMultiPasteWithImage(event, this)" onblur="autoFitPasteBox(this); handleMultiPaste(this.innerText || this.textContent)"></div>
       </div>
       <div class="tag-header-label">
         <span><i class="fa-solid fa-folder-open me-1" style="color:#38bdf8;"></i> CÁC THẺ TAG ĐƠN (<span id="tagCountLabel">0</span>)</span>
@@ -730,6 +795,45 @@
         dl.innerHTML = danhSachBanSo.map(function(b) { return '<option value="' + esc(b) + '"></option>'; }).join('');
       }
     }
+
+    /* Thu thập số điện thoại và email khách từ dữ liệu hệ thống (văn bản thuần tuý, không nút sổ) */
+    var danhSachKhachSDT = [];
+    var danhSachKhachEmail = [];
+    try {
+      danhSachKhachSDT = JSON.parse(localStorage.getItem("DANH_SACH_KHACH_SDT") || "[]");
+      danhSachKhachEmail = JSON.parse(localStorage.getItem("DANH_SACH_KHACH_EMAIL") || "[]");
+    } catch(e) {}
+
+    function capNhatDatalistKhach(sdt, email) {
+      var changed = false;
+      if (sdt && sdt.trim().length >= 9 && danhSachKhachSDT.indexOf(sdt.trim()) === -1) {
+        danhSachKhachSDT.push(sdt.trim());
+        changed = true;
+      }
+      if (email && email.indexOf('@') !== -1 && danhSachKhachEmail.indexOf(email.trim()) === -1) {
+        danhSachKhachEmail.push(email.trim());
+        changed = true;
+      }
+      if (changed) {
+        try {
+          localStorage.setItem("DANH_SACH_KHACH_SDT", JSON.stringify(danhSachKhachSDT.slice(-200)));
+          localStorage.setItem("DANH_SACH_KHACH_EMAIL", JSON.stringify(danhSachKhachEmail.slice(-200)));
+        } catch(e) {}
+        renderDatalistKhach();
+      }
+    }
+
+    function renderDatalistKhach() {
+      var dlPhone = document.getElementById("customerPhoneList");
+      if (dlPhone) {
+        dlPhone.innerHTML = danhSachKhachSDT.map(function(p) { return '<option value="' + esc(p) + '"></option>'; }).join('');
+      }
+      var dlEmail = document.getElementById("customerEmailList");
+      if (dlEmail) {
+        dlEmail.innerHTML = danhSachKhachEmail.map(function(m) { return '<option value="' + esc(m) + '"></option>'; }).join('');
+      }
+    }
+    setTimeout(renderDatalistKhach, 100);
 
     function esc(s) {
       return String(s || "")
@@ -1005,6 +1109,38 @@
 
     var _isSyncingFromCard = false;
 
+    function xoaNoiDungOdan() {
+      var area = document.getElementById('multiPasteArea');
+      if (area) {
+        if (area.tagName === 'TEXTAREA') {
+          area.value = '';
+        } else {
+          area.innerText = '';
+        }
+        autoFitPasteBox(area);
+      }
+      hienToastThongBao("🧹 Đã xóa nội dung ô dán (Các thẻ khách vẫn được giữ nguyên)", false);
+    }
+
+    function toggleCollapseNote(btn) {
+      var row = btn.closest('.card-field-row');
+      if (!row) return;
+      var ta = row.querySelector('.card-textarea');
+      if (!ta) return;
+      if (ta.dataset.collapsed === 'true') {
+        ta.dataset.collapsed = 'false';
+        ta.style.height = 'auto';
+        ta.style.height = Math.max(26, ta.scrollHeight) + 'px';
+        btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
+        btn.title = 'Ẩn bớt ghi chú';
+      } else {
+        ta.dataset.collapsed = 'true';
+        ta.style.height = '26px';
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+        btn.title = 'Mở rộng ghi chú';
+      }
+    }
+
     function togglePasteBox() {
       var area = document.getElementById('multiPasteArea');
       var btn = document.getElementById('btnTogglePaste');
@@ -1023,7 +1159,7 @@
       if (!el) el = document.getElementById('multiPasteArea');
       if (!el) return;
       if (el.style.display === 'none') return;
-      var txt = el.value || '';
+      var txt = el.tagName === 'TEXTAREA' ? (el.value || '') : (el.innerText || '');
       var lines = txt.split(/\r?\n/).filter(function(l) { return l.trim(); });
       var hasMulti = txt.indexOf('---') !== -1 || lines.length >= 8;
       if (hasMulti) {
@@ -1033,7 +1169,7 @@
         el.classList.remove('two-cols');
         el.style.height = 'auto';
         var scrollH = el.scrollHeight;
-        var newH = Math.max(32, Math.min(220, scrollH));
+        var newH = Math.max(34, Math.min(220, scrollH));
         el.style.height = newH + 'px';
       }
     }
@@ -1072,8 +1208,13 @@
           if (lines.length > 0) blocks.push(lines.join("\n"));
         });
         var newContent = blocks.join("\n---\n");
-        if (area.value !== newContent) {
-          area.value = newContent;
+        var currentText = area.tagName === 'TEXTAREA' ? area.value : area.innerText;
+        if (currentText !== newContent) {
+          if (area.tagName === 'TEXTAREA') {
+            area.value = newContent;
+          } else {
+            area.innerText = newContent;
+          }
           autoFitPasteBox(area);
         }
       } finally {
@@ -1144,7 +1285,11 @@
         "Ghi chú: Bàn thường, góc view đẹp";
       var area = document.getElementById('multiPasteArea');
       if (area) {
-        area.value = mauGiaLap;
+        if (area.tagName === 'TEXTAREA') {
+          area.value = mauGiaLap;
+        } else {
+          area.innerText = mauGiaLap;
+        }
         autoFitPasteBox(area);
       }
       handleMultiPaste(mauGiaLap);
@@ -1595,8 +1740,8 @@
       }
     }
 
-    /* 📸 DÁN ẢNH BILL TRỰC TIẾP QUA CLIPBOARD (Ctrl+V) */
-    function handleMultiPasteWithImage(e, textarea) {
+    /* 📸 DÁN ẢNH BILL TRỰC TIẾP QUA CLIPBOARD (Ctrl+V) & VĂN BẢN ĐA CỘT */
+    function handleMultiPasteWithImage(e, el) {
       var clipboardData = e.clipboardData || window.clipboardData;
       if (!clipboardData) return;
       var items = clipboardData.items;
@@ -1618,8 +1763,15 @@
       var textData = clipboardData.getData('text/plain');
       if (imagePasted && (!textData || !textData.trim())) {
         e.preventDefault();
-      } else {
-        setTimeout(function() { handleMultiPaste(textarea.value); }, 0);
+      } else if (textData) {
+        if (el.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          document.execCommand('insertText', false, textData);
+          autoFitPasteBox(el);
+          handleMultiPaste(el.innerText || el.textContent);
+        } else {
+          setTimeout(function() { handleMultiPaste(el.value); }, 0);
+        }
       }
     }
 
@@ -2010,21 +2162,25 @@
       
       var onInputSpecial = '';
       if (field === 'email') {
-        onInputSpecial = ' oninput="onEmailInput(' + idx + ', this)" onblur="onEmailBlur(' + idx + ', this)" list="emailDomainList"';
+        onInputSpecial = ' oninput="onEmailInput(' + idx + ', this)" onblur="onEmailBlur(' + idx + ', this)" list="customerEmailList"';
       }
 
+      var collapseBtn = opts.textarea
+        ? '<span class="card-field-collapse-btn" onclick="event.stopPropagation(); toggleCollapseNote(this)" title="Ẩn bớt ghi chú"><i class="fa-solid fa-chevron-up"></i></span>'
+        : '';
+
       var input = opts.textarea
-        ? '<textarea class="card-textarea" placeholder="' + label + '..." oninput="this.style.height=\'auto\';this.style.height=Math.max(26,this.scrollHeight)+\'px\';updateCardField(' + idx + ', \'' + field + '\', this.value)" onchange="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">' + esc(value) + '</textarea>'
+        ? '<textarea class="card-textarea" placeholder="' + label + '..." oninput="this.dataset.collapsed=\'false\';this.style.height=\'auto\';this.style.height=Math.max(26,this.scrollHeight)+\'px\';updateCardField(' + idx + ', \'' + field + '\', this.value)" onchange="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">' + esc(value) + '</textarea>'
         : '<input type="' + inputType + '"' + (isDate ? ' readonly' : '') + ' class="card-input' + (isDate ? ' lct-input' : '') + '"' + (opts.list ? ' list="' + opts.list + '"' : '') +
           (opts.style ? ' style="' + opts.style + '"' : '') + (field === 'id' ? ' id="idInput_' + idx + '"' : '') + ' placeholder="' + label + '" value="' + esc(value) + '" ' +
           (onInputSpecial || (evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)"')) + clickAttr + '>';
       
-      var spanClass = opts.colSpan ? (' ' + opts.colSpan) : ' col-span-3';
+      var spanClass = opts.colSpan ? (' ' + opts.colSpan) : ' col-span-5';
       var dateRowAttrs = isDate ? ' onclick="event.preventDefault(); event.stopPropagation(); moLichThe_(' + idx + ', this.querySelector(\'input\') || this)" style="cursor:pointer;"' : '';
       var closeBtn = opts.canClose
         ? '<span class="card-field-close-btn" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'' + opts.canClose + '\')" title="Thu gọn ô này"><i class="fa-solid fa-xmark"></i></span>'
         : '';
-      return '<div class="card-field-row' + spanClass + (isDate ? ' card-field-date' : '') + '"' + dateRowAttrs + '><span class="card-field-label" title="' + label + '"' + (isDate ? ' style="cursor:pointer;"' : '') + '>' + icon + '</span>' + input + rightIcon + closeBtn + '</div>';
+      return '<div class="card-field-row' + spanClass + (isDate ? ' card-field-date' : '') + '"' + dateRowAttrs + '><span class="card-field-label" title="' + label + '"' + (isDate ? ' style="cursor:pointer;"' : '') + '>' + icon + '</span>' + input + rightIcon + collapseBtn + closeBtn + '</div>';
     }
 
     function renderAllTags() {
@@ -2122,16 +2278,16 @@
 
         var hasVat = p.vat === 'Có xuất VAT';
         var vatHtml =
-          '<div class="card-field-row sub-vat" title="Xuất hóa đơn VAT">' +
+          '<div class="card-field-row sub-vat" style="padding:2px 4px; gap:2px; min-height:24px; border:none; background:transparent;" title="Xuất hóa đơn VAT">' +
             '<span class="badge-vat-text ' + (hasVat ? 'vat-active' : '') + '" onclick="event.stopPropagation(); toggleVat(' + idx + ', ' + (!hasVat) + ')">VAT</span>' +
             '<label class="baby-toggle-box" title="Bật/tắt VAT" onclick="event.stopPropagation()">' +
               '<input type="checkbox" class="vat-check" ' + (hasVat ? 'checked' : '') + ' onchange="toggleVat(' + idx + ', this.checked)">' +
-              '<span class="baby-toggle-text ' + (hasVat ? 'text-vat-active' : '') + '">' + (hasVat ? 'VAT' : 'Ko') + '</span>' +
+              '<span class="baby-toggle-text ' + (hasVat ? 'text-vat-active' : '') + '">' + (hasVat ? 'Có' : 'Ko') + '</span>' +
             '</label>' +
           '</div>';
 
         var babyRowHtml =
-          '<div class="card-field-row col-span-3">' +
+          '<div class="card-field-row col-span-5">' +
             '<span class="card-field-label" title="Ghế em bé"><i class="fa-solid fa-baby" style="color:#facc15;"></i></span>' +
             '<div class="baby-field-wrap" onclick="event.stopPropagation()">' +
               '<label class="baby-toggle-box" title="Bấm để bật/tắt có trẻ em">' +
@@ -2149,16 +2305,23 @@
           '</div>';
 
         var gioRowHtml =
-          '<div class="card-field-row col-span-4 card-field-time" onclick="event.stopPropagation(); moBangChonGio(' + idx + ', this)">' +
+          '<div class="card-field-row col-span-5 card-field-time" onclick="event.stopPropagation(); moBangChonGio(' + idx + ', this)">' +
             '<span class="card-field-label" title="Giờ vào (Bấm để xem bảng chọn & giờ chặn)"><i class="fa-solid fa-clock" style="color:#f59e0b;"></i></span>' +
             '<input type="text" readonly class="card-input lct-input" placeholder="Giờ vào" value="' + esc(p.gioVao || '18h30') + '" style="cursor:pointer; font-weight:700; color:#f8fafc;" title="Bấm mở bảng chọn giờ">' +
             '<span class="card-date-open" title="Bấm mở bảng chọn giờ"><i class="fa-solid fa-chevron-down" style="font-size:11px;"></i></span>' +
           '</div>';
 
-        var kenhRowHtml =
-          '<div class="card-field-row col-span-5" title="Kênh đặt bàn">' +
-            '<span class="card-field-label" id="kenhIcon_' + idx + '">' + layIconKenh(p.kenh) + '</span>' +
-            '<select class="card-select" id="kenhSelect_' + idx + '" style="color:#38bdf8; font-weight:700;" onchange="doiKenhThe(' + idx + ', this.value)" onclick="event.stopPropagation()">' +
+        var hasEmail = !!(p.email && p.email.trim()) || tag.moEmail;
+        var hasDatMon = !!(p.datMon && p.datMon.trim()) || tag.moDatMon;
+        var hasGhiChu = !!(p.ghiChu && p.ghiChu.trim()) || tag.moGhiChu;
+
+        var idVal = p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay);
+
+        /* Cột 1 (Dài - span 7): Kênh chọn + Mã ID gộp chung 1 ô cực gọn */
+        var kenhIdCombinedHtml =
+          '<div class="card-field-row col-span-7" style="padding:2px 4px; gap:4px;" title="Kênh đặt bàn & Mã ID đơn">' +
+            '<span class="card-field-label" id="kenhIcon_' + idx + '" style="width:14px;">' + layIconKenh(p.kenh) + '</span>' +
+            '<select class="card-select" id="kenhSelect_' + idx + '" style="color:#38bdf8; font-weight:700; width:58px; flex-shrink:0; font-size:11.5px;" onchange="doiKenhThe(' + idx + ', this.value)" onclick="event.stopPropagation()">' +
               '<option value="FB"' + (p.kenh === 'FB' ? ' selected' : '') + '>FB</option>' +
               '<option value="Zal"' + (p.kenh === 'Zal' ? ' selected' : '') + '>Zalo</option>' +
               '<option value="Web"' + (p.kenh === 'Web' ? ' selected' : '') + '>Web</option>' +
@@ -2169,21 +2332,14 @@
               '<option value="Call"' + (p.kenh === 'Call' ? ' selected' : '') + '>Hotline</option>' +
               '<option value="Khác"' + (p.kenh === 'Khác' ? ' selected' : '') + '>Khác</option>' +
             '</select>' +
+            '<input type="text" class="card-input" id="idInput_' + idx + '" placeholder="Mã ID" value="' + esc(idVal) + '" onchange="updateCardField(' + idx + ', \'id\', this.value)" onclick="event.stopPropagation()" style="font-size:11px; font-weight:700; color:#f8fafc; border-left:1px solid #334155; padding-left:5px; margin-left:2px;">' +
           '</div>';
 
-        var hasEmail = !!(p.email && p.email.trim()) || tag.moEmail;
-        var hasDatMon = !!(p.datMon && p.datMon.trim()) || tag.moDatMon;
-        var hasGhiChu = !!(p.ghiChu && p.ghiChu.trim()) || tag.moGhiChu;
-
-        var idVal = p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay);
-        var statusBarHtml =
-          '<div class="card-status-bar col-span-12">' +
-            '<div class="card-field-row sub-id" title="Mã ID đơn">' +
-              '<span class="card-field-label" title="Mã ID"><i class="fa-solid fa-id-badge" style="color:#e879f9;"></i></span>' +
-              '<input type="text" class="card-input" id="idInput_' + idx + '" placeholder="Mã ID" value="' + esc(idVal) + '" onchange="updateCardField(' + idx + ', \'id\', this.value)" onclick="event.stopPropagation()" style="font-size:11px; font-weight:700; color:#f8fafc;">' +
-            '</div>' +
+        /* Cột 2 (Ngắn - span 5): VAT + 3 nút công cụ (Email, Món, Ghi chú) */
+        var vatToolsHtml =
+          '<div class="card-field-row col-span-5" style="padding:2px 4px; gap:4px; justify-content:space-between;" onclick="event.stopPropagation()">' +
             vatHtml +
-            '<div class="card-toggle-tools sub-tools">' +
+            '<div class="card-toggle-tools sub-tools" style="background:transparent!important; border:none!important; padding:0!important; gap:2px; display:flex; align-items:center;">' +
               '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô nhập Email">' +
                 '<i class="fa-solid fa-envelope"></i>' +
               '</button>' +
@@ -2197,7 +2353,7 @@
           '</div>';
 
         var emailFieldHtml = hasEmail
-          ? fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#38bdf8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'col-span-12', canClose: 'Email' })
+          ? fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#38bdf8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'col-span-12', canClose: 'Email', list: 'customerEmailList' })
           : '';
 
         var datMonFieldHtml = hasDatMon
@@ -2211,9 +2367,12 @@
         var decorFieldsHtml = '';
         if (tag.isDecor) {
           decorFieldsHtml =
-            fieldHtml(idx, '<i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i>', 'Mẫu decor', 'mauDecor', mauVal, { colSpan: 'col-span-6', style: 'color:#e2a684; font-weight:700;' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-ribbon" style="color:#fb7185;"></i>', 'Nội dung bảng tiệc', 'decor', p.decor, { colSpan: 'col-span-6', style: 'color:#38bdf8; font-weight:600;' });
+            fieldHtml(idx, '<i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i>', 'Mẫu decor', 'mauDecor', mauVal, { colSpan: 'col-span-7', style: 'color:#e2a684; font-weight:700;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-ribbon" style="color:#fb7185;"></i>', 'Nội dung bảng tiệc', 'decor', p.decor, { colSpan: 'col-span-5', style: 'color:#38bdf8; font-weight:600;' });
         }
+
+        // Tự động gom SĐT & Email vào datalist gợi ý của hệ thống (văn bản thuần tuý)
+        if (p.sdt) capNhatDatalistKhach(p.sdt, p.email);
 
         card.innerHTML =
           '<div class="folder-tag-header">' +
@@ -2234,17 +2393,28 @@
           (tag.anhDecor ? '<div class="tag-thumb"><img src="' + esc(tag.anhDecor) + '" alt=""><span><i class="fa-solid fa-wand-magic-sparkles me-1"></i> ' + esc(mauVal) + '</span></div>' : '') +
           billSectionHtml +
           '<div class="card-smart-grid">' +
-            fieldHtml(idx, '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>', 'Ngày', 'ngay', tag.ngay, { colSpan: 'col-span-5' }) +
+            /* Hàng 1: Ngày (Dài - 7) | Giờ (Ngắn - 5) */
+            fieldHtml(idx, '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>', 'Ngày', 'ngay', tag.ngay, { colSpan: 'col-span-7' }) +
             gioRowHtml +
-            fieldHtml(idx, '<i class="fa-solid fa-users" style="color:#c084fc;"></i>', 'Khách', 'soKhach', p.soKhach || '2', { colSpan: 'col-span-3', style: 'color:#38bdf8; font-weight:700;' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-user" style="color:#38bdf8;"></i>', 'Họ tên KH', 'ten', p.ten, { colSpan: 'col-span-5', live: true }) +
-            fieldHtml(idx, '<i class="fa-solid fa-phone" style="color:#34d399;"></i>', 'SĐT', 'sdt', p.sdt, { colSpan: 'col-span-4', live: true }) +
-            fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn', 'banSo', p.banSo, { colSpan: 'col-span-3', list: 'tableSuggestions' }) +
-            kenhRowHtml +
-            fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Cọc', 'coc', p.coc || '0', { colSpan: 'col-span-4', list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
+            /* Hàng 2: Họ tên KH (Dài - 7) | Khách (Ngắn - 5) */
+            fieldHtml(idx, '<i class="fa-solid fa-user" style="color:#38bdf8;"></i>', 'Họ tên KH', 'ten', p.ten, { colSpan: 'col-span-7', live: true }) +
+            fieldHtml(idx, '<i class="fa-solid fa-users" style="color:#c084fc;"></i>', 'Khách', 'soKhach', p.soKhach || '2', { colSpan: 'col-span-5', style: 'color:#38bdf8; font-weight:700;' }) +
+            /* Hàng 3: SĐT (Dài - 7) | Bàn (Ngắn - 5) - Cả 2 đều văn bản thuần tuý */
+            fieldHtml(idx, '<i class="fa-solid fa-phone" style="color:#34d399;"></i>', 'SĐT', 'sdt', p.sdt, { colSpan: 'col-span-7', live: true, list: 'customerPhoneList' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn', 'banSo', p.banSo, { colSpan: 'col-span-5', list: 'tableSuggestions' }) +
+            /* Hàng 4: Tiền cọc (Dài - 7) | Ghế bé (Ngắn - 5) */
+            fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Cọc', 'coc', p.coc || '0', { colSpan: 'col-span-7', list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
             babyRowHtml +
-            statusBarHtml +
+            /* Hàng 5: Kênh + Mã ID (Dài - 7) | VAT + Công cụ (Ngắn - 5) */
+            kenhIdCombinedHtml +
+            vatToolsHtml +
+            /* Hàng Decor (nếu chọn) & các hàng mở rộng */
             decorFieldsHtml +
+            emailFieldHtml +
+            datMonFieldHtml +
+            ghiChuFieldHtml +
+          '</div>' +
+          hoanCocSectionHtml;
             emailFieldHtml +
             datMonFieldHtml +
             ghiChuFieldHtml +
@@ -2328,7 +2498,8 @@
             google.script.host.close();
           } catch (e) {
             tagList = []; activeTagIndex = 0;
-            document.getElementById('multiPasteArea').value = "";
+            var area = document.getElementById('multiPasteArea');
+            if (area) { if (area.tagName === 'TEXTAREA') area.value = ''; else area.innerText = ''; }
             btn.disabled = false;
             btn.innerText = "💾 Lưu Đơn Vào DATA_TONG";
             createTagFromText("");
