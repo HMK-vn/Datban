@@ -70,9 +70,10 @@
     }
     .paste-box-wrap { margin-bottom: 8px; flex-shrink: 0; }
     .multi-paste-box {
-      width: 100%; height: 50px; background: #0b1120; border: 1px solid #334155;
-      color: #f8fafc; border-radius: 6px; padding: 6px 8px; font-size: 11.5px;
-      outline: none; resize: none; line-height: 1.4;
+      width: 100%; min-height: 30px; height: 30px; max-height: 280px; background: #0b1120; border: 1px solid #334155;
+      color: #f8fafc; border-radius: 6px; padding: 5px 8px; font-size: 11.5px;
+      outline: none; resize: vertical; line-height: 1.4; overflow-y: auto; box-sizing: border-box;
+      transition: border-color 0.15s;
     }
     .multi-paste-box:focus { border-color: #38bdf8; }
     .tag-header-label {
@@ -272,15 +273,22 @@
       color: #facc15; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 1px 2px;
     }
 
-    /* Nút thêm nhanh Email, Món, Ghi chú */
-    .card-toggle-tools {
-      display: flex; align-items: center; justify-content: space-between; gap: 4px;
+    /* Hàng Mã ID rộng rãi kèm Cụm 3 nút mở rộng trên 1 dòng */
+    .id-tools-row {
+      display: flex; align-items: center; gap: 4px; width: 100%; min-width: 0;
+    }
+    .id-tools-row .card-field-id {
+      flex: 1 1 auto; min-width: 0; min-height: 28px;
+    }
+    .id-tools-row .card-toggle-tools {
+      flex: 0 0 auto; display: flex; align-items: center; gap: 3px;
       padding: 2px 4px !important; background: #0b1120 !important; border: 1px dashed #334155 !important;
+      border-radius: 5px; min-height: 28px;
     }
     .btn-field-pill {
-      flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 3px;
       background: #1e293b; border: 1px solid #334155; border-radius: 4px;
-      color: #94a3b8; font-size: 11px; font-weight: 600; padding: 3px 4px; cursor: pointer;
+      color: #94a3b8; font-size: 10.5px; font-weight: 600; padding: 3px 5px; cursor: pointer;
       white-space: nowrap; transition: all 0.15s; line-height: 1.2;
     }
     .btn-field-pill:hover { background: #334155; color: #f8fafc; }
@@ -575,7 +583,7 @@
   <div class="viewport-grid">
     <div class="panel-left" id="panelLeft">
       <div class="paste-box-wrap">
-        <textarea class="multi-paste-box" id="multiPasteArea" placeholder="Dán nội dung đơn hoặc dán ảnh bill cọc (Ctrl+V) tại đây... Tự nhận diện văn bản & ảnh bill!" oninput="handleMultiPaste(this.value)" onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { handleMultiPaste(el.value); }, 0); }" onpaste="handleMultiPasteWithImage(event, this)" onblur="handleMultiPaste(this.value)"></textarea>
+        <textarea class="multi-paste-box" id="multiPasteArea" placeholder="Dán nội dung đơn hoặc dán ảnh bill cọc (Ctrl+V) tại đây... Tự nhận diện văn bản & ảnh bill!" oninput="autoFitPasteBox(this); handleMultiPaste(this.value)" onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { autoFitPasteBox(el); handleMultiPaste(el.value); }, 0); }" onpaste="var el = this; setTimeout(function() { autoFitPasteBox(el); }, 30); handleMultiPasteWithImage(event, this)" onblur="autoFitPasteBox(this); handleMultiPaste(this.value)"></textarea>
       </div>
       <div class="tag-header-label">
         <span><i class="fa-solid fa-folder-open me-1" style="color:#38bdf8;"></i> CÁC THẺ TAG ĐƠN (<span id="tagCountLabel">0</span>)</span>
@@ -963,7 +971,17 @@
       return [txt];
     }
 
+    function autoFitPasteBox(el) {
+      if (!el) el = document.getElementById('multiPasteArea');
+      if (!el) return;
+      el.style.height = 'auto';
+      var scrollH = el.scrollHeight;
+      var newH = Math.max(30, Math.min(280, scrollH));
+      el.style.height = newH + 'px';
+    }
+
     function handleMultiPaste(rawText) {
+      autoFitPasteBox();
       if (!rawText || !rawText.trim()) return;
       var blocks = tachKhoiDon(rawText);
       if (!blocks.length) return;
@@ -1023,7 +1041,10 @@
         "Kênh: Web\n" +
         "Ghi chú: Bàn thường, góc view đẹp";
       var area = document.getElementById('multiPasteArea');
-      if (area) area.value = mauGiaLap;
+      if (area) {
+        area.value = mauGiaLap;
+        autoFitPasteBox(area);
+      }
       handleMultiPaste(mauGiaLap);
     }
 
@@ -2047,17 +2068,24 @@
         var hasDatMon = !!(p.datMon && p.datMon.trim()) || tag.moDatMon;
         var hasGhiChu = !!(p.ghiChu && p.ghiChu.trim()) || tag.moGhiChu;
 
-        var toolsRowHtml =
-          '<div class="card-field-row col-span-4 card-toggle-tools">' +
-            '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô Email">' +
-              '<i class="fa-solid fa-envelope"></i> Email' +
-            '</button>' +
-            '<button type="button" class="btn-field-pill ' + (hasDatMon ? 'active' : '') + (p.datMon ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'DatMon\')" title="Bật/tắt ô Đặt món">' +
-              '<i class="fa-solid fa-utensils"></i> Món' +
-            '</button>' +
-            '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt ô Ghi chú">' +
-              '<i class="fa-solid fa-pen-to-square"></i> Ghi chú' +
-            '</button>' +
+        var idVal = p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay);
+        var idToolsRowHtml =
+          '<div class="id-tools-row col-span-6">' +
+            '<div class="card-field-row card-field-id" title="Mã ID đơn">' +
+              '<span class="card-field-label" title="Mã ID"><i class="fa-solid fa-id-badge" style="color:#e879f9;"></i></span>' +
+              '<input type="text" class="card-input" id="idInput_' + idx + '" placeholder="Mã ID" value="' + esc(idVal) + '" onchange="updateCardField(' + idx + ', \'id\', this.value)" onclick="event.stopPropagation()" style="font-size:11px; font-weight:700; color:#f8fafc;">' +
+            '</div>' +
+            '<div class="card-toggle-tools">' +
+              '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô Email">' +
+                '<i class="fa-solid fa-envelope"></i> Email' +
+              '</button>' +
+              '<button type="button" class="btn-field-pill ' + (hasDatMon ? 'active' : '') + (p.datMon ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'DatMon\')" title="Bật/tắt ô Đặt món">' +
+                '<i class="fa-solid fa-utensils"></i> Món' +
+              '</button>' +
+              '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt ô Ghi chú">' +
+                '<i class="fa-solid fa-pen-to-square"></i> Ghi chú' +
+              '</button>' +
+            '</div>' +
           '</div>';
 
         var emailFieldHtml = hasEmail
@@ -2108,8 +2136,7 @@
             kenhRowHtml +
             vatRowHtml +
             babyRowHtml +
-            fieldHtml(idx, '<i class="fa-solid fa-id-badge" style="color:#e879f9;"></i>', 'Mã ID', 'id', p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay), { colSpan: 'col-span-2', style: 'font-size:11px; font-weight:700;' }) +
-            toolsRowHtml +
+            idToolsRowHtml +
             decorFieldsHtml +
             emailFieldHtml +
             datMonFieldHtml +
