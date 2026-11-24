@@ -2131,7 +2131,7 @@
           '</div>';
 
         var babyRowHtml =
-          '<div class="card-field-row col-span-4">' +
+          '<div class="card-field-row col-span-3">' +
             '<span class="card-field-label" title="Ghế em bé"><i class="fa-solid fa-baby" style="color:#facc15;"></i></span>' +
             '<div class="baby-field-wrap" onclick="event.stopPropagation()">' +
               '<label class="baby-toggle-box" title="Bấm để bật/tắt có trẻ em">' +
@@ -2156,7 +2156,7 @@
           '</div>';
 
         var kenhRowHtml =
-          '<div class="card-field-row col-span-4" title="Kênh đặt bàn">' +
+          '<div class="card-field-row col-span-5" title="Kênh đặt bàn">' +
             '<span class="card-field-label" id="kenhIcon_' + idx + '">' + layIconKenh(p.kenh) + '</span>' +
             '<select class="card-select" id="kenhSelect_' + idx + '" style="color:#38bdf8; font-weight:700;" onchange="doiKenhThe(' + idx + ', this.value)" onclick="event.stopPropagation()">' +
               '<option value="FB"' + (p.kenh === 'FB' ? ' selected' : '') + '>FB</option>' +
@@ -2240,9 +2240,9 @@
             fieldHtml(idx, '<i class="fa-solid fa-user" style="color:#38bdf8;"></i>', 'Họ tên KH', 'ten', p.ten, { colSpan: 'col-span-5', live: true }) +
             fieldHtml(idx, '<i class="fa-solid fa-phone" style="color:#34d399;"></i>', 'SĐT', 'sdt', p.sdt, { colSpan: 'col-span-4', live: true }) +
             fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn', 'banSo', p.banSo, { colSpan: 'col-span-3', list: 'tableSuggestions' }) +
+            kenhRowHtml +
             fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Cọc', 'coc', p.coc || '0', { colSpan: 'col-span-4', list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
             babyRowHtml +
-            kenhRowHtml +
             statusBarHtml +
             decorFieldsHtml +
             emailFieldHtml +
