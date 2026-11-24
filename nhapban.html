@@ -97,12 +97,24 @@
       color: #94a3b8;
       pointer-events: none;
     }
-    .multi-paste-box.two-cols {
+    .multi-paste-box.two-cols,
+    .multi-paste-box.cols-2 {
       columns: 2; column-gap: 20px; column-rule: 1px dashed #334155;
     }
+    .multi-paste-box.cols-3 {
+      columns: 3; column-gap: 20px; column-rule: 1px dashed #334155;
+    }
+    .multi-paste-box .paste-block {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 8px;
+    }
     @media (min-width: 1400px) {
-      .multi-paste-box.two-cols {
-        columns: 3;
+      .multi-paste-box.two-cols,
+      .multi-paste-box.cols-2 {
+        columns: 2;
       }
     }
     .tag-header-label {
@@ -278,14 +290,27 @@
         gap: 3px;
       }
     }
+    .card-top-action-bar {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.1fr) minmax(0, 0.75fr) minmax(0, 1.15fr);
+      gap: 4px;
+      margin-bottom: 4px;
+      align-items: stretch;
+    }
+    @media (max-width: 640px) {
+      .card-top-action-bar {
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.1fr) minmax(0, 0.75fr) minmax(0, 1.15fr);
+        gap: 3px;
+      }
+    }
     .card-smart-grid-3col {
       display: grid;
-      grid-template-columns: minmax(0, 1.65fr) minmax(0, 1.05fr) minmax(0, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 4px;
     }
     @media (max-width: 640px) {
       .card-smart-grid-3col {
-        grid-template-columns: minmax(0, 1.65fr) minmax(0, 1.05fr) minmax(0, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 3px;
       }
     }
@@ -428,6 +453,17 @@
     }
     .btn-field-pill.has-data {
       background: rgba(52, 211, 153, 0.22); color: #34d399; border-color: #34d399; font-weight: 700;
+    }
+    .btn-field-pill.btn-hoancoc-pill.active {
+      background: rgba(245, 158, 11, 0.25) !important;
+      color: #f59e0b !important;
+      border-color: #f59e0b !important;
+    }
+    .btn-field-pill.btn-hoancoc-pill.has-data {
+      background: rgba(245, 158, 11, 0.35) !important;
+      color: #fbbf24 !important;
+      border-color: #f59e0b !important;
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.5) !important;
     }
     .card-field-close-btn {
       color: #64748b; font-size: 11px; cursor: pointer; padding: 2px 4px; margin-left: 2px;
@@ -628,9 +664,14 @@
         grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) !important;
         gap: 3px !important;
       }
+      .card-top-action-bar {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.1fr) minmax(0, 0.75fr) minmax(0, 1.15fr) !important;
+        gap: 3px !important;
+      }
       .card-smart-grid-3col {
         display: grid !important;
-        grid-template-columns: minmax(0, 1.65fr) minmax(0, 1.05fr) minmax(0, 1fr) !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 3px !important;
       }
       .card-smart-grid-4col {
@@ -1221,17 +1262,32 @@
       if (!el) return;
       if (el.style.display === 'none') return;
       var txt = el.tagName === 'TEXTAREA' ? (el.value || '') : (el.innerText || '');
-      var lines = txt.split(/\r?\n/).filter(function(l) { return l.trim(); });
-      var hasMulti = txt.indexOf('---') !== -1 || lines.length >= 8;
-      if (hasMulti) {
-        el.classList.add('two-cols');
-        el.style.height = '145px';
-      } else {
-        el.classList.remove('two-cols');
+      var blocks = tachKhoiDon(txt);
+      var numCustomers = blocks.length;
+
+      el.classList.remove('two-cols', 'cols-2', 'cols-3');
+      if (numCustomers <= 1) {
+        // 1 khách 1 cột, không chia cột (dù nội dung có dài 10-15 dòng)
         el.style.height = 'auto';
         var scrollH = el.scrollHeight;
-        var newH = Math.max(34, Math.min(220, scrollH));
+        var newH = Math.max(34, Math.min(260, scrollH));
         el.style.height = newH + 'px';
+      } else if (numCustomers === 2) {
+        // 2 khách chia đúng 2 cột, mỗi cột 1 khách
+        el.classList.add('cols-2');
+        el.style.height = '145px';
+      } else if (numCustomers >= 3 && numCustomers < 6) {
+        // 3-5 khách
+        if (window.innerWidth >= 1200) {
+          el.classList.add('cols-3');
+        } else {
+          el.classList.add('cols-2');
+        }
+        el.style.height = '155px';
+      } else {
+        // 6 khách trở lên: chia 3 cột (mỗi cột 2 khách)
+        el.classList.add('cols-3');
+        el.style.height = '165px';
       }
     }
 
@@ -1274,7 +1330,13 @@
           if (area.tagName === 'TEXTAREA') {
             area.value = newContent;
           } else {
-            area.innerText = newContent;
+            if (blocks.length > 1) {
+              area.innerHTML = blocks.map(function(b) {
+                return '<div class="paste-block">' + esc(b).replace(/\n/g, '<br>') + '</div>';
+              }).join('<div style="color:#475569; font-size:10px; margin:4px 0; user-select:none;">---</div>');
+            } else {
+              area.innerText = newContent;
+            }
           }
           autoFitPasteBox(area);
         }
@@ -2346,12 +2408,29 @@
       opts = opts || {};
       var evt = opts.live ? 'oninput' : 'onchange';
       var isDate = opts.isDate || field === 'ngay';
-      var clickAttr = isDate
-        ? ' onclick="event.preventDefault(); event.stopPropagation(); moLichThe_(' + idx + ', this)" onmousedown="event.preventDefault()"'
-        : ' onclick="event.stopPropagation()"';
-      var inputType = isDate ? 'text' : (opts.type || 'text');
-      var rightIcon = '';
+      var isTime = opts.isTime || field === 'gioVao';
       var displayVal = isDate ? dinhDangNgayHienThi(value) : value;
+
+      if (isDate) {
+        var spanClassDate = opts.colSpan ? (' ' + opts.colSpan) : '';
+        return '<div class="card-field-row card-field-date' + spanClassDate + '" onclick="event.preventDefault(); event.stopPropagation(); moLichThe_(' + idx + ', this.querySelector(\'input\') || this)" style="cursor:pointer;" title="Chọn ngày">' +
+          '<span class="card-field-label" style="cursor:pointer;">' + icon + '</span>' +
+          '<input type="text" readonly class="card-input lct-input" value="' + esc(displayVal) + '" onclick="moLichThe_(' + idx + ', this)" style="cursor:pointer; font-weight:700; color:#f8fafc; font-size:11.5px;" title="Bấm đổi ngày">' +
+        '</div>';
+      }
+
+      if (isTime) {
+        var spanClassTime = opts.colSpan ? (' ' + opts.colSpan) : '';
+        return '<div class="card-field-row' + spanClassTime + '" onclick="event.preventDefault(); event.stopPropagation(); moBangChonGio(' + idx + ', this.querySelector(\'input\') || this)" style="cursor:pointer;" title="Chọn giờ">' +
+          '<span class="card-field-label" style="cursor:pointer;">' + icon + '</span>' +
+          '<input type="text" readonly class="card-input lct-input" value="' + esc(value || '18h30') + '" onclick="moBangChonGio(' + idx + ', this)" style="cursor:pointer; font-weight:700; color:#f8fafc; font-size:11.5px;" title="Bấm đổi giờ">' +
+          '<span class="card-date-open" style="cursor:pointer; flex-shrink:0;"><i class="fa-solid fa-chevron-down" style="font-size:9px;"></i></span>' +
+        '</div>';
+      }
+
+      var clickAttr = ' onclick="event.stopPropagation()"';
+      var inputType = opts.type || 'text';
+      var rightIcon = '';
       
       var onInputSpecial = '';
       if (field === 'email') {
@@ -2364,16 +2443,15 @@
 
       var input = opts.textarea
         ? '<textarea class="card-textarea" placeholder="' + label + '..." oninput="this.dataset.collapsed=\'false\';this.style.height=\'auto\';this.style.height=Math.max(26,this.scrollHeight)+\'px\';updateCardField(' + idx + ', \'' + field + '\', this.value)" onchange="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">' + esc(value) + '</textarea>'
-        : '<input type="' + inputType + '"' + (isDate ? ' readonly' : '') + ' class="card-input' + (isDate ? ' lct-input' : '') + '"' + (opts.list ? ' list="' + opts.list + '"' : '') +
+        : '<input type="' + inputType + '" class="card-input"' + (opts.list ? ' list="' + opts.list + '"' : '') +
           (opts.style ? ' style="' + opts.style + '"' : '') + (field === 'id' ? ' id="idInput_' + idx + '"' : '') + ' placeholder="' + label + '" value="' + esc(displayVal) + '" ' +
           (onInputSpecial || (evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)"')) + clickAttr + '>';
       
       var spanClass = opts.colSpan ? (' ' + opts.colSpan) : '';
-      var dateRowAttrs = isDate ? ' onclick="event.preventDefault(); event.stopPropagation(); moLichThe_(' + idx + ', this.querySelector(\'input\') || this)" style="cursor:pointer;"' : '';
       var closeBtn = opts.canClose
         ? '<span class="card-field-close-btn" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'' + opts.canClose + '\')" title="Thu gọn ô này"><i class="fa-solid fa-xmark"></i></span>'
         : '';
-      return '<div class="card-field-row' + spanClass + (isDate ? ' card-field-date' : '') + '"' + dateRowAttrs + '><span class="card-field-label" title="' + label + '"' + (isDate ? ' style="cursor:pointer;"' : '') + '>' + icon + '</span>' + input + rightIcon + collapseBtn + closeBtn + '</div>';
+      return '<div class="card-field-row' + spanClass + '"><span class="card-field-label" title="' + label + '">' + icon + '</span>' + input + rightIcon + collapseBtn + closeBtn + '</div>';
     }
 
     function renderAllTags() {
@@ -2427,12 +2505,7 @@
             '</div>';
         }
 
-        var hoanCocSectionHtml =
-          '<div class="hoancoc-toggle-bar' + (hasHoanData ? ' has-data' : '') + '" onclick="toggleHoanCoc(' + idx + ', event)">' +
-            '<span><i class="fa-solid fa-arrow-rotate-left me-1"></i> Hoàn cọc' + (hasHoanData ? ' (Có thông tin)' : '') + '</span>' +
-            '<i class="fa-solid ' + (tag.showHoanCoc ? 'fa-chevron-up' : 'fa-chevron-down') + '"></i>' +
-          '</div>';
-
+        var hoanCocSectionHtml = '';
         if (tag.showHoanCoc) {
           var billHoanHtml = '';
           if (!tag.billHoanBase64) {
@@ -2459,13 +2532,19 @@
               '</div>';
           }
 
-          hoanCocSectionHtml +=
-            '<div class="card-hoancoc-panel" onclick="event.stopPropagation()">' +
-              '<div class="card-field-row col-span-6">' +
-                '<span class="card-field-label" title="Tiền hoàn cọc"><i class="fa-solid fa-money-bill-transfer" style="color:#f59e0b;"></i></span>' +
-                '<input type="text" class="card-input" style="color:#f59e0b; font-weight:700;" placeholder="Tiền hoàn cọc..." value="' + esc(p.tienHoan || '') + '" onchange="updateCardField(' + idx + ', \'tienHoan\', this.value)">' +
+          hoanCocSectionHtml =
+            '<div class="card-hoancoc-panel" onclick="event.stopPropagation()" style="margin-top:4px; padding:6px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); border-radius:6px; display:flex; flex-direction:column; gap:4px;">' +
+              '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2px;">' +
+                '<span style="font-size:11px; font-weight:700; color:#f59e0b;"><i class="fa-solid fa-arrow-rotate-left me-1"></i> Thông tin hoàn cọc' + (hasHoanData ? ' (Đã nhập)' : '') + '</span>' +
+                '<button type="button" onclick="event.stopPropagation(); toggleHoanCoc(' + idx + ', event)" style="background:transparent; border:none; color:#94a3b8; font-size:11px; cursor:pointer;" title="Đóng panel hoàn cọc"><i class="fa-solid fa-xmark"></i></button>' +
               '</div>' +
-              billHoanHtml +
+              '<div style="display:grid; grid-template-columns: 1fr 1fr; gap:4px;">' +
+                '<div class="card-field-row">' +
+                  '<span class="card-field-label" title="Tiền hoàn cọc"><i class="fa-solid fa-money-bill-transfer" style="color:#f59e0b;"></i></span>' +
+                  '<input type="text" class="card-input" style="color:#f59e0b; font-weight:700;" placeholder="Tiền hoàn cọc..." value="' + esc(p.tienHoan || '') + '" onchange="updateCardField(' + idx + ', \'tienHoan\', this.value)">' +
+                '</div>' +
+                billHoanHtml +
+              '</div>' +
             '</div>';
         }
 
@@ -2476,40 +2555,14 @@
             '<span>VAT</span>' +
           '</button>';
 
-        var ngayDisplay = dinhDangNgayHienThi(tag.ngay);
-        var ngayGioCombinedHtml =
-          '<div class="card-field-row" style="padding:2px 4px; gap:2px; min-height:28px;" title="Ngày & Giờ đặt bàn">' +
-            /* Phần Ngày */
-            '<span class="card-field-label" style="cursor:pointer; width:13px; font-size:11px;" onclick="moLichThe_(' + idx + ', this.nextElementSibling)" title="Chọn ngày">' +
-              '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>' +
-            '</span>' +
-            '<input type="text" readonly class="card-input lct-input" value="' + esc(ngayDisplay) + '" onclick="moLichThe_(' + idx + ', this)" style="cursor:pointer; font-weight:700; color:#f8fafc; font-size:11px; width:38px; padding:0; text-align:center; letter-spacing:-0.2px;" title="Bấm đổi ngày">' +
-            /* Vách ngăn mờ */
-            '<div style="width:1px; height:15px; background:#334155; flex-shrink:0; margin:0 1px;"></div>' +
-            /* Phần Giờ */
-            '<span class="card-field-label" style="cursor:pointer; width:13px; font-size:11px;" onclick="moBangChonGio(' + idx + ', this.nextElementSibling)" title="Chọn giờ">' +
-              '<i class="fa-solid fa-clock" style="color:#f59e0b;"></i>' +
-            '</span>' +
-            '<input type="text" readonly class="card-input lct-input" value="' + esc(p.gioVao || '18h30') + '" onclick="moBangChonGio(' + idx + ', this)" style="cursor:pointer; font-weight:700; color:#f8fafc; font-size:11px; flex:1; min-width:0; padding:0;" title="Bấm đổi giờ">' +
-            '<span class="card-date-open" onclick="moBangChonGio(' + idx + ', this.previousElementSibling)" title="Bấm chọn giờ" style="cursor:pointer; flex-shrink:0;"><i class="fa-solid fa-chevron-down" style="font-size:9px;"></i></span>' +
-          '</div>';
-
-        var khachBeCombinedHtml =
-          '<div class="card-field-row" style="padding:2px 4px; gap:2px; min-height:28px;" title="Số lượng người lớn & em bé">' +
-            /* Phần Người lớn */
-            '<span class="card-field-label" style="width:13px; font-size:11px;" title="Số khách lớn">' +
-              '<i class="fa-solid fa-users" style="color:#c084fc;"></i>' +
-            '</span>' +
-            '<input type="text" class="card-input" value="' + esc(p.soKhach || '2') + '" onchange="updateCardField(' + idx + ', \'soKhach\', this.value)" style="color:#38bdf8; font-weight:700; font-size:11.5px; width:26px; padding:0; text-align:center;" title="Số người lớn">' +
-            /* Vách ngăn mờ */
-            '<div style="width:1px; height:15px; background:#334155; flex-shrink:0; margin:0 1px;"></div>' +
-            /* Phần Em bé */
-            '<button type="button" class="btn-baby-pill ' + (hasBaby ? 'active' : '') + '" onclick="event.stopPropagation(); toggleBabyPill(' + idx + ')" style="display:inline-flex; align-items:center; gap:2px; background:transparent; border:none; color:' + (hasBaby ? '#facc15' : '#64748b') + '; font-size:11px; font-weight:700; cursor:pointer; padding:0; flex-shrink:0;" title="Bật/tắt ghế bé">' +
-              '<i class="fa-solid fa-baby-carriage" style="font-size:11px;"></i>' +
+        var babyFieldHtml =
+          '<div class="card-field-row ' + (hasBaby ? 'active-baby' : '') + '" style="padding:2px 4px; gap:3px; min-height:28px;" title="Ghế em bé">' +
+            '<button type="button" class="btn-baby-pill ' + (hasBaby ? 'active' : '') + '" onclick="event.stopPropagation(); toggleBabyPill(' + idx + ')" style="display:inline-flex; align-items:center; gap:3px; background:transparent; border:none; color:' + (hasBaby ? '#facc15' : '#64748b') + '; font-size:11.5px; font-weight:700; cursor:pointer; padding:0; flex-shrink:0;" title="Bật/tắt ghế bé">' +
+              '<i class="fa-solid fa-baby-carriage" style="font-size:11.5px;"></i>' +
               '<span>Bé</span>' +
             '</button>' +
             (hasBaby ?
-              '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)" onclick="event.stopPropagation()" style="background:transparent; border:none; color:#facc15; font-size:11px; font-weight:700; padding:0; cursor:pointer; flex:1; min-width:0;" title="Số ghế em bé">' +
+              '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)" onclick="event.stopPropagation()" style="background:transparent; border:none; color:#facc15; font-size:11.5px; font-weight:700; padding:0; cursor:pointer; flex:1; min-width:0;" title="Số lượng ghế em bé">' +
                 '<option value="1 ghế em bé"' + (babyCount.indexOf('1') !== -1 ? ' selected' : '') + '>1</option>' +
                 '<option value="2 ghế em bé"' + (babyCount.indexOf('2') !== -1 ? ' selected' : '') + '>2</option>' +
                 '<option value="3 ghế em bé"' + (babyCount.indexOf('3') !== -1 ? ' selected' : '') + '>3</option>' +
@@ -2517,8 +2570,12 @@
               '</select>' : '') +
           '</div>';
 
+        var hasEmail = !!(p.email && p.email.trim()) || tag.moEmail;
+        var hasDatMon = !!(p.datMon && p.datMon.trim()) || tag.moDatMon;
+        var hasGhiChu = !!(p.ghiChu && p.ghiChu.trim()) || tag.moGhiChu;
+
         var toolsRowHtml =
-          '<div class="tools-pill-group" style="padding:2px 3px; gap:2px; justify-content:space-around; width:100%; box-sizing:border-box; min-height:28px;" title="Công cụ mở rộng">' +
+          '<div class="tools-pill-group" style="padding:2px 2px; gap:2px; justify-content:space-around; width:100%; box-sizing:border-box; min-height:28px;" title="Công cụ mở rộng">' +
             '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô nhập Email">' +
               '<i class="fa-solid fa-envelope"></i>' +
             '</button>' +
@@ -2528,11 +2585,14 @@
             '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt ô nhập Ghi chú">' +
               '<i class="fa-solid fa-pen-to-square"></i>' +
             '</button>' +
+            '<button type="button" class="btn-field-pill btn-hoancoc-pill ' + (tag.showHoanCoc ? 'active ' : '') + (hasHoanData ? 'has-data ' : '') + '" onclick="event.stopPropagation(); toggleHoanCoc(' + idx + ', event)" title="Bật/tắt thông tin hoàn cọc">' +
+              '<svg width="15" height="13" viewBox="0 0 24 20" fill="none" style="vertical-align:middle; display:inline-block;">' +
+                '<path d="M7 6 L2 10 L7 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+                '<path d="M3 10 C3 4 10 3 17 6 C21 8 22 13 20 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>' +
+                '<text x="12" y="13.5" font-size="7" font-weight="900" fill="currentColor" text-anchor="middle">CỌC</text>' +
+              '</svg>' +
+            '</button>' +
           '</div>';
-
-        var hasEmail = !!(p.email && p.email.trim()) || tag.moEmail;
-        var hasDatMon = !!(p.datMon && p.datMon.trim()) || tag.moDatMon;
-        var hasGhiChu = !!(p.ghiChu && p.ghiChu.trim()) || tag.moGhiChu;
 
         var idVal = p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay);
 
@@ -2560,11 +2620,13 @@
             '</div>' +
           '</div>';
 
-        /* Hàng trên cùng: Ô Kéo thả bill cọc (Cột 1) | Kênh & Mã ID (Cột 2 kế bên) */
+        /* Hàng trên cùng (Top Action Bar): Dòng tải bill gồm 4 cột (Tải bill, Kênh ID, VAT, Tools) */
         var topBarHtml =
-          '<div class="card-top-action-bar" style="display:grid; grid-template-columns: 1fr 1fr; gap:4px; margin-bottom:4px; align-items:stretch;">' +
+          '<div class="card-top-action-bar">' +
             billSectionHtml +
             kenhIdCombinedHtml +
+            vatRowHtml +
+            toolsRowHtml +
           '</div>';
 
         var emailFieldHtml = hasEmail
@@ -2616,15 +2678,15 @@
           (tag.anhDecor ? '<div class="tag-thumb"><img src="' + esc(tag.anhDecor) + '" alt=""><span><i class="fa-solid fa-wand-magic-sparkles me-1"></i> ' + esc(mauVal) + '</span></div>' : '') +
           topBarHtml +
           '<div class="card-smart-grid-3col">' +
-            /* 🚀 HÀNG 1 (3 CỘT): [Ngày + Giờ] (Cột 1) | [Bàn] (Cột 2) | [VAT] (Cột 3 - Icon) */
-            ngayGioCombinedHtml +
+            /* 🚀 HÀNG 1 (3 CỘT): [Ngày] (Cột 1) | [Giờ] (Cột 2) | [Bàn] (Cột 3) */
+            fieldHtml(idx, '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>', 'Ngày', 'ngay', tag.ngay, { isDate: true }) +
+            fieldHtml(idx, '<i class="fa-solid fa-clock" style="color:#f59e0b;"></i>', 'Giờ', 'gioVao', p.gioVao || '18h30', { isTime: true }) +
             fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn', 'banSo', p.banSo, { list: 'tableSuggestions' }) +
-            vatRowHtml +
 
-            /* 🚀 HÀNG 2 (3 CỘT): [Khách lớn + Bé] (Cột 1) | [Cọc] (Cột 2) | [Tools: Email, Món, Note] (Cột 3 - Icon) */
-            khachBeCombinedHtml +
+            /* 🚀 HÀNG 2 (3 CỘT): [Khách lớn] (Cột 1) | [Bé] (Cột 2) | [Cọc] (Cột 3) */
+            fieldHtml(idx, '<i class="fa-solid fa-users" style="color:#c084fc;"></i>', 'Khách lớn', 'soKhach', p.soKhach || '2') +
+            babyFieldHtml +
             fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Cọc', 'coc', p.coc || '0', { list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
-            toolsRowHtml +
 
             /* Hàng Decor (nếu chọn) & các hàng mở rộng */
             decorFieldsHtml +
