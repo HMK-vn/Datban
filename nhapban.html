@@ -69,13 +69,29 @@
       display: flex; flex-direction: column; padding: 10px; min-height: 0; min-width: 0;
     }
     .paste-box-wrap { margin-bottom: 8px; flex-shrink: 0; }
+    .paste-box-bar {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;
+    }
+    .btn-toggle-paste {
+      background: #1e293b; border: 1px solid #334155; color: #94a3b8; font-size: 10.5px;
+      padding: 1px 7px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.15s;
+    }
+    .btn-toggle-paste:hover { color: #38bdf8; border-color: #38bdf8; }
     .multi-paste-box {
-      width: 100%; min-height: 30px; height: 30px; max-height: 280px; background: #0b1120; border: 1px solid #334155;
+      width: 100%; min-height: 32px; height: 32px; max-height: 280px; background: #0b1120; border: 1px solid #334155;
       color: #f8fafc; border-radius: 6px; padding: 5px 8px; font-size: 11.5px;
       outline: none; resize: vertical; line-height: 1.4; overflow-y: auto; box-sizing: border-box;
       transition: border-color 0.15s;
     }
     .multi-paste-box:focus { border-color: #38bdf8; }
+    .multi-paste-box.two-cols {
+      columns: 2; column-gap: 20px; column-rule: 1px dashed #334155;
+    }
+    @media (min-width: 1400px) {
+      .multi-paste-box.two-cols {
+        columns: 3;
+      }
+    }
     .tag-header-label {
       font-weight: 700; color: #94a3b8; font-size: 11.5px; text-transform: uppercase;
       margin-bottom: 6px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;
@@ -197,11 +213,16 @@
       font-size: 10.5px; font-weight: 700;
     }
 
-    /* Layout mới thông minh: Grid 2 cột cho các trường ngắn, 1 cột cho trường dài */
+    /* Layout mới thông minh: Hệ Grid 12 cột tinh gọn, ít dòng */
     .card-smart-grid {
-      display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px;
+      display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px;
     }
+    .col-span-12 { grid-column: span 12; }
+    .col-span-8 { grid-column: span 8; }
+    .col-span-7 { grid-column: span 7; }
     .col-span-6 { grid-column: span 6; }
+    .col-span-5 { grid-column: span 5; }
+    .col-span-4 { grid-column: span 4; }
     .col-span-3 { grid-column: span 3; }
     .col-span-2 { grid-column: span 2; }
 
@@ -242,12 +263,12 @@
       font-family: inherit; overflow-y: auto;
     }
 
-    /* Switch toggle cho Trẻ em (Ghế em bé) & VAT */
+    /* Switch toggle cho Trẻ em (Ghế em bé) & VAT - Cân đối tuyệt đối */
     .baby-field-wrap {
-      display: flex; align-items: center; justify-content: space-between; gap: 4px; width: 100%;
+      display: flex; align-items: center; justify-content: flex-start; gap: 4px; width: 100%;
     }
     .baby-toggle-box {
-      display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none;
+      display: inline-flex; align-items: center; gap: 3px; cursor: pointer; user-select: none;
     }
     .baby-toggle-box input[type="checkbox"] {
       width: 14px; height: 14px; cursor: pointer; accent-color: #facc15; margin: 0;
@@ -260,7 +281,7 @@
     .badge-vat-text {
       display: inline-flex; align-items: center; justify-content: center;
       font-size: 9.5px; font-weight: 900; line-height: 1; letter-spacing: 0.5px;
-      padding: 2px 3px; border-radius: 3px;
+      padding: 2px 3px; border-radius: 3px; cursor: pointer;
       background: rgba(148, 163, 184, 0.15); color: #94a3b8;
       border: 1px solid #475569; transition: all 0.15s; user-select: none;
     }
@@ -269,34 +290,41 @@
       border-color: #38bdf8; box-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
     }
     .baby-select {
-      flex: 1; min-width: 0; background: #0f172a !important; border: 1px solid #334155;
-      color: #facc15; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 1px 2px;
+      width: 34px; height: 22px; min-width: 34px; background: #0f172a !important; border: 1px solid #334155;
+      color: #facc15; font-size: 11.5px; font-weight: 700; border-radius: 4px; padding: 0;
+      text-align: center; text-align-last: center; line-height: 20px; outline: none; cursor: pointer;
     }
 
-    /* Hàng Mã ID rộng rãi kèm Cụm 3 nút mở rộng trên 1 dòng */
-    .id-tools-row {
+    /* Thanh trạng thái tổng hợp: Kênh + Mã ID + VAT + 3 Icon không chữ (Gọn trên 1 dòng) */
+    .card-status-bar {
       display: flex; align-items: center; gap: 4px; width: 100%; min-width: 0;
     }
-    .id-tools-row .card-field-id {
-      flex: 1 1 auto; min-width: 0; min-height: 28px;
+    .card-status-bar .sub-kenh {
+      flex: 0 0 74px; min-width: 74px; padding: 2px 4px;
     }
-    .id-tools-row .card-toggle-tools {
+    .card-status-bar .sub-id {
+      flex: 1 1 auto; min-width: 90px;
+    }
+    .card-status-bar .sub-vat {
+      flex: 0 0 auto; padding: 2px 5px; gap: 3px;
+    }
+    .card-status-bar .sub-tools {
       flex: 0 0 auto; display: flex; align-items: center; gap: 3px;
       padding: 2px 4px !important; background: #0b1120 !important; border: 1px dashed #334155 !important;
       border-radius: 5px; min-height: 28px;
     }
     .btn-field-pill {
-      display: inline-flex; align-items: center; justify-content: center; gap: 3px;
+      display: inline-flex; align-items: center; justify-content: center;
       background: #1e293b; border: 1px solid #334155; border-radius: 4px;
-      color: #94a3b8; font-size: 10.5px; font-weight: 600; padding: 3px 5px; cursor: pointer;
-      white-space: nowrap; transition: all 0.15s; line-height: 1.2;
+      color: #94a3b8; font-size: 11px; font-weight: 600; width: 24px; height: 22px; cursor: pointer;
+      transition: all 0.15s; line-height: 1;
     }
     .btn-field-pill:hover { background: #334155; color: #f8fafc; }
     .btn-field-pill.active {
-      background: rgba(56, 189, 248, 0.18); color: #38bdf8; border-color: #38bdf8; font-weight: 700;
+      background: rgba(56, 189, 248, 0.22); color: #38bdf8; border-color: #38bdf8; font-weight: 700;
     }
     .btn-field-pill.has-data {
-      background: rgba(52, 211, 153, 0.18); color: #34d399; border-color: #34d399; font-weight: 700;
+      background: rgba(52, 211, 153, 0.22); color: #34d399; border-color: #34d399; font-weight: 700;
     }
     .card-field-close-btn {
       color: #64748b; font-size: 11px; cursor: pointer; padding: 2px 4px; margin-left: auto;
@@ -583,6 +611,10 @@
   <div class="viewport-grid">
     <div class="panel-left" id="panelLeft">
       <div class="paste-box-wrap">
+        <div class="paste-box-bar">
+          <span style="font-size:11px; font-weight:700; color:#38bdf8;"><i class="fa-solid fa-paste me-1"></i> Dán nội dung / Bill cọc (Tự nhận diện không cần nhấn nút)</span>
+          <button type="button" class="btn-toggle-paste" id="btnTogglePaste" onclick="togglePasteBox()" title="Thu gọn hoặc mở rộng ô dán"><i class="fa-solid fa-chevron-up"></i> Thu gọn</button>
+        </div>
         <textarea class="multi-paste-box" id="multiPasteArea" placeholder="Dán nội dung đơn hoặc dán ảnh bill cọc (Ctrl+V) tại đây... Tự nhận diện văn bản & ảnh bill!" oninput="autoFitPasteBox(this); handleMultiPaste(this.value)" onkeydown="if (event.key === 'Enter') { var el = this; setTimeout(function() { autoFitPasteBox(el); handleMultiPaste(el.value); }, 0); }" onpaste="var el = this; setTimeout(function() { autoFitPasteBox(el); }, 30); handleMultiPasteWithImage(event, this)" onblur="autoFitPasteBox(this); handleMultiPaste(this.value)"></textarea>
       </div>
       <div class="tag-header-label">
@@ -971,16 +1003,86 @@
       return [txt];
     }
 
+    var _isSyncingFromCard = false;
+
+    function togglePasteBox() {
+      var area = document.getElementById('multiPasteArea');
+      var btn = document.getElementById('btnTogglePaste');
+      if (!area || !btn) return;
+      if (area.style.display === 'none') {
+        area.style.display = 'block';
+        btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Thu gọn';
+        autoFitPasteBox(area);
+      } else {
+        area.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Mở rộng ô dán';
+      }
+    }
+
     function autoFitPasteBox(el) {
       if (!el) el = document.getElementById('multiPasteArea');
       if (!el) return;
-      el.style.height = 'auto';
-      var scrollH = el.scrollHeight;
-      var newH = Math.max(30, Math.min(280, scrollH));
-      el.style.height = newH + 'px';
+      if (el.style.display === 'none') return;
+      var txt = el.value || '';
+      var lines = txt.split(/\r?\n/).filter(function(l) { return l.trim(); });
+      var hasMulti = txt.indexOf('---') !== -1 || lines.length >= 8;
+      if (hasMulti) {
+        el.classList.add('two-cols');
+        el.style.height = '145px';
+      } else {
+        el.classList.remove('two-cols');
+        el.style.height = 'auto';
+        var scrollH = el.scrollHeight;
+        var newH = Math.max(32, Math.min(220, scrollH));
+        el.style.height = newH + 'px';
+      }
+    }
+
+    /* Đồng bộ 2 chiều: Khi sửa trên thẻ, tự động cập nhật lại vào ô copy/paste */
+    function dongBoTuTheSangPasteBox() {
+      if (_isSyncingFromCard) return;
+      _isSyncingFromCard = true;
+      try {
+        var area = document.getElementById('multiPasteArea');
+        if (!area) return;
+        var blocks = [];
+        tagList.forEach(function(t) {
+          var p = t.parsed || {};
+          var lines = [];
+          if (p.ten) lines.push("Tên: " + p.ten);
+          if (p.sdt) lines.push("SĐT: " + p.sdt);
+          if (t.ngay) lines.push("Ngày: " + t.ngay);
+          if (p.gioVao) lines.push("Giờ: " + p.gioVao);
+          var kStr = p.soKhach || "2";
+          if (p.be && p.be !== 'Không') {
+            var mBe = p.be.match(/\d+/);
+            kStr += " lớn " + (mBe ? mBe[0] : "1") + " bé";
+          } else {
+            kStr += " khách";
+          }
+          lines.push("Số khách: " + kStr);
+          if (t.mauDecor || p.mauDecor) lines.push("Mẫu decor: " + (t.mauDecor || p.mauDecor));
+          if (p.banSo) lines.push("Bàn: " + p.banSo);
+          if (p.coc && p.coc !== '0') lines.push("Cọc: " + p.coc);
+          if (p.kenh) lines.push("Kênh: " + p.kenh);
+          if (p.vat === 'Có xuất VAT') lines.push("VAT: Có xuất VAT");
+          if (p.decor) lines.push("Nội dung tiệc: " + p.decor);
+          if (p.datMon) lines.push("Đặt món: " + p.datMon);
+          if (p.ghiChu) lines.push("Ghi chú: " + p.ghiChu);
+          if (lines.length > 0) blocks.push(lines.join("\n"));
+        });
+        var newContent = blocks.join("\n---\n");
+        if (area.value !== newContent) {
+          area.value = newContent;
+          autoFitPasteBox(area);
+        }
+      } finally {
+        _isSyncingFromCard = false;
+      }
     }
 
     function handleMultiPaste(rawText) {
+      if (_isSyncingFromCard) return;
       autoFitPasteBox();
       if (!rawText || !rawText.trim()) return;
       var blocks = tachKhoiDon(rawText);
@@ -1102,6 +1204,7 @@
       }
       renderAllTags();
       renderDecorView();
+      dongBoTuTheSangPasteBox();
     }
 
     function parseSmartBlock(txt) {
@@ -1282,6 +1385,7 @@
         var idInp = document.getElementById('idInput_' + idx);
         if (idInp) idInp.value = p.id;
       }
+      dongBoTuTheSangPasteBox();
     }
 
     function normalizeDateString(dateStr) {
@@ -1378,9 +1482,11 @@
             tagList[idx].parsed.coc = cocTheoSoKhach(kNum);
           }
           renderAllTags();
+          dongBoTuTheSangPasteBox();
           return;
         }
       }
+      dongBoTuTheSangPasteBox();
       if (idx !== activeTagIndex) return;
       if (field === 'ngay' && value && value !== document.getElementById('dateSelector').value) {
         document.getElementById('dateSelector').value = value;
@@ -1456,18 +1562,21 @@
       if (!tagList[idx]) return;
       tagList[idx].parsed.be = checked ? "1 ghế em bé" : "Không";
       renderAllTags();
+      dongBoTuTheSangPasteBox();
     }
 
     function changeBabyCount(idx, countStr) {
       if (!tagList[idx]) return;
       tagList[idx].parsed.be = countStr;
       renderAllTags();
+      dongBoTuTheSangPasteBox();
     }
 
     function toggleVat(idx, checked) {
       if (!tagList[idx]) return;
       tagList[idx].parsed.vat = checked ? "Có xuất VAT" : "Không";
       renderAllTags();
+      dongBoTuTheSangPasteBox();
     }
 
     function toggleFieldMo(idx, loai) {
@@ -1733,6 +1842,7 @@
       }
       renderAllTags();
       renderDecorView();
+      dongBoTuTheSangPasteBox();
     }
 
     function selectTagAt(index) {
@@ -1869,6 +1979,7 @@
       }
       renderAllTags();
       renderDecorView();
+      dongBoTuTheSangPasteBox();
     }
 
     function taoMaDatBan(kenh, sdt, ngay) {
@@ -2010,21 +2121,17 @@
         }
 
         var hasVat = p.vat === 'Có xuất VAT';
-        var vatRowHtml =
-          '<div class="card-field-row col-span-2">' +
-            '<span class="card-field-label vat-icon-label" id="vatIcon_' + idx + '" title="Xuất hóa đơn VAT" style="cursor:pointer;" onclick="toggleVat(' + idx + ', ' + (!hasVat) + ')">' +
-              '<span class="badge-vat-text ' + (hasVat ? 'vat-active' : '') + '">VAT</span>' +
-            '</span>' +
-            '<div class="baby-field-wrap" onclick="event.stopPropagation()">' +
-              '<label class="baby-toggle-box" title="Bấm để bật/tắt xuất hóa đơn VAT">' +
-                '<input type="checkbox" class="vat-check" ' + (hasVat ? 'checked' : '') + ' onchange="toggleVat(' + idx + ', this.checked)">' +
-                '<span class="baby-toggle-text ' + (hasVat ? 'text-vat-active' : '') + '">' + (hasVat ? 'VAT' : 'Ko') + '</span>' +
-              '</label>' +
-            '</div>' +
+        var vatHtml =
+          '<div class="card-field-row sub-vat" title="Xuất hóa đơn VAT">' +
+            '<span class="badge-vat-text ' + (hasVat ? 'vat-active' : '') + '" onclick="event.stopPropagation(); toggleVat(' + idx + ', ' + (!hasVat) + ')">VAT</span>' +
+            '<label class="baby-toggle-box" title="Bật/tắt VAT" onclick="event.stopPropagation()">' +
+              '<input type="checkbox" class="vat-check" ' + (hasVat ? 'checked' : '') + ' onchange="toggleVat(' + idx + ', this.checked)">' +
+              '<span class="baby-toggle-text ' + (hasVat ? 'text-vat-active' : '') + '">' + (hasVat ? 'VAT' : 'Ko') + '</span>' +
+            '</label>' +
           '</div>';
 
         var babyRowHtml =
-          '<div class="card-field-row col-span-2">' +
+          '<div class="card-field-row col-span-4">' +
             '<span class="card-field-label" title="Ghế em bé"><i class="fa-solid fa-baby" style="color:#facc15;"></i></span>' +
             '<div class="baby-field-wrap" onclick="event.stopPropagation()">' +
               '<label class="baby-toggle-box" title="Bấm để bật/tắt có trẻ em">' +
@@ -2032,7 +2139,7 @@
                 '<span class="baby-toggle-text">' + (hasBaby ? 'Bé' : 'Ko') + '</span>' +
               '</label>' +
               (hasBaby ?
-                '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)">' +
+                '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)" title="Số lượng ghế em bé">' +
                   '<option value="1 ghế em bé" ' + (babyCount.indexOf('1') !== -1 ? 'selected' : '') + '>1</option>' +
                   '<option value="2 ghế em bé" ' + (babyCount.indexOf('2') !== -1 ? 'selected' : '') + '>2</option>' +
                   '<option value="3 ghế em bé" ' + (babyCount.indexOf('3') !== -1 ? 'selected' : '') + '>3</option>' +
@@ -2042,15 +2149,15 @@
           '</div>';
 
         var gioRowHtml =
-          '<div class="card-field-row col-span-3 card-field-time" onclick="event.stopPropagation(); moBangChonGio(' + idx + ', this)">' +
+          '<div class="card-field-row col-span-4 card-field-time" onclick="event.stopPropagation(); moBangChonGio(' + idx + ', this)">' +
             '<span class="card-field-label" title="Giờ vào (Bấm để xem bảng chọn & giờ chặn)"><i class="fa-solid fa-clock" style="color:#f59e0b;"></i></span>' +
             '<input type="text" readonly class="card-input lct-input" placeholder="Giờ vào" value="' + esc(p.gioVao || '18h30') + '" style="cursor:pointer; font-weight:700; color:#f8fafc;" title="Bấm mở bảng chọn giờ">' +
             '<span class="card-date-open" title="Bấm mở bảng chọn giờ"><i class="fa-solid fa-chevron-down" style="font-size:11px;"></i></span>' +
           '</div>';
 
         var kenhRowHtml =
-          '<div class="card-field-row col-span-2">' +
-            '<span class="card-field-label" id="kenhIcon_' + idx + '" title="Kênh đặt bàn">' + layIconKenh(p.kenh) + '</span>' +
+          '<div class="card-field-row col-span-4" title="Kênh đặt bàn">' +
+            '<span class="card-field-label" id="kenhIcon_' + idx + '">' + layIconKenh(p.kenh) + '</span>' +
             '<select class="card-select" id="kenhSelect_' + idx + '" style="color:#38bdf8; font-weight:700;" onchange="doiKenhThe(' + idx + ', this.value)" onclick="event.stopPropagation()">' +
               '<option value="FB"' + (p.kenh === 'FB' ? ' selected' : '') + '>FB</option>' +
               '<option value="Zal"' + (p.kenh === 'Zal' ? ' selected' : '') + '>Zalo</option>' +
@@ -2069,42 +2176,43 @@
         var hasGhiChu = !!(p.ghiChu && p.ghiChu.trim()) || tag.moGhiChu;
 
         var idVal = p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay);
-        var idToolsRowHtml =
-          '<div class="id-tools-row col-span-6">' +
-            '<div class="card-field-row card-field-id" title="Mã ID đơn">' +
+        var statusBarHtml =
+          '<div class="card-status-bar col-span-12">' +
+            '<div class="card-field-row sub-id" title="Mã ID đơn">' +
               '<span class="card-field-label" title="Mã ID"><i class="fa-solid fa-id-badge" style="color:#e879f9;"></i></span>' +
               '<input type="text" class="card-input" id="idInput_' + idx + '" placeholder="Mã ID" value="' + esc(idVal) + '" onchange="updateCardField(' + idx + ', \'id\', this.value)" onclick="event.stopPropagation()" style="font-size:11px; font-weight:700; color:#f8fafc;">' +
             '</div>' +
-            '<div class="card-toggle-tools">' +
-              '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô Email">' +
-                '<i class="fa-solid fa-envelope"></i> Email' +
+            vatHtml +
+            '<div class="card-toggle-tools sub-tools">' +
+              '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô nhập Email">' +
+                '<i class="fa-solid fa-envelope"></i>' +
               '</button>' +
-              '<button type="button" class="btn-field-pill ' + (hasDatMon ? 'active' : '') + (p.datMon ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'DatMon\')" title="Bật/tắt ô Đặt món">' +
-                '<i class="fa-solid fa-utensils"></i> Món' +
+              '<button type="button" class="btn-field-pill ' + (hasDatMon ? 'active' : '') + (p.datMon ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'DatMon\')" title="Bật/tắt ô nhập Đặt món">' +
+                '<i class="fa-solid fa-utensils"></i>' +
               '</button>' +
-              '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt ô Ghi chú">' +
-                '<i class="fa-solid fa-pen-to-square"></i> Ghi chú' +
+              '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt ô nhập Ghi chú">' +
+                '<i class="fa-solid fa-pen-to-square"></i>' +
               '</button>' +
             '</div>' +
           '</div>';
 
         var emailFieldHtml = hasEmail
-          ? fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#38bdf8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'col-span-6', canClose: 'Email' })
+          ? fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#38bdf8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'col-span-12', canClose: 'Email' })
           : '';
 
         var datMonFieldHtml = hasDatMon
-          ? fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món...', 'datMon', p.datMon, { colSpan: 'col-span-6', textarea: true, canClose: 'DatMon' })
+          ? fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món...', 'datMon', p.datMon, { colSpan: 'col-span-12', textarea: true, canClose: 'DatMon' })
           : '';
 
         var ghiChuFieldHtml = hasGhiChu
-          ? fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú...', 'ghiChu', p.ghiChu, { colSpan: 'col-span-6', textarea: true, canClose: 'GhiChu' })
+          ? fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú...', 'ghiChu', p.ghiChu, { colSpan: 'col-span-12', textarea: true, canClose: 'GhiChu' })
           : '';
 
         var decorFieldsHtml = '';
         if (tag.isDecor) {
           decorFieldsHtml =
-            fieldHtml(idx, '<i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i>', 'Mẫu decor (chọn ở cột phải)', 'mauDecor', mauVal, { colSpan: 'col-span-6', style: 'color:#e2a684; font-weight:700;' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-ribbon" style="color:#fb7185;"></i>', 'Nội dung bảng tiệc / Decor', 'decor', p.decor, { colSpan: 'col-span-6', style: 'color:#38bdf8; font-weight:600;' });
+            fieldHtml(idx, '<i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i>', 'Mẫu decor', 'mauDecor', mauVal, { colSpan: 'col-span-6', style: 'color:#e2a684; font-weight:700;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-ribbon" style="color:#fb7185;"></i>', 'Nội dung bảng tiệc', 'decor', p.decor, { colSpan: 'col-span-6', style: 'color:#38bdf8; font-weight:600;' });
         }
 
         card.innerHTML =
@@ -2126,17 +2234,16 @@
           (tag.anhDecor ? '<div class="tag-thumb"><img src="' + esc(tag.anhDecor) + '" alt=""><span><i class="fa-solid fa-wand-magic-sparkles me-1"></i> ' + esc(mauVal) + '</span></div>' : '') +
           billSectionHtml +
           '<div class="card-smart-grid">' +
-            fieldHtml(idx, '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>', 'Ngày', 'ngay', tag.ngay, { colSpan: 'col-span-3' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>', 'Ngày', 'ngay', tag.ngay, { colSpan: 'col-span-5' }) +
             gioRowHtml +
-            fieldHtml(idx, '<i class="fa-solid fa-user" style="color:#38bdf8;"></i>', 'Họ tên KH', 'ten', p.ten, { colSpan: 'col-span-3', live: true }) +
-            fieldHtml(idx, '<i class="fa-solid fa-phone" style="color:#34d399;"></i>', 'SĐT', 'sdt', p.sdt, { colSpan: 'col-span-3', live: true }) +
-            fieldHtml(idx, '<i class="fa-solid fa-users" style="color:#c084fc;"></i>', 'Số khách', 'soKhach', p.soKhach || '2', { colSpan: 'col-span-2', style: 'color:#38bdf8; font-weight:700;' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn', 'banSo', p.banSo, { colSpan: 'col-span-2', list: 'tableSuggestions' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Cọc', 'coc', p.coc || '0', { colSpan: 'col-span-2', list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
-            kenhRowHtml +
-            vatRowHtml +
+            fieldHtml(idx, '<i class="fa-solid fa-users" style="color:#c084fc;"></i>', 'Khách', 'soKhach', p.soKhach || '2', { colSpan: 'col-span-3', style: 'color:#38bdf8; font-weight:700;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-user" style="color:#38bdf8;"></i>', 'Họ tên KH', 'ten', p.ten, { colSpan: 'col-span-5', live: true }) +
+            fieldHtml(idx, '<i class="fa-solid fa-phone" style="color:#34d399;"></i>', 'SĐT', 'sdt', p.sdt, { colSpan: 'col-span-4', live: true }) +
+            fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn', 'banSo', p.banSo, { colSpan: 'col-span-3', list: 'tableSuggestions' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Cọc', 'coc', p.coc || '0', { colSpan: 'col-span-4', list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
             babyRowHtml +
-            idToolsRowHtml +
+            kenhRowHtml +
+            statusBarHtml +
             decorFieldsHtml +
             emailFieldHtml +
             datMonFieldHtml +
