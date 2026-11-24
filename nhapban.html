@@ -569,26 +569,28 @@
     .lct-mau-pop ul { margin: 4px 0 0; padding-left: 16px; max-height: 140px; overflow-y: auto; }
     .lct-mau-pop li { margin-bottom: 2px; }
 
-    /* Điện thoại / Màn hình nhỏ: Tối ưu toàn bộ UI bao quát, dễ nhìn, dễ thao tác */
+    /* Điện thoại / Màn hình nhỏ: Tối ưu toàn bộ UI bao quát, dễ nhìn, chuẩn 2 dòng 4 cột */
     @media (max-width: 900px) {
       html, body { height: auto; overflow: auto; width: 100%; padding: 4px; }
       .viewport-grid { grid-template-columns: 1fr; height: auto; gap: 8px; }
       .mobile-tab-bar { display: flex; }
-      .panel-left, .panel-right { max-height: none; padding: 8px; border-radius: 8px; }
+      .panel-left, .panel-right { max-height: none; padding: 6px; border-radius: 8px; }
       .tags-container { grid-template-columns: 1fr; overflow: visible; gap: 8px; padding-right: 0; }
-      .card-smart-grid { grid-template-columns: repeat(6, 1fr); gap: 4px; }
-      .col-span-3 { grid-column: span 3; }
-      .col-span-2 { grid-column: span 2; }
-      .card-field-row { min-height: 38px; padding: 4px 8px; gap: 8px; border-radius: 6px; }
-      .card-field-label { width: 22px; font-size: 16px; }
-      .card-input, .card-select, .card-textarea { font-size: 15px; padding: 4px 0; }
-      .card-input.lct-input { font-size: 15px; }
+      .card-smart-grid-4col {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 3px !important;
+      }
+      .card-field-row { min-height: 28px; padding: 2px 4px; gap: 3px; border-radius: 5px; }
+      .card-field-label { width: 14px; font-size: 11.5px; }
+      .card-input, .card-select, .card-textarea { font-size: 11px; padding: 2px 0; }
+      .card-input.lct-input { font-size: 11px; }
       .bottom-save-wrap {
         flex-direction: column; position: sticky; bottom: 0; background: #111827;
         padding: 8px 0; z-index: 100; border-top: 1px solid #1f293d; box-shadow: 0 -4px 12px rgba(0,0,0,0.5);
       }
-      .btn-save-all { padding: 12px; font-size: 15px; border-radius: 8px; }
-      .badge-target-row-bottom { padding: 8px; font-size: 13px; }
+      .btn-save-all { padding: 10px; font-size: 14px; border-radius: 8px; }
+      .badge-target-row-bottom { padding: 6px; font-size: 12px; }
     }
   </style>
 
@@ -2299,7 +2301,7 @@
           (opts.style ? ' style="' + opts.style + '"' : '') + (field === 'id' ? ' id="idInput_' + idx + '"' : '') + ' placeholder="' + label + '" value="' + esc(value) + '" ' +
           (onInputSpecial || (evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)"')) + clickAttr + '>';
       
-      var spanClass = opts.colSpan ? (' ' + opts.colSpan) : ' col-span-5';
+      var spanClass = opts.colSpan ? (' ' + opts.colSpan) : '';
       var dateRowAttrs = isDate ? ' onclick="event.preventDefault(); event.stopPropagation(); moLichThe_(' + idx + ', this.querySelector(\'input\') || this)" style="cursor:pointer;"' : '';
       var closeBtn = opts.canClose
         ? '<span class="card-field-close-btn" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'' + opts.canClose + '\')" title="Thu gọn ô này"><i class="fa-solid fa-xmark"></i></span>'
