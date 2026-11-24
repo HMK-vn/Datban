@@ -250,10 +250,45 @@
     }
     .baby-toggle-text { font-size: 11.5px; color: #cbd5e1; font-weight: 500; white-space: nowrap; }
     .text-vat-active { color: #38bdf8 !important; font-weight: 700; }
+    .badge-vat-text {
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 9.5px; font-weight: 900; line-height: 1; letter-spacing: 0.5px;
+      padding: 2px 3px; border-radius: 3px;
+      background: rgba(148, 163, 184, 0.15); color: #94a3b8;
+      border: 1px solid #475569; transition: all 0.15s; user-select: none;
+    }
+    .badge-vat-text.vat-active {
+      background: rgba(56, 189, 248, 0.25); color: #38bdf8;
+      border-color: #38bdf8; box-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
+    }
     .baby-select {
       flex: 1; min-width: 0; background: #0f172a !important; border: 1px solid #334155;
       color: #facc15; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 1px 2px;
     }
+
+    /* Nút thêm nhanh Email, Món, Ghi chú */
+    .card-toggle-tools {
+      display: flex; align-items: center; justify-content: space-between; gap: 4px;
+      padding: 2px 4px !important; background: #0b1120 !important; border: 1px dashed #334155 !important;
+    }
+    .btn-field-pill {
+      flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      background: #1e293b; border: 1px solid #334155; border-radius: 4px;
+      color: #94a3b8; font-size: 11px; font-weight: 600; padding: 3px 4px; cursor: pointer;
+      white-space: nowrap; transition: all 0.15s; line-height: 1.2;
+    }
+    .btn-field-pill:hover { background: #334155; color: #f8fafc; }
+    .btn-field-pill.active {
+      background: rgba(56, 189, 248, 0.18); color: #38bdf8; border-color: #38bdf8; font-weight: 700;
+    }
+    .btn-field-pill.has-data {
+      background: rgba(52, 211, 153, 0.18); color: #34d399; border-color: #34d399; font-weight: 700;
+    }
+    .card-field-close-btn {
+      color: #64748b; font-size: 11px; cursor: pointer; padding: 2px 4px; margin-left: auto;
+      border-radius: 3px; transition: color 0.15s; flex-shrink: 0;
+    }
+    .card-field-close-btn:hover { color: #f43f5e; background: rgba(244,63,94,0.1); }
 
     /* Popup gợi ý Email gắn sát ô nhập */
     .email-suggest-popup {
@@ -268,17 +303,17 @@
     .email-suggest-item:last-child { border-bottom: none; }
     .email-suggest-item:hover { background: #0284c7; color: #fff; }
 
-    /* Popup bảng chọn giờ thông minh có chặn giờ */
+    /* Popup bảng chọn giờ thông minh có chặn giờ - Neo cạnh thẻ khách */
     .time-picker-popup {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.65); z-index: 2500; display: none;
-      align-items: center; justify-content: center; padding: 12px;
-      backdrop-filter: blur(2px);
+      background: rgba(0,0,0,0.45); z-index: 2500; display: none;
+      backdrop-filter: blur(1px);
     }
     .time-picker-box {
+      position: fixed;
       background: #0f172a; border: 1.5px solid #38bdf8; border-radius: 12px;
-      width: min(440px, 96vw); max-height: 90vh; overflow-y: auto; padding: 14px;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px;
+      width: min(380px, 96vw); max-height: calc(100vh - 20px); overflow-y: auto; padding: 12px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.85); display: flex; flex-direction: column; gap: 8px;
     }
     .time-picker-head {
       display: flex; justify-content: space-between; align-items: center;
@@ -1199,13 +1234,27 @@
     function layIconKenh(kenh) {
       var k = String(kenh || "").toLowerCase();
       if (/fb|face|messenger/.test(k)) return '<i class="fa-brands fa-facebook" style="color:#1877f2;"></i>';
-      if (/zal|zl|za/.test(k)) return '<i class="fa-solid fa-comment-dots" style="color:#0068ff;"></i>';
-      if (/tik|tt/.test(k)) return '<i class="fa-brands fa-tiktok" style="color:#f43f5e;"></i>';
-      if (/ig|insta/.test(k)) return '<i class="fa-brands fa-instagram" style="color:#e1306c;"></i>';
+      if (/zal|zl|za/.test(k)) return '<i class="fa-solid fa-comment-dots" style="color:#0284c7;"></i>';
+      if (/tik|tt/.test(k)) return '<i class="fa-brands fa-tiktok" style="color:#22d3ee;"></i>';
+      if (/ig|insta/.test(k)) return '<i class="fa-brands fa-instagram" style="color:#f43f5e;"></i>';
       if (/thread/.test(k)) return '<i class="fa-brands fa-threads" style="color:#ffffff;"></i>';
       if (/web/.test(k)) return '<i class="fa-solid fa-globe" style="color:#38bdf8;"></i>';
       if (/call|hotline/.test(k)) return '<i class="fa-solid fa-phone-volume" style="color:#4ade80;"></i>';
-      return '<i class="fa-solid fa-table-list" style="color:#38bdf8;"></i>';
+      if (/gsh|sheet/.test(k)) return '<i class="fa-solid fa-table-cells" style="color:#10b981;"></i>';
+      return '<i class="fa-solid fa-circle-nodes" style="color:#94a3b8;"></i>';
+    }
+
+    function doiKenhThe(idx, val) {
+      if (!tagList[idx]) return;
+      tagList[idx].parsed.kenh = val;
+      var iconEl = document.getElementById('kenhIcon_' + idx);
+      if (iconEl) iconEl.innerHTML = layIconKenh(val);
+      var p = tagList[idx].parsed;
+      if (!p.id || /^(WEB|ZA|TIK|IG|FB|GSH|THR|CALL|KHAC)\.\d{5}/i.test(p.id)) {
+        p.id = taoMaDatBan(val, p.sdt, tagList[idx].ngay);
+        var idInp = document.getElementById('idInput_' + idx);
+        if (idInp) idInp.value = p.id;
+      }
     }
 
     function normalizeDateString(dateStr) {
@@ -1289,6 +1338,12 @@
       } else {
         tagList[idx].parsed[field] = value;
         if (field === 'banSo') capNhatDatalistBanSo(value);
+        if (field === 'kenh') {
+          var iconEl = document.getElementById('kenhIcon_' + idx);
+          if (iconEl) iconEl.innerHTML = layIconKenh(value);
+          var selEl = document.getElementById('kenhSelect_' + idx);
+          if (selEl) selEl.value = value;
+        }
         if (field === 'soKhach') {
           var kNum = parseInt(value, 10) || 2;
           // Bàn thường sẽ KHÔNG tự nhảy cọc! Chỉ bàn decor mới tự tính cọc khi chưa nhập cọc
@@ -1386,6 +1441,22 @@
       if (!tagList[idx]) return;
       tagList[idx].parsed.vat = checked ? "Có xuất VAT" : "Không";
       renderAllTags();
+    }
+
+    function toggleFieldMo(idx, loai) {
+      if (!tagList[idx]) return;
+      var key = 'mo' + loai;
+      tagList[idx][key] = !tagList[idx][key];
+      renderAllTags();
+      if (tagList[idx][key]) {
+        setTimeout(function() {
+          var card = document.querySelectorAll('.folder-tag-card')[idx];
+          if (card) {
+            var targetInput = card.querySelector('[placeholder*="' + (loai === 'Email' ? 'Email' : (loai === 'DatMon' ? 'Đặt món' : 'Ghi chú')) + '"]');
+            if (targetInput) targetInput.focus();
+          }
+        }, 50);
+      }
     }
 
     /* 📸 DÁN ẢNH BILL TRỰC TIẾP QUA CLIPBOARD (Ctrl+V) */
@@ -1508,7 +1579,33 @@
         '</button>';
       }).join('');
 
-      modal.style.display = 'flex';
+      modal.style.display = 'block';
+
+      // Neo vị trí nằm ngay cạnh / ngay dưới ô giờ của thẻ khách
+      var box = modal.querySelector('.time-picker-box');
+      if (box && triggerEl) {
+        var rect = triggerEl.getBoundingClientRect();
+        var cardEl = triggerEl.closest('.folder-tag-card') || triggerEl;
+        var cardRect = cardEl.getBoundingClientRect();
+        var bw = Math.min(380, window.innerWidth - 20);
+        box.style.width = bw + 'px';
+        
+        // Căn ngang theo mép trái của thẻ card (hoặc triggerEl)
+        var left = Math.max(10, Math.min(window.innerWidth - bw - 10, cardRect.left));
+        
+        // Căn dọc: ngay dưới ô giờ
+        var top = rect.bottom + 6;
+        var estimatedH = 360;
+        if (top + estimatedH > window.innerHeight && rect.top > estimatedH + 20) {
+          top = Math.max(10, rect.top - estimatedH - 6);
+        } else if (top + estimatedH > window.innerHeight) {
+          top = Math.max(10, window.innerHeight - estimatedH - 10);
+        }
+        box.style.position = 'fixed';
+        box.style.left = left + 'px';
+        box.style.top = top + 'px';
+        box.style.margin = '0';
+      }
     }
 
     function chonGioTuBang(timeStr) {
@@ -1771,7 +1868,7 @@
         ? ' onclick="event.preventDefault(); event.stopPropagation(); moLichThe_(' + idx + ', this)" onmousedown="event.preventDefault()"'
         : ' onclick="event.stopPropagation()"';
       var inputType = isDate ? 'text' : (opts.type || 'text');
-      var rightIcon = isDate ? '<span class="card-date-open" title="Bấm mở lịch số bàn còn trống"><i class="fa-solid fa-calendar-days"></i></span>' : '';
+      var rightIcon = '';
       
       var onInputSpecial = '';
       if (field === 'email') {
@@ -1781,11 +1878,15 @@
       var input = opts.textarea
         ? '<textarea class="card-textarea" placeholder="' + label + '..." ' + evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">' + esc(value) + '</textarea>'
         : '<input type="' + inputType + '"' + (isDate ? ' readonly' : '') + ' class="card-input' + (isDate ? ' lct-input' : '') + '"' + (opts.list ? ' list="' + opts.list + '"' : '') +
-          (opts.style ? ' style="' + opts.style + '"' : '') + ' placeholder="' + label + '" value="' + esc(value) + '" ' +
+          (opts.style ? ' style="' + opts.style + '"' : '') + (field === 'id' ? ' id="idInput_' + idx + '"' : '') + ' placeholder="' + label + '" value="' + esc(value) + '" ' +
           (onInputSpecial || (evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)"')) + clickAttr + '>';
       
       var spanClass = opts.colSpan ? (' ' + opts.colSpan) : ' col-span-3';
-      return '<div class="card-field-row' + spanClass + (isDate ? ' card-field-date' : '') + '"><span class="card-field-label" title="' + label + '">' + icon + '</span>' + input + rightIcon + '</div>';
+      var dateRowAttrs = isDate ? ' onclick="event.preventDefault(); event.stopPropagation(); moLichThe_(' + idx + ', this.querySelector(\'input\') || this)" style="cursor:pointer;"' : '';
+      var closeBtn = opts.canClose
+        ? '<span class="card-field-close-btn" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'' + opts.canClose + '\')" title="Thu gọn ô này"><i class="fa-solid fa-xmark"></i></span>'
+        : '';
+      return '<div class="card-field-row' + spanClass + (isDate ? ' card-field-date' : '') + '"' + dateRowAttrs + '><span class="card-field-label" title="' + label + '"' + (isDate ? ' style="cursor:pointer;"' : '') + '>' + icon + '</span>' + input + rightIcon + closeBtn + '</div>';
     }
 
     function renderAllTags() {
@@ -1877,10 +1978,6 @@
                 '<span class="card-field-label" title="Tiền hoàn cọc"><i class="fa-solid fa-money-bill-transfer" style="color:#f59e0b;"></i></span>' +
                 '<input type="text" class="card-input" style="color:#f59e0b; font-weight:700;" placeholder="Tiền hoàn cọc..." value="' + esc(p.tienHoan || '') + '" onchange="updateCardField(' + idx + ', \'tienHoan\', this.value)">' +
               '</div>' +
-              '<div class="card-field-row col-span-6">' +
-                '<span class="card-field-label" title="Lý do hoàn cọc"><i class="fa-solid fa-circle-info" style="color:#cbd5e1;"></i></span>' +
-                '<input type="text" class="card-input" placeholder="Lý do hoàn cọc..." value="' + esc(p.lyDoHoan || '') + '" onchange="updateCardField(' + idx + ', \'lyDoHoan\', this.value)">' +
-              '</div>' +
               billHoanHtml +
             '</div>';
         }
@@ -1888,7 +1985,9 @@
         var hasVat = p.vat === 'Có xuất VAT';
         var vatRowHtml =
           '<div class="card-field-row col-span-2">' +
-            '<span class="card-field-label" title="Xuất hóa đơn VAT"><i class="fa-solid fa-file-invoice-dollar" style="color:#94a3b8;"></i></span>' +
+            '<span class="card-field-label vat-icon-label" id="vatIcon_' + idx + '" title="Xuất hóa đơn VAT" style="cursor:pointer;" onclick="toggleVat(' + idx + ', ' + (!hasVat) + ')">' +
+              '<span class="badge-vat-text ' + (hasVat ? 'vat-active' : '') + '">VAT</span>' +
+            '</span>' +
             '<div class="baby-field-wrap" onclick="event.stopPropagation()">' +
               '<label class="baby-toggle-box" title="Bấm để bật/tắt xuất hóa đơn VAT">' +
                 '<input type="checkbox" class="vat-check" ' + (hasVat ? 'checked' : '') + ' onchange="toggleVat(' + idx + ', this.checked)">' +
@@ -1924,8 +2023,8 @@
 
         var kenhRowHtml =
           '<div class="card-field-row col-span-2">' +
-            '<span class="card-field-label" title="Kênh đặt bàn">' + layIconKenh(p.kenh) + '</span>' +
-            '<select class="card-select" style="color:#38bdf8; font-weight:700;" onchange="updateCardField(' + idx + ', \'kenh\', this.value)" onclick="event.stopPropagation()">' +
+            '<span class="card-field-label" id="kenhIcon_' + idx + '" title="Kênh đặt bàn">' + layIconKenh(p.kenh) + '</span>' +
+            '<select class="card-select" id="kenhSelect_' + idx + '" style="color:#38bdf8; font-weight:700;" onchange="doiKenhThe(' + idx + ', this.value)" onclick="event.stopPropagation()">' +
               '<option value="FB"' + (p.kenh === 'FB' ? ' selected' : '') + '>FB</option>' +
               '<option value="Zal"' + (p.kenh === 'Zal' ? ' selected' : '') + '>Zalo</option>' +
               '<option value="Web"' + (p.kenh === 'Web' ? ' selected' : '') + '>Web</option>' +
@@ -1937,6 +2036,38 @@
               '<option value="Khác"' + (p.kenh === 'Khác' ? ' selected' : '') + '>Khác</option>' +
             '</select>' +
           '</div>';
+
+        var hasEmail = !!(p.email && p.email.trim()) || tag.moEmail;
+        var hasDatMon = !!(p.datMon && p.datMon.trim()) || tag.moDatMon;
+        var hasGhiChu = !!(p.ghiChu && p.ghiChu.trim()) || tag.moGhiChu;
+
+        var toolsRowHtml =
+          '<div class="card-field-row col-span-3 card-toggle-tools">' +
+            '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô Email">' +
+              '<i class="fa-solid fa-envelope"></i> Email' +
+            '</button>' +
+            '<button type="button" class="btn-field-pill ' + (hasDatMon ? 'active' : '') + (p.datMon ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'DatMon\')" title="Bật/tắt ô Đặt món">' +
+              '<i class="fa-solid fa-utensils"></i> Món' +
+            '</button>' +
+            '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt ô Ghi chú">' +
+              '<i class="fa-solid fa-pen-to-square"></i> Ghi chú' +
+            '</button>' +
+          '</div>';
+
+        var emailFieldHtml = hasEmail
+          ? fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#38bdf8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'col-span-6', canClose: 'Email' })
+          : '';
+
+        var datMonSpan = (hasDatMon && hasGhiChu) ? 'col-span-3' : 'col-span-6';
+        var ghiChuSpan = (hasDatMon && hasGhiChu) ? 'col-span-3' : 'col-span-6';
+
+        var datMonFieldHtml = hasDatMon
+          ? fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món...', 'datMon', p.datMon, { colSpan: datMonSpan, textarea: true, canClose: 'DatMon' })
+          : '';
+
+        var ghiChuFieldHtml = hasGhiChu
+          ? fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú...', 'ghiChu', p.ghiChu, { colSpan: ghiChuSpan, textarea: true, canClose: 'GhiChu' })
+          : '';
 
         var decorFieldsHtml = '';
         if (tag.isDecor) {
@@ -1975,10 +2106,11 @@
             vatRowHtml +
             babyRowHtml +
             fieldHtml(idx, '<i class="fa-solid fa-id-badge" style="color:#e879f9;"></i>', 'Mã ID', 'id', p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay), { colSpan: 'col-span-3' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#94a3b8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'col-span-3' }) +
+            toolsRowHtml +
             decorFieldsHtml +
-            fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món...', 'datMon', p.datMon, { colSpan: 'col-span-3', textarea: true }) +
-            fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú...', 'ghiChu', p.ghiChu, { colSpan: 'col-span-3', textarea: true }) +
+            emailFieldHtml +
+            datMonFieldHtml +
+            ghiChuFieldHtml +
           '</div>' +
           hoanCocSectionHtml;
 
