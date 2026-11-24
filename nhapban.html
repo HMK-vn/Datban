@@ -244,7 +244,18 @@
       font-size: 10.5px; font-weight: 700;
     }
 
-    /* Layout mới thông minh: Hệ Grid 4 cột tinh gọn (ĐÚNG 2 DÒNG - CÙNG CỠ ĐỘ RỘNG) */
+    /* Layout mới thông minh: Hệ Grid gom gọn (ĐÚNG 2 DÒNG x 3 CỘT: Cột 1 Kép, Cột 2 Đơn, Cột 3 Icon/Tools) */
+    .card-smart-grid-3col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.9fr);
+      gap: 4px;
+    }
+    @media (max-width: 640px) {
+      .card-smart-grid-3col {
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.9fr);
+        gap: 3px;
+      }
+    }
     .card-smart-grid-4col {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -579,6 +590,11 @@
       .mobile-tab-bar { display: flex; }
       .panel-left, .panel-right { max-height: none; padding: 6px; border-radius: 8px; }
       .tags-container { grid-template-columns: 1fr; overflow: visible; gap: 8px; padding-right: 0; }
+      .card-smart-grid-3col {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.9fr) !important;
+        gap: 3px !important;
+      }
       .card-smart-grid-4col {
         display: grid !important;
         grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
@@ -2279,6 +2295,15 @@
       return code + "." + last5 + (m ? "." + m[3] + m[2] : "");
     }
 
+    function dinhDangNgayHienThi(val) {
+      if (!val) return '';
+      var s = String(val).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+        return s.slice(5);
+      }
+      return s;
+    }
+
     function fieldHtml(idx, icon, label, field, value, opts) {
       opts = opts || {};
       var evt = opts.live ? 'oninput' : 'onchange';
@@ -2288,6 +2313,7 @@
         : ' onclick="event.stopPropagation()"';
       var inputType = isDate ? 'text' : (opts.type || 'text');
       var rightIcon = '';
+      var displayVal = isDate ? dinhDangNgayHienThi(value) : value;
       
       var onInputSpecial = '';
       if (field === 'email') {
@@ -2301,7 +2327,7 @@
       var input = opts.textarea
         ? '<textarea class="card-textarea" placeholder="' + label + '..." oninput="this.dataset.collapsed=\'false\';this.style.height=\'auto\';this.style.height=Math.max(26,this.scrollHeight)+\'px\';updateCardField(' + idx + ', \'' + field + '\', this.value)" onchange="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">' + esc(value) + '</textarea>'
         : '<input type="' + inputType + '"' + (isDate ? ' readonly' : '') + ' class="card-input' + (isDate ? ' lct-input' : '') + '"' + (opts.list ? ' list="' + opts.list + '"' : '') +
-          (opts.style ? ' style="' + opts.style + '"' : '') + (field === 'id' ? ' id="idInput_' + idx + '"' : '') + ' placeholder="' + label + '" value="' + esc(value) + '" ' +
+          (opts.style ? ' style="' + opts.style + '"' : '') + (field === 'id' ? ' id="idInput_' + idx + '"' : '') + ' placeholder="' + label + '" value="' + esc(displayVal) + '" ' +
           (onInputSpecial || (evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)"')) + clickAttr + '>';
       
       var spanClass = opts.colSpan ? (' ' + opts.colSpan) : '';
@@ -2342,8 +2368,9 @@
               '<input type="file" id="billInput_' + idx + '" accept="image/*" style="display:none;" onchange="chonBillThe(' + idx + ', this, false)">' +
               '<i class="fa-solid fa-cloud-arrow-up bill-drop-icon"></i>' +
               '<div class="bill-drop-title">' +
-                '<span>Kéo thả / Bấm tải bill cọc</span>' +
-                '<span class="bill-drop-sub">Tự tách tên, SĐT, Kênh (Ctrl+V để dán)</span>' +
+                '<span style="display:block; white-space:nowrap;">Kéo thả / Bấm tải bill cọc</span>' +
+                '<span class="bill-drop-sub" style="white-space:nowrap;">Tự tách tên, SĐT, Kênh</span>' +
+                '<span class="bill-drop-sub" style="white-space:nowrap; color:#38bdf8; font-weight:600;">(Ctrl+V để dán)</span>' +
               '</div>' +
             '</div>';
         } else {
@@ -2412,19 +2439,45 @@
             '<span>VAT</span>' +
           '</button>';
 
-        var babyRowHtml =
-          '<div class="baby-pill-wrap ' + (hasBaby ? 'active' : '') + '" style="padding:2px 4px; gap:2px; min-height:28px; width:100%; box-sizing:border-box;" title="Ghế em bé">' +
-            '<button type="button" class="btn-baby-pill ' + (hasBaby ? 'active' : '') + '" onclick="event.stopPropagation(); toggleBabyPill(' + idx + ')" title="Bấm bật/tắt ghế em bé">' +
-              '<i class="fa-solid fa-baby-carriage"></i> ' +
+        var ngayDisplay = dinhDangNgayHienThi(tag.ngay);
+        var ngayGioCombinedHtml =
+          '<div class="card-field-row" style="padding:2px 4px; gap:2px; min-height:28px;" title="Ngày & Giờ đặt bàn">' +
+            /* Phần Ngày */
+            '<span class="card-field-label" style="cursor:pointer; width:13px; font-size:11px;" onclick="moLichThe_(' + idx + ', this.nextElementSibling)" title="Chọn ngày">' +
+              '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>' +
+            '</span>' +
+            '<input type="text" readonly class="card-input lct-input" value="' + esc(ngayDisplay) + '" onclick="moLichThe_(' + idx + ', this)" style="cursor:pointer; font-weight:700; color:#f8fafc; font-size:11px; width:38px; padding:0; text-align:center; letter-spacing:-0.2px;" title="Bấm đổi ngày">' +
+            /* Vách ngăn mờ */
+            '<div style="width:1px; height:15px; background:#334155; flex-shrink:0; margin:0 1px;"></div>' +
+            /* Phần Giờ */
+            '<span class="card-field-label" style="cursor:pointer; width:13px; font-size:11px;" onclick="moBangChonGio(' + idx + ', this.nextElementSibling)" title="Chọn giờ">' +
+              '<i class="fa-solid fa-clock" style="color:#f59e0b;"></i>' +
+            '</span>' +
+            '<input type="text" readonly class="card-input lct-input" value="' + esc(p.gioVao || '18h30') + '" onclick="moBangChonGio(' + idx + ', this)" style="cursor:pointer; font-weight:700; color:#f8fafc; font-size:11px; flex:1; min-width:0; padding:0;" title="Bấm đổi giờ">' +
+            '<span class="card-date-open" onclick="moBangChonGio(' + idx + ', this.previousElementSibling)" title="Bấm chọn giờ" style="cursor:pointer; flex-shrink:0;"><i class="fa-solid fa-chevron-down" style="font-size:9px;"></i></span>' +
+          '</div>';
+
+        var khachBeCombinedHtml =
+          '<div class="card-field-row" style="padding:2px 4px; gap:2px; min-height:28px;" title="Số lượng người lớn & em bé">' +
+            /* Phần Người lớn */
+            '<span class="card-field-label" style="width:13px; font-size:11px;" title="Số khách lớn">' +
+              '<i class="fa-solid fa-users" style="color:#c084fc;"></i>' +
+            '</span>' +
+            '<input type="text" class="card-input" value="' + esc(p.soKhach || '2') + '" onchange="updateCardField(' + idx + ', \'soKhach\', this.value)" style="color:#38bdf8; font-weight:700; font-size:11.5px; width:26px; padding:0; text-align:center;" title="Số người lớn">' +
+            /* Vách ngăn mờ */
+            '<div style="width:1px; height:15px; background:#334155; flex-shrink:0; margin:0 1px;"></div>' +
+            /* Phần Em bé */
+            '<button type="button" class="btn-baby-pill ' + (hasBaby ? 'active' : '') + '" onclick="event.stopPropagation(); toggleBabyPill(' + idx + ')" style="display:inline-flex; align-items:center; gap:2px; background:transparent; border:none; color:' + (hasBaby ? '#facc15' : '#64748b') + '; font-size:11px; font-weight:700; cursor:pointer; padding:0; flex-shrink:0;" title="Bật/tắt ghế bé">' +
+              '<i class="fa-solid fa-baby-carriage" style="font-size:11px;"></i>' +
               '<span>Bé</span>' +
             '</button>' +
-            (hasBaby ?
-              '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)" onclick="event.stopPropagation()" title="Số lượng ghế em bé">' +
-                '<option value="1 ghế em bé" ' + (babyCount.indexOf('1') !== -1 ? 'selected' : '') + '>1</option>' +
-                '<option value="2 ghế em bé" ' + (babyCount.indexOf('2') !== -1 ? 'selected' : '') + '>2</option>' +
-                '<option value="3 ghế em bé" ' + (babyCount.indexOf('3') !== -1 ? 'selected' : '') + '>3</option>' +
-                '<option value="4 ghế em bé" ' + (babyCount.indexOf('4') !== -1 ? 'selected' : '') + '>4</option>' +
-              '</select>' : '') +
+            '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)" onclick="event.stopPropagation()" style="background:transparent; border:none; color:' + (hasBaby ? '#facc15' : '#64748b') + '; font-size:11px; font-weight:700; padding:0; cursor:pointer; flex:1; min-width:0;" title="Số ghế em bé">' +
+              '<option value="Không"' + (!hasBaby ? ' selected' : '') + '>0</option>' +
+              '<option value="1 ghế em bé"' + (babyCount.indexOf('1') !== -1 ? ' selected' : '') + '>1</option>' +
+              '<option value="2 ghế em bé"' + (babyCount.indexOf('2') !== -1 ? ' selected' : '') + '>2</option>' +
+              '<option value="3 ghế em bé"' + (babyCount.indexOf('3') !== -1 ? ' selected' : '') + '>3</option>' +
+              '<option value="4 ghế em bé"' + (babyCount.indexOf('4') !== -1 ? ' selected' : '') + '>4</option>' +
+            '</select>' +
           '</div>';
 
         var toolsRowHtml =
@@ -2438,13 +2491,6 @@
             '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt ô nhập Ghi chú">' +
               '<i class="fa-solid fa-pen-to-square"></i>' +
             '</button>' +
-          '</div>';
-
-        var gioRowHtml =
-          '<div class="card-field-row card-field-time" onclick="event.stopPropagation(); moBangChonGio(' + idx + ', this)">' +
-            '<span class="card-field-label" title="Giờ vào"><i class="fa-solid fa-clock" style="color:#f59e0b;"></i></span>' +
-            '<input type="text" readonly class="card-input lct-input" placeholder="Giờ" value="' + esc(p.gioVao || '18h30') + '" style="cursor:pointer; font-weight:700; color:#f8fafc;" title="Bấm mở bảng chọn giờ">' +
-            '<span class="card-date-open" title="Bấm mở bảng chọn giờ"><i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></span>' +
           '</div>';
 
         var hasEmail = !!(p.email && p.email.trim()) || tag.moEmail;
@@ -2534,17 +2580,15 @@
           (tag.lockReason ? '<div class="tag-lock-reason">' + esc(tag.lockReason) + '</div>' : '') +
           (tag.anhDecor ? '<div class="tag-thumb"><img src="' + esc(tag.anhDecor) + '" alt=""><span><i class="fa-solid fa-wand-magic-sparkles me-1"></i> ' + esc(mauVal) + '</span></div>' : '') +
           topBarHtml +
-          '<div class="card-smart-grid-4col">' +
-            /* 🚀 HÀNG 1 (4 CỘT): Ngày (Cột 1) | Giờ (Cột 2) | Bàn (Cột 3) | Nút VAT (Cột 4 - Icon) */
-            fieldHtml(idx, '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>', 'Ngày', 'ngay', tag.ngay) +
-            gioRowHtml +
+          '<div class="card-smart-grid-3col">' +
+            /* 🚀 HÀNG 1 (3 CỘT): [Ngày + Giờ] (Cột 1) | [Bàn] (Cột 2) | [VAT] (Cột 3 - Icon) */
+            ngayGioCombinedHtml +
             fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn', 'banSo', p.banSo, { list: 'tableSuggestions' }) +
             vatRowHtml +
 
-            /* 🚀 HÀNG 2 (4 CỘT): Khách (Cột 1) | Cọc (Cột 2) | Nút Bé (Cột 3) | Icon tiện ích (Cột 4 - Icon) */
-            fieldHtml(idx, '<i class="fa-solid fa-users" style="color:#c084fc;"></i>', 'Khách', 'soKhach', p.soKhach || '2', { style: 'color:#38bdf8; font-weight:700;' }) +
+            /* 🚀 HÀNG 2 (3 CỘT): [Khách lớn + Bé] (Cột 1) | [Cọc] (Cột 2) | [Tools: Email, Món, Note] (Cột 3 - Icon) */
+            khachBeCombinedHtml +
             fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Cọc', 'coc', p.coc || '0', { list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
-            babyRowHtml +
             toolsRowHtml +
 
             /* Hàng Decor (nếu chọn) & các hàng mở rộng */
@@ -2849,7 +2893,7 @@
       var i = _lct.input;
       dongLct_();
       if (!i) return;
-      i.value = k;
+      i.value = dinhDangNgayHienThi(k);
       if (_lct.targetTagIdx != null && tagList[_lct.targetTagIdx]) {
         var tidx = _lct.targetTagIdx;
         _lct.targetTagIdx = null;
