@@ -128,10 +128,16 @@
       margin-bottom: 6px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;
     }
 
-    /* Container chứa các thẻ khách: Layout co kéo linh hoạt thông minh */
+    /* Container chứa các thẻ khách: 3 cột thẻ song song trên máy tính, 1 cột trên điện thoại */
     .tags-container {
-      flex: 1; overflow-y: auto; display: grid; grid-template-columns: 1fr;
+      flex: 1; overflow-y: auto; display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       align-content: start; gap: 8px; padding-right: 4px;
+    }
+    @media (max-width: 1200px) {
+      .tags-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
     .folder-tag-card {
       background: #0b1120; border: 1.5px solid #1f293d; border-radius: 8px;
