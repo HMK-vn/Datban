@@ -215,6 +215,9 @@
       width: 20px; font-size: 14px; display: inline-flex; align-items: center;
       justify-content: center; flex-shrink: 0; cursor: default; text-align: center;
     }
+    .card-field-row:has(.card-textarea) {
+      align-items: flex-start; padding-top: 4px; padding-bottom: 4px;
+    }
     .card-input, .card-select, .card-textarea {
       width: 100%; min-width: 0; background: transparent !important; border: none; color: #f8fafc;
       font-size: 12.5px; font-weight: 500; outline: none; padding: 2px 0;
@@ -233,7 +236,10 @@
     .card-date-open:hover { opacity: 1; transform: scale(1.15); }
     .card-select { cursor: pointer; color: #38bdf8; font-weight: 600; }
     .card-select option { background: #0f172a; color: #f8fafc; }
-    .card-textarea { resize: vertical; min-height: 24px; height: 24px; line-height: 1.35; font-family: inherit; }
+    .card-textarea {
+      resize: vertical; min-height: 26px; height: auto; max-height: 120px; line-height: 1.35;
+      font-family: inherit; overflow-y: auto;
+    }
 
     /* Switch toggle cho Trẻ em (Ghế em bé) & VAT */
     .baby-field-wrap {
@@ -1876,7 +1882,7 @@
       }
 
       var input = opts.textarea
-        ? '<textarea class="card-textarea" placeholder="' + label + '..." ' + evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">' + esc(value) + '</textarea>'
+        ? '<textarea class="card-textarea" placeholder="' + label + '..." oninput="this.style.height=\'auto\';this.style.height=Math.max(26,this.scrollHeight)+\'px\';updateCardField(' + idx + ', \'' + field + '\', this.value)" onchange="updateCardField(' + idx + ', \'' + field + '\', this.value)" onclick="event.stopPropagation()">' + esc(value) + '</textarea>'
         : '<input type="' + inputType + '"' + (isDate ? ' readonly' : '') + ' class="card-input' + (isDate ? ' lct-input' : '') + '"' + (opts.list ? ' list="' + opts.list + '"' : '') +
           (opts.style ? ' style="' + opts.style + '"' : '') + (field === 'id' ? ' id="idInput_' + idx + '"' : '') + ' placeholder="' + label + '" value="' + esc(value) + '" ' +
           (onInputSpecial || (evt + '="updateCardField(' + idx + ', \'' + field + '\', this.value)"')) + clickAttr + '>';
@@ -2042,7 +2048,7 @@
         var hasGhiChu = !!(p.ghiChu && p.ghiChu.trim()) || tag.moGhiChu;
 
         var toolsRowHtml =
-          '<div class="card-field-row col-span-3 card-toggle-tools">' +
+          '<div class="card-field-row col-span-4 card-toggle-tools">' +
             '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô Email">' +
               '<i class="fa-solid fa-envelope"></i> Email' +
             '</button>' +
@@ -2058,15 +2064,12 @@
           ? fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#38bdf8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'col-span-6', canClose: 'Email' })
           : '';
 
-        var datMonSpan = (hasDatMon && hasGhiChu) ? 'col-span-3' : 'col-span-6';
-        var ghiChuSpan = (hasDatMon && hasGhiChu) ? 'col-span-3' : 'col-span-6';
-
         var datMonFieldHtml = hasDatMon
-          ? fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món...', 'datMon', p.datMon, { colSpan: datMonSpan, textarea: true, canClose: 'DatMon' })
+          ? fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món...', 'datMon', p.datMon, { colSpan: 'col-span-6', textarea: true, canClose: 'DatMon' })
           : '';
 
         var ghiChuFieldHtml = hasGhiChu
-          ? fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú...', 'ghiChu', p.ghiChu, { colSpan: ghiChuSpan, textarea: true, canClose: 'GhiChu' })
+          ? fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú...', 'ghiChu', p.ghiChu, { colSpan: 'col-span-6', textarea: true, canClose: 'GhiChu' })
           : '';
 
         var decorFieldsHtml = '';
@@ -2105,7 +2108,7 @@
             kenhRowHtml +
             vatRowHtml +
             babyRowHtml +
-            fieldHtml(idx, '<i class="fa-solid fa-id-badge" style="color:#e879f9;"></i>', 'Mã ID', 'id', p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay), { colSpan: 'col-span-3' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-id-badge" style="color:#e879f9;"></i>', 'Mã ID', 'id', p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay), { colSpan: 'col-span-2', style: 'font-size:11px; font-weight:700;' }) +
             toolsRowHtml +
             decorFieldsHtml +
             emailFieldHtml +
@@ -2115,6 +2118,11 @@
           hoanCocSectionHtml;
 
         container.appendChild(card);
+        // Tự động giãn chiều cao các textarea theo nội dung
+        card.querySelectorAll('.card-textarea').forEach(function(ta) {
+          ta.style.height = 'auto';
+          ta.style.height = Math.max(26, ta.scrollHeight) + 'px';
+        });
       });
     }
 
