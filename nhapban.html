@@ -134,20 +134,33 @@
     }
     .tag-type-toggle {
       display: inline-flex; align-items: center; background: #0b1120;
-      border: 1px solid #334155; border-radius: 6px; padding: 1.5px; gap: 2px;
-      margin-left: auto; margin-right: 6px;
+      border: 1px solid #334155; border-radius: 6px; padding: 2px; gap: 2px;
+      margin-left: auto; margin-right: 6px; flex-shrink: 0;
     }
     .tag-type-btn {
-      display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px;
-      font-size: 11px; font-weight: 600; border-radius: 4px; cursor: pointer;
-      color: #94a3b8; margin: 0; user-select: none; transition: all 0.15s;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 22px; padding: 0; font-size: 11.5px; border-radius: 4px; cursor: pointer;
+      color: #64748b; margin: 0; user-select: none; transition: all 0.15s;
     }
     .tag-type-btn input { display: none; }
-    .tag-type-btn.active-thuong { background: #0284c7; color: #fff; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-    .tag-type-btn.active-decor { background: #d946ef; color: #fff; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .tag-type-btn.active-thuong {
+      background: #0284c7; color: #fff; box-shadow: 0 1px 4px rgba(2,132,199,0.5);
+    }
+    .tag-type-btn.active-decor {
+      background: #d946ef; color: #fff; box-shadow: 0 1px 4px rgba(217,70,239,0.5);
+    }
     .folder-tag-title {
-      font-weight: 700; color: #38bdf8; font-size: 13px; min-width: 0;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font-weight: 700; color: #38bdf8; font-size: 13.5px; min-width: 0; flex: 1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
+      padding: 1px 4px; border-radius: 4px; transition: background 0.15s;
+    }
+    .folder-tag-title:hover {
+      background: rgba(56, 189, 248, 0.12);
+    }
+    .folder-tag-title-edit-input {
+      font-weight: 700; color: #38bdf8; font-size: 13px; min-width: 0; flex: 1;
+      background: #0f172a; border: 1.5px solid #38bdf8; border-radius: 4px;
+      outline: none; padding: 1px 6px; box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
     }
     .btn-del-tag {
       background: transparent; color: #ef4444; border: none; font-size: 15px;
@@ -158,41 +171,43 @@
     /* Dropzone Upload & Kéo thả ảnh bill cọc */
     .card-bill-dropzone {
       border: 1.5px dashed #0284c7; background: rgba(2, 132, 199, 0.08);
-      border-radius: 6px; padding: 5px 8px; text-align: center;
+      border-radius: 6px; padding: 4px 6px; text-align: center;
       cursor: pointer; transition: all 0.2s ease;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      color: #38bdf8; font-size: 11.5px; font-weight: 600; min-height: 32px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      color: #38bdf8; font-size: 11px; font-weight: 600; min-height: 34px; box-sizing: border-box;
     }
     .card-bill-dropzone:hover, .card-bill-dropzone.dragover {
       border-color: #38bdf8; background: rgba(2, 132, 199, 0.22);
     }
-    .bill-drop-icon { font-size: 14px; flex-shrink: 0; color: #38bdf8; }
-    .bill-drop-title { line-height: 1.2; text-align: left; }
-    .bill-drop-sub { display: block; font-size: 9.5px; color: #94a3b8; font-weight: 400; }
+    .bill-drop-icon { font-size: 13px; flex-shrink: 0; color: #38bdf8; }
+    .bill-drop-title { line-height: 1.2; text-align: left; min-width: 0; overflow: hidden; }
+    .bill-drop-sub { display: block; font-size: 9px; color: #94a3b8; font-weight: 400; }
 
     /* Thumbnail xem trước ảnh bill cọc */
     .card-bill-preview {
-      display: flex; align-items: center; gap: 8px; background: #07231c;
-      border: 1px solid #10b981; border-radius: 6px; padding: 3px 8px; min-height: 34px;
+      display: flex; align-items: center; gap: 6px; background: #07231c;
+      border: 1px solid #10b981; border-radius: 6px; padding: 3px 6px; min-height: 34px; box-sizing: border-box;
     }
     .bill-thumb-box {
-      position: relative; width: 32px; height: 32px; border-radius: 4px;
+      position: relative; width: 30px; height: 30px; border-radius: 4px;
       overflow: hidden; flex-shrink: 0; cursor: pointer; border: 1px solid #059669;
     }
     .bill-thumb-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .bill-thumb-box:hover::after {
       content: "\f00e"; font-family: "Font Awesome 6 Free"; font-weight: 900;
       position: absolute; inset: 0; background: rgba(0,0,0,0.5); color: #fff;
-      display: flex; align-items: center; justify-content: center; font-size: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 11px;
     }
     .bill-preview-text { flex: 1; min-width: 0; }
     .bill-preview-title {
-      font-size: 11px; font-weight: 700; color: #34d399;
+      font-size: 10.5px; font-weight: 700; color: #34d399;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .bill-preview-actions { display: flex; align-items: center; gap: 8px; }
+    .bill-preview-actions { display: flex; align-items: center; gap: 6px; }
     .btn-bill-action {
-      background: transparent; border: none; padding: 0; font-size: 10.5px;
+      background: transparent; border: none; padding: 0; font-size: 10px;
+      cursor: pointer; font-weight: 600; text-decoration: underline;
+    }
       cursor: pointer; font-weight: 600; text-decoration: underline;
     }
     .btn-bill-action.btn-change { color: #38bdf8; }
@@ -226,10 +241,19 @@
       font-size: 10.5px; font-weight: 700;
     }
 
-    /* Layout mới thông minh: Hệ Grid 12 cột tinh gọn, ít dòng */
-    .card-smart-grid {
-      display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px;
+    /* Layout mới thông minh: Hệ Grid 4 cột tinh gọn (ĐÚNG 2 DÒNG - CÙNG CỠ ĐỘ RỘNG) */
+    .card-smart-grid-4col {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 4px;
     }
+    @media (max-width: 640px) {
+      .card-smart-grid-4col {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 3px;
+      }
+    }
+    .grid-col-full { grid-column: 1 / -1; }
     .col-span-12 { grid-column: span 12; }
     .col-span-8 { grid-column: span 8; }
     .col-span-7 { grid-column: span 7; }
@@ -291,56 +315,60 @@
       font-family: inherit; overflow-y: auto; transition: height 0.2s ease;
     }
 
-    /* Switch toggle cho Trẻ em (Ghế em bé) & VAT - Tối ưu lọt lòng tuyệt đối */
-    .baby-field-wrap {
-      display: flex; align-items: center; justify-content: flex-start; gap: 3px; width: 100%; min-width: 0;
+    /* Switch toggle cho Trẻ em (Ghế em bé xe đẩy) & VAT dạng nút bấm */
+    .baby-pill-wrap {
+      display: flex; align-items: center; justify-content: space-between; gap: 3px;
+      background: #111827; border: 1px solid #334155; border-radius: 5px;
+      padding: 2px 4px; min-height: 28px; box-sizing: border-box; width: 100%; min-width: 0;
     }
-    .baby-toggle-box {
-      display: inline-flex; align-items: center; gap: 2px; cursor: pointer; user-select: none;
+    .baby-pill-wrap.active {
+      border-color: #eab308; background: rgba(133, 77, 14, 0.25);
     }
-    .baby-toggle-box input[type="checkbox"] {
-      width: 13px; height: 13px; cursor: pointer; accent-color: #facc15; margin: 0;
+    .btn-baby-pill {
+      flex: 1; min-width: 0; height: 22px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 3px;
+      background: transparent; border: none;
+      color: #94a3b8; font-size: 11px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s ease; user-select: none; padding: 0;
     }
-    .baby-toggle-box input[type="checkbox"].vat-check {
-      accent-color: #38bdf8;
+    .btn-baby-pill:hover { color: #fef08a; }
+    .btn-baby-pill.active {
+      color: #facc15 !important; font-weight: 700;
     }
-    .baby-toggle-text { font-size: 11px; color: #cbd5e1; font-weight: 500; white-space: nowrap; }
-    .text-vat-active { color: #38bdf8 !important; font-weight: 700; }
-    .badge-vat-text {
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 9.5px; font-weight: 900; line-height: 1; letter-spacing: 0.5px;
-      padding: 2px 3px; border-radius: 3px; cursor: pointer;
-      background: rgba(148, 163, 184, 0.15); color: #94a3b8;
-      border: 1px solid #475569; transition: all 0.15s; user-select: none;
-    }
-    .badge-vat-text.vat-active {
-      background: rgba(56, 189, 248, 0.25); color: #38bdf8;
-      border-color: #38bdf8; box-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
-    }
-    .baby-select {
-      width: 28px; height: 21px; min-width: 28px; background: #0f172a !important; border: 1px solid #334155;
-      color: #facc15; font-size: 11px; font-weight: 700; border-radius: 3px; padding: 0;
-      text-align: center; text-align-last: center; line-height: 19px; outline: none; cursor: pointer;
+    .baby-pill-wrap .baby-select {
+      width: 24px; height: 20px; min-width: 24px; background: #0f172a !important;
+      border: 1px solid #eab308; color: #facc15; font-size: 11px; font-weight: 700;
+      border-radius: 3px; padding: 0; text-align: center; text-align-last: center;
+      line-height: 18px; outline: none; cursor: pointer; flex-shrink: 0;
     }
 
-    /* Thanh trạng thái tổng hợp & Công cụ */
-    .card-status-bar {
-      display: flex; align-items: center; gap: 4px; width: 100%; min-width: 0;
+    .btn-vat-pill {
+      width: 100%; height: 100%; min-height: 28px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      background: #111827; border: 1px solid #334155; border-radius: 5px;
+      color: #94a3b8; font-size: 11px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s ease; user-select: none; padding: 0 4px; box-sizing: border-box;
     }
-    .card-status-bar .sub-kenh {
-      flex: 0 0 68px; min-width: 68px; padding: 2px 4px;
+    .btn-vat-pill:hover {
+      border-color: #38bdf8; color: #f8fafc;
     }
-    .card-status-bar .sub-id {
-      flex: 1 1 auto; min-width: 80px;
+    .btn-vat-pill.active {
+      background: #0284c7 !important; border-color: #38bdf8 !important;
+      color: #ffffff !important; font-weight: 700;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5) !important;
     }
-    .card-status-bar .sub-vat {
-      flex: 0 0 auto; padding: 2px 5px; gap: 3px;
+
+    /* Nhóm 3 nút tiện ích công cụ: Email, Món, Ghi chú */
+    .tools-pill-group {
+      display: flex; align-items: center; justify-content: space-around; gap: 2px;
+      background: #111827; border: 1px solid #334155; border-radius: 5px;
+      padding: 2px 3px; min-height: 28px; box-sizing: border-box; width: 100%; min-width: 0;
     }
-    .card-status-bar .sub-tools {
-      flex: 0 0 auto; display: flex; align-items: center; gap: 3px;
-      padding: 2px 4px !important; background: #0b1120 !important; border: 1px dashed #334155 !important;
-      border-radius: 5px; min-height: 28px;
+    .tools-pill-group .btn-field-pill {
+      flex: 1; height: 22px; width: auto; font-size: 11px; border-radius: 4px;
+      padding: 0 2px;
     }
+
     .btn-field-pill {
       display: inline-flex; align-items: center; justify-content: center;
       background: #1e293b; border: 1px solid #334155; border-radius: 4px;
@@ -364,32 +392,6 @@
       border-radius: 3px; transition: color 0.15s; flex-shrink: 0;
     }
     .card-field-collapse-btn:hover { color: #38bdf8; background: rgba(56,189,248,0.15); }
-    .card-status-bar .sub-vat {
-      flex: 0 0 auto; padding: 2px 5px; gap: 3px;
-    }
-    .card-status-bar .sub-tools {
-      flex: 0 0 auto; display: flex; align-items: center; gap: 3px;
-      padding: 2px 4px !important; background: #0b1120 !important; border: 1px dashed #334155 !important;
-      border-radius: 5px; min-height: 28px;
-    }
-    .btn-field-pill {
-      display: inline-flex; align-items: center; justify-content: center;
-      background: #1e293b; border: 1px solid #334155; border-radius: 4px;
-      color: #94a3b8; font-size: 11px; font-weight: 600; width: 24px; height: 22px; cursor: pointer;
-      transition: all 0.15s; line-height: 1;
-    }
-    .btn-field-pill:hover { background: #334155; color: #f8fafc; }
-    .btn-field-pill.active {
-      background: rgba(56, 189, 248, 0.22); color: #38bdf8; border-color: #38bdf8; font-weight: 700;
-    }
-    .btn-field-pill.has-data {
-      background: rgba(52, 211, 153, 0.22); color: #34d399; border-color: #34d399; font-weight: 700;
-    }
-    .card-field-close-btn {
-      color: #64748b; font-size: 11px; cursor: pointer; padding: 2px 4px; margin-left: auto;
-      border-radius: 3px; transition: color 0.15s; flex-shrink: 0;
-    }
-    .card-field-close-btn:hover { color: #f43f5e; background: rgba(244,63,94,0.1); }
 
     /* Popup gợi ý Email gắn sát ô nhập */
     .email-suggest-popup {
@@ -1481,13 +1483,31 @@
 
       var mon = nhan('Đặt\\s*món|Món(?:\\s*ăn)?|Menu|Ord(?:\\s*món)?');
       if (mon && !/^(chưa ord|không|chưa)$/i.test(mon)) p.datMon = mon;
-      var low = txt.toLowerCase();
-      if (/vat\s*[:\-]?\s*có|xuất\s*vat|có\s*vat/.test(low) && !/không\s*xuất\s*vat|vat\s*[:\-]?\s*không/.test(low)) p.vat = 'Có xuất VAT';
+      
+      // 📌 Nhận diện VAT thông minh: Nếu nội dung có đề cập VAT thì tự động tích, và không hiển thị ghi chú VAT
+      var hasVatText = /\bvat\b|hóa\s*đơn\s*(?:đỏ|gtgt|vat)|xuất\s*hóa\s*đơn/i.test(txt);
+      var noVatText = /không\s*(?:xuất\s*)?vat|ko\s*(?:xuất\s*)?vat|k\s*(?:xuất\s*)?vat|vat\s*[:\-–]?\s*(?:không|ko|k\b)/i.test(txt);
+      if (hasVatText && !noVatText) {
+        p.vat = 'Có xuất VAT';
+      }
+
       if (p.be === 'Không') {
         var mBe = txt.match(/(\d+)\s*(?:bé|trẻ em|ghế em bé)/i) || txt.match(/(?:Em bé|Trẻ em|Ghế bé)\s*[:\-]\s*(\d+)/i);
         if (mBe && parseInt(mBe[1], 10) > 0) p.be = parseInt(mBe[1], 10) + ' ghế em bé';
       }
-      p.ghiChu = nhan('Ghi\\s*chú|Note|Lưu\\s*ý');
+
+      var rawGhiChu = nhan('Ghi\\s*chú|Note|Lưu\\s*ý');
+      // Nếu có VAT thì lọc bỏ chữ VAT khỏi ghi chú để không bị trùng lặp
+      if (rawGhiChu) {
+        if (p.vat === 'Có xuất VAT') {
+          rawGhiChu = rawGhiChu
+            .replace(/[,;.\-–]?\s*(?:có\s*)?(?:xuất\s*)?(?:hóa\s*đơn\s*)?vat\b[^\n,;]*/gi, '')
+            .replace(/[,;.\-–]?\s*xuất\s*hóa\s*đơn\b[^\n,;]*/gi, '')
+            .replace(/^[,;.\-–\s]+|[,;.\-–\s]+$/g, '')
+            .trim();
+        }
+        p.ghiChu = rawGhiChu;
+      }
       return p;
     }
 
@@ -1703,9 +1723,105 @@
       }
     }
 
+    function vietTatMauDecor(s) {
+      if (!s) return '';
+      var str = String(s);
+      str = str.replace(/Mẫu\s*0?(\d+)/gi, 'M$1');
+      str = str.replace(/Khung\s*Kỷ\s*Niệm/gi, 'KN');
+      str = str.replace(/Kỷ\s*Niệm/gi, 'KN');
+      str = str.replace(/Sinh\s*Nhật/gi, 'SN');
+      str = str.replace(/Thôi\s*Nôi/gi, 'TN');
+      str = str.replace(/Mừng\s*Thọ/gi, 'MT');
+      str = str.replace(/Cầu\s*Hôn/gi, 'CH');
+      str = str.replace(/Lãng\s*Mạn/gi, 'LM');
+      return str.trim();
+    }
+
+    function batDauSuaTenKhach(idx, el) {
+      if (!tagList[idx]) return;
+      var p = tagList[idx].parsed;
+      var curVal = p.ten || '';
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'folder-tag-title-edit-input';
+      input.value = curVal;
+      input.placeholder = 'Nhập tên khách...';
+      input.onclick = function(e) { e.stopPropagation(); };
+
+      var daLuu = false;
+      function luu() {
+        if (daLuu) return;
+        daLuu = true;
+        var newVal = input.value.trim();
+        tagList[idx].parsed.ten = newVal;
+        dongBoTuTheSangPasteBox();
+        renderAllTags();
+      }
+
+      input.onblur = luu;
+      input.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+          input.blur();
+        } else if (e.key === 'Escape') {
+          daLuu = true;
+          renderAllTags();
+        }
+      };
+
+      el.replaceWith(input);
+      input.focus();
+      input.select();
+    }
+
+    function batDauSuaSdtKhach(idx, el) {
+      if (!tagList[idx]) return;
+      var p = tagList[idx].parsed;
+      var curVal = p.sdt || '';
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'folder-tag-title-edit-input';
+      input.value = curVal;
+      input.placeholder = 'Nhập SĐT...';
+      input.style.maxWidth = '130px';
+      input.onclick = function(e) { e.stopPropagation(); };
+
+      var daLuu = false;
+      function luu() {
+        if (daLuu) return;
+        daLuu = true;
+        var newVal = input.value.trim();
+        tagList[idx].parsed.sdt = newVal;
+        capNhatDatalistKhach(newVal, tagList[idx].parsed.email);
+        dongBoTuTheSangPasteBox();
+        renderAllTags();
+      }
+
+      input.onblur = luu;
+      input.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+          input.blur();
+        } else if (e.key === 'Escape') {
+          daLuu = true;
+          renderAllTags();
+        }
+      };
+
+      el.replaceWith(input);
+      input.focus();
+      input.select();
+    }
+
     function toggleBaby(idx, checked) {
       if (!tagList[idx]) return;
       tagList[idx].parsed.be = checked ? "1 ghế em bé" : "Không";
+      renderAllTags();
+      dongBoTuTheSangPasteBox();
+    }
+
+    function toggleBabyPill(idx) {
+      if (!tagList[idx]) return;
+      var hasBaby = tagList[idx].parsed.be && tagList[idx].parsed.be !== 'Không';
+      tagList[idx].parsed.be = hasBaby ? 'Không' : '1 ghế em bé';
       renderAllTags();
       dongBoTuTheSangPasteBox();
     }
@@ -1720,6 +1836,14 @@
     function toggleVat(idx, checked) {
       if (!tagList[idx]) return;
       tagList[idx].parsed.vat = checked ? "Có xuất VAT" : "Không";
+      renderAllTags();
+      dongBoTuTheSangPasteBox();
+    }
+
+    function toggleVatPill(idx) {
+      if (!tagList[idx]) return;
+      var hasVat = tagList[idx].parsed.vat === 'Có xuất VAT';
+      tagList[idx].parsed.vat = hasVat ? 'Không' : 'Có xuất VAT';
       renderAllTags();
       dongBoTuTheSangPasteBox();
     }
@@ -2277,38 +2401,45 @@
         }
 
         var hasVat = p.vat === 'Có xuất VAT';
-        var vatHtml =
-          '<div class="card-field-row sub-vat" style="padding:2px 4px; gap:2px; min-height:24px; border:none; background:transparent;" title="Xuất hóa đơn VAT">' +
-            '<span class="badge-vat-text ' + (hasVat ? 'vat-active' : '') + '" onclick="event.stopPropagation(); toggleVat(' + idx + ', ' + (!hasVat) + ')">VAT</span>' +
-            '<label class="baby-toggle-box" title="Bật/tắt VAT" onclick="event.stopPropagation()">' +
-              '<input type="checkbox" class="vat-check" ' + (hasVat ? 'checked' : '') + ' onchange="toggleVat(' + idx + ', this.checked)">' +
-              '<span class="baby-toggle-text ' + (hasVat ? 'text-vat-active' : '') + '">' + (hasVat ? 'Có' : 'Ko') + '</span>' +
-            '</label>' +
-          '</div>';
+        var vatRowHtml =
+          '<button type="button" class="btn-vat-pill ' + (hasVat ? 'active' : '') + '" onclick="event.stopPropagation(); toggleVatPill(' + idx + ')" title="Bật/tắt xuất hóa đơn VAT" style="width:100%; height:100%; min-height:28px;">' +
+            '<i class="fa-solid fa-receipt"></i> ' +
+            '<span>VAT</span>' +
+          '</button>';
 
         var babyRowHtml =
-          '<div class="card-field-row col-span-5">' +
-            '<span class="card-field-label" title="Ghế em bé"><i class="fa-solid fa-baby" style="color:#facc15;"></i></span>' +
-            '<div class="baby-field-wrap" onclick="event.stopPropagation()">' +
-              '<label class="baby-toggle-box" title="Bấm để bật/tắt có trẻ em">' +
-                '<input type="checkbox" ' + (hasBaby ? 'checked' : '') + ' onchange="toggleBaby(' + idx + ', this.checked)">' +
-                '<span class="baby-toggle-text">' + (hasBaby ? 'Bé' : 'Ko') + '</span>' +
-              '</label>' +
-              (hasBaby ?
-                '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)" title="Số lượng ghế em bé">' +
-                  '<option value="1 ghế em bé" ' + (babyCount.indexOf('1') !== -1 ? 'selected' : '') + '>1</option>' +
-                  '<option value="2 ghế em bé" ' + (babyCount.indexOf('2') !== -1 ? 'selected' : '') + '>2</option>' +
-                  '<option value="3 ghế em bé" ' + (babyCount.indexOf('3') !== -1 ? 'selected' : '') + '>3</option>' +
-                  '<option value="4 ghế em bé" ' + (babyCount.indexOf('4') !== -1 ? 'selected' : '') + '>4</option>' +
-                '</select>' : '') +
-            '</div>' +
+          '<div class="baby-pill-wrap ' + (hasBaby ? 'active' : '') + '" style="padding:2px 4px; gap:2px; min-height:28px; width:100%; box-sizing:border-box;" title="Ghế em bé">' +
+            '<button type="button" class="btn-baby-pill ' + (hasBaby ? 'active' : '') + '" onclick="event.stopPropagation(); toggleBabyPill(' + idx + ')" title="Bấm bật/tắt ghế em bé">' +
+              '<i class="fa-solid fa-baby-carriage"></i> ' +
+              '<span>Bé</span>' +
+            '</button>' +
+            (hasBaby ?
+              '<select class="baby-select" onchange="changeBabyCount(' + idx + ', this.value)" onclick="event.stopPropagation()" title="Số lượng ghế em bé">' +
+                '<option value="1 ghế em bé" ' + (babyCount.indexOf('1') !== -1 ? 'selected' : '') + '>1</option>' +
+                '<option value="2 ghế em bé" ' + (babyCount.indexOf('2') !== -1 ? 'selected' : '') + '>2</option>' +
+                '<option value="3 ghế em bé" ' + (babyCount.indexOf('3') !== -1 ? 'selected' : '') + '>3</option>' +
+                '<option value="4 ghế em bé" ' + (babyCount.indexOf('4') !== -1 ? 'selected' : '') + '>4</option>' +
+              '</select>' : '') +
+          '</div>';
+
+        var toolsRowHtml =
+          '<div class="tools-pill-group" style="padding:2px 3px; gap:2px; justify-content:space-around; width:100%; box-sizing:border-box; min-height:28px;" title="Công cụ mở rộng">' +
+            '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô nhập Email">' +
+              '<i class="fa-solid fa-envelope"></i>' +
+            '</button>' +
+            '<button type="button" class="btn-field-pill ' + (hasDatMon ? 'active' : '') + (p.datMon ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'DatMon\')" title="Bật/tắt ô nhập Đặt món">' +
+              '<i class="fa-solid fa-utensils"></i>' +
+            '</button>' +
+            '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt ô nhập Ghi chú">' +
+              '<i class="fa-solid fa-pen-to-square"></i>' +
+            '</button>' +
           '</div>';
 
         var gioRowHtml =
-          '<div class="card-field-row col-span-5 card-field-time" onclick="event.stopPropagation(); moBangChonGio(' + idx + ', this)">' +
-            '<span class="card-field-label" title="Giờ vào (Bấm để xem bảng chọn & giờ chặn)"><i class="fa-solid fa-clock" style="color:#f59e0b;"></i></span>' +
-            '<input type="text" readonly class="card-input lct-input" placeholder="Giờ vào" value="' + esc(p.gioVao || '18h30') + '" style="cursor:pointer; font-weight:700; color:#f8fafc;" title="Bấm mở bảng chọn giờ">' +
-            '<span class="card-date-open" title="Bấm mở bảng chọn giờ"><i class="fa-solid fa-chevron-down" style="font-size:11px;"></i></span>' +
+          '<div class="card-field-row card-field-time" onclick="event.stopPropagation(); moBangChonGio(' + idx + ', this)">' +
+            '<span class="card-field-label" title="Giờ vào"><i class="fa-solid fa-clock" style="color:#f59e0b;"></i></span>' +
+            '<input type="text" readonly class="card-input lct-input" placeholder="Giờ" value="' + esc(p.gioVao || '18h30') + '" style="cursor:pointer; font-weight:700; color:#f8fafc;" title="Bấm mở bảng chọn giờ">' +
+            '<span class="card-date-open" title="Bấm mở bảng chọn giờ"><i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></span>' +
           '</div>';
 
         var hasEmail = !!(p.email && p.email.trim()) || tag.moEmail;
@@ -2317,58 +2448,57 @@
 
         var idVal = p.id || taoMaDatBan(p.kenh, p.sdt, tag.ngay);
 
-        /* Cột 1 (Dài - span 7): Kênh chọn + Mã ID gộp chung 1 ô cực gọn */
+        /* 🚀 Nền tảng (Kênh) & Mã ID: 2 dòng nằm ở cột kế bên ô Kéo thả bill cọc */
         var kenhIdCombinedHtml =
-          '<div class="card-field-row col-span-7" style="padding:2px 4px; gap:4px;" title="Kênh đặt bàn & Mã ID đơn">' +
-            '<span class="card-field-label" id="kenhIcon_' + idx + '" style="width:14px;">' + layIconKenh(p.kenh) + '</span>' +
-            '<select class="card-select" id="kenhSelect_' + idx + '" style="color:#38bdf8; font-weight:700; width:58px; flex-shrink:0; font-size:11.5px;" onchange="doiKenhThe(' + idx + ', this.value)" onclick="event.stopPropagation()">' +
-              '<option value="FB"' + (p.kenh === 'FB' ? ' selected' : '') + '>FB</option>' +
-              '<option value="Zal"' + (p.kenh === 'Zal' ? ' selected' : '') + '>Zalo</option>' +
-              '<option value="Web"' + (p.kenh === 'Web' ? ' selected' : '') + '>Web</option>' +
-              '<option value="GSh"' + (!p.kenh || p.kenh === 'GSh' ? ' selected' : '') + '>GSheet</option>' +
-              '<option value="Tik"' + (p.kenh === 'Tik' ? ' selected' : '') + '>TikTok</option>' +
-              '<option value="IG"' + (p.kenh === 'IG' ? ' selected' : '') + '>Insta</option>' +
-              '<option value="Thread"' + (p.kenh === 'Thread' ? ' selected' : '') + '>Threads</option>' +
-              '<option value="Call"' + (p.kenh === 'Call' ? ' selected' : '') + '>Hotline</option>' +
-              '<option value="Khác"' + (p.kenh === 'Khác' ? ' selected' : '') + '>Khác</option>' +
-            '</select>' +
-            '<input type="text" class="card-input" id="idInput_' + idx + '" placeholder="Mã ID" value="' + esc(idVal) + '" onchange="updateCardField(' + idx + ', \'id\', this.value)" onclick="event.stopPropagation()" style="font-size:11px; font-weight:700; color:#f8fafc; border-left:1px solid #334155; padding-left:5px; margin-left:2px;">' +
-          '</div>';
-
-        /* Cột 2 (Ngắn - span 5): VAT + 3 nút công cụ (Email, Món, Ghi chú) */
-        var vatToolsHtml =
-          '<div class="card-field-row col-span-5" style="padding:2px 4px; gap:4px; justify-content:space-between;" onclick="event.stopPropagation()">' +
-            vatHtml +
-            '<div class="card-toggle-tools sub-tools" style="background:transparent!important; border:none!important; padding:0!important; gap:2px; display:flex; align-items:center;">' +
-              '<button type="button" class="btn-field-pill ' + (hasEmail ? 'active' : '') + (p.email ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'Email\')" title="Bật/tắt ô nhập Email">' +
-                '<i class="fa-solid fa-envelope"></i>' +
-              '</button>' +
-              '<button type="button" class="btn-field-pill ' + (hasDatMon ? 'active' : '') + (p.datMon ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'DatMon\')" title="Bật/tắt ô nhập Đặt món">' +
-                '<i class="fa-solid fa-utensils"></i>' +
-              '</button>' +
-              '<button type="button" class="btn-field-pill ' + (hasGhiChu ? 'active' : '') + (p.ghiChu ? ' has-data' : '') + '" onclick="event.stopPropagation(); toggleFieldMo(' + idx + ', \'GhiChu\')" title="Bật/tắt ô nhập Ghi chú">' +
-                '<i class="fa-solid fa-pen-to-square"></i>' +
-              '</button>' +
+          '<div class="card-field-row" style="flex-direction:column; align-items:stretch; justify-content:center; padding:2px 6px; gap:1px; min-height:34px; border-radius:6px; min-width:0; width:100%; box-sizing:border-box;" title="Kênh đặt bàn & Mã ID đơn">' +
+            /* Dòng 1: Kênh nền tảng */
+            '<div style="display:flex; align-items:center; gap:4px; height:16px; min-width:0;">' +
+              '<span class="card-field-label" id="kenhIcon_' + idx + '" style="width:14px; font-size:11.5px; line-height:1;">' + layIconKenh(p.kenh) + '</span>' +
+              '<select class="card-select" id="kenhSelect_' + idx + '" style="color:#38bdf8; font-weight:700; width:100%; font-size:11.5px; padding:0; height:16px; line-height:16px; border:none; background:transparent;" onchange="doiKenhThe(' + idx + ', this.value)" onclick="event.stopPropagation()">' +
+                '<option value="FB"' + (p.kenh === 'FB' ? ' selected' : '') + '>Facebook</option>' +
+                '<option value="Zal"' + (p.kenh === 'Zal' ? ' selected' : '') + '>Zalo</option>' +
+                '<option value="Web"' + (p.kenh === 'Web' ? ' selected' : '') + '>Website</option>' +
+                '<option value="GSh"' + (!p.kenh || p.kenh === 'GSh' ? ' selected' : '') + '>GSheet</option>' +
+                '<option value="Tik"' + (p.kenh === 'Tik' ? ' selected' : '') + '>TikTok</option>' +
+                '<option value="IG"' + (p.kenh === 'IG' ? ' selected' : '') + '>Instagram</option>' +
+                '<option value="Thread"' + (p.kenh === 'Thread' ? ' selected' : '') + '>Threads</option>' +
+                '<option value="Call"' + (p.kenh === 'Call' ? ' selected' : '') + '>Hotline</option>' +
+                '<option value="Khác"' + (p.kenh === 'Khác' ? ' selected' : '') + '>Khác</option>' +
+              '</select>' +
+            '</div>' +
+            /* Dòng 2: Mã ID đơn */
+            '<div style="display:flex; align-items:center; height:16px; min-width:0;">' +
+              '<input type="text" class="card-input" id="idInput_' + idx + '" placeholder="Mã ID đơn" value="' + esc(idVal) + '" onchange="updateCardField(' + idx + ', \'id\', this.value)" onclick="event.stopPropagation()" style="font-size:11.5px; font-weight:700; color:#f8fafc; padding:0; height:16px; line-height:16px; letter-spacing:0.2px;">' +
             '</div>' +
           '</div>';
 
+        /* Hàng trên cùng: Ô Kéo thả bill cọc (Cột 1) | Kênh & Mã ID (Cột 2 kế bên) */
+        var topBarHtml =
+          '<div class="card-top-action-bar" style="display:grid; grid-template-columns: 1fr 1fr; gap:4px; margin-bottom:4px; align-items:stretch;">' +
+            billSectionHtml +
+            kenhIdCombinedHtml +
+          '</div>';
+
         var emailFieldHtml = hasEmail
-          ? fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#38bdf8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'col-span-12', canClose: 'Email', list: 'customerEmailList' })
+          ? fieldHtml(idx, '<i class="fa-solid fa-envelope" style="color:#38bdf8;"></i>', 'Email khách', 'email', p.email, { colSpan: 'grid-col-full', canClose: 'Email', list: 'customerEmailList' })
           : '';
 
         var datMonFieldHtml = hasDatMon
-          ? fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món...', 'datMon', p.datMon, { colSpan: 'col-span-12', textarea: true, canClose: 'DatMon' })
+          ? fieldHtml(idx, '<i class="fa-solid fa-bowl-food" style="color:#fb923c;"></i>', 'Đặt món...', 'datMon', p.datMon, { colSpan: 'grid-col-full', textarea: true, canClose: 'DatMon' })
           : '';
 
         var ghiChuFieldHtml = hasGhiChu
-          ? fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú...', 'ghiChu', p.ghiChu, { colSpan: 'col-span-12', textarea: true, canClose: 'GhiChu' })
+          ? fieldHtml(idx, '<i class="fa-solid fa-pen-to-square" style="color:#cbd5e1;"></i>', 'Ghi chú...', 'ghiChu', p.ghiChu, { colSpan: 'grid-col-full', textarea: true, canClose: 'GhiChu' })
           : '';
 
         var decorFieldsHtml = '';
         if (tag.isDecor) {
+          var mauRuttGon = vietTatMauDecor(mauVal);
           decorFieldsHtml =
-            fieldHtml(idx, '<i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i>', 'Mẫu decor', 'mauDecor', mauVal, { colSpan: 'col-span-7', style: 'color:#e2a684; font-weight:700;' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-ribbon" style="color:#fb7185;"></i>', 'Nội dung bảng tiệc', 'decor', p.decor, { colSpan: 'col-span-5', style: 'color:#38bdf8; font-weight:600;' });
+            '<div class="grid-col-full" style="display:grid; grid-template-columns: 1fr 1fr; gap:4px;">' +
+              fieldHtml(idx, '<i class="fa-solid fa-wand-magic-sparkles" style="color:#f472b6;"></i>', 'Mẫu decor', 'mauDecor', mauRuttGon, { style: 'color:#e2a684; font-weight:700;' }) +
+              fieldHtml(idx, '<i class="fa-solid fa-ribbon" style="color:#fb7185;"></i>', 'Nội dung bảng tiệc', 'decor', p.decor, { style: 'color:#38bdf8; font-weight:600;' }) +
+            '</div>';
         }
 
         // Tự động gom SĐT & Email vào datalist gợi ý của hệ thống (văn bản thuần tuý)
@@ -2376,13 +2506,20 @@
 
         card.innerHTML =
           '<div class="folder-tag-header">' +
-            '<div class="folder-tag-title" title="' + esc(tagTitle) + '">' + esc(tagTitle) + '</div>' +
+            '<div class="folder-tag-title-wrap" style="display:flex; align-items:center; gap:6px; min-width:0; flex:1; overflow:hidden;">' +
+              '<span class="folder-tag-title" id="tagTitleText_' + idx + '" ondblclick="batDauSuaTenKhach(' + idx + ', this)" title="Nhấp đôi để đổi tên khách">' + esc(tagTitle) + '</span>' +
+              '<span class="folder-tag-phone-badge" id="tagPhoneText_' + idx + '" ondblclick="batDauSuaSdtKhach(' + idx + ', this)" title="Nhấp đôi để sửa SĐT" style="font-size:11.5px; font-weight:700; color:#34d399; background:rgba(52,211,153,0.12); border:1px solid rgba(52,211,153,0.3); border-radius:4px; padding:1px 6px; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:4px; flex-shrink:0;">' +
+                '<i class="fa-solid fa-phone" style="font-size:10px;"></i> ' + esc(p.sdt || 'SĐT') +
+              '</span>' +
+            '</div>' +
             '<div class="tag-type-toggle" onclick="event.stopPropagation()">' +
-              '<label class="tag-type-btn ' + (!tag.isDecor ? 'active-thuong' : '') + '" title="Bàn ăn thường (không cần cọc, không decor)">' +
-                '<input type="radio" name="loaiBan_' + idx + '" value="thuong" ' + (!tag.isDecor ? 'checked' : '') + ' onchange="doiLoaiBanThe(' + idx + ', false)"> 🍽️ Thường' +
+              '<label class="tag-type-btn ' + (!tag.isDecor ? 'active-thuong' : '') + '" title="Bàn ăn thường">' +
+                '<input type="radio" name="loaiBan_' + idx + '" value="thuong" ' + (!tag.isDecor ? 'checked' : '') + ' onchange="doiLoaiBanThe(' + idx + ', false)">' +
+                '🍽️ Thường' +
               '</label>' +
-              '<label class="tag-type-btn ' + (tag.isDecor ? 'active-decor' : '') + '" title="Bàn tiệc có trang trí decor">' +
-                '<input type="radio" name="loaiBan_' + idx + '" value="decor" ' + (tag.isDecor ? 'checked' : '') + ' onchange="doiLoaiBanThe(' + idx + ', true)"> ✨ Decor' +
+              '<label class="tag-type-btn ' + (tag.isDecor ? 'active-decor' : '') + '" title="Bàn tiệc decor">' +
+                '<input type="radio" name="loaiBan_' + idx + '" value="decor" ' + (tag.isDecor ? 'checked' : '') + ' onchange="doiLoaiBanThe(' + idx + ', true)">' +
+                '✨ Decor' +
               '</label>' +
             '</div>' +
             '<div class="tag-actions">' +
@@ -2391,30 +2528,22 @@
           '</div>' +
           (tag.lockReason ? '<div class="tag-lock-reason">' + esc(tag.lockReason) + '</div>' : '') +
           (tag.anhDecor ? '<div class="tag-thumb"><img src="' + esc(tag.anhDecor) + '" alt=""><span><i class="fa-solid fa-wand-magic-sparkles me-1"></i> ' + esc(mauVal) + '</span></div>' : '') +
-          billSectionHtml +
-          '<div class="card-smart-grid">' +
-            /* Hàng 1: Ngày (Dài - 7) | Giờ (Ngắn - 5) */
-            fieldHtml(idx, '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>', 'Ngày', 'ngay', tag.ngay, { colSpan: 'col-span-7' }) +
+          topBarHtml +
+          '<div class="card-smart-grid-4col">' +
+            /* 🚀 HÀNG 1 (4 CỘT): Ngày (Cột 1) | Giờ (Cột 2) | Bàn (Cột 3) | Nút VAT (Cột 4 - Icon) */
+            fieldHtml(idx, '<i class="fa-solid fa-calendar-days" style="color:#60a5fa;"></i>', 'Ngày', 'ngay', tag.ngay) +
             gioRowHtml +
-            /* Hàng 2: Họ tên KH (Dài - 7) | Khách (Ngắn - 5) */
-            fieldHtml(idx, '<i class="fa-solid fa-user" style="color:#38bdf8;"></i>', 'Họ tên KH', 'ten', p.ten, { colSpan: 'col-span-7', live: true }) +
-            fieldHtml(idx, '<i class="fa-solid fa-users" style="color:#c084fc;"></i>', 'Khách', 'soKhach', p.soKhach || '2', { colSpan: 'col-span-5', style: 'color:#38bdf8; font-weight:700;' }) +
-            /* Hàng 3: SĐT (Dài - 7) | Bàn (Ngắn - 5) - Cả 2 đều văn bản thuần tuý */
-            fieldHtml(idx, '<i class="fa-solid fa-phone" style="color:#34d399;"></i>', 'SĐT', 'sdt', p.sdt, { colSpan: 'col-span-7', live: true, list: 'customerPhoneList' }) +
-            fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn', 'banSo', p.banSo, { colSpan: 'col-span-5', list: 'tableSuggestions' }) +
-            /* Hàng 4: Tiền cọc (Dài - 7) | Ghế bé (Ngắn - 5) */
-            fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Cọc', 'coc', p.coc || '0', { colSpan: 'col-span-7', list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-chair" style="color:#fb923c;"></i>', 'Bàn', 'banSo', p.banSo, { list: 'tableSuggestions' }) +
+            vatRowHtml +
+
+            /* 🚀 HÀNG 2 (4 CỘT): Khách (Cột 1) | Cọc (Cột 2) | Nút Bé (Cột 3) | Icon tiện ích (Cột 4 - Icon) */
+            fieldHtml(idx, '<i class="fa-solid fa-users" style="color:#c084fc;"></i>', 'Khách', 'soKhach', p.soKhach || '2', { style: 'color:#38bdf8; font-weight:700;' }) +
+            fieldHtml(idx, '<i class="fa-solid fa-coins" style="color:#4ade80;"></i>', 'Cọc', 'coc', p.coc || '0', { list: 'depositSuggestions', style: 'color:#34d399; font-weight:700;' }) +
             babyRowHtml +
-            /* Hàng 5: Kênh + Mã ID (Dài - 7) | VAT + Công cụ (Ngắn - 5) */
-            kenhIdCombinedHtml +
-            vatToolsHtml +
+            toolsRowHtml +
+
             /* Hàng Decor (nếu chọn) & các hàng mở rộng */
             decorFieldsHtml +
-            emailFieldHtml +
-            datMonFieldHtml +
-            ghiChuFieldHtml +
-          '</div>' +
-          hoanCocSectionHtml;
             emailFieldHtml +
             datMonFieldHtml +
             ghiChuFieldHtml +
