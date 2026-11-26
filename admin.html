@@ -1535,6 +1535,13 @@
                   </div>
                   <div class="w-100 d-flex flex-wrap gap-1" id="nkrList"></div>
                 </div>
+                <div class="w-100 pt-2 border-top"><!-- 26/11/2026 chủ quán: ngày lễ đông → trang khách + nhập bàn hiện thông báo -->
+                  <b style="color:#864c2a" title="Khách chọn ngày này sẽ thấy lời nhắn; trang nhập bàn cũng hiện nhắc">🎉 Ngày lễ đông</b>
+                  <span class="small text-muted">mỗi dòng 1 ngày: <code>14/02 Valentine</code> (hằng năm) hoặc <code>15/09/2027 Trung thu</code></span>
+                  <textarea id="leDongChu" class="form-control form-control-sm mt-1" rows="5" spellcheck="false" placeholder="14/02 Valentine"></textarea>
+                  <input id="leDongLoi" class="form-control form-control-sm mt-1" maxlength="300" placeholder="Lời nhắn cho khách" title="Lời nhắn hiện cho khách khi chọn ngày lễ đông">
+                  <button class="btn btn-sm fw-bold mt-1" style="background:#f3e3d6;color:#864c2a" onclick="luuLeDongWeb()">💾 Lưu ngày lễ</button> <span id="leDongKq" class="small"></span>
+                </div>
               </div>
             </div>
           </div>
@@ -1740,7 +1747,7 @@
     var admin = window.admin;
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","luuDangKyPushQuanTri","thuPushQuanTri","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","luuNgayKhoaRiengWeb","layMauDecorTheoNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy","demAnhCu","xoaAnhCu"];
+    var ADMIN_FNS = ["luuNgayLeDong","getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","luuDangKyPushQuanTri","thuPushQuanTri","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","luuNgayKhoaRiengWeb","layMauDecorTheoNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy","demAnhCu","xoaAnhCu"];
     // 🔔 Khung cài / thử thông báo Telegram (khung trên trang, không dùng hộp prompt vì vài trình duyệt chặn)
     function caiTelegram() {
       var k = document.getElementById("tgKhung");
@@ -3099,7 +3106,18 @@
     var KG_MAU = ["#864c2a", "#2e6f9e", "#2e7d32", "#8e44ad", "#c0662b", "#5d6d7e", "#b03a5b"];
     var KG_THU = [[1, "T2"], [2, "T3"], [3, "T4"], [4, "T5"], [5, "T6"], [6, "T7"], [0, "CN"]];
     function kgLuat_(r, macDinh) { r = r || {}; return { bat: !!r.bat, tu: r.tu || macDinh.tu, tuLon: r.tuLon || "", den: r.den || macDinh.den }; }
+    function veLeDong_(L) { // 26/11/2026
+      if (!L) return; var t = document.getElementById("leDongChu"), l = document.getElementById("leDongLoi");
+      if (t && document.activeElement !== t) t.value = L.chu || ""; if (l && document.activeElement !== l) l.value = L.loiNhan || "";
+    }
+    function luuLeDongWeb() {
+      var kq = document.getElementById("leDongKq"); kq.className = "small text-muted"; kq.textContent = "Đang lưu...";
+      adminRun().withSuccessHandler(function(r) { kq.className = "small " + (r && r.success ? "text-success" : "text-danger"); kq.textContent = (r && r.message) || "Lỗi"; })
+        .withFailureHandler(function(e) { kq.className = "small text-danger"; kq.textContent = "Lỗi: " + (e && e.message || e); })
+        .luuNgayLeDong(document.getElementById("leDongChu").value, document.getElementById("leDongLoi").value);
+    }
     function veKhoaGioAdmin_(k) {
+      try { veLeDong_(k && k.leDong); } catch (eLD) {}
       _ngayKhoa = k.ngayKhoa || [];
       veNgayKhoa_();
       _ngayRieng = k.ngayRieng || {}; veNgayKhoaRieng_();

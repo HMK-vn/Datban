@@ -3062,5 +3062,45 @@
       ganLichConTrong_("dateSelector");
     });
   </script>
+<script>/* 26/11/2026 chủ quán: ngày lễ đông → hiện thông báo cho khách / người nhập bàn (danh sách từ layKhoaGio().leDong, sửa ở trang quản trị) */
+(function () {
+  var o = document.getElementById("inputNgay") || document.getElementById("txtNgayT") || document.getElementById("dateSelector");
+  if (!o) return;
+  var NHAP = o.id === "dateSelector";
+  var hop = document.createElement("div"); hop.id = "leDongBao"; hop.setAttribute("role", "status");
+  hop.style.cssText = "display:none;margin:6px 0 4px;padding:8px 11px;border-radius:10px;background:#fff4d6;border:1px solid #f0c36d;color:#7a4b00;font-size:13px;line-height:1.4;text-align:left";
+  var neo = NHAP ? (o.closest(".date-control") || o) : (o.closest(".row") || o.closest(".o-cot-ngay") || o.parentNode);
+  neo.insertAdjacentElement("afterend", hop);
+  var cu = null;
+  function ve() {
+    var k = window.KHOA_GIO_TAI || window.KHOA_GIO_DATA || null, L = k && k.leDong, v = o.value || "";
+    var khoa = v + "|" + (L ? 1 : 0); if (khoa === cu) return; cu = khoa;
+    var le = null;
+    if (L && /^\d{4}-\d{2}-\d{2}$/.test(v)) (L.ds || []).forEach(function (x) { if (x.d === v || x.d === v.slice(5)) le = x; });
+    if (!le) { hop.style.display = "none"; return; }
+    hop.textContent = "";
+    var b = document.createElement("b"); b.textContent = "🎉 " + (NHAP ? "Ngày lễ đông: " : "") + le.ten;
+    hop.appendChild(b);
+    hop.appendChild(document.createTextNode(NHAP ? " — nhắc khách: " + L.loiNhan : " — " + L.loiNhan));
+    hop.style.display = "block";
+  }
+  function leCua_(v, L) { var m = String(v || "").match(/^(\d{4})-(\d{2})-(\d{2})$/) || String(v || "").match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if (!m || !L) return null;
+    var k = m[1].length === 4 ? m[1] + "-" + m[2] + "-" + m[3] : m[3] + "-" + ("0" + m[2]).slice(-2) + "-" + ("0" + m[1]).slice(-2), le = null;
+    (L.ds || []).forEach(function (x) { if (x.d === k || x.d === k.slice(5)) le = x; }); return le; }
+  function veThe() { // nhapban: mỗi thẻ khách có ô ngày riêng → nhắc ngay trên thẻ
+    if (!NHAP) return; var k = window.KHOA_GIO_DATA, L = k && k.leDong;
+    document.querySelectorAll(".folder-tag-card").forEach(function (the) {
+      var o2 = the.querySelector(".lct-input"), le = o2 && leCua_(o2.value, L), cu2 = the.querySelector(".le-dong-the");
+      if (!le) { if (cu2) cu2.remove(); return; }
+      var chu = "🎉 " + le.ten + " — lễ đông, nhắc khách đến đúng giờ";
+      if (cu2 && cu2.textContent === chu) return; if (cu2) cu2.remove();
+      var d = document.createElement("div"); d.className = "le-dong-the"; d.textContent = chu;
+      d.style.cssText = "margin-top:5px;padding:3px 7px;border-radius:7px;background:#fff4d6;color:#7a4b00;font-size:11px;font-weight:700";
+      the.appendChild(d);
+    });
+  }
+  o.addEventListener("change", ve); o.addEventListener("input", ve); setInterval(function () { ve(); veThe(); }, 700);
+})();
+</script>
 </body>
 </html>
