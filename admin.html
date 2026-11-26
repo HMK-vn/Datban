@@ -1740,7 +1740,7 @@
     var admin = window.admin;
     // Gọi máy chủ qua cổng adminApi (kiểm tra mã bảo mật) - thay cho google.script.run.tenHam(...)
     var ADMIN_KEY = new URLSearchParams(location.search).get("key") || "";
-    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","luuDangKyPushQuanTri","thuPushQuanTri","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","luuNgayKhoaRiengWeb","layMauDecorTheoNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy"];
+    var ADMIN_FNS = ["getInitialDashboardBundle","getTimelineTableData","searchDataTongRecords","saveOrUpdateDataTong","searchBookingCustomer","getEmailConfirmationDetails","sendCustomerConfirmationEmail","checkLastEmailSentTime","getCalendarDecorYearData","toggleCalendarDecorLockWeb","getPhanTichKhach","getLichTienCocNam","layBangDuyetTrangThai","datTrangThaiFormWeb","danhDauDaHoanCocWeb","xuLyTrangThaiWeb","thuTelegramWeb","luuDangKyPushQuanTri","thuPushQuanTri","caiTelegramWeb","luuGioiHanDecorT67Web","luuGioiHanNgayWeb","layKhoaGio","luuKhoaGioWeb","luuNgayKhoaWeb","luuNgayKhoaRiengWeb","layMauDecorTheoNgayWeb","layDonWebNghiNgo","danhDauDonWebXuLy","demAnhCu","xoaAnhCu"];
     // 🔔 Khung cài / thử thông báo Telegram (khung trên trang, không dùng hộp prompt vì vài trình duyệt chặn)
     function caiTelegram() {
       var k = document.getElementById("tgKhung");
@@ -1761,10 +1761,39 @@
         '<button type="button" class="btn btn-sm text-white fw-bold" style="background:#864c2a" onclick="batPushQuanTri(this)"><i class="fa-solid fa-bell me-1"></i>Bật</button>' +
         '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="thuPushQuanTri()">🧪 Thử</button></div>' +
         '<div class="small text-muted mt-1">Bàn mới và hoàn cọc hiện thành 2 nhóm thông báo riêng. iPhone: cài app TN Quản trị (Thêm vào MH chính) rồi bật trong app.</div>' +
-        '<div id="pqKq" class="small mt-1"></div>';
+        '<div id="pqKq" class="small mt-1"></div>' +
+        // 26/11/2026: dọn ảnh bill / hoàn cọc cũ (Drive hết bộ nhớ) — tính theo ngày khách đến, xoá hẳn sau khi xác nhận
+        '<hr class="my-2"><div class="d-flex align-items-center gap-2 flex-wrap"><b class="me-auto"><i class="fa-solid fa-broom me-1"></i>Dọn ảnh bill / hoàn cọc cũ</b>' +
+        [7, 10, 15].map(function(n) { return '<button type="button" class="btn btn-sm btn-outline-danger fw-bold" onclick="demAnhCuWeb(' + n + ', this)">Trước ' + n + ' ngày</button>'; }).join('') + '</div>' +
+        '<div class="small text-muted mt-1">Chỉ xoá ảnh của đơn đã qua ngày khách đến. Đơn sắp tới và hoàn cọc chưa xong luôn giữ ảnh. Bấm để đếm trước, chưa xoá ngay.</div>' +
+        '<div id="dacKq" class="small mt-1"></div>';
       document.body.appendChild(k);
       if (window.Notification && Notification.permission === "granted") document.getElementById("pqKq").innerHTML = '<span class="text-success">✅ Máy này đã cho phép thông báo — bấm Bật để chắc chắn đã đăng ký.</span>';
       document.getElementById("tgMa").focus();
+    }
+    // 26/11/2026: bước 1 đếm ảnh cũ, bước 2 bấm nút đỏ để xoá hẳn (không khôi phục được)
+    function demAnhCuWeb(n, nut) {
+      var kq = document.getElementById("dacKq");
+      kq.innerHTML = "⏳ Đang đếm ảnh của đơn đã qua ngày đến hơn " + n + " ngày...";
+      adminRun().withSuccessHandler(function(r) {
+        if (!r.soAnh) { kq.innerHTML = '<span class="text-success">✅ Không có ảnh nào cũ hơn ' + n + ' ngày (theo ngày khách đến).</span>'; return; }
+        kq.innerHTML = '<div class="p-2 rounded" style="background:#fef2f2;border:1px solid #fca5a5">Sẽ <b>xoá hẳn ' + r.soAnh + ' ảnh</b> (~' + r.mb + ' MB) của đơn đến trước ngày <b>' + r.moc.split("-").reverse().join("/") + '</b>.<br>' +
+          '<span class="text-danger">Không khôi phục được. Ô bill trên Sheet sẽ ghi "🗑 Đã xoá ảnh".</span>' +
+          (r.khongCuaToi ? '<br><span class="text-muted">' + r.khongCuaToi + ' ảnh thuộc tài khoản khác, không xoá được từ đây.</span>' : '') +
+          '<div class="d-flex gap-2 mt-2"><button type="button" class="btn btn-sm btn-danger fw-bold" onclick="xoaAnhCuWeb(' + n + ',' + r.soAnh + ',this)">🗑 Xoá hẳn ' + r.soAnh + ' ảnh</button>' +
+          '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById(\'dacKq\').innerHTML=\'\'">Huỷ</button></div></div>';
+      }).withFailureHandler(function(e) { kq.innerHTML = '<span class="text-danger">❌ ' + escapeHtml(e.message || String(e)) + '</span>'; }).demAnhCu(n);
+    }
+    function xoaAnhCuWeb(n, soAnh, nut) {
+      if (!confirm("Xoá hẳn " + soAnh + " ảnh bill / hoàn cọc cũ? Không khôi phục được.")) return;
+      var kq = document.getElementById("dacKq"); nut.disabled = true;
+      kq.innerHTML = "⏳ Đang xoá " + soAnh + " ảnh (có thể mất vài phút, đừng đóng trang)...";
+      adminRun().withSuccessHandler(function(r) {
+        if (!r.success) { kq.innerHTML = '<span class="text-danger">❌ ' + escapeHtml(r.message) + '</span>'; return; }
+        kq.innerHTML = '<span class="text-success">✅ Đã xoá ' + r.daXoa + ' ảnh, giải phóng ~' + r.mb + ' MB.</span>' +
+          (r.conLai > 0 ? '<br>Còn ' + r.conLai + ' ảnh chưa kịp xoá — bấm lại nút "Trước ' + n + ' ngày".' : '') +
+          (r.loi ? '<br><span class="text-danger">' + r.loi + ' ảnh không xoá được: ' + escapeHtml(r.loiMau) + '</span>' : '');
+      }).withFailureHandler(function(e) { nut.disabled = false; kq.innerHTML = '<span class="text-danger">❌ ' + escapeHtml(e.message || String(e)) + '</span>'; }).xoaAnhCu(n, soAnh);
     }
     // 17/11/2026: bật thông báo đẩy cho máy quản trị (dùng chung sw.js của trang, máy chủ lưu mã QUANTRI)
     function batPushQuanTri(nut) {
@@ -2660,6 +2689,20 @@
       renderTimelineCol("listNormal", normalTables, "normal");
     }
 
+    // 25/11/2026: bỏ hiện bàn giả khi lỗi — báo lỗi rõ + nút tải lại, để nhân viên không nhìn nhầm danh sách
+    function baoLoiTimeline_(dateVal, lyDo) {
+      _tlItems = {};
+      ["statTables", "statGuests", "statDeposit", "countSmallDecor", "countLargeDecor", "countNormal"].forEach(function(id) {
+        var el = document.getElementById(id); if (el) el.innerText = "—";
+      });
+      var hop = '<div class="col-12"><div style="border:2px solid #dc2626;background:#fef2f2;color:#991b1b;border-radius:10px;padding:12px;text-align:center;font-weight:700">' +
+        '⚠️ CHƯA TẢI ĐƯỢC DANH SÁCH BÀN ngày ' + escapeHtml(dateVal) + '<br><span style="font-weight:500;font-size:13px">' + escapeHtml(String(lyDo || "").slice(0, 160)) + '</span><br>' +
+        '<button type="button" onclick="loadTimeline(\'' + escapeHtml(dateVal) + '\')" style="margin-top:8px;background:#dc2626;color:#fff;border:none;border-radius:8px;padding:6px 16px;font-weight:700;cursor:pointer">🔄 Tải lại</button></div></div>';
+      ["listSmallDecor", "listLargeDecor", "listNormal"].forEach(function(id) {
+        var el = document.getElementById(id); if (el) el.innerHTML = hop;
+      });
+    }
+
     function loadTimeline(optDate) {
       var dateInput = document.getElementById("timelineDateInput");
       var dateVal = optDate || (dateInput && dateInput.value);
@@ -2679,19 +2722,19 @@
       if (nmEl) nmEl.innerHTML = '<div class="col-12 text-center py-3 text-muted small"><div class="spinner-border spinner-border-sm text-primary"></div> Đang tải...</div>';
 
       if (typeof google === "undefined" || !google.script || !google.script.run || typeof adminRun !== "function") {
-        mockLoadTimeline(dateVal);
+        baoLoiTimeline_(dateVal, "Trang chưa kết nối được máy chủ");
         return;
       }
 
       adminRun()
         .withFailureHandler(function(err) {
-          console.warn("loadTimeline failed, falling back to mockLoadTimeline:", err);
-          mockLoadTimeline(dateVal);
+          console.warn("loadTimeline failed:", err);
+          baoLoiTimeline_(dateVal, String(err && err.message || err || "Lỗi kết nối"));
         })
         .withSuccessHandler(function(res) {
           if (!res || !res.success || !res.data) {
-            console.warn("loadTimeline unsuccessful, falling back to mockLoadTimeline:", res && res.message);
-            mockLoadTimeline(dateVal);
+            console.warn("loadTimeline unsuccessful:", res && res.message);
+            baoLoiTimeline_(dateVal, (res && res.message) || "Máy chủ không trả dữ liệu");
             return;
           }
           var d = res.data;
